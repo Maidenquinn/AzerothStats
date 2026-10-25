@@ -1,0 +1,26 @@
+name: Bug report
+description: Report a reproducible Azeroth Stats issue
+title: "[Bug]: "
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Addon and game-client versions
+    validations:
+      required: true
+  - type: input
+    id: class
+    attributes:
+      label: Class and run state
+      placeholder: Rogue, mid-run / final summary / historical view
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps and expected/actual result
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and screenshots
+      description: Include relevant /azstats diagnose output. Check for personal data first; do not attach your game saves or executable.

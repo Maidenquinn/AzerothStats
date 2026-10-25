@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+*.sav
+*.exe
+*.dll
+*.zip
+*.zip.sha256
+**/saved/
+**/SavedVariables/
+AzerothStats/tests/*results.json
+AzerothStats/tests/*evidence*.json
+AzerothStats/tests/*migration*.json
+release-assets/

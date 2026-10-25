@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Preserve the exact validated addon/release bytes, including its manifest.
+AzerothStats/** -text
+*.ttf binary
+*.otf binary

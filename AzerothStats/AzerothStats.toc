@@ -1,0 +1,21 @@
+## Interface: 11200
+## Title: Azeroth Stats
+## Notes: Historique local, statistiques et diagnostics Azeroth Survivors.
+## Author: Kevin / Codex
+## Version: 1.4.0-beta.1
+## SavedVariables: AzerothStatsDB
+
+Util.lua
+Strings.lua
+GameText.lua
+Icons.lua
+Locale.lua
+Database.lua
+API.lua
+Collection.lua
+Items.lua
+Usage.lua
+Tracker.lua
+Views.lua
+UI.lua
+Core.lua
