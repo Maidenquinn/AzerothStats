@@ -87,6 +87,7 @@ local function party(r)
  c.latest=latest;c.sampledAt=A.Wall();c.unavailable=nil
 end
 function A.ObserveInsights(r,raw,ph)
+ A.ObserveNemesis(r,raw,ph)
  dps(r,raw,ph)
  if r.status=="active" or r.status=="terminal" or r.status=="ended" then party(r) end
 end

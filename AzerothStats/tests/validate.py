@@ -89,6 +89,8 @@ lua.execute((root/'tests/interface.lua').read_text(encoding='utf-8'))
 lua.execute((root/'tests/usage.lua').read_text(encoding='utf-8'))
 lua.execute((root/'tests/collection.lua').read_text(encoding='utf-8'))
 lua.execute((root/'tests/insights.lua').read_text(encoding='utf-8'))
+lua.execute((root/'tests/serialize.lua').read_text(encoding='utf-8'))
+lua.execute((root/'tests/favorites_deaths.lua').read_text(encoding='utf-8'))
 report['assertions'] = lua.globals().TEST_COUNT
 lua.execute((root/'tests/serialize.lua').read_text(encoding='utf-8-sig'))
 saved = lua.eval('SNAPSHOT(AzerothStatsDB)')
@@ -104,7 +106,7 @@ if args.legacy_saved:
     legacy = runtime()
     legacy.globals().LEGACY = legacy_source
     legacy.execute('local env={};local f=assert(loadstring(LEGACY));setfenv(f,env);f();AzerothStatsDB=env.AzerothStatsDB;AzerothStats.db=AzerothStatsDB;AzerothStats.CorrectChests();AzerothStats.NormalizeJewelry();LEGACY_RUNS=AzerothStats.Sign(AzerothStatsDB.runs);LEGACY_TOTALS=AzerothStats.Sign(AzerothStatsDB.totals);LEGACY_CLASSES=AzerothStats.Sign(AzerothStatsDB.classes)')
-    legacy.execute('assert(AzerothStats.InitDB());AzerothStats.DetectLocale();AzerothStats.BuildUI();AzerothStats.ToggleUI(true);for _,lg in ipairs(AzerothStats.languages) do if lg[1]~="auto" then AzerothStats.SetLanguage(lg[1]);for i=1,9 do AzerothStats.view.tab=i;AzerothStats.RefreshUI() end end end;assert(LEGACY_RUNS==AzerothStats.Sign(AzerothStatsDB.runs));assert(LEGACY_TOTALS==AzerothStats.Sign(AzerothStatsDB.totals));assert(LEGACY_CLASSES==AzerothStats.Sign(AzerothStatsDB.classes))')
+    legacy.execute('assert(AzerothStats.InitDB());AzerothStats.DetectLocale();AzerothStats.BuildUI();AzerothStats.ToggleUI(true);for _,lg in ipairs(AzerothStats.languages) do if lg[1]~="auto" then AzerothStats.SetLanguage(lg[1]);for i=1,table.getn(AzerothStats.tabs) do AzerothStats.view.tab=i;AzerothStats.RefreshUI() end end end;assert(LEGACY_RUNS==AzerothStats.Sign(AzerothStatsDB.runs));assert(LEGACY_TOTALS==AzerothStats.Sign(AzerothStatsDB.totals));assert(LEGACY_CLASSES==AzerothStats.Sign(AzerothStatsDB.classes))')
     report['existingV1Database'] = {'runs': legacy.eval('table.getn(AzerothStatsDB.runs)'), 'runsTotalsClassesUnchangedAfterChestCorrection': True, 'chestMigrationIdempotent': True, 'inputSha256': hashlib.sha256(legacy_source.encode('utf-8')).hexdigest()}
 report['tocReferences'] = 'all present, correct order, all production Lua included'
 if args.lua50:

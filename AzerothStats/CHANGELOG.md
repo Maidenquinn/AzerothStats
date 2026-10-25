@@ -1,3 +1,11 @@
+# 1.5.0-dev.2 — favoris et preuves de mort
+
+- Page Favoris, étoiles sur les parties/sorts/équipements/accessoires/coéquipiers et accès rapide aux vues correspondantes.
+- Protection des parties favorites contre la purge, stockage borné et persistance sans réécrire les sauvegardes externes.
+- Page Némésis : morts observées, derniers coups, compteurs par classe et globaux ; tueur confirmé uniquement sur message explicite, dernier attaquant récent marqué probable.
+- Formats natifs localisés, protection contre doublons, vieux coups, morts au chargement et attribution aux mauvaises parties.
+- 13 libellés supplémentaires dans les 14 langues et glyphes CJK ; navigation adaptée à 11 pages.
+
 # 1.5.0-dev.1 — comparatif coop
 
 - Tableau par partie incluant votre personnage et vos coéquipiers : dégâts, DPS et meilleur sort reçu.

@@ -14,4 +14,4 @@
 
 ## Préversion 1.5
 
-Le pic de DPS est le maximum observé d’une moyenne de partie sur échantillon serveur après 10 secondes, pas un pic instantané. La coop mémorise des noms/classes observés sans identifiants stables ; ses victoires sont celles de vos parties avec présence observée, sans prouver la présence à la fin ou un haut fait partagé. L’auteur du coup fatal n’est pas exposé par l’API auditée : aucune statistique Nemesis n’est inventée.
+Le pic de DPS est le maximum observé d’une moyenne de partie sur échantillon serveur après 10 secondes, pas un pic instantané. La coop mémorise des noms/classes observés sans identifiants stables ; ses victoires sont celles de vos parties avec présence observée, sans prouver la présence à la fin ou un haut fait partagé. L’auteur du coup fatal n’est pas exposé par l’API auditée : Némésis distingue désormais les preuves confirmées (message natif explicite reçu) des derniers attaquants probables. Sans preuve récente, la source reste inconnue. Les compteurs agrégés de dégâts ne prouvent jamais le coup fatal.

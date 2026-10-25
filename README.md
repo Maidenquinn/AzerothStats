@@ -8,13 +8,13 @@ Track your progress, revisit previous builds and inspect combat performance in a
 
 **[Download the latest beta](https://github.com/Maidenquinn/AzerothStats/releases)** · [Report a bug](https://github.com/Maidenquinn/AzerothStats/issues/new/choose) · [Known limitations](docs/KNOWN-ISSUES.md)
 
-## Development preview: 1.5.0-dev.1
+## Development preview: 1.5.0-dev.2
 
 This branch adds **peak observed run-average DPS** (server damage / server time, sampled after 10 seconds), persistent class/global records and an optional native sound once per run when beating a previous class record. The first record seeds silently. Use `/azstats sound` to toggle and `/azstats sound test` to preview.
 
 **Usage → Co-op** stores names/classes actually observed in fresh `AZSPARTY` samples and counts observed runs globally/per class. A victory count means your run was won and that name was seen during it; it does **not** prove shared completion or a shared achievement. Names are not stable account IDs. `/azstats coop` opens a per-run scoreboard with you and your teammates: damage, DPS, damage share and top spell where available. The run selector opens earlier games; All runs lists companions, whose rows open their retained game history. Rankings and team totals require one common group sample. Older independent records remain explicitly partial.
 
-The audited client does not expose a verified fatal-attacker field. No Nemesis attribution is invented from the last damage packet. See [the implementation and audit notes](docs/INSIGHTS.md). The published 1.4 beta remains available through Releases.
+**Favorites** bookmark runs, spell views, collection equipment, run accessories and companions. Favorite runs survive history pruning; item descriptions remain available from captured data. **Nemesis** records observed deaths and recent combat-log evidence. A last attacker within two seconds is labeled probable; an explicit native slain-by message, if emitted, is labeled confirmed. No enemy-specific victory count is invented. See [the implementation and audit notes](docs/INSIGHTS.md). The published 1.4 beta remains available through Releases.
 
 ## Features
 
@@ -43,6 +43,8 @@ If installing from a Git clone, copy the **inner `AzerothStats` directory** into
 ## Commands
 
 - `/azstats`, `/azstats show`, `/azstats hide` — toggle/open/close the main window.
+- `/azstats favorites` — open bookmarks; `/azstats favorite` toggles the selected/current run.
+- `/azstats nemesis` — inspect observed deaths and attacker evidence.
 - `/azstats coop` — compare your latest/current party; choose an earlier run from the selector.
 - `/azstats history` — open run history.
 - `/azstats diagnose` — open diagnostics and print diagnostic details in local chat.

@@ -28,6 +28,8 @@ function A.InitDB()
 
  end
 
+ if d.favorites==nil then d.favorites={version=1,entries={}} end
+ if type(d.favorites)~="table" or d.favorites.version~=1 or type(d.favorites.entries)~="table" then A.Say(A.T("Database incompatible; collection disabled"));return false end
  A.db = d
 
  A.CorrectChests()
@@ -155,10 +157,14 @@ end
 
 function A.Trim()
 
- while table.getn(A.db.runs) > A.db.settings.maxRuns do
-
-  table.remove(A.db.runs, 1); A.db.pruned = (A.db.pruned or 0) + 1
-
+ local ordinary=0
+ for _,r in ipairs(A.db.runs) do if not A.IsFavorite("run",r.id) then ordinary=ordinary+1 end end
+ local i=1
+ while ordinary>A.db.settings.maxRuns and i<=table.getn(A.db.runs) do
+  local r=A.db.runs[i]
+  if r~=A.run and not A.IsFavorite("run",r.id) then
+   table.remove(A.db.runs,i);ordinary=ordinary-1;A.db.pruned=(A.db.pruned or 0)+1
+  else i=i+1 end
  end
 
 end

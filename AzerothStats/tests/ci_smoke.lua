@@ -36,7 +36,7 @@ for _,lg in ipairs(A.languages) do
  if lg[1]~="auto" then
   for key in pairs(A.uiText.en) do check(type(A.uiText[lg[1]][key])=="string" and A.uiText[lg[1]][key]~="","translation "..lg[1].." "..key) end
   A.SetLanguage(lg[1])
-  for tab=1,9 do A.view.tab=tab;A.view.selected=r.id;A.ToggleUI(true);A.RefreshUI();check(A.ui.model.title==A.T(A.tabs[tab]),"page title "..lg[1]..tab) end
+  for tab=1,table.getn(A.tabs) do A.view.tab=tab;A.view.selected=r.id;A.ToggleUI(true);A.RefreshUI();check(A.ui.model.title==A.T(A.tabs[tab]),"page title "..lg[1]..tab) end
   local language=A.gameText[lg[1]]
   local link="["..language["amulet.south_seas_kelp"].." IV]"
   check(A.JewelKey(link,"rogue")=="amulet.south_seas_kelp","accessory normalization "..lg[1])

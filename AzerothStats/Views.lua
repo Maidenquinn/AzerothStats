@@ -1,6 +1,6 @@
 local A = AzerothStats
 
-A.tabs = {"Overview","Classes","History","Combat","Character","Records","Diagnostics","Settings","Usage"}
+A.tabs = {"Overview","Classes","History","Combat","Character","Records","Diagnostics","Settings","Usage","Favorites","Nemesis"}
 
 A.view = {tab=1,page=1,mode="damage",characterTab="Spells",combatTab="Spells"}
 
@@ -126,7 +126,7 @@ local function history(m)
 
    local item=row(m.rows,(r.hero or "?").." · "..A.ClassName(r.class),A.Duration(r.values.duration),A.Date(r.startedAt).." · "..A.ZoneName(r).." · "..A.Status(r.result or r.status)..(r.partial and " · "..A.T("Partial") or ""),function() A.SelectRun(id) end)
 
-   item.class=r.class;item.exact=r.id.." · "..A.Metric("kills").." "..A.Format(r.values.kills).." · "..A.Metric("level").." "..A.Format(r.values.level)
+   item.favorite=A.RunFavorite(r);item.class=r.class;item.exact=r.id.." · "..A.Metric("kills").." "..A.Format(r.values.kills).." · "..A.Metric("level").." "..A.Format(r.values.level)
 
   end
 
@@ -206,6 +206,7 @@ local function combat(m,r,g)
 
   local item=row(m.rows,A.SourceName(sp.name or sp.source),A.Short(sp.dmg),detail,nil,A.SpellIcon(sp.name),share)
 
+  item.favorite={kind="spell",key=mode..":"..tostring(sp.name or sp.source),label=item.label,tab=4,mode=mode,class=A.view.class}
   item.rank=i;item.exact=A.Format(sp.dmg)
 
  end
@@ -222,7 +223,7 @@ local function character(m,r)
 
  if section=="Spells" then
 
-  for _,sp in ipairs(r.spells or {}) do row(m.rows,A.SpellName(sp),A.T("Rank").." "..A.Format(sp.rank),"",nil,A.SpellIcon(A.SpellName(sp))) end
+  for _,sp in ipairs(r.spells or {}) do local item=row(m.rows,A.SpellName(sp),A.T("Rank").." "..A.Format(sp.rank),"",nil,A.SpellIcon(A.SpellName(sp)));item.favorite={kind="spell",key=sp.key or tostring(sp.spell or item.label),label=item.label,tab=9,section="Spells",class=r.class} end
 
  elseif section=="Equipment" then
 
@@ -352,7 +353,7 @@ function A.PageModel()
      for _,v in ipairs(sorted) do
       local e,key=v.e,v.key
       local item=row(m.rows,e.name,A.Format(e.runs or 1).." · "..A.T("Runs observed"),A.ClassName(e.class).." · "..A.T("Victories in observed runs").." "..A.Format(e.wins).." · "..A.T("History"),function() A.view.coopPartner=key;A.view.page=1 end)
-      item.class=e.class
+      item.class=e.class;item.favorite={kind="companion",key=key,label=e.name}
      end
      m.subtitle=A.T("All runs");m.note=A.T("Observed names only").." · "..A.T("Click to inspect")
     end
@@ -405,6 +406,7 @@ function A.PageModel()
 
    local item=row(m.rows,label,A.Format(e.runs or 1).." · "..A.T("Runs observed"),detail,nil,kind=="spells" and A.SpellIcon(label) or e.icon)
 
+   item.favorite={kind=kind=="spells" and "spell" or "jewelry",key=key,label=label,tab=9,section=kind=="spells" and "Spells" or "Jewelry",class=A.view.class,display={link=e.link,tooltip=e.tooltip,icon=e.icon,label=label}}
    if kind=="jewelry" then item.link=e.link;item.tooltip=e.tooltip end
 
   end
@@ -416,6 +418,8 @@ function A.PageModel()
 
  end
 
+ if tab==10 then A.FavoritesModel(m) elseif tab==11 then A.NemesisModel(m,g) end
+ A.DecorateFavorites(m,tab,r)
  if table.getn(m.rows)==0 and table.getn(m.cards)==0 and tab~=8 then m.empty=true end
 
  return m

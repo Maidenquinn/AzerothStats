@@ -148,6 +148,18 @@ local function button(parent,x,y,w,h,label,fn)
 
 end
 
+local function favoriteButton(parent,x,y)
+ local b=CreateFrame("Button",nil,parent);b:SetPoint("TOPLEFT",parent,"TOPLEFT",x,-y);b:SetWidth(24);b:SetHeight(24)
+ b.star=b:CreateTexture(nil,"ARTWORK");b.star:SetAllPoints();b.star:SetTexture("Interface\\Buttons\\GlowStar")
+ b:SetScript("OnClick",function() if this.favorite then A.ToggleFavorite(this.favorite);A.RefreshUI() end end)
+ b:SetScript("OnEnter",function()
+  local d=this.favorite;if not d then return end
+  GameTooltip:SetOwner(this,"ANCHOR_RIGHT");GameTooltip:ClearLines();GameTooltip:AddLine(A.T(A.IsFavorite(d.kind,d.key) and "Remove favorite" or "Add favorite"),1,.82,.4);GameTooltip:AddLine(d.label or "",1,1,1);GameTooltip:Show()
+ end)
+ b:SetScript("OnLeave",function() GameTooltip:Hide() end)
+ return b
+end
+
 local function selectTab(i)
 
  A.view.tab=i;A.view.page=1;if i==9 then A.view.cumulative=A.view.usageTab~="Co-op" end
@@ -407,8 +419,11 @@ function A.RefreshUI()
  end
 
  local tab=A.view.tab
+ U.favoriteRun.favorite=(tab==4 or tab==5 or tab==9) and not A.view.cumulative and A.RunFavorite(r) or nil
+ show(U.favoriteRun,U.favoriteRun.favorite~=nil)
+ if U.favoriteRun.favorite then U.favoriteRun.star:SetAlpha(A.IsFavorite("run",r.id) and 1 or .3) end
 
- show(U.classButton,tab==1 or tab==2 or tab==3 or tab==6)
+ show(U.classButton,tab==1 or tab==2 or tab==3 or tab==6 or tab==10 or tab==11)
 
  put(U.classButton.label,(A.view.class and A.ClassName(A.view.class) or A.T("All classes")))
 
@@ -446,6 +461,11 @@ function A.RefreshUI()
 
  end
 
+ if A.view.focusFavorite then
+  for i,d in ipairs(m.rows) do if d.favorite and A.FavoriteId(d.favorite.kind,d.favorite.key)==A.view.focusFavorite then A.view.page=math.ceil(i/m.capacity);break end end
+  A.view.focusFavorite=nil
+ end
+ for _,d in ipairs(m.rows) do d.focused=d.favorite and A.FavoriteId(d.favorite.kind,d.favorite.key)==A.view.highlightFavorite end
  local per=m.capacity;local pages=math.max(1,math.ceil(table.getn(m.rows)/per));A.view.page=math.max(1,math.min(pages,A.view.page))
 
  for i,c in ipairs(U.cards) do
@@ -478,6 +498,7 @@ function A.RefreshUI()
 
   if d then
 
+   f.favorite.favorite=d.favorite;show(f.favorite,d.favorite~=nil);if d.favorite then f.favorite.star:SetAlpha(A.IsFavorite(d.favorite.kind,d.favorite.key) and 1 or .3) end
    f.item=d;f:ClearAllPoints();f:SetPoint("TOPLEFT",A.window,"TOPLEFT",218,-m.rowY-(i-1)*m.rowHeight);f:SetHeight(m.rowHeight-1)
 
    local compact=m.layout=="overview"
@@ -490,7 +511,7 @@ function A.RefreshUI()
 
    put(f.label,d.label);put(f.value,d.value);put(f.detail,compact and "" or d.detail)
 
-   f.fill:SetWidth(math.max(1,710*math.max(0,math.min(1,d.fraction or 0))));f.fill:SetAlpha(d.fraction and .15 or 0)
+   f.fill:SetWidth(math.max(1,710*math.max(0,math.min(1,d.fraction or (d.focused and 1) or 0))));f.fill:SetAlpha(d.fraction and .15 or (d.focused and .1) or 0)
 
    f:Show()
 
@@ -642,15 +663,15 @@ function A.BuildUI()
 
  local divider=f:CreateTexture(nil,"ARTWORK");divider:SetPoint("TOPLEFT",f,"TOPLEFT",22,-79);divider:SetWidth(914);divider:SetHeight(1);divider:SetTexture(.42,.32,.16)
 
- U.sidebarNote=font(f,29,541,152,49,10,C.muted)
+ U.sidebarNote=font(f,29,579,152,49,10,C.muted)
 
- local navIcons={"INV_Misc_Book_09","Ability_Warrior_BattleShout","INV_Misc_PocketWatch_01","INV_Sword_04","INV_Chest_Chain_04","INV_Misc_Coin_02","INV_Misc_Gear_01","Trade_Engineering","INV_Misc_Book_09"}
+ local navIcons={"INV_Misc_Book_09","Ability_Warrior_BattleShout","INV_Misc_PocketWatch_01","INV_Sword_04","INV_Chest_Chain_04","INV_Misc_Coin_02","INV_Misc_Gear_01","Trade_Engineering","INV_Misc_Book_09","Spell_Arcane_StarFire","Ability_Creature_Cursed_02"}
 
  for i,key in ipairs(A.tabs) do
 
-  local index=i;local b=button(f,23,97+(i-1)*49,170,40,"",function() selectTab(index) end)
+  local index=i;local b=button(f,23,97+(i-1)*43,170,36,"",function() selectTab(index) end)
 
-  b.marker=solid(b,1,.68,.2,1,"ARTWORK");b.marker:ClearAllPoints();b.marker:SetPoint("TOPLEFT",b,"TOPLEFT",1,-3);b.marker:SetWidth(3);b.marker:SetHeight(34)
+  b.marker=solid(b,1,.68,.2,1,"ARTWORK");b.marker:ClearAllPoints();b.marker:SetPoint("TOPLEFT",b,"TOPLEFT",1,-3);b.marker:SetWidth(3);b.marker:SetHeight(30)
 
   b.label:ClearAllPoints();b.label:SetPoint("TOPLEFT",b,"TOPLEFT",39,0);b.label:SetWidth(123);b.label.fontWidth=123;b.label.baseSize=13
 
@@ -662,6 +683,7 @@ function A.BuildUI()
 
  U.classButton=button(f,714,100,218,26,"",function() A.CycleClass() end);dropdown(U.classButton)
 
+ U.favoriteRun=favoriteButton(f,904,43)
  U.latest=button(f,714,100,218,26,"",function(self) A.RunMenu(self) end);dropdown(U.latest)
 
  U.modeButtons={};U.characterButtons={}
@@ -718,8 +740,9 @@ function A.BuildUI()
 
   r.icon=r:CreateTexture(nil,"ARTWORK");r.icon:SetPoint("LEFT",r,"LEFT",6,0);r.icon:SetWidth(22);r.icon:SetHeight(22)
 
-  r.label=font(r,35,1,412,22,12,C.text);r.value=font(r,455,0,250,23,13,C.gold);r.value:SetJustifyH("RIGHT")
+  r.label=font(r,35,1,412,22,12,C.text);r.value=font(r,455,0,225,23,13,C.gold);r.value:SetJustifyH("RIGHT")
 
+  r.favorite=favoriteButton(r,687,1)
   r.detail=font(r,35,19,670,15,9,C.muted)
 
   r:SetScript("OnEnter",function() tooltip(this) end);r:SetScript("OnLeave",function() GameTooltip:Hide() end)

@@ -42,7 +42,7 @@ local function summary(result,t,damage)
  packet("AZSEND","result="..result..";t="..t..";dmg="..damage..";kills=15;taken=4;gold=55;lvl=4;bosses=1;elites=2;guardians=1;chests=2;magnets=1;hero=Player;class="..cls..";zone=feralas")
 end
 local function refreshAll()
- for tab=1,9 do A.view.tab=tab;A.ToggleUI(true);A.RefreshUI();check(A.ui.model.title==A.T(A.tabs[tab]),"class page "..tab) end
+ for tab=1,table.getn(A.tabs) do A.view.tab=tab;A.ToggleUI(true);A.RefreshUI();check(A.ui.model.title==A.T(A.tabs[tab]),"class page "..tab) end
 end
 local keys={};for key,class in pairs(A.abilityClasses) do if class==cls then table.insert(keys,key) end end;table.sort(keys)
 local spell=assert(keys[1],"missing class spell fixture")

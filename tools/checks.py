@@ -7,7 +7,7 @@ addon=root/'AzerothStats'
 toc=(addon/'AzerothStats.toc').read_text(encoding='utf-8')
 assert '## Interface: 11200' in toc and '## SavedVariables: AzerothStatsDB' in toc
 modules=[line.strip() for line in toc.splitlines() if line.strip() and not line.startswith('#')]
-assert len(modules)==16 and set(modules)=={p.name for p in addon.glob('*.lua')}
+assert len(modules)==18 and set(modules)=={p.name for p in addon.glob('*.lua')}
 version=re.search(r'^## Version: (.+)$',toc,re.M)[1].strip()
 assert ('version = "'+version+'"') in (addon/'Util.lua').read_text(encoding='utf-8')
 # Inspect Lua 5.1 prototypes for the stricter Lua 5.0 upvalue ceiling.
@@ -52,4 +52,7 @@ lua.execute((addon/'tests/mock.lua').read_text(encoding='utf-8-sig'))
 for name in modules:lua.execute((addon/name).read_text(encoding='utf-8'))
 lua.execute((addon/'tests/serialize.lua').read_text(encoding='utf-8'))
 lua.execute((addon/'tests/ci_smoke.lua').read_text(encoding='utf-8-sig'))
+lua.execute('TEST_COUNT=CI_CHECKS')
+lua.execute((addon/'tests/favorites_deaths.lua').read_text(encoding='utf-8'))
+lua.execute('CI_CHECKS=TEST_COUNT')
 print('PASS:',len(modules),'production modules; Lua syntax/upvalue checks; TOC; release manifest; font notices;',lua.globals().CI_CHECKS,'offline assertions')

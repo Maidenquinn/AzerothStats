@@ -55,7 +55,7 @@ function A.DiagnosticRows()
  local out={{A.T("Client"),"Interface 11200 / Lua 5.0"},{A.T("Schema"),A.schema.." / "..A.version},
   {A.T("Locale detection"),A.Locale(),A.localeSource=="Settings" and A.T("Settings") or A.localeSource or ""},{A.T("Local storage"),A.T("Saved on normal game exit")},
   {A.T("Interpolation"),A.Rate(A.Call(AZS_GetRunTime)),"AZS_GetRunTime"}}
- table.insert(out,{A.T("Nemesis"),A.T("Unavailable"),A.T("No verified fatal-source API")})
+ table.insert(out,{A.T("Nemesis"),A.T("Observed deaths"),A.T("Last attacker is not proof of a killing blow")})
  table.insert(out,{A.T("Co-op"),A.T("Observed names only"),A.T("No shared achievement API")})
  for _,n in ipairs({"AZS_GetPartyMeter","AZS_PARTY","PlaySoundFile","AZS_GetPhase","AZS_GetRunTime","AZS_GetMeter","AZS_GetHealing","AZS_GetBossMeter","AZS_GetRunSummary","AZS_RUN","AZS_END","AZS_TAKEN","AZS_STATS"}) do
   table.insert(out,{n,getglobal(n)~=nil and A.T("Available") or A.T("Missing"),type(getglobal(n))})

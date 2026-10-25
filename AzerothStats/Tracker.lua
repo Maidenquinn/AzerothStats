@@ -71,7 +71,7 @@ local function start(ph, t)
 
  end
 
- A.BeginInsights(A.run)
+ A.BeginInsights(A.run);A.BeginDeathWatch(A.run)
  A.newBoundary = nil
 
  A.Trim()
@@ -308,6 +308,7 @@ function A.Sample()
 end
 
 function A.Packet(prefix, message)
+ if prefix=="AZSRUN" then A.runPacketAt=GetTime() end
 
  if prefix == "AZSRUN" and type(message) == "string" and string.find(";" .. message .. ";", ";ph=ready;", 1, true) then A.packetReady = true end
 

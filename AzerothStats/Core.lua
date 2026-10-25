@@ -4,7 +4,7 @@ local f = CreateFrame("Frame", "AzerothStatsDriver", UIParent)
 
 A.driver = f
 
-for _, e in ipairs({"ADDON_LOADED", "VARIABLES_LOADED", "PLAYER_ENTERING_WORLD", "PLAYER_LOGOUT", "CHAT_MSG_ADDON"}) do f:RegisterEvent(e) end
+for _, e in ipairs({"ADDON_LOADED", "VARIABLES_LOADED", "PLAYER_ENTERING_WORLD", "PLAYER_LOGOUT", "CHAT_MSG_ADDON","PLAYER_DEAD","UI_ERROR_MESSAGE","CHAT_MSG_COMBAT_FRIENDLY_DEATH","CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS","CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE","CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE"}) do f:RegisterEvent(e) end
 
 local function initialize()
 
@@ -22,7 +22,7 @@ local function initialize()
 
   if type(v) == "table" then
 
-   A.view.tab = math.max(1, math.min(9, math.floor(A.Number(v.tab) or 1)))
+   A.view.tab = math.max(1, math.min(11, math.floor(A.Number(v.tab) or 1)))
 
    if A.sources[v.mode] then A.view.mode = v.mode end
 
@@ -30,7 +30,7 @@ local function initialize()
 
    A.view.cumulative = v.cumulative == true
 
-   if v.usageTab=="Jewelry" or v.usageTab=="Co-op" then A.view.usageTab="Jewelry" end
+   if v.usageTab=="Jewelry" or v.usageTab=="Co-op" then A.view.usageTab=v.usageTab end
    if v.characterTab=="Equipment" or v.characterTab=="Attributes" or v.characterTab=="Timeline" then A.view.characterTab=v.characterTab end
 
   end
@@ -47,6 +47,8 @@ f:SetScript("OnEvent", function()
 
  elseif event == "CHAT_MSG_ADDON" then A.Packet(arg1, arg2)
 
+ elseif event=="PLAYER_DEAD" then if A.runPacketAt and GetTime()-A.runPacketAt<=2 then A.MarkDeath() end
+ elseif event=="UI_ERROR_MESSAGE" or event=="CHAT_MSG_COMBAT_FRIENDLY_DEATH" or event=="CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS" or event=="CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE" or event=="CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" then A.DeathEvidence(event,arg1)
  elseif event == "PLAYER_LOGOUT" then A.Sample(); if A.run then A.Event(A.run, "checkpoint", "Sortie normale du client") end
 
  elseif event == "PLAYER_ENTERING_WORLD" and A.db then A.DetectLocale();A.ApplyUI()
@@ -125,12 +127,15 @@ SlashCmdList["AZEROTHSTATS"] = function(msg)
 
  elseif cmd == "diagnose" or cmd == "debug" then A.view.tab = 7; A.view.page = 1; A.ToggleUI(true); for _, line in ipairs(A.Diagnostics()) do A.Say(line) end
 
+ elseif cmd=="favorites" then A.view.tab=10;A.view.page=1;A.ToggleUI(true)
+ elseif cmd=="favorite" then A.ToggleFavorite(A.RunFavorite(A.Selected()));A.RefreshUI()
+ elseif cmd=="nemesis" then A.view.tab=11;A.view.page=1;A.ToggleUI(true)
  elseif cmd == "coop" then A.SelectCoopRun(nil);A.ToggleUI(true)
  elseif cmd == "history" then A.view.tab = 3; A.view.page = 1; A.ToggleUI(true)
 
  elseif cmd == "sound" then
   if value=="test" then A.PlayRecordSound() else s.recordSound=not s.recordSound;A.Say(A.T("Record sounds").." : "..A.T(s.recordSound and "Enabled" or "Disabled"));A.RefreshUI() end
- elseif cmd == "help" then A.Say("/azstats show, hide, history, coop, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000")
+ elseif cmd == "help" then A.Say("/azstats show, hide, history, coop, favorites, favorite, nemesis, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000")
 
  else A.Say(A.T("Unknown command").." · /azstats help") end
 
