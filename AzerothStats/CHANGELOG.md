@@ -1,3 +1,12 @@
+# 1.5.0-dev — en préparation
+
+- Pic observé de DPS moyen de partie, après 10 secondes serveur ; records globaux et par classe, sans addition des taux.
+- Alerte sonore native désactivable, au plus une fois par partie contre un ancien record ; premier repère silencieux et protection au rechargement.
+- Utilisation / Coop : coéquipiers réellement observés, fréquence par partie et par classe, résultats associés avec libellés explicites.
+- Garde-fous contre anciens paquets, compteurs en baisse, doublons et confusion entre présence observée et hauts faits partagés.
+- Diagnostic explicite des limites Nemesis/auteur du coup fatal et hauts faits partagés.
+- 12 nouveaux libellés dans les 14 langues et glyphes CJK complémentaires.
+
 # 1.4.0-beta.1 — première release bêta
 
 Fonctionnalités : tableaux de bord, historique, combat, équipement, records, réglages et suivi d’utilisation dans 14 langues.

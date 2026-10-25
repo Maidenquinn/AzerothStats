@@ -13,3 +13,11 @@
 - The game's native Move to begin overlay can appear above addon windows.
 - Full in-client rendering across all languages, resolutions and long multiclasse playthroughs has not been exhaustively validated by the agent. Automated acceptance remains simulated.
 - No RSE1 import is included.
+
+## Development insights
+
+Peak DPS is the highest **observed run-average sample** after 10 server seconds, not instantaneous burst DPS or a reconstructed historical maximum. No rates are summed. Counter regressions are ignored for peaks. Record sounds use the client's own level-up sound and respect its audio settings; audio playback still requires a client check.
+
+Co-op history begins when these features are loaded. It is keyed by observed name/class, not stable IDs; renames and homonyms cannot be resolved. A name is counted once per observed run, even if it leaves/rejoins. Victory counts describe your own run outcomes for runs in which that name was seen, not proof that the peer stayed until the finish. Old runs are not retroactively populated. Up to 64 names per run and 1,024 per aggregate group are retained; hitting these bounds is marked partial.
+
+Fatal attacker/Nemesis and shared achievements remain unavailable with the audited API. The local Death Recap addon also explicitly avoids identifying a fatal hit from the last received damage, so no dependency or unsupported inference is introduced.

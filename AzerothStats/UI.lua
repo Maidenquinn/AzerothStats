@@ -592,7 +592,7 @@ local function buildSettings(f)
 
  end)
 
- for i,def in ipairs({{"bar","Top bar"},{"minimap","Minimap button"},{"locked","Lock position"}}) do
+ for i,def in ipairs({{"bar","Top bar"},{"minimap","Minimap button"},{"locked","Lock position"},{"recordSound","Record sounds"}}) do
 
   local b=CreateFrame("CheckButton",nil,p,"UICheckButtonTemplate");b:SetPoint("TOPLEFT",p,"TOPLEFT",0,-237-(i-1)*39);b:SetWidth(24);b:SetHeight(24);b.setting=def[1];b.key=def[2]
 
@@ -684,9 +684,9 @@ function A.BuildUI()
 
  U.usageButtons={}
 
- for i,key in ipairs({"Spells","Jewelry"}) do
+ for i,key in ipairs({"Spells","Jewelry","Co-op"}) do
 
-  local section=key;local b=button(f,218+(i-1)*360,160,352,26,"",function() A.view.usageTab=section;A.view.page=1;A.RefreshUI() end);b.key=key;table.insert(U.usageButtons,b)
+  local section=key;local b=button(f,218+(i-1)*240,160,232,26,"",function() A.view.usageTab=section;A.view.page=1;A.RefreshUI() end);b.key=key;table.insert(U.usageButtons,b)
 
  end
 

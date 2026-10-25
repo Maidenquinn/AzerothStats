@@ -4,7 +4,7 @@ A.tabs = {"Overview","Classes","History","Combat","Character","Records","Diagnos
 
 A.view = {tab=1,page=1,mode="damage",characterTab="Spells",combatTab="Spells"}
 
-A.metricIcons = {duration="INV_Misc_PocketWatch_01",kills="Ability_Warrior_Cleave",gold="INV_Misc_Coin_01",damage="Ability_Warrior_SavageBlow",healing="Spell_Holy_Heal",taken="INV_Shield_05",bosses="Ability_Creature_Cursed_02",elites="Ability_Creature_Cursed_01",guardians="Spell_Nature_ProtectionformNature",chests="INV_Box_01",magnets="Spell_Nature_Purge",level="INV_Misc_Book_09"}
+A.metricIcons = {duration="INV_Misc_PocketWatch_01",kills="Ability_Warrior_Cleave",gold="INV_Misc_Coin_01",damage="Ability_Warrior_SavageBlow",healing="Spell_Holy_Heal",taken="INV_Shield_05",bosses="Ability_Creature_Cursed_02",elites="Ability_Creature_Cursed_01",guardians="Spell_Nature_ProtectionformNature",chests="INV_Box_01",magnets="Spell_Nature_Purge",level="INV_Misc_Book_09",peakDps="Spell_Nature_Lightning"}
 
 local function row(out,label,value,detail,action,icon,fraction)
 
@@ -52,11 +52,12 @@ end
 
 function A.EventLabel(e,r)
 
- local keys={start="Observed runs",resume="Probable resume; no server run ID",level="Rank",phase="Activity",summary="Official result",terminal="Ended",continue="Continued",boundary="Interrupted",checkpoint="Local storage"}
+ local keys={dps="New class DPS record",start="Observed runs",resume="Probable resume; no server run ID",level="Rank",phase="Activity",summary="Official result",terminal="Ended",continue="Continued",boundary="Interrupted",checkpoint="Local storage"}
 
  local label=A.T(keys[e.kind] or "Activity");local detail=""
 
- if e.kind=="level" then local _,_,n=string.find(e.text or "","(%d+)$");detail=n or ""
+ if e.kind=="dps" then detail=A.Rate(A.Number(e.text))
+ elseif e.kind=="level" then local _,_,n=string.find(e.text or "","(%d+)$");detail=n or ""
 
  elseif e.kind=="phase" then
 
@@ -300,7 +301,7 @@ function A.PageModel()
 
    if rec then for _,run in ipairs(A.db.runs) do if run.id==rec.id then local id=rec.id;action=function() A.SelectRun(id) end;break end end end
 
-   row(m.rows,A.Metric(key),rec and (key=="duration" and A.Duration(rec.value) or A.Format(rec.value)) or A.T("Unavailable"),rec and (A.Date(rec.at).." · "..rec.id) or "",action,A.metricIcons[key])
+   row(m.rows,A.Metric(key),rec and (key=="duration" and A.Duration(rec.value) or (key=="peakDps" and A.Rate(rec.value) or A.Format(rec.value))) or A.T("Unavailable"),rec and (A.Date(rec.at).." · "..rec.id..(key=="peakDps" and (" · "..A.T("Server-sample run average (10s+)")) or "")) or "",action,A.metricIcons[key])
 
   end
 
@@ -328,6 +329,22 @@ function A.PageModel()
 
   m.rowY=200;m.rowHeight=46;m.capacity=8
 
+  if A.view.usageTab=="Co-op" then
+   local peers=A.view.cumulative and (g.companions or {}) or (r and r.coop and r.coop.peers or {})
+   local sorted={};for key,e in pairs(peers) do table.insert(sorted,{key=key,e=e}) end
+   table.sort(sorted,function(a,b) if (a.e.runs or 1)==(b.e.runs or 1) then return a.key<b.key end;return (a.e.runs or 1)>(b.e.runs or 1) end)
+   for _,v in ipairs(sorted) do
+    local e=v.e
+    local detail=A.ClassName(e.class).." · "..A.T("Victories in observed runs").." "..A.Format(A.view.cumulative and e.wins or (r.winCounted and 1 or 0))
+    local value=A.Format(e.runs or 1).." · "..A.T("Runs observed")
+    if not A.view.cumulative then detail=detail.." · "..A.T("Last sample").." "..A.Duration(e.lastSeen);value=A.Short(e.damage).." · "..A.Rate(e.dps).." DPS" end
+    local item=row(m.rows,e.name,value,detail);item.class=e.class
+   end
+   m.subtitle=A.T(A.view.cumulative and "All runs" or "Current run")
+   m.note=A.T("Observed names only").." · "..A.T("No shared achievement API")
+   if r and r.coop and r.coop.unavailable and not A.view.cumulative then m.note=A.T(r.coop.unavailable) end
+   if g.companionsTruncated or (r and r.coop and r.coop.truncated) then m.note=m.note.." · "..A.T("Partial") end
+  else
   local kind=A.view.usageTab=="Jewelry" and "jewelry" or "spells"
 
   local source=A.view.cumulative and g or r
@@ -359,6 +376,7 @@ function A.PageModel()
   m.subtitle=A.T(A.view.cumulative and "All runs" or "Current run").." · "..(A.view.class and A.ClassName(A.view.class) or A.T("All classes"))
 
   m.note=A.T("Build observations since 1.3; not clicks or casts")
+  end
 
  end
 

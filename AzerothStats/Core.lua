@@ -30,7 +30,7 @@ local function initialize()
 
    A.view.cumulative = v.cumulative == true
 
-   if v.usageTab=="Jewelry" then A.view.usageTab="Jewelry" end
+   if v.usageTab=="Jewelry" or v.usageTab=="Co-op" then A.view.usageTab="Jewelry" end
    if v.characterTab=="Equipment" or v.characterTab=="Attributes" or v.characterTab=="Timeline" then A.view.characterTab=v.characterTab end
 
   end
@@ -127,7 +127,9 @@ SlashCmdList["AZEROTHSTATS"] = function(msg)
 
  elseif cmd == "history" then A.view.tab = 3; A.view.page = 1; A.ToggleUI(true)
 
- elseif cmd == "help" then A.Say("/azstats show, hide, history, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, retention 10..1000")
+ elseif cmd == "sound" then
+  if value=="test" then A.PlayRecordSound() else s.recordSound=not s.recordSound;A.Say(A.T("Record sounds").." : "..A.T(s.recordSound and "Enabled" or "Disabled"));A.RefreshUI() end
+ elseif cmd == "help" then A.Say("/azstats show, hide, history, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000")
 
  else A.Say(A.T("Unknown command").." · /azstats help") end
 

@@ -12,6 +12,13 @@ check(A.db.classes.rogue.sum.chests==2 and A.db.totals.spells.damage.Melee==100,
 AZS_SPELLS={{key="backstab",rank=1,spell=53}};A.ObserveBuild(r)
 AZS_SPELLS[1].rank=3;A.ObserveBuild(r);A.ObserveBuild(r)
 check(A.db.totals.usage.spells.backstab.runs==1 and A.db.totals.usage.spells.backstab.gains==2,"observed rank ledger")
+A.run=r;r.status="active";A.BeginInsights(r)
+A.ObserveInsights(r,{t=10,dealt=300},"playing");A.Account(r)
+check(r.values.peakDps==30 and A.db.totals.sum.peakDps==nil,"DPS peak is not an additive total")
+AZS_PARTY={{name="Peer",class="mage",dmg=20,dps=2}};AZS_PARTY_UPDATED=NOW;A.partyGeneration=1
+A.ObserveInsights(r,{t=10,dealt=300},"playing");A.Account(r);A.Account(r)
+check(A.db.totals.companions["Peer:mage"].runs==1,"offline co-op ledger")
+r.status="ended"
 for _,lg in ipairs(A.languages) do
  if lg[1]~="auto" then
   for key in pairs(A.uiText.en) do check(type(A.uiText[lg[1]][key])=="string" and A.uiText[lg[1]][key]~="","translation "..lg[1].." "..key) end

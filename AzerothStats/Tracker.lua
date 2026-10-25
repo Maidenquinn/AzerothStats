@@ -71,6 +71,7 @@ local function start(ph, t)
 
  end
 
+ A.BeginInsights(A.run)
  A.newBoundary = nil
 
  A.Trim()
@@ -261,6 +262,7 @@ function A.Sample()
 
   if level and level ~= r.lastLevel then A.Event(r, "level", "Niveau " .. A.Format(level)); r.lastLevel = level end
 
+  A.ObserveInsights(r,raw,ph)
   if r.status=="active" then A.ObserveBuild(r) end
 
   snapshot(r, raw, terminalSnapshot)
@@ -311,6 +313,7 @@ function A.Packet(prefix, message)
 
  if prefix == "AZSSPELLS" then A.spellPacket=true end
 
+ if prefix == "AZSPARTY" then A.partyGeneration=(A.partyGeneration or 0)+1 end
  if prefix == "AZSEND" then A.packetSummary = true end
 
  local map = {AZSMETER = "damage", AZSHEAL = "healing", AZSBOSSDMG = "boss", AZSTAKEN = "taken"}

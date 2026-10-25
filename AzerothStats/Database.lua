@@ -1,6 +1,6 @@
 local A = AzerothStats
 
-A.metrics = {"duration", "kills", "gold", "damage", "healing", "taken", "bosses", "elites", "guardians", "chests", "magnets", "level"}
+A.metrics = {"duration", "peakDps", "kills", "gold", "damage", "healing", "taken", "bosses", "elites", "guardians", "chests", "magnets", "level"}
 
 function A.InitDB()
 
@@ -35,6 +35,7 @@ function A.InitDB()
 
  local s = d.settings
 
+ if s.recordSound == nil then s.recordSound=true end
  if s.bar == nil then s.bar = true end
 
  if s.minimap == nil then s.minimap = true end
@@ -89,7 +90,7 @@ function A.Account(r)
 
     if old == nil then g.coverage[key] = (g.coverage[key] or 0) + 1 end
 
-    if key ~= "level" then g.sum[key] = (g.sum[key] or 0) + value - (old or 0) end
+    if key ~= "level" and key ~= "peakDps" then g.sum[key] = (g.sum[key] or 0) + value - (old or 0) end
 
     local rec = g.records[key]
 
@@ -104,6 +105,7 @@ function A.Account(r)
  r.counted = true
 
  if r.result == "victory" then r.winCounted = true end
+ A.AccountInsights(r)
 
  for _, key in ipairs(A.metrics) do if r.values[key] ~= nil then r.accounted[key] = r.values[key] end end
 

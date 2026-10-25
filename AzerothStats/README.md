@@ -1,6 +1,12 @@
-# Azeroth Stats 1.4.0-beta.1
+# Azeroth Stats 1.5.0-dev
 
 Release **bêta** pour Azeroth Survivors Windows, interface 11200. Addon autonome, sans dépendance à un autre addon ni connexion externe.
+
+## Préversion de développement
+
+Records de DPS moyen de partie observé (échantillons serveur après 10 secondes), son natif optionnel et suivi des coéquipiers observés dans Utilisation / Coop. Commandes : `/azstats sound` et `/azstats sound test`. Les victoires associées sont celles de vos parties avec présence observée ; ce ne sont pas des hauts faits partagés. Aucun auteur de coup fatal n’est inventé.
+
+Cette préversion n’est pas une nouvelle release publique validée en jeu. La bêta 1.4 reste disponible sur GitHub.
 
 ## Installation et mise à jour
 
@@ -8,7 +14,7 @@ Release **bêta** pour Azeroth Survivors Windows, interface 11200. Addon autonom
 2. Si l’addon est déjà installé, conserver une copie de son fichier SavedVariables (`saved/AzerothStats.lua`, selon l’installation du client).
 3. Extraire cette archive dans le dossier `AddOns` utilisé par le client. Le chemin final doit être `AddOns/AzerothStats/AzerothStats.toc`, sans double sous-dossier.
 4. Pour une mise à jour, remplacer les fichiers du dossier AzerothStats ; conserver le fichier SavedVariables.
-5. Relancer le jeu, activer l’addon si nécessaire et saisir `/azstats`. Vérifier la version **1.4.0-beta.1**.
+5. Relancer le jeu, activer l’addon si nécessaire et saisir `/azstats`. Vérifier la version **1.5.0-dev**.
 
 ## Fonctionnalités
 

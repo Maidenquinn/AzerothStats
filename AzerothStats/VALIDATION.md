@@ -1,3 +1,9 @@
+# Validation de la préversion 1.5
+
+La suite étendue valide les records de DPS observé et les échantillons coop sous Lua 5.0.3 et Lua 5.1. Les 27 scénarios multiclasse restent exécutés dans 81 processus Lua neufs. Ces tests simulent les événements et l’interface, en utilisant le parseur API réel du client local ; ils ne valident ni le son audible ni une vraie partie multijoueur. Voir `docs/INSIGHTS.md` du dépôt pour les définitions et garde-fous.
+
+## Historique de validation de la bêta 1.4
+
 # Validation de la release
 
 Les validations ci-dessous sont automatisées hors jeu avec le script API Lua réellement embarqué dans le client testé. Les widgets et événements de jeu sont simulés.

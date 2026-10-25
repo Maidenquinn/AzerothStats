@@ -11,3 +11,7 @@
 - Le bandeau natif Bougez pour commencer peut apparaître au-dessus de l’addon ; son affichage appartient au jeu.
 - Le rendu intégral des 14 langues, des résolutions et les nouveaux parcours réels multiclasse n’ont pas tous été validés dans le client par l’agent. Ce paquet est une bêta.
 - Aucun import RSE1 dans cette version.
+
+## Préversion 1.5
+
+Le pic de DPS est le maximum observé d’une moyenne de partie sur échantillon serveur après 10 secondes, pas un pic instantané. La coop mémorise des noms/classes observés sans identifiants stables ; ses victoires sont celles de vos parties avec présence observée, sans prouver la présence à la fin ou un haut fait partagé. L’auteur du coup fatal n’est pas exposé par l’API auditée : aucune statistique Nemesis n’est inventée.

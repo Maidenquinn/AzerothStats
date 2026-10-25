@@ -8,6 +8,14 @@ Track your progress, revisit previous builds and inspect combat performance in a
 
 **[Download the latest beta](https://github.com/Maidenquinn/AzerothStats/releases)** · [Report a bug](https://github.com/Maidenquinn/AzerothStats/issues/new/choose) · [Known limitations](docs/KNOWN-ISSUES.md)
 
+## Development preview: 1.5.0-dev
+
+This branch adds **peak observed run-average DPS** (server damage / server time, sampled after 10 seconds), persistent class/global records and an optional native sound once per run when beating a previous class record. The first record seeds silently. Use `/azstats sound` to toggle and `/azstats sound test` to preview.
+
+**Usage → Co-op** stores names/classes actually observed in fresh `AZSPARTY` samples and counts observed runs globally/per class. A victory count means your run was won and that name was seen during it; it does **not** prove shared completion or a shared achievement. Names are not stable account IDs.
+
+The audited client does not expose a verified fatal-attacker field. No Nemesis attribution is invented from the last damage packet. See [the implementation and audit notes](docs/INSIGHTS.md). The published 1.4 beta remains available through Releases.
+
 ## Features
 
 - Global and per-class dashboards, personal records and detailed run history.
@@ -63,7 +71,7 @@ GitHub CI checks syntax, packaging, translations and offline model/UI behavior w
 
 ## Repository layout
 
-- `AzerothStats/` — installable addon, 14 production Lua modules, fonts and notices.
+- `AzerothStats/` — installable addon, 16 production Lua modules, fonts and notices.
 - `AzerothStats/tests/` — synthetic fixtures and local-client validation tools.
 - `tools/checks.py` — offline CI checks.
 - `docs/` — limitations, credits and testing notes.
