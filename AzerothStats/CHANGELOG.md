@@ -1,3 +1,16 @@
+# 1.5.0-beta.1 — bêta publique
+
+Nouveautés depuis la 1.4.0-beta.1 :
+
+- Records globaux/par classe du meilleur DPS moyen de partie observé après 10 secondes serveur, avec alerte sonore optionnelle limitée à une par partie.
+- Comparatif coop par partie : votre personnage et les coéquipiers observés, dégâts, DPS et meilleur sort ; classement et parts uniquement sur un relevé de groupe commun. Historique par coéquipier et sélection des anciennes parties.
+- Favoris persistants avec cœurs et six catégories séparées : Historique, Combat, Sorts, Équipement, Bijoux et Coop. Les parties favorites et les sources des nouveaux favoris de combat historique sont protégées de la purge.
+- Némésis : morts observées, derniers coups conservés et distinction confirmé/probable/inconnu. Un dernier attaquant seul ne prouve pas le coup fatal.
+- Interface et diagnostics traduits dans les 14 langues ; conservation des données existantes, schéma SavedVariables 1.
+- Nouvelles commandes : `/azstats coop`, `/azstats favorites`, `/azstats favorite`, `/azstats nemesis`, `/azstats sound [test]`.
+
+Validation : 3 048 assertions sous Lua 5.0.3 et Lua 5.1, 2 663 assertions indépendantes hors ligne, 27 cas multiclasse dans 81 processus Lua neufs (1 467 assertions), et contrôle du ZIP réellement distribué. Les essais en jeu ont confirmé les favoris, la présentation et une attribution Némésis probable ; ils ne garantissent pas toutes les configurations multijoueurs ni l’émission d’une preuve fatale explicite.
+
 # 1.5.0-dev.3 — catégories de favoris et cœurs
 
 - Six catégories séparées avec compteurs et sélection persistante : Historique, Combat, Sorts, Équipement, Bijoux et Coop.

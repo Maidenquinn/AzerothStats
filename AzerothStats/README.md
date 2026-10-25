@@ -1,12 +1,12 @@
-# Azeroth Stats 1.5.0-dev.3
+# Azeroth Stats 1.5.0-beta.1
 
 Release **bêta** pour Azeroth Survivors Windows, interface 11200. Addon autonome, sans dépendance à un autre addon ni connexion externe.
 
-## Préversion de développement
+## Bêta publique 1.5
 
 Records de DPS moyen de partie observé (échantillons serveur après 10 secondes), son natif optionnel et suivi des coéquipiers observés dans Utilisation / Coop. Commandes : `/azstats sound` et `/azstats sound test`. Les victoires associées sont celles de vos parties avec présence observée ; ce ne sont pas des hauts faits partagés. Aucun auteur de coup fatal n’est inventé.
 
-Cette préversion n’est pas une nouvelle release publique validée en jeu. La bêta 1.4 reste disponible sur GitHub.
+Cette bêta regroupe les records de DPS observé, le comparatif coop, les favoris par catégories et Némésis avec niveaux de preuve explicites. Les fonctionnalités ont fait l’objet de tests automatisés et de retours en jeu ; toutes les configurations et langues ne sont pas exhaustivement validées.
 
 ## Installation et mise à jour
 
@@ -14,7 +14,7 @@ Cette préversion n’est pas une nouvelle release publique validée en jeu. La 
 2. Si l’addon est déjà installé, conserver une copie de son fichier SavedVariables (`saved/AzerothStats.lua`, selon l’installation du client).
 3. Extraire cette archive dans le dossier `AddOns` utilisé par le client. Le chemin final doit être `AddOns/AzerothStats/AzerothStats.toc`, sans double sous-dossier.
 4. Pour une mise à jour, remplacer les fichiers du dossier AzerothStats ; conserver le fichier SavedVariables.
-5. Relancer le jeu, activer l’addon si nécessaire et saisir `/azstats`. Vérifier la version **1.5.0-dev.3**.
+5. Relancer le jeu, activer l’addon si nécessaire et saisir `/azstats`. Vérifier la version **1.5.0-beta.1**.
 
 ## Fonctionnalités
 
@@ -43,11 +43,11 @@ Le nombre exact de coffres est fourni par le bilan final. Le champ de progressio
 
 Consulter `LIMITES-CONNUES.md` et `VALIDATION.md` pour le périmètre de la bêta. Pour un retour de bug : indiquer version de l’addon/client, classe, étape reproduite, compteur attendu/observé et sortie de `/azstats diagnose` ; joindre une capture si utile. Éviter de partager une sauvegarde personnelle complète sans l’avoir vérifiée.
 
-## Comparatif coop (préversion 1.5.0-dev.3)
+## Comparatif coop (préversion 1.5.0-beta.1)
 
 `/azstats coop` ouvre votre dernière partie avec les joueurs observés, dégâts, DPS et meilleur sort disponible. Le menu des parties permet de consulter l’historique. « Toutes les parties » affiche les coéquipiers ; cliquer sur un nom ouvre leurs parties conservées. Les totaux, parts et rangs exigent un relevé de groupe commun. Les anciennes données indépendantes restent partielles. Les soins et victimes des autres joueurs ne sont pas exposés.
 
-## Favoris et Némésis (préversion 1.5.0-dev.3)
+## Favoris et Némésis (préversion 1.5.0-beta.1)
 
 Cliquez sur le cœur d’une ligne pour enregistrer une partie, un sort, un accessoire, une pièce de collection ou un coéquipier. Le cœur en haut à droite protège la partie affichée ; `/azstats favorite` fait de même. `/azstats favorites` ouvre les raccourcis. Limites : 300 favoris, dont au plus 200 parties protégées, en plus du quota d’historique ordinaire. Les fiches d’objets restent consultables au survol ; si leur partie source a été purgée, le raccourci ne prétend pas rouvrir cette ancienne partie.
 
