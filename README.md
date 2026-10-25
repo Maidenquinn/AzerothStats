@@ -8,6 +8,14 @@ Track your progress, revisit previous builds and inspect combat performance in a
 
 **[Download the latest beta](https://github.com/Maidenquinn/AzerothStats/releases)** · [Report a bug](https://github.com/Maidenquinn/AzerothStats/issues/new/choose) · [Known limitations](docs/KNOWN-ISSUES.md)
 
+## Public beta: 1.5.0-beta.1
+
+This release adds **peak observed run-average DPS** (server damage / server time, sampled after 10 seconds), persistent class/global records and an optional native sound once per run when beating a previous class record. The first record seeds silently. Use `/azstats sound` to toggle and `/azstats sound test` to preview.
+
+**Usage → Co-op** stores names/classes actually observed in fresh `AZSPARTY` samples and counts observed runs globally/per class. A victory count means your run was won and that name was seen during it; it does **not** prove shared completion or a shared achievement. Names are not stable account IDs. `/azstats coop` opens a per-run scoreboard with you and your teammates: damage, DPS, damage share and top spell where available. The run selector opens earlier games; All runs lists companions, whose rows open their retained game history. Rankings and team totals require one common group sample. Older independent records remain explicitly partial.
+
+**Favorites** bookmark runs, spell views, collection equipment, run accessories and companions. Favorite runs survive history pruning; item descriptions remain available from captured data. **Nemesis** records observed deaths and recent combat-log evidence. A last attacker within two seconds is labeled probable; an explicit native slain-by message, if emitted, is labeled confirmed. No enemy-specific victory count is invented. See [the implementation and audit notes](docs/INSIGHTS.md). Favorites have separate History, Combat, Spells, Equipment, Jewelry and Co-op categories, with outlined/filled heart controls.
+
 ## Features
 
 - Global and per-class dashboards, personal records and detailed run history.
@@ -23,10 +31,12 @@ Standalone addon. No extra addon dependencies or external account. Data stays lo
 ## Install
 
 1. Exit the game normally.
-2. Download the addon ZIP from **[Releases](https://github.com/Maidenquinn/AzerothStats/releases)**. Use the attached addon ZIP rather than GitHub's automatically generated source archives.
+2. Download **[AzerothStats-1.5.0-beta.1.zip](https://github.com/Maidenquinn/AzerothStats/releases/download/v1.5.0-beta.1/AzerothStats-1.5.0-beta.1.zip)**. Use the attached addon ZIP rather than GitHub's automatically generated source archives.
 3. Extract it into the `AddOns` directory used by your client.
 4. Check that the final path is `AddOns/AzerothStats/AzerothStats.toc`, without a duplicate nested addon folder.
-5. Restart the client, enable the addon if required and type **`/azstats`**.
+5. Restart the client, enable the addon if required and type **`/azstats`**. Verify version **1.5.0-beta.1** in the window.
+
+If it does not appear in the addon list, check the directory used by the running client. A common portable layout is `<game folder>/benilla-config/AddOns/AzerothStats/AzerothStats.toc`. Avoid nesting the addon inside another `AzerothStats` or release/source folder.
 
 **Updating:** back up the addon's SavedVariables, replace its addon files and keep the existing SavedVariables. Do not overwrite or import the game's `.sav` files.
 
@@ -35,6 +45,9 @@ If installing from a Git clone, copy the **inner `AzerothStats` directory** into
 ## Commands
 
 - `/azstats`, `/azstats show`, `/azstats hide` — toggle/open/close the main window.
+- `/azstats favorites` — open bookmarks; `/azstats favorite` toggles the selected/current run.
+- `/azstats nemesis` — inspect observed deaths and attacker evidence.
+- `/azstats coop` — compare your latest/current party; choose an earlier run from the selector.
 - `/azstats history` — open run history.
 - `/azstats diagnose` — open diagnostics and print diagnostic details in local chat.
 - `/azstats bar`, `/azstats minimap`, `/azstats lock`, `/azstats resetpos` — control visibility and placement.
@@ -63,7 +76,7 @@ GitHub CI checks syntax, packaging, translations and offline model/UI behavior w
 
 ## Repository layout
 
-- `AzerothStats/` — installable addon, 14 production Lua modules, fonts and notices.
+- `AzerothStats/` — installable addon, 16 production Lua modules, fonts and notices.
 - `AzerothStats/tests/` — synthetic fixtures and local-client validation tools.
 - `tools/checks.py` — offline CI checks.
 - `docs/` — limitations, credits and testing notes.

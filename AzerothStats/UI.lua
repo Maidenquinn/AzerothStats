@@ -148,9 +148,27 @@ local function button(parent,x,y,w,h,label,fn)
 
 end
 
+local function favoriteButton(parent,x,y)
+ local b=CreateFrame("Button",nil,parent);b:SetPoint("TOPLEFT",parent,"TOPLEFT",x,-y);b:SetWidth(24);b:SetHeight(24)
+ b.heart=b:CreateTexture(nil,"ARTWORK");b.heart:SetAllPoints()
+ b:SetScript("OnClick",function() if this.favorite then A.ToggleFavorite(this.favorite);A.RefreshUI() end end)
+ b:SetScript("OnEnter",function()
+  local d=this.favorite;if not d then return end
+  GameTooltip:SetOwner(this,"ANCHOR_RIGHT");GameTooltip:ClearLines();GameTooltip:AddLine(A.T(A.IsFavorite(d.kind,d.key) and "Remove favorite" or "Add favorite"),1,.82,.4);GameTooltip:AddLine(d.label or "",1,1,1);GameTooltip:Show()
+ end)
+ b:SetScript("OnLeave",function() GameTooltip:Hide() end)
+ return b
+end
+
+local function paintFavorite(b)
+ local d=b.favorite
+ if not d then return end
+ b.heart:SetTexture("Interface\\AddOns\\AzerothStats\\media\\"..(A.IsFavorite(d.kind,d.key) and "FavoriteHeartFilled.tga" or "FavoriteHeartEmpty.tga"))
+end
+
 local function selectTab(i)
 
- A.view.tab=i;A.view.page=1;if i==9 then A.view.cumulative=true end
+ A.view.tab=i;A.view.page=1;if i==9 then A.view.cumulative=A.view.usageTab~="Co-op" end
 
  if U.menu then U.menu:Hide() end
 
@@ -382,7 +400,7 @@ function A.RefreshUI()
 
  local s=A.db.settings
 
- s.view={tab=A.view.tab,mode=A.view.mode,class=A.view.class,cumulative=A.view.cumulative,characterTab=A.view.characterTab,usageTab=A.view.usageTab}
+ s.view={tab=A.view.tab,mode=A.view.mode,class=A.view.class,cumulative=A.view.cumulative,characterTab=A.view.characterTab,usageTab=A.view.usageTab,favoriteCategory=A.view.favoriteCategory or "run"}
 
  local live=A.run;local r=A.Selected()
 
@@ -407,8 +425,11 @@ function A.RefreshUI()
  end
 
  local tab=A.view.tab
+ U.favoriteRun.favorite=(tab==4 or tab==5 or tab==9) and not A.view.cumulative and A.RunFavorite(r) or nil
+ show(U.favoriteRun,U.favoriteRun.favorite~=nil)
+ if U.favoriteRun.favorite then paintFavorite(U.favoriteRun) end
 
- show(U.classButton,tab==1 or tab==2 or tab==3 or tab==6)
+ show(U.classButton,tab==1 or tab==2 or tab==3 or tab==6 or tab==10 or tab==11)
 
  put(U.classButton.label,(A.view.class and A.ClassName(A.view.class) or A.T("All classes")))
 
@@ -424,6 +445,10 @@ function A.RefreshUI()
 
  end
 
+ local counts=tab==10 and A.FavoriteCounts() or {}
+ for _,b in ipairs(U.favoriteCategories) do
+  show(b,tab==10);put(b.label,A.T(b.categoryLabel).." ("..A.Format(counts[b.category] or 0)..")");selected(b,b.category==(A.view.favoriteCategory or "run"))
+ end
  for _,b in ipairs(U.usageButtons) do show(b,tab==9);put(b.label,A.T(b.key));selected(b,b.key==(A.view.usageTab or "Spells")) end
 
  for _,b in ipairs(U.characterButtons) do show(b,tab==5);put(b.label,A.T(b.key));selected(b,b.key==A.view.characterTab) end
@@ -446,6 +471,11 @@ function A.RefreshUI()
 
  end
 
+ if A.view.focusFavorite then
+  for i,d in ipairs(m.rows) do if d.favorite and A.FavoriteId(d.favorite.kind,d.favorite.key)==A.view.focusFavorite then A.view.page=math.ceil(i/m.capacity);break end end
+  A.view.focusFavorite=nil
+ end
+ for _,d in ipairs(m.rows) do d.focused=d.favorite and A.FavoriteId(d.favorite.kind,d.favorite.key)==A.view.highlightFavorite end
  local per=m.capacity;local pages=math.max(1,math.ceil(table.getn(m.rows)/per));A.view.page=math.max(1,math.min(pages,A.view.page))
 
  for i,c in ipairs(U.cards) do
@@ -478,6 +508,7 @@ function A.RefreshUI()
 
   if d then
 
+   f.favorite.favorite=d.favorite;show(f.favorite,d.favorite~=nil);if d.favorite then paintFavorite(f.favorite) end
    f.item=d;f:ClearAllPoints();f:SetPoint("TOPLEFT",A.window,"TOPLEFT",218,-m.rowY-(i-1)*m.rowHeight);f:SetHeight(m.rowHeight-1)
 
    local compact=m.layout=="overview"
@@ -490,7 +521,7 @@ function A.RefreshUI()
 
    put(f.label,d.label);put(f.value,d.value);put(f.detail,compact and "" or d.detail)
 
-   f.fill:SetWidth(math.max(1,710*math.max(0,math.min(1,d.fraction or 0))));f.fill:SetAlpha(d.fraction and .15 or 0)
+   f.fill:SetWidth(math.max(1,710*math.max(0,math.min(1,d.fraction or (d.focused and 1) or 0))));f.fill:SetAlpha(d.fraction and .15 or (d.focused and .1) or 0)
 
    f:Show()
 
@@ -592,7 +623,7 @@ local function buildSettings(f)
 
  end)
 
- for i,def in ipairs({{"bar","Top bar"},{"minimap","Minimap button"},{"locked","Lock position"}}) do
+ for i,def in ipairs({{"bar","Top bar"},{"minimap","Minimap button"},{"locked","Lock position"},{"recordSound","Record sounds"}}) do
 
   local b=CreateFrame("CheckButton",nil,p,"UICheckButtonTemplate");b:SetPoint("TOPLEFT",p,"TOPLEFT",0,-237-(i-1)*39);b:SetWidth(24);b:SetHeight(24);b.setting=def[1];b.key=def[2]
 
@@ -642,15 +673,15 @@ function A.BuildUI()
 
  local divider=f:CreateTexture(nil,"ARTWORK");divider:SetPoint("TOPLEFT",f,"TOPLEFT",22,-79);divider:SetWidth(914);divider:SetHeight(1);divider:SetTexture(.42,.32,.16)
 
- U.sidebarNote=font(f,29,541,152,49,10,C.muted)
+ U.sidebarNote=font(f,29,579,152,49,10,C.muted)
 
- local navIcons={"INV_Misc_Book_09","Ability_Warrior_BattleShout","INV_Misc_PocketWatch_01","INV_Sword_04","INV_Chest_Chain_04","INV_Misc_Coin_02","INV_Misc_Gear_01","Trade_Engineering","INV_Misc_Book_09"}
+ local navIcons={"INV_Misc_Book_09","Ability_Warrior_BattleShout","INV_Misc_PocketWatch_01","INV_Sword_04","INV_Chest_Chain_04","INV_Misc_Coin_02","INV_Misc_Gear_01","Trade_Engineering","INV_Misc_Book_09","Interface\\AddOns\\AzerothStats\\media\\FavoriteHeartFilled.tga","Ability_Creature_Cursed_02"}
 
  for i,key in ipairs(A.tabs) do
 
-  local index=i;local b=button(f,23,97+(i-1)*49,170,40,"",function() selectTab(index) end)
+  local index=i;local b=button(f,23,97+(i-1)*43,170,36,"",function() selectTab(index) end)
 
-  b.marker=solid(b,1,.68,.2,1,"ARTWORK");b.marker:ClearAllPoints();b.marker:SetPoint("TOPLEFT",b,"TOPLEFT",1,-3);b.marker:SetWidth(3);b.marker:SetHeight(34)
+  b.marker=solid(b,1,.68,.2,1,"ARTWORK");b.marker:ClearAllPoints();b.marker:SetPoint("TOPLEFT",b,"TOPLEFT",1,-3);b.marker:SetWidth(3);b.marker:SetHeight(30)
 
   b.label:ClearAllPoints();b.label:SetPoint("TOPLEFT",b,"TOPLEFT",39,0);b.label:SetWidth(123);b.label.fontWidth=123;b.label.baseSize=13
 
@@ -662,6 +693,7 @@ function A.BuildUI()
 
  U.classButton=button(f,714,100,218,26,"",function() A.CycleClass() end);dropdown(U.classButton)
 
+ U.favoriteRun=favoriteButton(f,904,43)
  U.latest=button(f,714,100,218,26,"",function(self) A.RunMenu(self) end);dropdown(U.latest)
 
  U.modeButtons={};U.characterButtons={}
@@ -682,17 +714,22 @@ function A.BuildUI()
 
  end
 
+ U.favoriteCategories={}
+ for i,c in ipairs(A.favoriteCategories) do
+  local key=c[1];local b=button(f,218+(i-1)*120,160,112,26,"",function() A.view.favoriteCategory=key;A.view.page=1;A.RefreshUI() end)
+  b.category=key;b.categoryLabel=c[2];table.insert(U.favoriteCategories,b)
+ end
  U.usageButtons={}
 
- for i,key in ipairs({"Spells","Jewelry"}) do
+ for i,key in ipairs({"Spells","Jewelry","Co-op"}) do
 
-  local section=key;local b=button(f,218+(i-1)*360,160,352,26,"",function() A.view.usageTab=section;A.view.page=1;A.RefreshUI() end);b.key=key;table.insert(U.usageButtons,b)
+  local section=key;local b=button(f,218+(i-1)*240,160,232,26,"",function() A.view.usageTab=section;A.view.coopPartner=nil;if section=="Co-op" then A.view.cumulative=false end;A.view.page=1;A.RefreshUI() end);b.key=key;table.insert(U.usageButtons,b)
 
  end
 
  U.scopeRun=button(f,518,100,198,26,"",function(self) A.RunMenu(self) end);dropdown(U.scopeRun)
 
- U.scopeAll=button(f,724,100,208,26,"",function() A.view.cumulative=true;A.view.combatTab="Spells";A.view.page=1;A.RefreshUI() end)
+ U.scopeAll=button(f,724,100,208,26,"",function() A.view.cumulative=true;A.view.coopPartner=nil;A.view.combatTab="Spells";A.view.page=1;A.RefreshUI() end)
 
  for i=1,9 do
 
@@ -718,8 +755,9 @@ function A.BuildUI()
 
   r.icon=r:CreateTexture(nil,"ARTWORK");r.icon:SetPoint("LEFT",r,"LEFT",6,0);r.icon:SetWidth(22);r.icon:SetHeight(22)
 
-  r.label=font(r,35,1,412,22,12,C.text);r.value=font(r,455,0,250,23,13,C.gold);r.value:SetJustifyH("RIGHT")
+  r.label=font(r,35,1,412,22,12,C.text);r.value=font(r,455,0,225,23,13,C.gold);r.value:SetJustifyH("RIGHT")
 
+  r.favorite=favoriteButton(r,687,1)
   r.detail=font(r,35,19,670,15,9,C.muted)
 
   r:SetScript("OnEnter",function() tooltip(this) end);r:SetScript("OnLeave",function() GameTooltip:Hide() end)

@@ -7,7 +7,7 @@ for _,language in ipairs(A.languages) do
  if lg~="auto" then
   for _,key in ipairs(keys) do check(type(A.uiText[lg][key])=="string" and A.uiText[lg][key]~="",lg.." : "..key) end
   check(A.SetLanguage(lg) and A.Locale()==lg,"manual locale "..lg)
-  for tab=1,9 do
+  for tab=1,table.getn(A.tabs) do
    A.view.tab=tab;A.view.page=1;A.ToggleUI(true);A.RefreshUI()
    check(A.PageModel().title==A.T(A.tabs[tab]),"localized page "..lg..tab)
   end

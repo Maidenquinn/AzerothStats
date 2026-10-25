@@ -27,6 +27,7 @@ function A.ModeName(mode)
  return A.T(map[mode] or "Unknown")
 end
 function A.Metric(key)
+ if key=="peakDps" then return A.T("Peak observed DPS") end
  local game = {duration="end.survived",kills="hud.kills",gold="hud.gold",damage="end.damage_dealt",taken="end.damage_taken",bosses="end.bosses",elites="end.elites",guardians="end.guardians",chests="end.caches_opened",level="end.level"}
  if game[key] then return A.G(game[key]) end
  return A.T(key == "healing" and "Effective healing" or key == "magnets" and "Magnets" or "Unknown")

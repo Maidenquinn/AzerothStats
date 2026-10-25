@@ -7,7 +7,7 @@ addon=root/'AzerothStats'
 toc=(addon/'AzerothStats.toc').read_text(encoding='utf-8')
 assert '## Interface: 11200' in toc and '## SavedVariables: AzerothStatsDB' in toc
 modules=[line.strip() for line in toc.splitlines() if line.strip() and not line.startswith('#')]
-assert len(modules)==14 and set(modules)=={p.name for p in addon.glob('*.lua')}
+assert len(modules)==18 and set(modules)=={p.name for p in addon.glob('*.lua')}
 version=re.search(r'^## Version: (.+)$',toc,re.M)[1].strip()
 assert ('version = "'+version+'"') in (addon/'Util.lua').read_text(encoding='utf-8')
 # Inspect Lua 5.1 prototypes for the stricter Lua 5.0 upvalue ceiling.
@@ -47,9 +47,16 @@ for line in (addon/'SHA256SUMS.txt').read_text(encoding='utf-8').splitlines():
     assert hashlib.sha256(p.read_bytes()).hexdigest()==digest,('release byte drift',name)
 for name in ['AzerothSans.ttf','AzerothSerif.ttf','AzerothSans-zh.otf','AzerothSans-ja.otf','AzerothSans-ko.otf','OFL-NotoSans.txt','OFL-NotoCJK.txt']:
     assert (addon/'media'/name).is_file(),name
+for name in ['FavoriteHeartEmpty.tga','FavoriteHeartFilled.tga']:
+    raw=(addon/'media'/name).read_bytes()
+    assert raw[2]==2 and int.from_bytes(raw[12:14],'little')==32 and int.from_bytes(raw[14:16],'little')==32 and raw[16]==32 and raw[17]&15==8,('native RGBA heart texture',name)
+    assert len(raw)>=18+32*32*4
 lua=LuaRuntime(unpack_returned_tuples=True)
 lua.execute((addon/'tests/mock.lua').read_text(encoding='utf-8-sig'))
 for name in modules:lua.execute((addon/name).read_text(encoding='utf-8'))
 lua.execute((addon/'tests/serialize.lua').read_text(encoding='utf-8'))
 lua.execute((addon/'tests/ci_smoke.lua').read_text(encoding='utf-8-sig'))
+lua.execute('TEST_COUNT=CI_CHECKS')
+lua.execute((addon/'tests/favorites_deaths.lua').read_text(encoding='utf-8'))
+lua.execute('CI_CHECKS=TEST_COUNT')
 print('PASS:',len(modules),'production modules; Lua syntax/upvalue checks; TOC; release manifest; font notices;',lua.globals().CI_CHECKS,'offline assertions')
