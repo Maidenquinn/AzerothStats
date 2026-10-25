@@ -54,4 +54,3 @@ AzerothStatsDB=nil;assert(loadstring("AzerothStatsDB="..source))();A.db=nil;A.In
 check(A.Sign(A.db.totals)==signature,"offline serialization roundtrip")
 CI_CHECKS=checks
 print("OFFLINE MODEL/UI CHECKS PASSED",checks)
-
