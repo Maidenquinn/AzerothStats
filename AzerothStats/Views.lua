@@ -206,7 +206,7 @@ local function combat(m,r,g)
 
   local item=row(m.rows,A.SourceName(sp.name or sp.source),A.Short(sp.dmg),detail,nil,A.SpellIcon(sp.name),share)
 
-  item.favorite={kind="spell",key=mode..":"..tostring(sp.name or sp.source),label=item.label,tab=4,mode=mode,class=A.view.class}
+  item.favorite={kind="spell",key=(not A.view.cumulative and r and (r.id..":") or "")..mode..":"..tostring(sp.name or sp.source),label=item.label,tab=4,mode=mode,class=A.view.cumulative and A.view.class or (r and r.class),cumulative=A.view.cumulative==true,runId=not A.view.cumulative and r and r.id or nil}
   item.rank=i;item.exact=A.Format(sp.dmg)
 
  end

@@ -28,7 +28,7 @@ Names are local data; no account ID or rename resolution is available. Storage i
 
 `tests/insights.lua` executes actual client-parser packets for initial spikes, repeated samples, record sounds/muting, pause/reset protection, source-pair evidence, stale rosters, self-exclusion, empty/rejoining parties, repeated victory/endless summaries, reload flags, a second run and missing optional party data. The full suite passes under Lua 5.0.3 and Lua 5.1; the nine-class fresh-process matrix is retained. `tools/checks.py` includes independent offline model checks without distributing the game's extracted parser.
 
-The 37 additive UI labels are supplied in all 14 languages by `locales-insights.txt`, generated with `tools/build_insights_strings.py`. Chinese/Japanese font subsets retain all existing codepoints and add the new required glyphs. In-client sound, real multiplayer and final layout still require gameplay validation; these automated tests do not claim to have played the game.
+The 39 additive UI labels are supplied in all 14 languages by `locales-insights.txt`, generated with `tools/build_insights_strings.py`. Chinese/Japanese font subsets retain all existing codepoints and add the new required glyphs. In-client sound, real multiplayer and final layout still require gameplay validation; these automated tests do not claim to have played the game.
 
 ## Per-run comparison (1.5.0-dev.1)
 
@@ -51,3 +51,9 @@ The module parses native format strings, including positional placeholders; Engl
 Records are capped at 20 death reports per retained run, 8 recent hits, 8 unparsed lines and 512 aggregate source names per group. Bounds and missing data are visible. Confirmed and probable counts remain separate. These are deaths observed after this version starts, not backfilled lifetime totals or guarantees about every resurrection.
 
 Gameplay check: normally restart into 1.5.0-dev.2; star an old run, open Favorites and revisit it; adjust retention and confirm it remains. Bookmark a spell/item/companion and inspect its shortcut/tooltip. During a new run, receive damage and die; inspect Nemesis and hover the report for evidence. Check probable/confirmed labels, unknown deaths without a fresh hit and no duplicate count while staying on the death screen. Save by exiting normally and verify bookmarks/reports survive another launch.
+
+## Categorized favorites (1.5.0-dev.3)
+
+Favorites now have six exclusive category tabs with per-class counts and a persisted selection. Existing entries are classified at display time using kind and source tab: spell-kind entries from Combat belong to Combat, while build/usage spell entries belong to Spells. Keys and stored metadata are preserved. New historical combat bookmarks store run ID, meter mode and scope; their run remains protected until its last protecting bookmark is removed. The combined pin limit remains 200 distinct run IDs. Legacy bookmarks with no recorded run ID keep their all-runs scope, since the missing provenance cannot be recovered honestly.
+
+Two original 32×32 uncompressed RGBA TGA textures provide empty/filled hearts independent of font glyph support. Offline checks validate their native texture headers. UI regression tests cover category isolation, combined class filters, counts, actual button callbacks, retained legacy IDs, outlined/filled hearts, historical combat context and source-run protection.

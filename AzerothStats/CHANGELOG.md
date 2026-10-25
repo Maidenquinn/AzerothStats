@@ -1,3 +1,11 @@
+# 1.5.0-dev.3 — catégories de favoris et cœurs
+
+- Six catégories séparées avec compteurs et sélection persistante : Historique, Combat, Sorts, Équipement, Bijoux et Coop.
+- Les anciens favoris sont classés sans modifier leurs identifiants ni perdre leurs descriptions.
+- Cœurs originaux en TGA RGBA : contour doré pour ajouter, rouge rempli pour retirer ; même icône dans la navigation.
+- Les nouveaux favoris de combat conservent leur partie et leur mode ; leurs parties sources sont protégées de la purge. Les anciens raccourcis globaux restent globaux, sans reconstitution inventée.
+- États vides, traductions, pagination et tests de compatibilité renforcés.
+
 # 1.5.0-dev.2 — favoris et preuves de mort
 
 - Page Favoris, étoiles sur les parties/sorts/équipements/accessoires/coéquipiers et accès rapide aux vues correspondantes.

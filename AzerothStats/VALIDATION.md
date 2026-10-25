@@ -1,3 +1,7 @@
+# Validation complémentaire 1.5.0-dev.3
+
+3 048 assertions sous Lua 5.0.3/Lua 5.1 et 2 663 assertions indépendantes hors ligne. Ajouts : catégories exclusives, compteurs, filtre de classe, ancienne base de favoris préservée, boutons et états des cœurs, combat historique et protection de sa partie. Les en-têtes des textures TGA RGBA sont vérifiés. Les rendus localisés FR/DE/ZH sont contrôlés hors jeu ; le chargement des textures dans le client reste à confirmer lors du prochain lancement.
+
 # Validation complémentaire 1.5.0-dev.2
 
 3 001 assertions sous Lua 5.0.3 et Lua 5.1 avec le parseur du client local ; 2 616 assertions hors ligne indépendantes ; 27 scénarios de recette dans 81 processus Lua neufs. Compatibilité de la sauvegarde existante vérifiée en lecture seule. Les nouveaux tests couvrent favoris, purge sélective, limites, navigation paginée, persistance des descriptions, morts répétées, vieux coups, messages natifs positionnels, preuves inconnues et passage probable vers confirmé sans doubler une mort. Rendus d’interface FR/ZH/RU examinés hors jeu.

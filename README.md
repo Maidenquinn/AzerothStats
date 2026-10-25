@@ -8,7 +8,7 @@ Track your progress, revisit previous builds and inspect combat performance in a
 
 **[Download the latest beta](https://github.com/Maidenquinn/AzerothStats/releases)** · [Report a bug](https://github.com/Maidenquinn/AzerothStats/issues/new/choose) · [Known limitations](docs/KNOWN-ISSUES.md)
 
-## Development preview: 1.5.0-dev.2
+## Development preview: 1.5.0-dev.3
 
 This branch adds **peak observed run-average DPS** (server damage / server time, sampled after 10 seconds), persistent class/global records and an optional native sound once per run when beating a previous class record. The first record seeds silently. Use `/azstats sound` to toggle and `/azstats sound test` to preview.
 

@@ -1,4 +1,4 @@
-# Azeroth Stats 1.5.0-dev.2
+# Azeroth Stats 1.5.0-dev.3
 
 Release **bêta** pour Azeroth Survivors Windows, interface 11200. Addon autonome, sans dépendance à un autre addon ni connexion externe.
 
@@ -14,7 +14,7 @@ Cette préversion n’est pas une nouvelle release publique validée en jeu. La 
 2. Si l’addon est déjà installé, conserver une copie de son fichier SavedVariables (`saved/AzerothStats.lua`, selon l’installation du client).
 3. Extraire cette archive dans le dossier `AddOns` utilisé par le client. Le chemin final doit être `AddOns/AzerothStats/AzerothStats.toc`, sans double sous-dossier.
 4. Pour une mise à jour, remplacer les fichiers du dossier AzerothStats ; conserver le fichier SavedVariables.
-5. Relancer le jeu, activer l’addon si nécessaire et saisir `/azstats`. Vérifier la version **1.5.0-dev.2**.
+5. Relancer le jeu, activer l’addon si nécessaire et saisir `/azstats`. Vérifier la version **1.5.0-dev.3**.
 
 ## Fonctionnalités
 
@@ -43,12 +43,14 @@ Le nombre exact de coffres est fourni par le bilan final. Le champ de progressio
 
 Consulter `LIMITES-CONNUES.md` et `VALIDATION.md` pour le périmètre de la bêta. Pour un retour de bug : indiquer version de l’addon/client, classe, étape reproduite, compteur attendu/observé et sortie de `/azstats diagnose` ; joindre une capture si utile. Éviter de partager une sauvegarde personnelle complète sans l’avoir vérifiée.
 
-## Comparatif coop (préversion 1.5.0-dev.2)
+## Comparatif coop (préversion 1.5.0-dev.3)
 
 `/azstats coop` ouvre votre dernière partie avec les joueurs observés, dégâts, DPS et meilleur sort disponible. Le menu des parties permet de consulter l’historique. « Toutes les parties » affiche les coéquipiers ; cliquer sur un nom ouvre leurs parties conservées. Les totaux, parts et rangs exigent un relevé de groupe commun. Les anciennes données indépendantes restent partielles. Les soins et victimes des autres joueurs ne sont pas exposés.
 
-## Favoris et Némésis (préversion 1.5.0-dev.2)
+## Favoris et Némésis (préversion 1.5.0-dev.3)
 
-Cliquez sur l’étoile d’une ligne pour enregistrer une partie, un sort, un accessoire, une pièce de collection ou un coéquipier. L’étoile en haut à droite protège la partie affichée ; `/azstats favorite` fait de même. `/azstats favorites` ouvre les raccourcis. Limites : 300 favoris, dont au plus 200 parties protégées, en plus du quota d’historique ordinaire. Les fiches d’objets restent consultables au survol ; si leur partie source a été purgée, le raccourci ne prétend pas rouvrir cette ancienne partie.
+Cliquez sur le cœur d’une ligne pour enregistrer une partie, un sort, un accessoire, une pièce de collection ou un coéquipier. Le cœur en haut à droite protège la partie affichée ; `/azstats favorite` fait de même. `/azstats favorites` ouvre les raccourcis. Limites : 300 favoris, dont au plus 200 parties protégées, en plus du quota d’historique ordinaire. Les fiches d’objets restent consultables au survol ; si leur partie source a été purgée, le raccourci ne prétend pas rouvrir cette ancienne partie.
 
 `/azstats nemesis` affiche les morts observées à partir de cette version. Un dernier attaquant reçu dans les deux secondes avant la mort est **probable**, pas confirmé. Seul un message natif explicite désignant le tueur permet la confirmation, si le client l’émet. Les messages non reconnus sont conservés sans inventer de nom ; un ancien coup ou une mort découverte au chargement ne crée pas d’attribution. Le compteur de victoires contre une créature précise n’est pas disponible.
+
+Les favoris sont séparés dans six onglets : **Historique, Combat, Sorts, Équipement, Bijoux et Coop**. Le compteur de chaque onglet respecte le filtre de classe. Les anciens favoris sont classés automatiquement. Un nouveau favori de combat ouvert depuis une partie historique conserve cette partie et la protège ; un ancien raccourci enregistré comme global conserve sa portée globale. La limite de 200 parties protégées inclut les références des favoris de combat.

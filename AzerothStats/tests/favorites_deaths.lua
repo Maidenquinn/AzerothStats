@@ -15,8 +15,8 @@ A.ToggleFavorite(d);A.Trim()
 check(not A.IsFavorite("run",pinned.id) and table.getn(A.db.runs)==10 and A.db.runs[1].id=="fav-5","unfavorite permits normal pruning")
 A.ToggleFavorite({kind="spell",key="backstab",label="Backstab",tab=9,section="Spells"})
 A.ToggleFavorite({kind="jewelry",key="amulet.test",label="Amulet",tab=9,section="Jewelry",display={link="item:123",tooltip={{text="Recorded bonus"}}}})
-A.view.tab=10;A.view.class=nil;A.ToggleUI(true);A.RefreshUI()
-check(table.getn(A.ui.model.rows)==2 and A.ui.model.rows[1].favorite,"favorites page exposes stored entries")
+A.view.tab=10;A.view.favoriteCategory="jewelry";A.view.class=nil;A.ToggleUI(true);A.RefreshUI()
+check(table.getn(A.ui.model.rows)==1 and A.ui.model.rows[1].favorite,"favorites page exposes stored entries")
 A.ui.model.rows[1].action();check(A.view.tab==9,"favorite opens source view")
 local detail=A.db.favorites.entries["jewelry:amulet.test"]
 check(detail.display.tooltip[1].text=="Recorded bonus","favorite retains bounded item description")
@@ -26,6 +26,36 @@ A.view.tab=9;A.view.usageTab="Spells";A.view.cumulative=true;A.view.class=nil;A.
 local target=A.ui.model.rows[15].favorite
 A.OpenFavorite(target);A.RefreshUI()
 check(A.view.page>1 and A.ui.model.rows[15].focused,"bookmark opens and highlights its actual result page")
+local legacy={kind="spell",key="taken:mob spell",label="Creature spells",tab=4,mode="taken",class="rogue"}
+A.ToggleFavorite(legacy)
+local original=A.Sign(A.db.favorites.entries)
+A.view.tab=10;A.view.class=nil;A.view.favoriteCategory="combat";A.RefreshUI()
+check(table.getn(A.ui.model.rows)==1 and A.ui.model.rows[1].favorite.key==legacy.key,"legacy combat bookmark appears only in Combat category")
+check(A.Sign(A.db.favorites.entries)==original,"categorizing existing bookmarks does not rewrite their IDs or metadata")
+check(A.FavoriteCounts().combat==1 and A.FavoriteCounts().jewelry==1 and A.FavoriteCounts().spell==1,"category counts separate combat, items and spells")
+check(string.find(A.uiRows[1].favorite.heart.texture,"FavoriteHeartFilled.tga",1,true),"saved bookmark uses filled heart texture")
+A.view.favoriteCategory="item";A.RefreshUI()
+check(A.ui.model.empty and table.getn(A.ui.model.rows)==0 and A.ui.model.emptyText==A.T("No favorites in this category").."\n"..A.T("Use the heart to save a favorite"),"empty category never leaks other favorites")
+A.view.class="mage";A.view.favoriteCategory="combat";A.RefreshUI()
+check(table.getn(A.ui.model.rows)==0,"category and class filters intersect")
+A.view.class=nil
+A.ToggleFavorite(legacy)
+for _,button in ipairs(A.ui.favoriteCategories) do
+ button.callback(button)
+ check(A.view.favoriteCategory==button.category and A.view.page==1,"category button selects its own category and resets paging")
+ for _,item in ipairs(A.ui.model.rows) do check(A.FavoriteCategory(item.favorite)==button.category,"category buttons never display mixed kinds") end
+end
+check(A.db.settings.view.favoriteCategory==A.view.favoriteCategory,"selected category is persisted with view preferences")
+local ref=A.db.runs[1]
+local combat={kind="spell",key=ref.id..":damage:Backstab",label="Backstab",tab=4,mode="damage",runId=ref.id,cumulative=false,class=ref.class}
+A.ToggleFavorite(combat)
+check(A.IsRunProtected(ref.id),"historical combat bookmark protects its underlying run")
+A.OpenFavorite(combat);A.RefreshUI()
+check(A.view.selected==ref.id and not A.view.cumulative and A.view.tab==4,"historical combat reopens the actual bookmarked run rather than all-time totals")
+A.ToggleFavorite(combat)
+check(not A.IsRunProtected(ref.id),"removing last combat reference releases retention protection")
+A.view.tab=3;A.RefreshUI()
+check(string.find(A.uiRows[1].favorite.heart.texture,"FavoriteHeartEmpty.tga",1,true),"unmarked row uses outlined heart")
 local signature=A.Sign(A.db.favorites);local serialized=SNAPSHOT(A.db)
 AzerothStatsDB=nil;assert(loadstring("AzerothStatsDB="..serialized))();A.db=nil;A.InitDB()
 check(A.Sign(A.db.favorites)==signature,"favorites persist through serialization")

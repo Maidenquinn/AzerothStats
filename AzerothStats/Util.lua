@@ -1,4 +1,4 @@
-AzerothStats = { version = "1.5.0-dev.2", schema = 1, importers = {} }
+AzerothStats = { version = "1.5.0-dev.3", schema = 1, importers = {} }
 
 local A = AzerothStats
 

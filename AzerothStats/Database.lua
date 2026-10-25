@@ -158,11 +158,11 @@ end
 function A.Trim()
 
  local ordinary=0
- for _,r in ipairs(A.db.runs) do if not A.IsFavorite("run",r.id) then ordinary=ordinary+1 end end
+ for _,r in ipairs(A.db.runs) do if not A.IsRunProtected(r.id) then ordinary=ordinary+1 end end
  local i=1
  while ordinary>A.db.settings.maxRuns and i<=table.getn(A.db.runs) do
   local r=A.db.runs[i]
-  if r~=A.run and not A.IsFavorite("run",r.id) then
+  if r~=A.run and not A.IsRunProtected(r.id) then
    table.remove(A.db.runs,i);ordinary=ordinary-1;A.db.pruned=(A.db.pruned or 0)+1
   else i=i+1 end
  end

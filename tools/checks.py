@@ -47,6 +47,10 @@ for line in (addon/'SHA256SUMS.txt').read_text(encoding='utf-8').splitlines():
     assert hashlib.sha256(p.read_bytes()).hexdigest()==digest,('release byte drift',name)
 for name in ['AzerothSans.ttf','AzerothSerif.ttf','AzerothSans-zh.otf','AzerothSans-ja.otf','AzerothSans-ko.otf','OFL-NotoSans.txt','OFL-NotoCJK.txt']:
     assert (addon/'media'/name).is_file(),name
+for name in ['FavoriteHeartEmpty.tga','FavoriteHeartFilled.tga']:
+    raw=(addon/'media'/name).read_bytes()
+    assert raw[2]==2 and int.from_bytes(raw[12:14],'little')==32 and int.from_bytes(raw[14:16],'little')==32 and raw[16]==32 and raw[17]&15==8,('native RGBA heart texture',name)
+    assert len(raw)>=18+32*32*4
 lua=LuaRuntime(unpack_returned_tuples=True)
 lua.execute((addon/'tests/mock.lua').read_text(encoding='utf-8-sig'))
 for name in modules:lua.execute((addon/name).read_text(encoding='utf-8'))

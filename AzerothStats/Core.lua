@@ -28,6 +28,7 @@ local function initialize()
 
    if type(v.class) == "string" then A.view.class = v.class end
 
+   for _,c in ipairs(A.favoriteCategories) do if c[1]==v.favoriteCategory then A.view.favoriteCategory=c[1] end end
    A.view.cumulative = v.cumulative == true
 
    if v.usageTab=="Jewelry" or v.usageTab=="Co-op" then A.view.usageTab=v.usageTab end

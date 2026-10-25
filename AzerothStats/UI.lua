@@ -150,7 +150,7 @@ end
 
 local function favoriteButton(parent,x,y)
  local b=CreateFrame("Button",nil,parent);b:SetPoint("TOPLEFT",parent,"TOPLEFT",x,-y);b:SetWidth(24);b:SetHeight(24)
- b.star=b:CreateTexture(nil,"ARTWORK");b.star:SetAllPoints();b.star:SetTexture("Interface\\Buttons\\GlowStar")
+ b.heart=b:CreateTexture(nil,"ARTWORK");b.heart:SetAllPoints()
  b:SetScript("OnClick",function() if this.favorite then A.ToggleFavorite(this.favorite);A.RefreshUI() end end)
  b:SetScript("OnEnter",function()
   local d=this.favorite;if not d then return end
@@ -158,6 +158,12 @@ local function favoriteButton(parent,x,y)
  end)
  b:SetScript("OnLeave",function() GameTooltip:Hide() end)
  return b
+end
+
+local function paintFavorite(b)
+ local d=b.favorite
+ if not d then return end
+ b.heart:SetTexture("Interface\\AddOns\\AzerothStats\\media\\"..(A.IsFavorite(d.kind,d.key) and "FavoriteHeartFilled.tga" or "FavoriteHeartEmpty.tga"))
 end
 
 local function selectTab(i)
@@ -394,7 +400,7 @@ function A.RefreshUI()
 
  local s=A.db.settings
 
- s.view={tab=A.view.tab,mode=A.view.mode,class=A.view.class,cumulative=A.view.cumulative,characterTab=A.view.characterTab,usageTab=A.view.usageTab}
+ s.view={tab=A.view.tab,mode=A.view.mode,class=A.view.class,cumulative=A.view.cumulative,characterTab=A.view.characterTab,usageTab=A.view.usageTab,favoriteCategory=A.view.favoriteCategory or "run"}
 
  local live=A.run;local r=A.Selected()
 
@@ -421,7 +427,7 @@ function A.RefreshUI()
  local tab=A.view.tab
  U.favoriteRun.favorite=(tab==4 or tab==5 or tab==9) and not A.view.cumulative and A.RunFavorite(r) or nil
  show(U.favoriteRun,U.favoriteRun.favorite~=nil)
- if U.favoriteRun.favorite then U.favoriteRun.star:SetAlpha(A.IsFavorite("run",r.id) and 1 or .3) end
+ if U.favoriteRun.favorite then paintFavorite(U.favoriteRun) end
 
  show(U.classButton,tab==1 or tab==2 or tab==3 or tab==6 or tab==10 or tab==11)
 
@@ -439,6 +445,10 @@ function A.RefreshUI()
 
  end
 
+ local counts=tab==10 and A.FavoriteCounts() or {}
+ for _,b in ipairs(U.favoriteCategories) do
+  show(b,tab==10);put(b.label,A.T(b.categoryLabel).." ("..A.Format(counts[b.category] or 0)..")");selected(b,b.category==(A.view.favoriteCategory or "run"))
+ end
  for _,b in ipairs(U.usageButtons) do show(b,tab==9);put(b.label,A.T(b.key));selected(b,b.key==(A.view.usageTab or "Spells")) end
 
  for _,b in ipairs(U.characterButtons) do show(b,tab==5);put(b.label,A.T(b.key));selected(b,b.key==A.view.characterTab) end
@@ -498,7 +508,7 @@ function A.RefreshUI()
 
   if d then
 
-   f.favorite.favorite=d.favorite;show(f.favorite,d.favorite~=nil);if d.favorite then f.favorite.star:SetAlpha(A.IsFavorite(d.favorite.kind,d.favorite.key) and 1 or .3) end
+   f.favorite.favorite=d.favorite;show(f.favorite,d.favorite~=nil);if d.favorite then paintFavorite(f.favorite) end
    f.item=d;f:ClearAllPoints();f:SetPoint("TOPLEFT",A.window,"TOPLEFT",218,-m.rowY-(i-1)*m.rowHeight);f:SetHeight(m.rowHeight-1)
 
    local compact=m.layout=="overview"
@@ -665,7 +675,7 @@ function A.BuildUI()
 
  U.sidebarNote=font(f,29,579,152,49,10,C.muted)
 
- local navIcons={"INV_Misc_Book_09","Ability_Warrior_BattleShout","INV_Misc_PocketWatch_01","INV_Sword_04","INV_Chest_Chain_04","INV_Misc_Coin_02","INV_Misc_Gear_01","Trade_Engineering","INV_Misc_Book_09","Spell_Arcane_StarFire","Ability_Creature_Cursed_02"}
+ local navIcons={"INV_Misc_Book_09","Ability_Warrior_BattleShout","INV_Misc_PocketWatch_01","INV_Sword_04","INV_Chest_Chain_04","INV_Misc_Coin_02","INV_Misc_Gear_01","Trade_Engineering","INV_Misc_Book_09","Interface\\AddOns\\AzerothStats\\media\\FavoriteHeartFilled.tga","Ability_Creature_Cursed_02"}
 
  for i,key in ipairs(A.tabs) do
 
@@ -704,6 +714,11 @@ function A.BuildUI()
 
  end
 
+ U.favoriteCategories={}
+ for i,c in ipairs(A.favoriteCategories) do
+  local key=c[1];local b=button(f,218+(i-1)*120,160,112,26,"",function() A.view.favoriteCategory=key;A.view.page=1;A.RefreshUI() end)
+  b.category=key;b.categoryLabel=c[2];table.insert(U.favoriteCategories,b)
+ end
  U.usageButtons={}
 
  for i,key in ipairs({"Spells","Jewelry","Co-op"}) do
