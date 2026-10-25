@@ -1,3 +1,11 @@
+# 1.5.0-dev.1 — comparatif coop
+
+- Tableau par partie incluant votre personnage et vos coéquipiers : dégâts, DPS et meilleur sort reçu.
+- Classement et parts de dégâts à partir d’un relevé de groupe commun, conservé après la sortie du groupe.
+- Accès direct `/azstats coop`, sélection des anciennes parties et historique par coéquipier.
+- Anciennes observations affichées avec leur provenance ; aucun total ou classement fabriqué à partir de relevés indépendants.
+- Nouveaux libellés traduits dans les 14 langues ; tests des paquets incomplets, doublons et relevés tardifs.
+
 # 1.5.0-dev — en préparation
 
 - Pic observé de DPS moyen de partie, après 10 secondes serveur ; records globaux et par classe, sans addition des taux.

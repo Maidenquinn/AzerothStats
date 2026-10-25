@@ -44,6 +44,9 @@ function A.SelectRun(id)
 
 end
 
+function A.SelectCoopRun(id)
+ A.view.selected=id;A.view.tab=9;A.view.usageTab="Co-op";A.view.cumulative=false;A.view.coopPartner=nil;A.view.page=1
+end
 function A.Coverage(g,key)
 
  return A.T("Coverage").." : "..A.Format(g.coverage and g.coverage[key] or 0).." / "..A.Format(g.runs or 0)
@@ -330,19 +333,52 @@ function A.PageModel()
   m.rowY=200;m.rowHeight=46;m.capacity=8
 
   if A.view.usageTab=="Co-op" then
-   local peers=A.view.cumulative and (g.companions or {}) or (r and r.coop and r.coop.peers or {})
-   local sorted={};for key,e in pairs(peers) do table.insert(sorted,{key=key,e=e}) end
-   table.sort(sorted,function(a,b) if (a.e.runs or 1)==(b.e.runs or 1) then return a.key<b.key end;return (a.e.runs or 1)>(b.e.runs or 1) end)
-   for _,v in ipairs(sorted) do
-    local e=v.e
-    local detail=A.ClassName(e.class).." · "..A.T("Victories in observed runs").." "..A.Format(A.view.cumulative and e.wins or (r.winCounted and 1 or 0))
-    local value=A.Format(e.runs or 1).." · "..A.T("Runs observed")
-    if not A.view.cumulative then detail=detail.." · "..A.T("Last sample").." "..A.Duration(e.lastSeen);value=A.Short(e.damage).." · "..A.Rate(e.dps).." DPS" end
-    local item=row(m.rows,e.name,value,detail);item.class=e.class
+   if A.view.cumulative then
+    if A.view.coopPartner then
+     local name=A.view.coopPartner
+     for i=table.getn(A.db.runs),1,-1 do
+      local run=A.db.runs[i];local peer=run.coop and run.coop.peers and run.coop.peers[name]
+      if peer and (not A.view.class or run.class==A.view.class) then
+       local id=run.id
+       local item=row(m.rows,A.Date(run.startedAt).." · "..A.ZoneName(run),A.Duration(run.values.duration).." · "..A.Status(run.result or run.status),peer.name.." · "..A.Short(peer.damage).." · "..A.Rate(peer.dps).." DPS",function() A.SelectCoopRun(id) end)
+       item.class=run.class
+      end
+     end
+     m.subtitle=A.T("History").." · "..A.view.coopPartner
+     m.note=A.T("Historical details may be pruned")
+    else
+     local sorted={};for key,e in pairs(g.companions or {}) do table.insert(sorted,{key=key,e=e}) end
+     table.sort(sorted,function(a,b) if (a.e.runs or 1)==(b.e.runs or 1) then return a.key<b.key end;return (a.e.runs or 1)>(b.e.runs or 1) end)
+     for _,v in ipairs(sorted) do
+      local e,key=v.e,v.key
+      local item=row(m.rows,e.name,A.Format(e.runs or 1).." · "..A.T("Runs observed"),A.ClassName(e.class).." · "..A.T("Victories in observed runs").." "..A.Format(e.wins).." · "..A.T("History"),function() A.view.coopPartner=key;A.view.page=1 end)
+      item.class=e.class
+     end
+     m.subtitle=A.T("All runs");m.note=A.T("Observed names only").." · "..A.T("Click to inspect")
+    end
+   else
+    local comparison=A.CoopComparison(r)
+    m.layout="combat";m.rowY=301;m.capacity=6
+    card(m,A.T("Group damage"),A.Short(comparison.total),A.T("Last group snapshot"),A.metricIcons.damage).exact=A.Format(comparison.total)
+    card(m,A.T("Group DPS"),A.Rate(comparison.rate),A.T("Last group snapshot"),"Spell_Nature_Lightning")
+    card(m,A.T("Players in sample"),A.Format(table.getn(comparison.rows)),A.T("Last sample").." · "..A.Duration(comparison.observedTime),A.metricIcons.duration)
+    for i,e in ipairs(comparison.rows) do
+     local label=(comparison.ranked and (i..". ") or "")..e.name..(e.isSelf and (" · "..A.T("You")) or "")
+     local detail=A.ClassName(e.class)
+     if e.fraction then detail=detail.." · "..A.T("Share of sampled damage").." "..A.Decimal(e.fraction*100,1).."%" end
+     detail=detail.." · "..A.T("Top spell").." : "..(e.top and A.SourceName(e.top) or A.T("Unavailable"))
+     if e.topdps then detail=detail.." ("..A.Rate(e.topdps).." DPS)" end
+     if not comparison.synchronized then detail=detail.." · "..A.T(e.source).." · "..A.Duration(e.observedTime) end
+     local item=row(m.rows,label,A.Short(e.damage).." · "..A.Rate(e.dps).." DPS",detail,nil,nil,e.fraction)
+     item.class=e.class;item.player=e.name;item.exact=A.T("Damage").." "..A.Format(e.damage).." · "..A.Rate(e.dps).." DPS"
+    end
+    m.subtitle=comparison.ranked and A.T("Party damage ranking") or A.T("Co-op")
+    m.note=A.T(comparison.synchronized and "Last group snapshot" or "Partial comparison: independent samples").." · "..A.T("Other players' healing and kills are unavailable")
+    if comparison.partial and comparison.synchronized then m.note=A.T("Partial").." · "..m.note end
+    if table.getn(comparison.rows)==0 then
+     m.cards={};m.emptyText=A.T("No group snapshot recorded");m.note=r and r.coop and r.coop.unavailable and A.T(r.coop.unavailable) or A.T("No group snapshot recorded")
+    end
    end
-   m.subtitle=A.T(A.view.cumulative and "All runs" or "Current run")
-   m.note=A.T("Observed names only").." · "..A.T("No shared achievement API")
-   if r and r.coop and r.coop.unavailable and not A.view.cumulative then m.note=A.T(r.coop.unavailable) end
    if g.companionsTruncated or (r and r.coop and r.coop.truncated) then m.note=m.note.." · "..A.T("Partial") end
   else
   local kind=A.view.usageTab=="Jewelry" and "jewelry" or "spells"

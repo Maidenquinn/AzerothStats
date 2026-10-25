@@ -150,7 +150,7 @@ end
 
 local function selectTab(i)
 
- A.view.tab=i;A.view.page=1;if i==9 then A.view.cumulative=true end
+ A.view.tab=i;A.view.page=1;if i==9 then A.view.cumulative=A.view.usageTab~="Co-op" end
 
  if U.menu then U.menu:Hide() end
 
@@ -686,13 +686,13 @@ function A.BuildUI()
 
  for i,key in ipairs({"Spells","Jewelry","Co-op"}) do
 
-  local section=key;local b=button(f,218+(i-1)*240,160,232,26,"",function() A.view.usageTab=section;A.view.page=1;A.RefreshUI() end);b.key=key;table.insert(U.usageButtons,b)
+  local section=key;local b=button(f,218+(i-1)*240,160,232,26,"",function() A.view.usageTab=section;A.view.coopPartner=nil;if section=="Co-op" then A.view.cumulative=false end;A.view.page=1;A.RefreshUI() end);b.key=key;table.insert(U.usageButtons,b)
 
  end
 
  U.scopeRun=button(f,518,100,198,26,"",function(self) A.RunMenu(self) end);dropdown(U.scopeRun)
 
- U.scopeAll=button(f,724,100,208,26,"",function() A.view.cumulative=true;A.view.combatTab="Spells";A.view.page=1;A.RefreshUI() end)
+ U.scopeAll=button(f,724,100,208,26,"",function() A.view.cumulative=true;A.view.coopPartner=nil;A.view.combatTab="Spells";A.view.page=1;A.RefreshUI() end)
 
  for i=1,9 do
 
