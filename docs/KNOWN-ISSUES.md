@@ -1,6 +1,6 @@
 # Known limitations
 
-1.6.0-dev.9 is a development preview pending real-client UI validation and game-team approval. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
+1.6.0-beta.1 is a beta prerelease; new report/comparison native interaction checks and game-team approval remain pending. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
 
 - No authenticated run UUID/account ID: resume/freshness is heuristic; same-name companions can merge.
 - Missing/late native data stays unavailable/partial. Starting mid-run cannot reconstruct earlier builds. Oversized meters are rejected, not silently shown as exact partial totals.

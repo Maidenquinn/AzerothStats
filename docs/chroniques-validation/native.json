@@ -2,7 +2,7 @@
   "runtime": "Lua 5.1 via lupa; NOT a Lua 5.0 VM or an in-game visual test",
   "files": {
     "Util.lua": {
-      "sha256": "c16d876aa817e4b4698261db202cfdb2a76f4d104751e437e2646b346ea5afa4",
+      "sha256": "d3f626cd2cd32d35a50883f33cf44cd083cee432723b36d83dec4d6ae6ce6139",
       "prototypes": 19,
       "maxUpvalues": 4
     },

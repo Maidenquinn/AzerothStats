@@ -4,7 +4,9 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**1.6.0-dev.9 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
+**1.6.0-beta.1 is a beta prerelease, awaiting manual game-team approval.** It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
+
+[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.0-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/chroniques-validation/RESULTS.md)
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -15,7 +17,7 @@ Read [the UI implementation and test guide](docs/CHRONIQUES.md), [architecture](
 Azeroth Stats observes native counters during play and keeps local history after the next run starts. Its eleven pages provide:
 
 - **Overview / Classes:** observed runs, time, kills, gold and available totals, globally or per class.
-- **History:** retained runs, outcomes, builds and available official summaries.
+- **History:** retained runs with class/difficulty filters, run reports and side-by-side comparisons.
 - **Combat:** damage, effective healing, damage taken, source rankings, contributions and available rates; selected runs, cumulative data and the last available boss meter.
 - **Character:** recorded spells/ranks, collection equipment, temporary accessories, attributes and progression snapshots. Hover for captured native descriptions or clearly labeled collection references.
 - **Records:** personal maxima, including peak observed run-average DPS.

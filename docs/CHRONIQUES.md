@@ -1,6 +1,6 @@
-# Chroniques native UI preview — 1.6.0-dev.9
+# Chroniques native UI preview — 1.6.0-beta.1
 
-This implements the approved visual direction using native Lua 5.0/11200 frames. It is a development preview, not a public release or game-team approval. The AI concept board is a design reference, not a screenshot or a runtime texture.
+This implements the approved visual direction using native Lua 5.0/11200 frames. It ships in a beta prerelease; game-team approval remains pending. The AI concept board is a design reference, not a screenshot or a runtime texture.
 
 ## Implemented
 
@@ -37,7 +37,7 @@ Run the documented offline/native suites, plus `python tools/build_theme_assets.
 
 Before considering a public release, verify in the actual client:
 
-1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.9**. Preserve/back up own SavedVariables first.
+1. Restart normally after installing the exact beta ZIP and check version **1.6.0-beta.1**. Preserve/back up own SavedVariables first.
 2. Open all pages and All statistics; inspect selected/hover states, row spacing, hearts and item tooltips. Verify both fresh and existing databases.
 3. In the HUD editor, add global runs, class wins, fixed-class kills, observed lifetime duration and current-run damage. Check each tooltip and navigation target. No current-run duration appears unless explicitly chosen.
 4. Change dimensions through minimum/maximum values; test narrow-screen overflow, tall/two-row layout, label/icon toggles, fonts and opacity. Check both live HUD and preview.

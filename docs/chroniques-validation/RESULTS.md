@@ -1,6 +1,6 @@
-# Chroniques development preview validation
+# Chroniques beta release validation
 
-Version: **1.6.0-dev.9**. Recorded 2026-10-27. Automated maintainer checks and simulated clients; game-team approval remains pending.
+Version: **1.6.0-beta.1**. Recorded 2026-10-28. Automated maintainer checks and simulated clients; game-team approval remains pending.
 
 - Complete suite: **4,308 assertions in Lua 5.1/Lupa and 4,307 in native Lua 5.0.3**; persistence and existing schema-1 compatibility checked in memory.
 - Client-independent suite: **3,678 assertions**, overlapping the full suite.
@@ -11,12 +11,14 @@ Version: **1.6.0-dev.9**. Recorded 2026-10-27. Automated maintainer checks and s
 - Existing zone/UTF-8, Heroic continuity, adversarial data, co-op, favorites and independent HUD editor suites remain included.
 - Private saved data and identifiers are excluded from this dossier.
 
-Player archive: `AzerothStats-1.6.0-dev.9.zip`
+Player archive: `AzerothStats-1.6.0-beta.1.zip`
 
-SHA-256: `35f6bdb05ed0074805e58350746fda995513fc68677c529e24194fa18baf37be`
+SHA-256: `513482c2cfac2ff659f5829fb141367d8642028e805750e1036346fb173c6552`
 
 Machine-readable evidence: native.json, acceptance.json, runtime-policy.json. Tests used the newly installed client read-only; no extracted client API is distributed.
 
 **Native visual evidence:** user screenshots confirmed small Chroniques components and supplied zone photos in earlier previews; the user confirmed dev.8 works. This does not certify the new report/comparison hit areas or typography. Synthetic French/Japanese report/comparison previews were visually inspected and are labeled offline. Dev.9 native interaction and upgraded-gear historical tooltip checks remain pending; follow TESTING.md. The native move-to-start prompt can still draw over addon windows.
 
 **Limits:** no server UUID; run resume/freshness is heuristic. Comparison matches class, zone and known difficulty only, not equivalent co-op/build conditions. No overall winner or causal effectiveness score is computed. Missing baselines on older runs do not reconstruct historical records. The report notice requires an accepted official summary. Structured marks/affix/star data is not invented; see CLIENT-0.121.md.
+
+**Release validation:** final beta metadata/changelog/manifest regenerated; the exact beta player ZIP passed the fresh-process matrix. Local technical review and CI validation are separate from game-team approval, which remains pending. Maintainer feedback accepted the development direction; no exhaustive native report/comparison playthrough is asserted.

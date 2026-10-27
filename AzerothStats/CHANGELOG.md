@@ -1,3 +1,17 @@
+## 1.6.0-beta.1 - Chroniques, Heroic, run reports and comparison
+
+Beta prerelease for manual review; game-team approval remains pending. Consolidates the dev.1-dev.9 changes below.
+
+- Rebuild the native interface around Chroniques: illustrated Overview, consistent page layouts, clear column spacing, grouped navigation and fourteen-language support.
+- Add an eight-block configurable HUD: metric and scope per block, order, width/height, opacity, text, icons/labels and position lock. Independent Apply/Cancel editor previews drafts and keeps its own saved position; no run timer by default.
+- Integrate twelve supplied zone photos with native aspect-correct framing and a neutral unknown fallback. Recover missing live zone metadata only from recognized native labels/compatible observed continuity; preserve UTF-8 names.
+- Support verified game 0.121 AZS_ZONE.heroic metadata: Normal/Heroic I-V per run, persistent History difficulty filtering, explicit unknown legacy values and all-difficulty lifetime labels.
+- Add run reports with observed/native totals, damage sources, recorded spells/equipment, available co-op snapshots and summary-time class milestones. One dismissible 30-second notice follows an accepted official summary; /azstats report opens the selected run.
+- Add side-by-side retained-run comparisons, matching-context suggestions, A/B values, signed/percentage differences, source/rank/equipment sections, independent historical tooltips, swap and run hearts. Use /azstats compare. Missing data stays unavailable; no percentage from zero or overall performance score.
+- Preserve optional record baselines/summary milestones and notice deduplication across normal saved-variable restarts. Old runs without a baseline do not invent broken records; pruned detail selections do not silently switch to unrelated runs.
+- Extend gear description capture to 64 lines for native set/star text and decimal bonuses. Only active runs use live inventory tooltips; ended runs keep captured descriptions. References warn about differing upgrades/set context, and old fixed catalog drop percentages are suppressed.
+- Ship 24 Lua modules in a manifest-verified player package with no developer tools, personal data or client code. Structured marks/affix/star APIs remain unverified and are not fabricated. RSE1 import remains excluded.
+
 ## 1.6.0-dev.9 - Run reports and side-by-side comparison (development preview)
 
 - Add History / Run report / Compare runs views within History, keeping the eleven existing navigation destinations.
