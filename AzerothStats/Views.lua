@@ -204,7 +204,11 @@ local function dashboard(model, group)
                 model.rows,
                 A.ZoneName(run),
                 A.Duration(run.values and run.values.duration),
-                A.ClassName(run.class) .. " · " .. A.Date(run.startedAt),
+                A.ClassName(run.class)
+                    .. " · "
+                    .. A.Date(run.startedAt)
+                    .. " · "
+                    .. A.HeroicLabel(run),
                 function()
                     A.SelectRun(id)
                 end
@@ -277,7 +281,10 @@ local function history(model)
     for i = table.getn(A.db.runs), 1, -1 do
         local run = A.db.runs[i]
         local id = run.id
-        if not A.view.class or A.view.class == run.class then
+        if
+            (not A.view.class or A.view.class == run.class)
+            and A.MatchesDifficulty(run, A.view.difficulty)
+        then
             retained = retained + 1
             if run.result == "victory" then
                 wins = wins + 1
@@ -314,6 +321,7 @@ local function history(model)
                 .. A.Metric("gold")
                 .. " "
                 .. A.Short(run.values.gold)
+            item.extra = item.extra .. " · " .. A.HeroicLabel(run)
             item.exact = run.id
                 .. " · "
                 .. A.Metric("kills")
@@ -684,7 +692,11 @@ local function stylePage(model, run, group)
     if table.getn(model.cards) == 0 then
         if run and (tab == 5 or ((tab == 4 or tab == 9) and not A.view.cumulative)) then
             model.banner = {
-                label = A.ZoneName(run) .. " · " .. A.ClassName(run.class),
+                label = A.ZoneName(run)
+                    .. " · "
+                    .. A.ClassName(run.class)
+                    .. " · "
+                    .. A.HeroicLabel(run),
                 detail = A.Date(run.startedAt)
                     .. " · "
                     .. A.T("Last sample")
@@ -1066,6 +1078,9 @@ function A.PageModel()
         or (run and (run.usageTruncated or run.spellSourcesTruncated))
     then
         model.note = (model.note or "") .. " · " .. A.T("Partial")
+    end
+    if tab == 1 or tab == 2 or tab == 6 or (tab == 4 and A.view.cumulative) then
+        model.note = (model.note and model.note .. " · " or "") .. A.T("All difficulties")
     end
     A.DecorateFavorites(model, tab, run)
     stylePage(model, run, group)

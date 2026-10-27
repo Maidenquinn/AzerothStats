@@ -24,6 +24,10 @@ The text sanitizer removes explicit ASCII control bytes and UI markup, rather th
 
 Stamps/signatures/notifications support freshness, not authentication. Conflicting supplied summary hero/map is rejected. Missing legacy identity remains heuristic.
 
+## Heroic and upgraded gear (0.121)
+
+Read-only integration and inspected-client evidence: [CLIENT-0.121.md](CLIENT-0.121.md). AZS_ZONE.heroic is the verified field; no marks/affix/star API is invented. Native tooltip reads retain at most 64 lines of bounded text/colors; historical fallback references are explicitly non-equivalent.
+
 ## Events and notifications
 
 `Core.lua` registers exactly: ADDON_LOADED, VARIABLES_LOADED, PLAYER_ENTERING_WORLD, PLAYER_LOGOUT, CHAT_MSG_ADDON, PLAYER_DEAD, UI_ERROR_MESSAGE, CHAT_MSG_COMBAT_FRIENDLY_DEATH, CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS, CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE, CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE.

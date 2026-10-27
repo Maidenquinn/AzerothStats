@@ -108,6 +108,35 @@ function A.Identity()
     return hero .. ":" .. class .. ":" .. tostring(id or "?"), class, hero, id, label, source
 end
 
+--- The 0.121 server's AZSZONE payload explicitly exports heroic (0=Normal, 1..5).
+--- Absence never means Normal, and zone.diff is a separate base-zone multiplier.
+function A.HeroicLevel(value)
+    local level = A.Number(value)
+    if level and level <= 5 and level == math.floor(level) then
+        return level
+    end
+end
+
+function A.ReadHeroic()
+    return A.HeroicLevel(A.ReadFields(AZS_ZONE).heroic)
+end
+
+--- Keep unknown historical difficulty distinct from explicitly observed Normal.
+function A.HeroicLabel(run)
+    local level = run and A.HeroicLevel(run.heroic)
+    if level == nil then
+        return A.T("Difficulty unknown")
+    end
+    return level == 0 and A.T("Normal")
+        or (A.T("Heroic") .. " " .. ({ "I", "II", "III", "IV", "V" })[level])
+end
+
+--- Only the retained History list is filtered; lifetime ledgers stay unchanged.
+function A.MatchesDifficulty(run, filter)
+    local level = A.HeroicLevel(run.heroic)
+    return filter == nil or (filter == "unknown" and level == nil) or level == filter
+end
+
 --- Read server counters and recognize only audited run phases; missing fields stay missing.
 function A.ReadProgress()
     local raw = A.ReadFields(AZS_RUN)
@@ -264,6 +293,16 @@ function A.DiagnosticRows()
         { A.T("Local storage"), A.T("Saved on normal game exit") },
         { A.T("Interpolation"), A.Rate(A.Call(AZS_GetRunTime)), "AZS_GetRunTime" },
     }
+    table.insert(out, {
+        "AZS_ZONE.heroic",
+        A.HeroicLabel({ heroic = A.ReadHeroic() }),
+        "0 = Normal; 1..5 = Heroic; absent = unknown",
+    })
+    table.insert(out, {
+        "0.121: marks / affixes / stars",
+        A.T("Unavailable"),
+        "No verified public structured fields; native gear tooltip text only",
+    })
     local _, _, _, id, label, source = A.Identity()
     table.insert(out, {
         "AZS_ZONE.zone",

@@ -4,7 +4,7 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**1.6.0-dev.7 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
+**1.6.0-dev.8 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -108,3 +108,7 @@ The build checks an explicit player-file allowlist and SHA-256 manifest. Formatt
 Read [CONTRIBUTING](CONTRIBUTING.md), [data provenance](docs/DATA-PROVENANCE.md), [credits](AzerothStats/CREDITS.md) and [security reporting](SECURITY.md). Reference metadata may become stale and must not override observed native values. This audit does not establish permission to redistribute game-derived catalogs; that remains a question for the game team. Bundled fonts retain their OFL notices. No new blanket license grant is made by this review.
 
 Maintained by Kevin / Maidenhead. Existing Kevin / Codex development credit is retained. [Source repository](https://github.com/Maidenquinn/AzerothStats). Game-team approval is pending.
+
+## Game update 0.121
+
+Observed Normal/Heroic I-V is retained per run and filterable in History. Older/missing difficulty remains unknown; lifetime records combine difficulties. Native item tooltips preserve long set/star descriptions and decimal bonuses; reference fallbacks may differ from the historical upgrade level. Fixed legacy drop percentages are no longer shown. Marks, affixes and structured stars are unavailable unless a verified native API exposes them; no save import or gameplay action was added.

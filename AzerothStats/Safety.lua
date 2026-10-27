@@ -367,6 +367,11 @@ function A.ValidateDatabase(database)
         if type(run) ~= "table" or type(run.id) ~= "string" or type(run.class) ~= "string" then
             return false
         end
+        if
+            run.heroic ~= nil and (type(run.heroic) ~= "number" or not A.HeroicLevel(run.heroic))
+        then
+            return false
+        end
         for _, name in ipairs({ "values", "accounted", "events", "meters" }) do
             if type(run[name]) ~= "table" then
                 return false

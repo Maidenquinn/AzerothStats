@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.6.0-dev.7
+# Azeroth Stats - 1.6.0-dev.8
 
 Development preview of the Chroniques native UI and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
 
@@ -21,3 +21,7 @@ Missing data stays unavailable. Chests require the official final summary; live 
 The client persists the addon's schema-1 SavedVariables, normally at logout. Data can include names, timestamps, builds and death evidence. No automatic upload/outbound message or gameplay automation is implemented. History pruning does not erase cumulative data/protected favorites. Invalid saved trees disable collection and preserve input; close the game/back up that addon file before investigation. Never import untrusted Lua saves.
 
 Full source, privacy/reviewer notes, tests and limits: https://github.com/Maidenquinn/AzerothStats (docs/REVIEWER-GUIDE.md). SHA256SUMS identifies bytes, not approval. See CREDITS.md for provenance.
+
+## Game update 0.121
+
+Observed Normal/Heroic I-V is retained per run and filterable in History. Older/missing difficulty remains unknown; lifetime records combine difficulties. Native item tooltips preserve long set/star descriptions and decimal bonuses; reference fallbacks may differ from the historical upgrade level. Fixed legacy drop percentages are no longer shown. Marks, affixes and structured stars are unavailable unless a verified native API exposes them; no save import or gameplay action was added.

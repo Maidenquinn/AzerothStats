@@ -44,6 +44,13 @@ local function initialize()
                     A.view.favoriteCategory = c[1]
                 end
             end
+            if
+                viewSettings.difficulty == "unknown"
+                or A.HeroicLevel(viewSettings.difficulty) ~= nil
+            then
+                A.view.difficulty = viewSettings.difficulty == "unknown" and "unknown"
+                    or A.HeroicLevel(viewSettings.difficulty)
+            end
             A.view.cumulative = viewSettings.cumulative == true
             A.view.overviewStats = viewSettings.overviewStats == true
             if viewSettings.usageTab == "Jewelry" or viewSettings.usageTab == "Co-op" then

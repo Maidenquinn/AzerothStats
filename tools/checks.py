@@ -135,6 +135,7 @@ lua.execute("TEST_COUNT=CI_CHECKS")
 lua.execute((addon / "tests/favorites_deaths.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/security.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/bar.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/heroic.lua").read_text(encoding="utf-8"))
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",

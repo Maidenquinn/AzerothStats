@@ -250,6 +250,10 @@ function A.FavoritesModel(model)
                 descriptor.value = A.Duration(run.values.duration)
             end
         end
+        if descriptor.runLabel then
+            local sourceRun = runs[entry.key]
+            descriptor.extra = descriptor.extra .. " · " .. A.HeroicLabel(sourceRun)
+        end
         descriptor.value = descriptor.value
             or A.T(
                 category == "combat" and "Combat"

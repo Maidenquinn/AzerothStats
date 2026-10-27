@@ -2,12 +2,12 @@
   "runtime": "Lua 5.1 via lupa; NOT a Lua 5.0 VM or an in-game visual test",
   "files": {
     "Util.lua": {
-      "sha256": "b69811aaa5f47de8922ec85bac1cb60e35bc54d2365fdf8970f5245a8a1c415e",
+      "sha256": "a514ed37b1d7100d93b7af1fdd42daf3cfc4583b263fd77666fe416a822c5335",
       "prototypes": 19,
       "maxUpvalues": 4
     },
     "Safety.lua": {
-      "sha256": "fa571b7ca65dc92655d573da5a45e001170d70fe3d1026ce2ade9ad3988351c3",
+      "sha256": "f7dbee042061235bb29c4a371a203dabd5c869ffdbeb2227c6841bb9b0eac15e",
       "prototypes": 14,
       "maxUpvalues": 5
     },
@@ -17,7 +17,7 @@
       "maxUpvalues": 2
     },
     "Strings.lua": {
-      "sha256": "8f9e2df6442521a682af30f144d753a872f2d83c9dbd1abc18a61f12bdd8eefc",
+      "sha256": "1488c85f63a6c26c02c3696b0efc6bd5890e2179f895b272ff7f80f119820283",
       "prototypes": 1,
       "maxUpvalues": 0
     },
@@ -42,8 +42,8 @@
       "maxUpvalues": 2
     },
     "API.lua": {
-      "sha256": "74c13eef78e91585f1886698fbe2043ac7955fbd7e890b1bbac6e6c90f85feef",
-      "prototypes": 14,
+      "sha256": "8697b66fd3cb8eaf78e22f5ce4bcd9868d07320c26ae570eb942f63c676a6966",
+      "prototypes": 18,
       "maxUpvalues": 3
     },
     "Collection.lua": {
@@ -52,7 +52,7 @@
       "maxUpvalues": 0
     },
     "Items.lua": {
-      "sha256": "b71bc14e7d11ce2dd2e20f6158b1c701ee8fba837895af8554660c40b2590b09",
+      "sha256": "ed8cfa1aa5c732e547108a8c4f3e0510193ffd023c0efaaab6b115a90b73408b",
       "prototypes": 9,
       "maxUpvalues": 3
     },
@@ -77,7 +77,7 @@
       "maxUpvalues": 3
     },
     "Favorites.lua": {
-      "sha256": "a41374da781c2b0541d59fc59f557d51c21bce7a66f51e8dd07d1b3cee1df4b2",
+      "sha256": "69f77bc32268920555330a5f7774902105ee855195afb9596d58a30a881acb54",
       "prototypes": 16,
       "maxUpvalues": 2
     },
@@ -87,7 +87,7 @@
       "maxUpvalues": 4
     },
     "Tracker.lua": {
-      "sha256": "47eea4916793b723a4e2795c0e96314fad32e03b418851504ab1ffb669df178b",
+      "sha256": "021060f93863c8c414b7d39f92e2ba0ce12ee635ba072be2df074ee9f739ed76",
       "prototypes": 7,
       "maxUpvalues": 6
     },
@@ -97,13 +97,13 @@
       "maxUpvalues": 1
     },
     "Views.lua": {
-      "sha256": "6448f0b88af3c05a0f387c5d5d7096246a83e4a2bacb791b3457e0f395d3d6bf",
+      "sha256": "baca666d6dfbade2ccc313dc11e0d463b8c7878a5c251f1867ed70adfc83c6d7",
       "prototypes": 27,
       "maxUpvalues": 10
     },
     "UI.lua": {
-      "sha256": "90363b7885949355fc9305fba47cae9f2dda74f733af007eb36751d3f647f102",
-      "prototypes": 91,
+      "sha256": "bd7fe7c46ae08824cccc878a20a972704203dda6ef97f8278ec374769689391d",
+      "prototypes": 95,
       "maxUpvalues": 14
     },
     "BarUI.lua": {
@@ -112,16 +112,19 @@
       "maxUpvalues": 7
     },
     "Core.lua": {
-      "sha256": "98186f161d417b177ce36f48d8c907e75f78c15bc3a3f8e284f9dbe8567797f2",
+      "sha256": "ce52298a494b9a24756cd9659f685f1f47e70d9020bee970329f78e491996419",
       "prototypes": 5,
       "maxUpvalues": 3
     }
   },
   "fixture": {
-    "mode": "trusted-api-file",
-    "apiSha256": "96d50efa87d13a3fdbf2a5d5669d281f0f7bcea81fb10c6497b685c57e5003d4"
+    "mode": "read-only-client",
+    "sha256": "22f7938eb4f99f2857dc091b1c57c147bd848eaabfeaa81e444c0a3393ca8150",
+    "apiSha256": "f73763ffc2f5852ff3f76a4945656ea5494d2d89db75833b71a89327738506db",
+    "apiOffset": 120607162,
+    "apiEnd": 120623825
   },
-  "assertions": 3853,
+  "assertions": 3977,
   "persistenceRoundTrip": true,
   "existingV1Database": {
     "runsTotalsClassesUnchangedAfterChestCorrection": true,
@@ -131,6 +134,6 @@
   "nativeLua50": {
     "version": "Lua 5.0.3",
     "exitCode": 0,
-    "output": "LUA50 SYNTAX OK\tUtil.lua\nLUA50 SYNTAX OK\tSafety.lua\nLUA50 SYNTAX OK\tTheme.lua\nLUA50 SYNTAX OK\tStrings.lua\nLUA50 SYNTAX OK\tGameText.lua\nLUA50 SYNTAX OK\tIcons.lua\nLUA50 SYNTAX OK\tLocale.lua\nLUA50 SYNTAX OK\tDatabase.lua\nLUA50 SYNTAX OK\tAPI.lua\nLUA50 SYNTAX OK\tCollection.lua\nLUA50 SYNTAX OK\tItems.lua\nLUA50 SYNTAX OK\tUsage.lua\nLUA50 SYNTAX OK\tMigrations.lua\nLUA50 SYNTAX OK\tInsightsStrings.lua\nLUA50 SYNTAX OK\tInsights.lua\nLUA50 SYNTAX OK\tFavorites.lua\nLUA50 SYNTAX OK\tNemesis.lua\nLUA50 SYNTAX OK\tTracker.lua\nLUA50 SYNTAX OK\tBar.lua\nLUA50 SYNTAX OK\tViews.lua\nLUA50 SYNTAX OK\tUI.lua\nLUA50 SYNTAX OK\tBarUI.lua\nLUA50 SYNTAX OK\tCore.lua\nLUA50 SYNTAX OK\ttests/mock.lua\nLUA50 SYNTAX OK\ttests/scenarios.lua\nLUA50 SYNTAX OK\ttests/serialize.lua\nLUA50 SYNTAX OK\ttests/native50.lua\nLUA50 SYNTAX OK\ttests/interface.lua\nLUA50 SYNTAX OK\ttests/usage.lua\nLUA50 SYNTAX OK\ttests/collection.lua\nLUA50 SYNTAX OK\ttests/release_case.lua\nLUA50 SYNTAX OK\ttests/release_runner.lua\nLUA50 SYNTAX OK\ttests/insights.lua\nLUA50 SYNTAX OK\ttests/favorites_deaths.lua\nLUA50 SYNTAX OK\ttests/security.lua\nLUA50 SYNTAX OK\ttests/bar.lua\nSCENARIOS PASSED\t72\nINTERFACE AND LOCALES PASSED\t3378\nUX REGRESSIONS PASSED\t3450\nCHESTS, BUILD USAGE AND TOOLTIPS PASSED\t3472\nCOLLECTION AND VARIANT REGRESSIONS PASSED\t3514\nDPS RECORDS AND CO-OP PASSED\t3559\nFAVORITES AND DEATH EVIDENCE PASSED\t3604\nADVERSARIAL INPUT AND CAPABILITY TESTS PASSED\t3655\nCHRONIQUES HUD AND EDITOR PASSED\t3853\nLUA50 PERSISTENCE OK\n"
+    "output": "LUA50 SYNTAX OK\tUtil.lua\nLUA50 SYNTAX OK\tSafety.lua\nLUA50 SYNTAX OK\tTheme.lua\nLUA50 SYNTAX OK\tStrings.lua\nLUA50 SYNTAX OK\tGameText.lua\nLUA50 SYNTAX OK\tIcons.lua\nLUA50 SYNTAX OK\tLocale.lua\nLUA50 SYNTAX OK\tDatabase.lua\nLUA50 SYNTAX OK\tAPI.lua\nLUA50 SYNTAX OK\tCollection.lua\nLUA50 SYNTAX OK\tItems.lua\nLUA50 SYNTAX OK\tUsage.lua\nLUA50 SYNTAX OK\tMigrations.lua\nLUA50 SYNTAX OK\tInsightsStrings.lua\nLUA50 SYNTAX OK\tInsights.lua\nLUA50 SYNTAX OK\tFavorites.lua\nLUA50 SYNTAX OK\tNemesis.lua\nLUA50 SYNTAX OK\tTracker.lua\nLUA50 SYNTAX OK\tBar.lua\nLUA50 SYNTAX OK\tViews.lua\nLUA50 SYNTAX OK\tUI.lua\nLUA50 SYNTAX OK\tBarUI.lua\nLUA50 SYNTAX OK\tCore.lua\nLUA50 SYNTAX OK\ttests/mock.lua\nLUA50 SYNTAX OK\ttests/scenarios.lua\nLUA50 SYNTAX OK\ttests/serialize.lua\nLUA50 SYNTAX OK\ttests/native50.lua\nLUA50 SYNTAX OK\ttests/interface.lua\nLUA50 SYNTAX OK\ttests/usage.lua\nLUA50 SYNTAX OK\ttests/collection.lua\nLUA50 SYNTAX OK\ttests/release_case.lua\nLUA50 SYNTAX OK\ttests/release_runner.lua\nLUA50 SYNTAX OK\ttests/insights.lua\nLUA50 SYNTAX OK\ttests/favorites_deaths.lua\nLUA50 SYNTAX OK\ttests/security.lua\nLUA50 SYNTAX OK\ttests/bar.lua\nLUA50 SYNTAX OK\ttests/heroic.lua\nSCENARIOS PASSED\t72\nINTERFACE AND LOCALES PASSED\t3462\nUX REGRESSIONS PASSED\t3537\nCHESTS, BUILD USAGE AND TOOLTIPS PASSED\t3559\nCOLLECTION AND VARIANT REGRESSIONS PASSED\t3601\nDPS RECORDS AND CO-OP PASSED\t3646\nFAVORITES AND DEATH EVIDENCE PASSED\t3691\nADVERSARIAL INPUT AND CAPABILITY TESTS PASSED\t3742\nCHRONIQUES HUD AND EDITOR PASSED\t3940\nHEROIC HISTORY AND SET TOOLTIP TESTS PASSED\t3976\nLUA50 PERSISTENCE OK\n"
   }
 }

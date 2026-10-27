@@ -1,3 +1,12 @@
+## 1.6.0-dev.8 - Azeroth Survivors 0.121 compatibility (development preview)
+
+- Audit the newly installed 0.121 client read-only. Record its verified AZS_ZONE.heroic field: explicit Normal (0) or Heroic I-V (1-5); missing/legacy values remain unknown.
+- Preserve difficulty with each run and across compatible reloads, display it in run/build context and Favorites, and add a persistent History difficulty filter. Retained summary cards honor both class and difficulty; lifetime statistics remain explicitly all-difficulty.
+- Extend native item-description capture/display to 64 lines for set membership, stars and long 4/8-piece bonus descriptions. Captured native decimal bonuses stay verbatim; no stars or set activation are inferred from item IDs.
+- Warn that fallback descriptions from another observation may have different stars/set context. Remove fixed legacy catalog drop percentages because Heroic and bad-luck protection can alter actual chances.
+- Localize the new controls/warnings in all fourteen languages; update CJK glyph coverage. Add actual-parser restart acceptance for all six difficulties.
+- Marks, weekly affixes, upgrade spending, unlocks, pity and structured star/set state are not fabricated: no verified public structured fields were found in the audited surface. Native tooltip text is retained where available. See docs/CLIENT-0.121.md.
+
 ## 1.6.0-dev.7 - Live zone continuity and shared page layouts (development preview)
 
 - Resolve missing zone packets through exact localized catalog matches from native zone readers; enrich the current run without splitting it when metadata arrives late.

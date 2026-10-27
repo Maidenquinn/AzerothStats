@@ -689,6 +689,7 @@ function A.RefreshUI()
         usageTab = A.view.usageTab,
         favoriteCategory = A.view.favoriteCategory or "run",
         overviewStats = A.view.overviewStats == true,
+        difficulty = A.view.difficulty,
     }
     local live = A.run
     local r = A.Selected()
@@ -710,9 +711,9 @@ function A.RefreshUI()
                 and (A.T("All runs") .. " · " .. (A.view.class and A.ClassName(A.view.class) or A.T(
                     "All classes"
                 )))
-            or r and ((r.hero or "?") .. " · " .. A.ClassName(r.class) .. " · " .. A.ZoneName(r) .. " · " .. A.Status(
-                r.result or r.status
-            ))
+            or r and ((r.hero or "?") .. " · " .. A.ClassName(r.class) .. " · " .. A.ZoneName(r) .. " · " .. A.HeroicLabel(
+                r
+            ) .. " · " .. A.Status(r.result or r.status))
             or A.T("Start a run to begin")
     )
     put(UI.sectionTitle, model.title)
@@ -741,6 +742,14 @@ function A.RefreshUI()
     end
     show(UI.classButton, tab == 1 or tab == 2 or tab == 3 or tab == 6 or tab == 10 or tab == 11)
     put(UI.classButton.label, (A.view.class and A.ClassName(A.view.class) or A.T("All classes")))
+    show(UI.difficultyButton, tab == 3)
+    put(
+        UI.difficultyButton.label,
+        A.view.difficulty == nil and A.T("All difficulties")
+            or A.HeroicLabel({
+                heroic = A.view.difficulty ~= "unknown" and A.view.difficulty or nil,
+            })
+    )
     show(UI.latest, tab == 5)
     put(UI.latest.label, selectorLabel)
     for _, b in ipairs(UI.modeButtons) do
@@ -1285,6 +1294,33 @@ function A.BuildUI()
         b.key = key
         table.insert(UI.usageButtons, b)
     end
+    UI.difficultyButton = button(frame, 518, 100, 198, 26, "", function(self)
+        local choices = {
+            {
+                label = A.T("All difficulties"),
+                action = function()
+                    A.view.difficulty, A.view.page = nil, 1
+                end,
+            },
+        }
+        for level = 0, 5 do
+            local value = level
+            table.insert(choices, {
+                label = A.HeroicLabel({ heroic = value }),
+                action = function()
+                    A.view.difficulty, A.view.page = value, 1
+                end,
+            })
+        end
+        table.insert(choices, {
+            label = A.T("Difficulty unknown"),
+            action = function()
+                A.view.difficulty, A.view.page = "unknown", 1
+            end,
+        })
+        A.ShowMenu(self, choices)
+    end)
+    dropdown(UI.difficultyButton)
     UI.scopeRun = button(frame, 518, 100, 198, 26, "", function(self)
         A.RunMenu(self)
     end)

@@ -7,18 +7,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7369
+          "assertions": 11,
+          "savedBytes": 7434
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9989
+          "assertions": 28,
+          "savedBytes": 10054
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9990
+          "assertions": 21,
+          "savedBytes": 10055
         }
       ]
     },
@@ -28,18 +28,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7369
+          "assertions": 11,
+          "savedBytes": 7434
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9709
+          "assertions": 28,
+          "savedBytes": 9774
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9710
+          "assertions": 21,
+          "savedBytes": 9775
         }
       ]
     },
@@ -49,18 +49,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7369
+          "assertions": 11,
+          "savedBytes": 7434
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10149
+          "assertions": 29,
+          "savedBytes": 10214
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10150
+          "assertions": 21,
+          "savedBytes": 10215
         }
       ]
     },
@@ -70,18 +70,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7369
+          "assertions": 11,
+          "savedBytes": 7434
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9989
+          "assertions": 28,
+          "savedBytes": 10054
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9990
+          "assertions": 21,
+          "savedBytes": 10055
         }
       ]
     },
@@ -91,18 +91,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7369
+          "assertions": 11,
+          "savedBytes": 7434
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9709
+          "assertions": 28,
+          "savedBytes": 9774
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9710
+          "assertions": 21,
+          "savedBytes": 9775
         }
       ]
     },
@@ -112,18 +112,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7369
+          "assertions": 11,
+          "savedBytes": 7434
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10149
+          "assertions": 29,
+          "savedBytes": 10214
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10150
+          "assertions": 21,
+          "savedBytes": 10215
         }
       ]
     },
@@ -133,18 +133,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7349
+          "assertions": 11,
+          "savedBytes": 7414
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9966
+          "assertions": 28,
+          "savedBytes": 10031
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9967
+          "assertions": 21,
+          "savedBytes": 10032
         }
       ]
     },
@@ -154,18 +154,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7349
+          "assertions": 11,
+          "savedBytes": 7414
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9686
+          "assertions": 28,
+          "savedBytes": 9751
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9687
+          "assertions": 21,
+          "savedBytes": 9752
         }
       ]
     },
@@ -175,18 +175,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7349
+          "assertions": 11,
+          "savedBytes": 7414
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10126
+          "assertions": 29,
+          "savedBytes": 10191
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10127
+          "assertions": 21,
+          "savedBytes": 10192
         }
       ]
     },
@@ -196,18 +196,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7385
+          "assertions": 11,
+          "savedBytes": 7450
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9999
+          "assertions": 28,
+          "savedBytes": 10064
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10000
+          "assertions": 21,
+          "savedBytes": 10065
         }
       ]
     },
@@ -217,18 +217,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7385
+          "assertions": 11,
+          "savedBytes": 7450
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9719
+          "assertions": 28,
+          "savedBytes": 9784
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9720
+          "assertions": 21,
+          "savedBytes": 9785
         }
       ]
     },
@@ -238,18 +238,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7385
+          "assertions": 11,
+          "savedBytes": 7450
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10159
+          "assertions": 29,
+          "savedBytes": 10224
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10160
+          "assertions": 21,
+          "savedBytes": 10225
         }
       ]
     },
@@ -259,18 +259,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7397
+          "assertions": 11,
+          "savedBytes": 7462
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 10014
+          "assertions": 28,
+          "savedBytes": 10079
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10015
+          "assertions": 21,
+          "savedBytes": 10080
         }
       ]
     },
@@ -280,18 +280,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7397
+          "assertions": 11,
+          "savedBytes": 7462
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9734
+          "assertions": 28,
+          "savedBytes": 9799
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9735
+          "assertions": 21,
+          "savedBytes": 9800
         }
       ]
     },
@@ -301,18 +301,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7397
+          "assertions": 11,
+          "savedBytes": 7462
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10174
+          "assertions": 29,
+          "savedBytes": 10239
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10175
+          "assertions": 21,
+          "savedBytes": 10240
         }
       ]
     },
@@ -322,18 +322,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7389
+          "assertions": 11,
+          "savedBytes": 7454
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 10006
+          "assertions": 28,
+          "savedBytes": 10071
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10007
+          "assertions": 21,
+          "savedBytes": 10072
         }
       ]
     },
@@ -343,18 +343,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7389
+          "assertions": 11,
+          "savedBytes": 7454
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9726
+          "assertions": 28,
+          "savedBytes": 9791
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9727
+          "assertions": 21,
+          "savedBytes": 9792
         }
       ]
     },
@@ -364,18 +364,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7389
+          "assertions": 11,
+          "savedBytes": 7454
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10166
+          "assertions": 29,
+          "savedBytes": 10231
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10167
+          "assertions": 21,
+          "savedBytes": 10232
         }
       ]
     },
@@ -385,18 +385,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7389
+          "assertions": 11,
+          "savedBytes": 7454
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 10000
+          "assertions": 28,
+          "savedBytes": 10065
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10001
+          "assertions": 21,
+          "savedBytes": 10066
         }
       ]
     },
@@ -406,18 +406,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7389
+          "assertions": 11,
+          "savedBytes": 7454
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9720
+          "assertions": 28,
+          "savedBytes": 9785
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9721
+          "assertions": 21,
+          "savedBytes": 9786
         }
       ]
     },
@@ -427,18 +427,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7389
+          "assertions": 11,
+          "savedBytes": 7454
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10160
+          "assertions": 29,
+          "savedBytes": 10225
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10161
+          "assertions": 21,
+          "savedBytes": 10226
         }
       ]
     },
@@ -448,18 +448,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7353
+          "assertions": 11,
+          "savedBytes": 7418
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9973
+          "assertions": 28,
+          "savedBytes": 10038
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9974
+          "assertions": 21,
+          "savedBytes": 10039
         }
       ]
     },
@@ -469,18 +469,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7353
+          "assertions": 11,
+          "savedBytes": 7418
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9693
+          "assertions": 28,
+          "savedBytes": 9758
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9694
+          "assertions": 21,
+          "savedBytes": 9759
         }
       ]
     },
@@ -490,18 +490,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7353
+          "assertions": 11,
+          "savedBytes": 7418
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10133
+          "assertions": 29,
+          "savedBytes": 10198
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10134
+          "assertions": 21,
+          "savedBytes": 10199
         }
       ]
     },
@@ -511,18 +511,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7393
+          "assertions": 11,
+          "savedBytes": 7458
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 10007
+          "assertions": 28,
+          "savedBytes": 10072
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10008
+          "assertions": 21,
+          "savedBytes": 10073
         }
       ]
     },
@@ -532,18 +532,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7393
+          "assertions": 11,
+          "savedBytes": 7458
         },
         {
           "stage": 2,
-          "assertions": 27,
-          "savedBytes": 9727
+          "assertions": 28,
+          "savedBytes": 9792
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 9728
+          "assertions": 21,
+          "savedBytes": 9793
         }
       ]
     },
@@ -553,27 +553,30 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 10,
-          "savedBytes": 7393
+          "assertions": 11,
+          "savedBytes": 7458
         },
         {
           "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10167
+          "assertions": 29,
+          "savedBytes": 10232
         },
         {
           "stage": 3,
-          "assertions": 20,
-          "savedBytes": 10168
+          "assertions": 21,
+          "savedBytes": 10233
         }
       ]
     }
   ],
-  "assertions": 1548,
+  "assertions": 1629,
   "freshProcesses": 81,
   "fixture": {
-    "mode": "trusted-api-file",
-    "apiSha256": "96d50efa87d13a3fdbf2a5d5669d281f0f7bcea81fb10c6497b685c57e5003d4"
+    "mode": "read-only-client",
+    "sha256": "22f7938eb4f99f2857dc091b1c57c147bd848eaabfeaa81e444c0a3393ca8150",
+    "apiSha256": "f73763ffc2f5852ff3f76a4945656ea5494d2d89db75833b71a89327738506db",
+    "apiOffset": 120607162,
+    "apiEnd": 120623825
   },
   "inGamePlaythroughsPerformed": false,
   "passed": true

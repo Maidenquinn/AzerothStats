@@ -63,12 +63,14 @@ end
 local function start(phase, serverTime)
     local database = A.db
     local key, class, hero, zone, zoneName, zoneSource = A.Identity()
+    local heroic = A.ReadHeroic()
     local old = database.runs[table.getn(database.runs)]
     -- No server run UUID exists. Continuity after a UI reload is explicitly heuristic.
     if
         not A.newBoundary
         and old
         and (old.identity == key or (old.hero == hero and old.class == class and (not zone or not old.zone or zone == old.zone)))
+        and (heroic == nil or old.heroic == nil or heroic == old.heroic)
         and serverTime
         and old.lastRawTime
         and serverTime >= old.lastRawTime
@@ -77,6 +79,9 @@ local function start(phase, serverTime)
     then
         A.run = old
         old.resumeHeuristic = true
+        if heroic ~= nil then
+            old.heroic, old.heroicSource = heroic, "AZS_ZONE.heroic"
+        end
         if zone then
             old.zone, old.zoneName, old.zoneSource, old.identity =
                 zone, zoneName or old.zoneName, zoneSource, key
@@ -99,6 +104,8 @@ local function start(phase, serverTime)
             zone = zone,
             zoneName = zoneName,
             zoneSource = zone and zoneSource or nil,
+            heroic = heroic,
+            heroicSource = heroic ~= nil and "AZS_ZONE.heroic" or nil,
             startedAt = A.Wall(),
             status = "active",
             phase = phase,
@@ -210,12 +217,14 @@ function A.Sample()
             key = A.run.identity
         end
     end
+    local heroic = A.ReadHeroic()
     local boundary = A.packetReady
         or (
             A.run
             and (
                 (serverTime and A.run.lastRawTime and serverTime + 2 < A.run.lastRawTime)
                 or (key ~= A.run.identity)
+                or (heroic ~= nil and A.run.heroic ~= nil and heroic ~= A.run.heroic)
                 or (
                     serverTime
                     and A.run.lastRawTime
@@ -287,6 +296,9 @@ function A.Sample()
         return
     end
     if phase then
+        if heroic ~= nil then
+            run.heroic, run.heroicSource = heroic, "AZS_ZONE.heroic"
+        end
         run.apiMissing = nil
         local terminalSnapshot = (phase == "dead" or phase == "victory") and run.phase ~= phase
         if run.phase ~= phase then
