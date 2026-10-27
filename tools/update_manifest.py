@@ -1,8 +1,17 @@
-"""Refresh the installable addon's file manifest after intentional source changes."""
+"""Refresh hashes only for the exact player-package allowlist after reviewed edits."""
+
 from pathlib import Path
 import hashlib
-root=Path(__file__).resolve().parent.parent/'AzerothStats'
-names=[p.relative_to(root).as_posix() for p in root.iterdir() if p.is_file() and p.suffix in {'.lua','.toc','.md'}]
-names += [p.relative_to(root).as_posix() for p in (root/'media').iterdir() if p.is_file()]
-(root/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256((root/name).read_bytes()).hexdigest()+'  '+name+'\n' for name in sorted(names)),encoding='utf-8')
-print('Manifest:',len(names),'files')
+from package_policy import public_files
+
+root = Path(__file__).resolve().parent.parent / "AzerothStats"
+names = public_files(root)
+(root / "SHA256SUMS.txt").write_text(
+    "".join(
+        hashlib.sha256((root / name).read_bytes()).hexdigest() + "  " + name + "\n"
+        for name in names
+    ),
+    encoding="utf-8",
+    newline="\n",
+)
+print("Manifest:", len(names), "allowlisted player files")

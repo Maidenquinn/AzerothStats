@@ -1,144 +1,207 @@
+-- Only addon entry point: lifecycle events, a 1 Hz sampler and /azstats.
+-- Received addon messages mark freshness; the client parses native AZS_* data.
+-- Commands change local views/settings only. Nothing is sent to another player.
+
 local A = AzerothStats
+local driver = CreateFrame("Frame", "AzerothStatsDriver", UIParent)
+A.driver = driver
+for _, eventName in ipairs({
+    "ADDON_LOADED",
+    "VARIABLES_LOADED",
+    "PLAYER_ENTERING_WORLD",
+    "PLAYER_LOGOUT",
+    "CHAT_MSG_ADDON",
+    "PLAYER_DEAD",
+    "UI_ERROR_MESSAGE",
+    "CHAT_MSG_COMBAT_FRIENDLY_DEATH",
+    "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS",
+    "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE",
+    "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE",
+}) do
+    driver:RegisterEvent(eventName)
+end
 
-local f = CreateFrame("Frame", "AzerothStatsDriver", UIParent)
-
-A.driver = f
-
-for _, e in ipairs({"ADDON_LOADED", "VARIABLES_LOADED", "PLAYER_ENTERING_WORLD", "PLAYER_LOGOUT", "CHAT_MSG_ADDON","PLAYER_DEAD","UI_ERROR_MESSAGE","CHAT_MSG_COMBAT_FRIENDLY_DEATH","CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS","CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE","CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE"}) do f:RegisterEvent(e) end
-
+--- Run locale/database initialization once and build widgets only after validation succeeds.
 local function initialize()
-
- if A.initialized then return end
-
- A.initialized = true
-
- A.DetectLocale()
-
- if A.InitDB() then
-
-  A.DetectLocale()
-
-  local v = A.db.settings.view
-
-  if type(v) == "table" then
-
-   A.view.tab = math.max(1, math.min(11, math.floor(A.Number(v.tab) or 1)))
-
-   if A.sources[v.mode] then A.view.mode = v.mode end
-
-   if type(v.class) == "string" then A.view.class = v.class end
-
-   for _,c in ipairs(A.favoriteCategories) do if c[1]==v.favoriteCategory then A.view.favoriteCategory=c[1] end end
-   A.view.cumulative = v.cumulative == true
-
-   if v.usageTab=="Jewelry" or v.usageTab=="Co-op" then A.view.usageTab=v.usageTab end
-   if v.characterTab=="Equipment" or v.characterTab=="Attributes" or v.characterTab=="Timeline" then A.view.characterTab=v.characterTab end
-
-  end
-
-  A.BuildUI(); A.Say(A.T("Loaded").." · "..A.version.." · /azstats")
-
- end
-
+    if A.initialized then
+        return
+    end
+    A.initialized = true
+    A.DetectLocale()
+    if A.InitDB() then
+        A.DetectLocale()
+        local viewSettings = A.db.settings.view
+        if type(viewSettings) == "table" then
+            A.view.tab = math.max(1, math.min(11, math.floor(A.Number(viewSettings.tab) or 1)))
+            if A.sources[viewSettings.mode] then
+                A.view.mode = viewSettings.mode
+            end
+            if type(viewSettings.class) == "string" then
+                A.view.class = viewSettings.class
+            end
+            for _, c in ipairs(A.favoriteCategories) do
+                if c[1] == viewSettings.favoriteCategory then
+                    A.view.favoriteCategory = c[1]
+                end
+            end
+            A.view.cumulative = viewSettings.cumulative == true
+            if viewSettings.usageTab == "Jewelry" or viewSettings.usageTab == "Co-op" then
+                A.view.usageTab = viewSettings.usageTab
+            end
+            if
+                viewSettings.characterTab == "Equipment"
+                or viewSettings.characterTab == "Attributes"
+                or viewSettings.characterTab == "Timeline"
+            then
+                A.view.characterTab = viewSettings.characterTab
+            end
+        end
+        A.BuildUI()
+        A.Say(A.T("Loaded") .. " · " .. A.version .. " · /azstats")
+    end
 end
-
-f:SetScript("OnEvent", function()
-
- if (event == "ADDON_LOADED" and arg1 == "AzerothStats") or event == "VARIABLES_LOADED" then initialize()
-
- elseif event == "CHAT_MSG_ADDON" then A.Packet(arg1, arg2)
-
- elseif event=="PLAYER_DEAD" then if A.runPacketAt and GetTime()-A.runPacketAt<=2 then A.MarkDeath() end
- elseif event=="UI_ERROR_MESSAGE" or event=="CHAT_MSG_COMBAT_FRIENDLY_DEATH" or event=="CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS" or event=="CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE" or event=="CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE" then A.DeathEvidence(event,arg1)
- elseif event == "PLAYER_LOGOUT" then A.Sample(); if A.run then A.Event(A.run, "checkpoint", "Sortie normale du client") end
-
- elseif event == "PLAYER_ENTERING_WORLD" and A.db then A.DetectLocale();A.ApplyUI()
-
- end
-
+driver:SetScript("OnEvent", function()
+    if (event == "ADDON_LOADED" and arg1 == "AzerothStats") or event == "VARIABLES_LOADED" then
+        initialize()
+    elseif event == "CHAT_MSG_ADDON" then
+        A.Packet(arg1, arg2)
+    elseif event == "PLAYER_DEAD" then
+        if A.runPacketAt and GetTime() - A.runPacketAt <= 2 then
+            A.MarkDeath()
+        end
+    elseif
+        event == "UI_ERROR_MESSAGE"
+        or event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH"
+        or event == "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS"
+        or event == "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE"
+        or event == "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE"
+    then
+        A.DeathEvidence(event, arg1)
+    elseif event == "PLAYER_LOGOUT" then
+        A.Sample()
+        if A.run then
+            A.Event(A.run, "checkpoint", "Sortie normale du client")
+        end
+    elseif event == "PLAYER_ENTERING_WORLD" and A.db then
+        A.DetectLocale()
+        A.ApplyUI()
+    end
 end)
-
-local tick,languageTick = 0,0
-
-f:SetScript("OnUpdate", function()
-
- tick = tick + (A.Number(arg1) or 0)
-
- languageTick=languageTick+(A.Number(arg1) or 0)
-
- if tick < 1 then return end
-
- tick = 0
-
- if A.db then
-
-  if languageTick>=10 then
-
-   languageTick=0;local old=A.Locale();A.DetectLocale();if A.Locale()~=old then A.ApplyUI() end
-
-  end
-
-  A.Sample(); A.RefreshUI()
-
- end
-
+local tick, languageTick = 0, 0
+driver:SetScript("OnUpdate", function()
+    tick = tick + (A.Number(arg1) or 0)
+    languageTick = languageTick + (A.Number(arg1) or 0)
+    if tick < 1 then
+        return
+    end
+    tick = 0
+    if A.db then
+        if languageTick >= 10 then
+            languageTick = 0
+            local old = A.Locale()
+            A.DetectLocale()
+            if A.Locale() ~= old then
+                A.ApplyUI()
+            end
+        end
+        A.Sample()
+        A.RefreshUI()
+    end
 end)
-
 SLASH_AZEROTHSTATS1 = "/azstats"
-
-SlashCmdList["AZEROTHSTATS"] = function(msg)
-
- if not A.db then A.Say(A.T("Unavailable")); return end
-
- msg = string.lower(string.gsub(string.gsub(msg or "", "^%s+", ""), "%s+$", ""))
-
- local _, _, cmd, value = string.find(msg, "^(%S+)%s*(.-)$")
-
- local s = A.db.settings
-
- if not cmd or cmd == "toggle" then A.ToggleUI()
-
- elseif cmd == "show" then A.ToggleUI(true)
-
- elseif cmd == "hide" then A.ToggleUI(false)
-
- elseif cmd == "bar" then s.bar = not s.bar; A.ApplyUI()
-
- elseif cmd == "minimap" then s.minimap = not s.minimap; A.ApplyUI()
-
- elseif cmd == "lock" then s.locked = not s.locked; A.Say(A.T("Lock position").." : "..A.T(s.locked and "Enabled" or "Disabled"))
-
- elseif cmd == "resetpos" then A.ResetPosition()
-
- elseif cmd == "scale" and A.Number(value) then s.scale = math.max(0.65, math.min(1.5, tonumber(value))); A.ApplyUI()
-
- elseif cmd == "retention" and A.Number(value) then s.maxRuns = math.max(10, math.min(1000, math.floor(tonumber(value)))); A.Trim(); A.RefreshUI()
-
- elseif cmd == "opacity" and A.Number(value) then s.opacity=math.max(0.45,math.min(1,tonumber(value)));A.ApplyUI();A.RefreshUI()
-
- elseif cmd == "lang" then if not A.SetLanguage(value) then A.Say(A.T("Unknown command")) end
-
- elseif cmd == "class" then
-
-  A.view.class = nil
-
-  if value ~= "all" then for cls in pairs(A.db.classes) do if string.lower(cls) == value then A.view.class = cls end end end
-
-  A.view.page = 1; A.RefreshUI()
-
- elseif cmd == "diagnose" or cmd == "debug" then A.view.tab = 7; A.view.page = 1; A.ToggleUI(true); for _, line in ipairs(A.Diagnostics()) do A.Say(line) end
-
- elseif cmd=="favorites" then A.view.tab=10;A.view.page=1;A.ToggleUI(true)
- elseif cmd=="favorite" then A.ToggleFavorite(A.RunFavorite(A.Selected()));A.RefreshUI()
- elseif cmd=="nemesis" then A.view.tab=11;A.view.page=1;A.ToggleUI(true)
- elseif cmd == "coop" then A.SelectCoopRun(nil);A.ToggleUI(true)
- elseif cmd == "history" then A.view.tab = 3; A.view.page = 1; A.ToggleUI(true)
-
- elseif cmd == "sound" then
-  if value=="test" then A.PlayRecordSound() else s.recordSound=not s.recordSound;A.Say(A.T("Record sounds").." : "..A.T(s.recordSound and "Enabled" or "Disabled"));A.RefreshUI() end
- elseif cmd == "help" then A.Say("/azstats show, hide, history, coop, favorites, favorite, nemesis, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000")
-
- else A.Say(A.T("Unknown command").." · /azstats help") end
-
+SlashCmdList["AZEROTHSTATS"] = function(message)
+    if not A.db then
+        A.Say(A.T("Unavailable"))
+        return
+    end
+    message = string.lower(string.gsub(string.gsub(message or "", "^%s+", ""), "%s+$", ""))
+    local _, _, command, value = string.find(message, "^(%S+)%s*(.-)$")
+    local settings = A.db.settings
+    if not command or command == "toggle" then
+        A.ToggleUI()
+    elseif command == "show" then
+        A.ToggleUI(true)
+    elseif command == "hide" then
+        A.ToggleUI(false)
+    elseif command == "bar" then
+        settings.bar = not settings.bar
+        A.ApplyUI()
+    elseif command == "minimap" then
+        settings.minimap = not settings.minimap
+        A.ApplyUI()
+    elseif command == "lock" then
+        settings.locked = not settings.locked
+        A.Say(A.T("Lock position") .. " : " .. A.T(settings.locked and "Enabled" or "Disabled"))
+    elseif command == "resetpos" then
+        A.ResetPosition()
+    elseif command == "scale" and A.Number(value) then
+        settings.scale = math.max(0.65, math.min(1.5, tonumber(value)))
+        A.ApplyUI()
+    elseif command == "retention" and A.Number(value) then
+        settings.maxRuns = math.max(10, math.min(1000, math.floor(tonumber(value))))
+        A.Trim()
+        A.RefreshUI()
+    elseif command == "opacity" and A.Number(value) then
+        settings.opacity = math.max(0.45, math.min(1, tonumber(value)))
+        A.ApplyUI()
+        A.RefreshUI()
+    elseif command == "lang" then
+        if not A.SetLanguage(value) then
+            A.Say(A.T("Unknown command"))
+        end
+    elseif command == "class" then
+        A.view.class = nil
+        if value ~= "all" then
+            for cls in pairs(A.db.classes) do
+                if string.lower(cls) == value then
+                    A.view.class = cls
+                end
+            end
+        end
+        A.view.page = 1
+        A.RefreshUI()
+    elseif command == "diagnose" or command == "debug" then
+        A.view.tab = 7
+        A.view.page = 1
+        A.ToggleUI(true)
+        for _, line in ipairs(A.Diagnostics()) do
+            A.Say(line)
+        end
+    elseif command == "favorites" then
+        A.view.tab = 10
+        A.view.page = 1
+        A.ToggleUI(true)
+    elseif command == "favorite" then
+        A.ToggleFavorite(A.RunFavorite(A.Selected()))
+        A.RefreshUI()
+    elseif command == "nemesis" then
+        A.view.tab = 11
+        A.view.page = 1
+        A.ToggleUI(true)
+    elseif command == "coop" then
+        A.SelectCoopRun(nil)
+        A.ToggleUI(true)
+    elseif command == "history" then
+        A.view.tab = 3
+        A.view.page = 1
+        A.ToggleUI(true)
+    elseif command == "sound" then
+        if value == "test" then
+            A.PlayRecordSound()
+        else
+            settings.recordSound = not settings.recordSound
+            A.Say(
+                A.T("Record sounds")
+                    .. " : "
+                    .. A.T(settings.recordSound and "Enabled" or "Disabled")
+            )
+            A.RefreshUI()
+        end
+    elseif command == "help" then
+        A.Say(
+            "/azstats show, hide, history, coop, favorites, favorite, nemesis, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
+        )
+    else
+        A.Say(A.T("Unknown command") .. " · /azstats help")
+    end
 end
-

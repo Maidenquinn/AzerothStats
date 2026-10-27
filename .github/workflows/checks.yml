@@ -13,6 +13,16 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r requirements-dev.txt
+      - run: python -m black --check tools AzerothStats/tests
+      - name: Install pinned formatter
+        run: |
+          curl --fail --location --output /tmp/stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/download/v2.6.0/stylua-linux-x86_64.zip
+          echo 'a485f72bbfa22e4642e77a84b5edc2611a5cab7477b34e2e709dd8f78e919895  /tmp/stylua.zip' | sha256sum --check
+          unzip /tmp/stylua.zip -d /tmp/azerothstats-stylua
+          /tmp/azerothstats-stylua/stylua --check AzerothStats
+      - run: python tools/build_catalogs.py --check
       - run: python tools/build_insights_strings.py --check
+      - run: python -m unittest discover -s tools -p 'test_*.py'
+      - run: python tools/security_review.py --report release-assets/ci/runtime-policy.json
       - run: python tools/checks.py
       - run: python tools/build_release.py --output release-assets/ci

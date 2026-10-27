@@ -1,0 +1,34 @@
+{
+  "runtime": "Lua 5.0.3 native; new process per stage; game UI simulated",
+  "cases": [
+    {
+      "class": "rogue",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 10,
+          "savedBytes": 7092
+        },
+        {
+          "stage": 2,
+          "assertions": 26,
+          "savedBytes": 9866
+        },
+        {
+          "stage": 3,
+          "assertions": 19,
+          "savedBytes": 9867
+        }
+      ]
+    }
+  ],
+  "assertions": 55,
+  "freshProcesses": 3,
+  "fixture": {
+    "mode": "trusted-api-file",
+    "apiSha256": "96d50efa87d13a3fdbf2a5d5669d281f0f7bcea81fb10c6497b685c57e5003d4"
+  },
+  "inGamePlaythroughsPerformed": false,
+  "passed": true
+}

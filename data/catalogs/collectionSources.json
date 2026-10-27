@@ -1,0 +1,4960 @@
+{
+  "druid": {
+    "Atiesh, Greatstaff of the Guardian": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Cenarion Belt": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Cenarion Boots": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Cenarion Bracers": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Cenarion Chestpiece": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Cenarion Cover": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Cenarion Gloves": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Cenarion Pants": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Cenarion Spaulders": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Cenarion Staff": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Dreamwalker Belt": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Dreamwalker Boots": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Dreamwalker Bracers": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Dreamwalker Chestpiece": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Dreamwalker Cover": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Dreamwalker Gloves": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Dreamwalker Pants": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Dreamwalker Spaulders": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Field Marshal's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Chestpiece": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Cover": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Pants": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Gnarled Staff": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Grand Marshal's Stave": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's War Staff": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Staff of the Moon": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Stormrage Belt": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Stormrage Boots": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Stormrage Bracers": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Stormrage Chestpiece": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Stormrage Cover": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Stormrage Gloves": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Stormrage Pants": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Stormrage Spaulders": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Thicket Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Thicket Boots": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Thicket Bracers": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Thicket Chestpiece": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Thicket Cover": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Thicket Gloves": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Thicket Pants": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Thicket Spaulders": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Chestpiece": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Cover": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Pants": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Wildheart Belt": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Wildheart Boots": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Wildheart Bracers": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Wildheart Chestpiece": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Wildheart Cover": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Wildheart Gloves": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Wildheart Pants": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Wildheart Spaulders": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Wildheart Staff": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ]
+  },
+  "hunter": {
+    "Ahn'Qiraj Rifle": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Beaststalker's Belt": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Beaststalker's Bracers": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Beaststalker's Breastplate": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Beaststalker's Gauntlets": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Beaststalker's Greaves": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Beaststalker's Helm": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Beaststalker's Legguards": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Beaststalker's Spaulders": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Bow of the Dragonflight": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Cryptstalker Belt": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Cryptstalker Bracers": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Cryptstalker Breastplate": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Cryptstalker Gauntlets": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Cryptstalker Greaves": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Cryptstalker Helm": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Cryptstalker Legguards": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Cryptstalker Spaulders": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Dragonstalker's Belt": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Dragonstalker's Bracers": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Dragonstalker's Breastplate": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Dragonstalker's Gauntlets": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Dragonstalker's Greaves": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Dragonstalker's Helm": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Dragonstalker's Legguards": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Dragonstalker's Spaulders": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Field Marshal's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Breastplate": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gauntlets": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Greaves": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Helm": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Legguards": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Giantstalker's Belt": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Giantstalker's Bracers": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Giantstalker's Breastplate": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Giantstalker's Gauntlets": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Giantstalker's Greaves": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Giantstalker's Helm": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Giantstalker's Legguards": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Giantstalker's Spaulders": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Grand Marshal's Bullseye": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's Recurve": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Hunting Bow of the Wilds": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Rhok'delar, Longbow of the Ancient Keepers": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Short Bow": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Tracker's Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Tracker's Bracers": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Tracker's Breastplate": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Tracker's Gauntlets": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Tracker's Greaves": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Tracker's Helm": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Tracker's Legguards": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Tracker's Spaulders": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Breastplate": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gauntlets": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Greaves": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Helm": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Legguards": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ]
+  },
+  "mage": {
+    "Apprentice's Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Apprentice's Bindings": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Apprentice's Boots": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Apprentice's Circlet": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Apprentice's Gloves": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Apprentice's Leggings": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Apprentice's Mantle": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Apprentice's Robes": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Apprentice's Staff": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Arcanist Belt": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Arcanist Bindings": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Arcanist Boots": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Arcanist Circlet": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Arcanist Gloves": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Arcanist Leggings": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Arcanist Mantle": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Arcanist Robes": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Arcanist's Staff": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Atiesh, Greatstaff of the Guardian": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Field Marshal's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Bindings": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Circlet": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Leggings": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Mantle": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Robes": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Frostfire Belt": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Frostfire Bindings": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Frostfire Boots": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Frostfire Circlet": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Frostfire Gloves": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Frostfire Leggings": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Frostfire Mantle": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Frostfire Robes": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Grand Marshal's Stave": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's War Staff": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Magister's Belt": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Magister's Bindings": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Magister's Boots": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Magister's Circlet": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Magister's Gloves": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Magister's Leggings": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Magister's Mantle": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Magister's Robes": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Magister's Staff": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Netherwind Belt": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Netherwind Bindings": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Netherwind Boots": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Netherwind Circlet": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Netherwind Gloves": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Netherwind Leggings": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Netherwind Mantle": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Netherwind Robes": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Staff of Dominance": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Bindings": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Circlet": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Leggings": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Mantle": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Robes": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ]
+  },
+  "paladin": {
+    "Ashbringer": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Field Marshal's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Breastplate": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gauntlets": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Girdle": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Helm": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Legplates": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Pauldrons": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Sabatons": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Grand Marshal's Demolisher": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Hammer of the Lightforge": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Hammer of the Squire": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Judgement Bracers": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Judgement Breastplate": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Judgement Gauntlets": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Judgement Girdle": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Judgement Helm": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Judgement Legplates": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Judgement Pauldrons": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Judgement Sabatons": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Lawbringer Bracers": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Lawbringer Breastplate": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Lawbringer Gauntlets": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Lawbringer Girdle": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Lawbringer Helm": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Lawbringer Legplates": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Lawbringer Pauldrons": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Lawbringer Sabatons": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Lightforge Bracers": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Lightforge Breastplate": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Lightforge Gauntlets": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Lightforge Girdle": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Lightforge Helm": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Lightforge Legplates": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Lightforge Pauldrons": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Lightforge Sabatons": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Lightforged Hammer": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Redemption Bracers": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Redemption Breastplate": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Redemption Gauntlets": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Redemption Girdle": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Redemption Helm": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Redemption Legplates": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Redemption Pauldrons": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Redemption Sabatons": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Squire's Bracers": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Squire's Breastplate": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Squire's Gauntlets": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Squire's Girdle": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Squire's Helm": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Squire's Legplates": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Squire's Pauldrons": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Squire's Sabatons": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Wooden Maul": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ]
+  },
+  "priest": {
+    "Acolyte's Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Acolyte's Bindings": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Acolyte's Boots": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Acolyte's Circlet": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Acolyte's Gloves": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Acolyte's Leggings": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Acolyte's Mantle": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Acolyte's Robes": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Acolyte's Staff": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Anathema": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Belt of Faith": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Belt of Prophecy": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Belt of Transcendence": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Benediction": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Bindings of Faith": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Bindings of Prophecy": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Bindings of Transcendence": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Boots of Faith": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Boots of Prophecy": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Boots of Transcendence": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Circlet of Faith": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Circlet of Prophecy": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Circlet of Transcendence": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Devout Belt": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Devout Bindings": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Devout Boots": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Devout Circlet": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Devout Gloves": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Devout Leggings": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Devout Mantle": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Devout Robes": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Field Marshal's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Bindings": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Circlet": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Leggings": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Mantle": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Robes": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Gloves of Faith": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Gloves of Prophecy": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Gloves of Transcendence": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Grand Marshal's Stave": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's War Staff": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Leggings of Faith": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Leggings of Prophecy": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Leggings of Transcendence": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Mantle of Faith": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Mantle of Prophecy": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Mantle of Transcendence": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Robes of Faith": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Robes of Prophecy": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Robes of Transcendence": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Staff of Prophecy": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Staff of the Devout": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Bindings": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Circlet": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Leggings": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Mantle": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Robes": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ]
+  },
+  "rogue": {
+    "Assassin's Blade": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Blackwing Shiv": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Bloodfang Belt": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Bloodfang Boots": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Bloodfang Bracers": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Bloodfang Chestpiece": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Bloodfang Cover": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Bloodfang Gloves": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Bloodfang Pants": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Bloodfang Spaulders": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Bonescythe Belt": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Bonescythe Boots": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Bonescythe Bracers": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Bonescythe Chestpiece": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Bonescythe Cover": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Bonescythe Gloves": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Bonescythe Pants": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Bonescythe Spaulders": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Fang of the Faceless": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Field Marshal's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Chestpiece": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Cover": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Pants": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Footpad's Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Footpad's Boots": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Footpad's Bracers": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Footpad's Chestpiece": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Footpad's Cover": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Footpad's Gloves": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Footpad's Pants": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Footpad's Spaulders": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Grand Marshal's Dirk": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Grand Marshal's Mageblade": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's Razor": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's Spellblade": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Kingsfall": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Nightslayer Belt": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Nightslayer Boots": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Nightslayer Bracers": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Nightslayer Chestpiece": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Nightslayer Cover": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Nightslayer Gloves": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Nightslayer Kris": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Nightslayer Pants": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Nightslayer Spaulders": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Rusty Shiv": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Shadowcraft Belt": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Shadowcraft Boots": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Shadowcraft Bracers": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Shadowcraft Chestpiece": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Shadowcraft Cover": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Shadowcraft Dirk": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Shadowcraft Gloves": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Shadowcraft Pants": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Shadowcraft Spaulders": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Thief's Blade": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Thunderfury, Blessed Blade of the Windseeker": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Chestpiece": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Cover": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Pants": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Worn Dagger": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ]
+  },
+  "shaman": {
+    "Aegis of the Ten Storms": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Belt of Elements": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Belt of Ten Storms": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Blackwing Mace": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Bracers of Elements": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Bracers of Ten Storms": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Breastplate of Elements": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Breastplate of Ten Storms": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Crested Shield": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Doomhammer": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Earthfury Belt": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Earthfury Bracers": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Earthfury Breastplate": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Earthfury Gauntlets": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Earthfury Greaves": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Earthfury Hammer": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Earthfury Helm": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Earthfury Legguards": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Earthfury Spaulders": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Earthshatter Belt": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Earthshatter Bracers": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Earthshatter Breastplate": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Earthshatter Gauntlets": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Earthshatter Greaves": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Earthshatter Helm": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Earthshatter Legguards": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Earthshatter Spaulders": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Gauntlets of Elements": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Gauntlets of Ten Storms": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Greaves of Elements": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Greaves of Ten Storms": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Helm of Elements": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Helm of Ten Storms": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "High Warlord's Battle Mace": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's Shield Wall": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Legguards of Elements": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Legguards of Ten Storms": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Mace of the Elements": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Primal Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Primal Bracers": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Primal Breastplate": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Primal Gauntlets": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Primal Greaves": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Primal Helm": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Primal Legguards": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Primal Spaulders": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Round Buckler": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Shield of the Earthshatter": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Spaulders of Elements": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Spaulders of Ten Storms": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Spiked Club": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Totem Shield": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Breastplate": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gauntlets": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Greaves": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Helm": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Legguards": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Spaulders": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ]
+  },
+  "warlock": {
+    "Atiesh, Greatstaff of the Guardian": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Dreadmist Belt": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Dreadmist Bindings": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Dreadmist Boots": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Dreadmist Circlet": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Dreadmist Gloves": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Dreadmist Leggings": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Dreadmist Mantle": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Dreadmist Robes": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Dreadmist Staff": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Felheart Belt": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Felheart Bindings": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Felheart Boots": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Felheart Circlet": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Felheart Gloves": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Felheart Leggings": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Felheart Mantle": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Felheart Robes": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Felheart Staff": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Field Marshal's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Bindings": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Circlet": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Leggings": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Mantle": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Robes": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Grand Marshal's Stave": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "High Warlord's War Staff": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Nemesis Belt": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Nemesis Bindings": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Nemesis Boots": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Nemesis Circlet": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "Nemesis Gloves": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Nemesis Leggings": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Nemesis Mantle": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Nemesis Robes": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Novice's Belt": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Novice's Bindings": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Novice's Boots": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Novice's Circlet": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Novice's Gloves": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Novice's Leggings": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Novice's Mantle": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Novice's Robes": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Novice's Staff": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ],
+    "Plagueheart Belt": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Plagueheart Bindings": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Plagueheart Boots": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Plagueheart Circlet": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Plagueheart Gloves": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Plagueheart Leggings": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Plagueheart Mantle": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Plagueheart Robes": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Staff of the Shadow Flame": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Warlord's Belt": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Bindings": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Boots": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Circlet": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gloves": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Leggings": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Mantle": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Robes": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ]
+  },
+  "warrior": {
+    "Bastard Sword of Valor": [
+      {
+        "boss": "Lord Kazzak",
+        "chance": 50,
+        "minute": 16,
+        "zone": "wsg"
+      },
+      {
+        "boss": "King Mosh",
+        "chance": 50,
+        "minute": 16,
+        "zone": "ungoro"
+      }
+    ],
+    "Blackhand Doomsaw": [
+      {
+        "boss": "Lord Aliden Perenolde",
+        "chance": 40,
+        "minute": 18,
+        "zone": "ab"
+      },
+      {
+        "boss": "King Gordok",
+        "chance": 40,
+        "minute": 18,
+        "zone": "feralas"
+      }
+    ],
+    "Bracers of Might": [
+      {
+        "boss": "Tendris Warpwood",
+        "chance": 40,
+        "minute": 11,
+        "zone": "feralas"
+      }
+    ],
+    "Bracers of Valor": [
+      {
+        "boss": "Lar'korwi",
+        "chance": 50,
+        "minute": 9,
+        "zone": "ungoro"
+      }
+    ],
+    "Bracers of Wrath": [
+      {
+        "boss": "Herod",
+        "chance": 30,
+        "minute": 11,
+        "zone": "sm"
+      }
+    ],
+    "Breastplate of Might": [
+      {
+        "boss": "Marez Cowl",
+        "chance": 40,
+        "minute": 11,
+        "zone": "ab"
+      }
+    ],
+    "Breastplate of Valor": [
+      {
+        "boss": "Varimathras",
+        "chance": 50,
+        "minute": 9,
+        "zone": "wsg"
+      }
+    ],
+    "Breastplate of Wrath": [
+      {
+        "boss": "Bloodlord Mandokir",
+        "chance": 30,
+        "minute": 11,
+        "zone": "arena"
+      }
+    ],
+    "Dreadnaught Bracers": [
+      {
+        "boss": "Patchwerk",
+        "chance": 20,
+        "minute": 12,
+        "zone": "naxx"
+      }
+    ],
+    "Dreadnaught Breastplate": [
+      {
+        "boss": "Princess Huhuran",
+        "chance": 20,
+        "minute": 12,
+        "zone": "aq"
+      }
+    ],
+    "Dreadnaught Gauntlets": [
+      {
+        "boss": "Sapphiron",
+        "chance": 20,
+        "minute": 16,
+        "zone": "naxx"
+      }
+    ],
+    "Dreadnaught Girdle": [
+      {
+        "boss": "Ossirian the Unscarred",
+        "chance": 20,
+        "minute": 16,
+        "zone": "aq"
+      }
+    ],
+    "Dreadnaught Helm": [
+      {
+        "boss": "Kurinnaxx",
+        "chance": 20,
+        "minute": 4,
+        "zone": "aq"
+      }
+    ],
+    "Dreadnaught Legplates": [
+      {
+        "boss": "Anub'Rekhan",
+        "chance": 20,
+        "minute": 4,
+        "zone": "naxx"
+      }
+    ],
+    "Dreadnaught Pauldrons": [
+      {
+        "boss": "General Rajaxx",
+        "chance": 20,
+        "minute": 8,
+        "zone": "aq"
+      }
+    ],
+    "Dreadnaught Sabatons": [
+      {
+        "boss": "Noth the Plaguebringer",
+        "chance": 20,
+        "minute": 8,
+        "zone": "naxx"
+      }
+    ],
+    "Field Marshal's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Breastplate": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Gauntlets": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Girdle": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Helm": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Legplates": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Field Marshal's Pauldrons": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Field Marshal's Sabatons": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Gauntlets of Might": [
+      {
+        "boss": "Immol'thar",
+        "chance": 40,
+        "minute": 14,
+        "zone": "feralas"
+      }
+    ],
+    "Gauntlets of Valor": [
+      {
+        "boss": "Tyrant Devilsaur",
+        "chance": 50,
+        "minute": 12,
+        "zone": "ungoro"
+      }
+    ],
+    "Gauntlets of Wrath": [
+      {
+        "boss": "Scarlet Commander Mograine",
+        "chance": 30,
+        "minute": 14,
+        "zone": "sm"
+      }
+    ],
+    "Girdle of Might": [
+      {
+        "boss": "Lord Falconcrest",
+        "chance": 40,
+        "minute": 14,
+        "zone": "ab"
+      }
+    ],
+    "Girdle of Valor": [
+      {
+        "boss": "Lord Hel'nurath",
+        "chance": 50,
+        "minute": 12,
+        "zone": "wsg"
+      }
+    ],
+    "Girdle of Wrath": [
+      {
+        "boss": "Jin'do the Hexxer",
+        "chance": 30,
+        "minute": 14,
+        "zone": "arena"
+      }
+    ],
+    "Grand Marshal's Claymore": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Helm of Might": [
+      {
+        "boss": "Kovork",
+        "chance": 40,
+        "minute": 4,
+        "zone": "ab"
+      }
+    ],
+    "Helm of Valor": [
+      {
+        "boss": "Doomguard Commander",
+        "chance": 50,
+        "minute": 3,
+        "zone": "wsg"
+      }
+    ],
+    "Helm of Wrath": [
+      {
+        "boss": "High Priestess Jeklik",
+        "chance": 30,
+        "minute": 4,
+        "zone": "arena"
+      }
+    ],
+    "High Warlord's Greatsword": [
+      {
+        "boss": "Azuregos",
+        "chance": 25,
+        "minute": 20,
+        "zone": "av"
+      },
+      {
+        "boss": "Nefarian",
+        "chance": 25,
+        "minute": 20,
+        "zone": "brm"
+      }
+    ],
+    "Legplates of Might": [
+      {
+        "boss": "Zevrim Thornhoof",
+        "chance": 40,
+        "minute": 4,
+        "zone": "feralas"
+      }
+    ],
+    "Legplates of Valor": [
+      {
+        "boss": "Ravasaur Matriarch",
+        "chance": 50,
+        "minute": 3,
+        "zone": "ungoro"
+      }
+    ],
+    "Legplates of Wrath": [
+      {
+        "boss": "Houndmaster Loksey",
+        "chance": 30,
+        "minute": 4,
+        "zone": "sm"
+      }
+    ],
+    "Pauldrons of Might": [
+      {
+        "boss": "Nimar the Slayer",
+        "chance": 40,
+        "minute": 7,
+        "zone": "ab"
+      }
+    ],
+    "Pauldrons of Valor": [
+      {
+        "boss": "Mannoroth's Herald",
+        "chance": 50,
+        "minute": 6,
+        "zone": "wsg"
+      }
+    ],
+    "Pauldrons of Wrath": [
+      {
+        "boss": "High Priest Venoxis",
+        "chance": 30,
+        "minute": 7,
+        "zone": "arena"
+      }
+    ],
+    "Ravager's Greatblade": [
+      {
+        "boss": "Hakkar the Soulflayer",
+        "chance": 30,
+        "minute": 18,
+        "zone": "arena"
+      },
+      {
+        "boss": "High Inquisitor Whitemane",
+        "chance": 30,
+        "minute": 18,
+        "zone": "sm"
+      }
+    ],
+    "Recruit's Bracers": [
+      {
+        "boss": "Stitches",
+        "chance": 60,
+        "minute": 9,
+        "zone": "duskwood"
+      }
+    ],
+    "Recruit's Breastplate": [
+      {
+        "boss": "Rhahk'Zor",
+        "chance": 60,
+        "minute": 9,
+        "zone": "elwynn"
+      }
+    ],
+    "Recruit's Gauntlets": [
+      {
+        "boss": "Lupos",
+        "chance": 60,
+        "minute": 12,
+        "zone": "duskwood"
+      }
+    ],
+    "Recruit's Girdle": [
+      {
+        "boss": "Mr. Smite",
+        "chance": 60,
+        "minute": 12,
+        "zone": "elwynn"
+      }
+    ],
+    "Recruit's Helm": [
+      {
+        "boss": "Hogger",
+        "chance": 60,
+        "minute": 3,
+        "zone": "elwynn"
+      }
+    ],
+    "Recruit's Legplates": [
+      {
+        "boss": "Naraxis",
+        "chance": 60,
+        "minute": 3,
+        "zone": "duskwood"
+      }
+    ],
+    "Recruit's Pauldrons": [
+      {
+        "boss": "Mother Fang",
+        "chance": 60,
+        "minute": 6,
+        "zone": "elwynn"
+      }
+    ],
+    "Recruit's Sabatons": [
+      {
+        "boss": "Mor'Ladim",
+        "chance": 60,
+        "minute": 6,
+        "zone": "duskwood"
+      }
+    ],
+    "Sabatons of Might": [
+      {
+        "boss": "Alzzin the Wildshaper",
+        "chance": 40,
+        "minute": 7,
+        "zone": "feralas"
+      }
+    ],
+    "Sabatons of Valor": [
+      {
+        "boss": "Uhk'loc",
+        "chance": 50,
+        "minute": 6,
+        "zone": "ungoro"
+      }
+    ],
+    "Sabatons of Wrath": [
+      {
+        "boss": "Arcanist Doan",
+        "chance": 30,
+        "minute": 7,
+        "zone": "sm"
+      }
+    ],
+    "Sulfuras, Hand of Ragnaros": [
+      {
+        "boss": "C'Thun",
+        "chance": 20,
+        "minute": 20,
+        "zone": "aq"
+      },
+      {
+        "boss": "Kel'Thuzad",
+        "chance": 20,
+        "minute": 20,
+        "zone": "naxx"
+      }
+    ],
+    "Warlord's Bracers": [
+      {
+        "boss": "Emperor Dagran Thaurissan",
+        "chance": 25,
+        "minute": 12,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Breastplate": [
+      {
+        "boss": "Lokholar the Ice Lord",
+        "chance": 25,
+        "minute": 12,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Gauntlets": [
+      {
+        "boss": "Majordomo Executus",
+        "chance": 25,
+        "minute": 16,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Girdle": [
+      {
+        "boss": "Glacius the Frozen Titan",
+        "chance": 25,
+        "minute": 16,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Helm": [
+      {
+        "boss": "Korrak the Bloodrager",
+        "chance": 25,
+        "minute": 4,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Legplates": [
+      {
+        "boss": "General Angerforge",
+        "chance": 25,
+        "minute": 4,
+        "zone": "brm"
+      }
+    ],
+    "Warlord's Pauldrons": [
+      {
+        "boss": "Ivus the Forest Lord",
+        "chance": 25,
+        "minute": 8,
+        "zone": "av"
+      }
+    ],
+    "Warlord's Sabatons": [
+      {
+        "boss": "Warchief Rend Blackhand",
+        "chance": 25,
+        "minute": 8,
+        "zone": "brm"
+      }
+    ],
+    "Worn Claymore": [
+      {
+        "boss": "Edwin VanCleef",
+        "chance": 60,
+        "minute": 16,
+        "zone": "elwynn"
+      },
+      {
+        "boss": "Morbent Fel",
+        "chance": 60,
+        "minute": 16,
+        "zone": "duskwood"
+      }
+    ]
+  }
+}

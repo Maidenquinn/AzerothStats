@@ -3,3 +3,8 @@
 AzerothStats/** -text
 *.ttf binary
 *.otf binary
+AzerothStats/Strings.lua linguist-generated=true
+AzerothStats/GameText.lua linguist-generated=true
+AzerothStats/Collection.lua linguist-generated=true
+AzerothStats/Icons.lua linguist-generated=true
+AzerothStats/InsightsStrings.lua linguist-generated=true
