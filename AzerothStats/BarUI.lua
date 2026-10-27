@@ -410,16 +410,24 @@ end
 
 --- Allocate the draft editor and fixed controls once; all handlers are source-defined closures.
 local function buildEditor()
-    editor = CreateFrame("Frame", "AzerothStatsBarEditor", A.window)
+    -- Own screen anchor/scale: moving the main window must not move this editor.
+    -- The main window still closes it explicitly so drafts retain their lifecycle.
+    editor = CreateFrame("Frame", "AzerothStatsBarEditor", UIParent)
     A.barEditor = editor
     editor:SetWidth(520)
     editor:SetHeight(770)
     editor:SetFrameStrata("FULLSCREEN_DIALOG")
     editor:SetFrameLevel(A.window:GetFrameLevel() + 10)
-    editor:SetPoint("CENTER", A.window, "CENTER", 0, 0)
+    editor:SetScale(A.window:GetScale())
+    W.place(editor, "barEditorPos", "CENTER", 0, 0, true)
     editor:EnableMouse(true)
     W.surface(editor, "main")
     editor.title = W.font(editor, 24, 24, 440, 38, 23, A.theme.gold, true)
+    editor.dragHandle = CreateFrame("Frame", nil, editor)
+    editor.dragHandle:SetPoint("TOPLEFT", editor, "TOPLEFT", 16, -12)
+    editor.dragHandle:SetWidth(444)
+    editor.dragHandle:SetHeight(50)
+    W.drag(editor, "barEditorPos", editor.dragHandle)
     editor.hint = W.font(editor, 24, 132, 472, 32, 11, A.theme.muted)
     editor.preview = barFrame(editor, true)
     editor.preview:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -74)

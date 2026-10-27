@@ -256,28 +256,54 @@ local function selectTab(i)
 end
 
 --- Attach legacy mouse handlers that save only an addon frame position when unlocked.
-local function drag(frame, key)
+local function drag(frame, key, handle)
     frame:SetMovable(true)
     frame:EnableMouse(true)
-    frame:RegisterForDrag("LeftButton")
+    handle = handle or frame
+    handle:EnableMouse(true)
+    handle:RegisterForDrag("LeftButton")
     if frame.SetClampedToScreen then
         frame:SetClampedToScreen(true)
     end
-    frame:SetScript("OnDragStart", function()
+    handle:SetScript("OnDragStart", function()
         if not A.db.settings.locked then
-            this:StartMoving()
+            frame:StartMoving()
         end
     end)
-    frame:SetScript("OnDragStop", function()
-        this:StopMovingOrSizing()
-        local p, _, rel, x, y = this:GetPoint()
-        A.db.settings[key] = { p, rel, x, y }
+    handle:SetScript("OnDragStop", function()
+        frame:StopMovingOrSizing()
+        local p, _, rel, x, y = frame:GetPoint()
+        A.db.settings[key] = A.FramePosition({ p, rel, x, y })
     end)
 end
 
+--- Change an owned top-level frame's scale while preserving its physical anchor.
+local function rescale(frame, value, key)
+    local old = frame:GetScale()
+    if old == value then
+        return
+    end
+    local p, parent, rel, x, y = frame:GetPoint()
+    frame:SetScale(value)
+    if p and x and y then
+        frame:ClearAllPoints()
+        frame:SetPoint(p, parent, rel, x * old / value, y * old / value)
+        if A.db.settings[key] then
+            A.db.settings[key] = A.FramePosition({ p, rel, x * old / value, y * old / value })
+        end
+    end
+end
+
 --- Restore a normalized own frame anchor or use the supplied default position.
-local function place(frame, key, p, x, y)
+local function place(frame, key, p, x, y, screenBounds)
     local settings = A.db.settings[key]
+    -- Independent panels can legitimately exceed the legacy main-window limits.
+    -- Native clamping still keeps their final rectangle on screen.
+    local limitX, limitY = 600, 450
+    if screenBounds then
+        local scale = math.max(0.45, frame:GetScale())
+        limitX, limitY = UIParent:GetWidth() / scale, UIParent:GetHeight() / scale
+    end
     frame:ClearAllPoints()
     if
         type(settings) == "table"
@@ -290,8 +316,8 @@ local function place(frame, key, p, x, y)
             settings[1],
             UIParent,
             settings[2],
-            math.max(-600, math.min(600, settings[3])),
-            math.max(-450, math.min(450, settings[4]))
+            math.max(-limitX, math.min(limitX, settings[3])),
+            math.max(-limitY, math.min(limitY, settings[4]))
         )
     else
         frame:SetPoint(p, UIParent, p, x, y)
@@ -459,18 +485,9 @@ function A.ApplyUI()
         math.max(0.45, (UIParent:GetHeight() - 40) / 780)
     )
     UI.effectiveScale = fit
-    local old = A.window:GetScale()
-    if old ~= fit then
-        -- Keep the saved physical anchor stable while changing the window's coordinate scale.
-        local p, parent, rel, x, y = A.window:GetPoint()
-        A.window:SetScale(fit)
-        if p and x and y then
-            A.window:ClearAllPoints()
-            A.window:SetPoint(p, parent, rel, x * old / fit, y * old / fit)
-            if settings.windowPos then
-                settings.windowPos = { p, rel, x * old / fit, y * old / fit }
-            end
-        end
+    rescale(A.window, fit, "windowPos")
+    if A.barEditor then
+        rescale(A.barEditor, fit, "barEditorPos")
     end
     for _, t in ipairs(UI.fonts) do
         put(t, t.fullText or "")
@@ -498,9 +515,13 @@ end
 function A.ResetPosition()
     A.db.settings.windowPos = nil
     A.db.settings.barPos = nil
+    A.db.settings.barEditorPos = nil
     A.db.settings.miniAngle = 0.785398
     place(A.window, "windowPos", "CENTER", 0, 0)
     place(A.bar, "barPos", "TOP", 0, -38)
+    if A.barEditor then
+        place(A.barEditor, "barEditorPos", "CENTER", 0, 0, true)
+    end
     A.mini:ClearAllPoints()
     A.mini:SetPoint("CENTER", Minimap or UIParent, "CENTER", 56, 56)
 end
@@ -1422,4 +1443,5 @@ A.widgets = {
     dropdown = dropdown,
     drag = drag,
     place = place,
+    rescale = rescale,
 }

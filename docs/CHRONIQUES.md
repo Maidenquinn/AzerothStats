@@ -1,4 +1,4 @@
-# Chroniques native UI preview — 1.6.0-dev.4
+# Chroniques native UI preview — 1.6.0-dev.5
 
 This implements the approved visual direction using native Lua 5.0/11200 frames. It is a development preview, not a public release or game-team approval. The AI concept board is a design reference, not a screenshot or a runtime texture.
 
@@ -37,7 +37,7 @@ Run the documented offline/native suites, plus `python tools/build_theme_assets.
 
 Before considering a public release, verify in the actual client:
 
-1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.4**. Preserve/back up own SavedVariables first.
+1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.5**. Preserve/back up own SavedVariables first.
 2. Open all pages and All statistics; inspect selected/hover states, row spacing, hearts and item tooltips. Verify both fresh and existing databases.
 3. In the HUD editor, add global runs, class wins, fixed-class kills, observed lifetime duration and current-run damage. Check each tooltip and navigation target. No current-run duration appears unless explicitly chosen.
 4. Change dimensions through minimum/maximum values; test narrow-screen overflow, tall/two-row layout, label/icon toggles, fonts and opacity. Check both live HUD and preview.
@@ -49,4 +49,8 @@ Offline widget renders use synthetic data and approximate native rendering; they
 
 ## Fidelity and native verification
 
-Dev.1 did not reproduce the approved visual direction faithfully. The custom backdrop strip also repeated gold strokes in the client. Dev.2 removed native tiling; dev.3 adds actual painted materials and more faithful proportions/composition. Source-derived previews are explicitly labeled offline and use synthetic data. They approximate frame/font compositing and do not validate the native renderer. The game’s move-to-start foreground prompt was observed over addon windows; higher frame levels are not evidence of a fix. No native UI is hidden or changed to disguise that issue. Dev.3 also failed native image loading despite a full restart. Dev.4 replaces those images with small components and adjusts typography/geometry; its native image loading and fidelity still need visual confirmation before public delivery.
+Dev.1 did not reproduce the approved visual direction faithfully. The custom backdrop strip also repeated gold strokes in the client. Dev.2 removed native tiling; dev.3 adds actual painted materials and more faithful proportions/composition. Source-derived previews are explicitly labeled offline and use synthetic data. They approximate frame/font compositing and do not validate the native renderer. The game’s move-to-start foreground prompt was observed over addon windows; higher frame levels are not evidence of a fix. No native UI is hidden or changed to disguise that issue. Dev.3 also failed native image loading despite a full restart. Dev.4 replaces those images with small components and adjusts typography/geometry; user screenshots now confirm its image loading. Full visual fidelity and the dev.5 independent editor interactions still need review before public delivery.
+
+## Editor positioning
+
+Dev.5 gives My bar an independent UIParent anchor and scale. Drag only its title/header to move it; the close button and content controls are excluded. Its validated saved position is settings.barEditorPos, separate from windowPos/barPos. The global position lock applies; the HUD-specific lock still concerns the HUD. The editor keeps the current UI scale while preserving physical offsets, and resetpos recenters it. Moving the main window no longer moves this editor; closing the main window still closes/cancels the editor. The dev.4 user screenshots confirm the small images render; full visual fidelity and native foreground hints are not thereby certified.

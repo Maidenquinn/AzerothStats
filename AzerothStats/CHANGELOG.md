@@ -1,3 +1,11 @@
+## 1.6.0-dev.5 - Independently movable HUD editor (development preview)
+
+- Move My bar by dragging its header; keep a separate screen anchor and saved position.
+- Preserve the editor position when moving/scaling the main window; match the accessible UI scale without shifting the physical anchor.
+- Respect the global position lock and screen clamping. `/azstats resetpos` resets the editor too.
+- Validate saved editor anchors; preserve Apply/Cancel and the draft lifecycle. Closing the main window still cancels the editor.
+- User screenshots confirm the dev.4 small textures now render. The 256-pixel packaging change is a successful workaround on that client, not a proven universal texture limit. Fine visual matching and the native move-to-start prompt remain open.
+
 ## 1.6.0-dev.4 - Small native components and closer proportions (development preview)
 
 - Replace four large images that failed to display in the native client with 24 separate RGBA components, each at most 256 pixels wide/high. The exact native rejection mechanism remains unconfirmed.

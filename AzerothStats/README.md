@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.6.0-dev.4
+# Azeroth Stats - 1.6.0-dev.5
 
 Development preview of the Chroniques native UI and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
 

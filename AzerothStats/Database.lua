@@ -46,6 +46,7 @@ function A.InitDB()
     local s = database.settings
     s.windowPos = A.FramePosition(s.windowPos)
     s.barPos = A.FramePosition(s.barPos)
+    s.barEditorPos = A.FramePosition(s.barEditorPos)
     if
         type(s.miniAngle) ~= "number"
         or s.miniAngle ~= s.miniAngle

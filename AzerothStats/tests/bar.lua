@@ -161,6 +161,72 @@ check(
 local aggregate = A.Sign(A.db.totals)
 A.OpenBarEditor()
 local editor = A.barEditor
+check(editor:GetParent() == UIParent, "editor is independent of the main window hierarchy")
+local _, initialAnchor = editor:GetPoint()
+check(initialAnchor == UIParent, "editor uses its own screen anchor")
+local _, _, _, mainX, mainY = A.window:GetPoint()
+local starts, stops = 0, 0
+local start, stop = editor.StartMoving, editor.StopMovingOrSizing
+editor.StartMoving = function()
+    starts = starts + 1
+end
+editor.StopMovingOrSizing = function()
+    stops = stops + 1
+end
+editor:ClearAllPoints()
+editor:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 160, -70)
+local wasLocked = A.db.settings.locked
+A.db.settings.locked = true
+editor.dragHandle:GetScript("OnDragStart")()
+check(starts == 0, "global position lock also protects the editor")
+A.db.settings.locked = false
+editor.dragHandle:GetScript("OnDragStart")()
+editor.dragHandle:GetScript("OnDragStop")()
+check(
+    starts == 1 and stops == 1,
+    "title drag moves the editor rather than its handle or main window"
+)
+check(
+    A.db.settings.barEditorPos[3] == 160 and A.db.settings.barEditorPos[4] == -70,
+    "editor position has a separate persisted setting"
+)
+local _, _, _, unchangedX, unchangedY = A.window:GetPoint()
+check(mainX == unchangedX and mainY == unchangedY, "editor drag leaves the main window stationary")
+editor.StartMoving, editor.StopMovingOrSizing = start, stop
+A.db.settings.locked = wasLocked
+editor:Hide()
+A.OpenBarEditor()
+local _, reopenedAnchor, _, reopenedX = editor:GetPoint()
+check(reopenedAnchor == UIParent and reopenedX == 160, "reopening does not recenter a moved editor")
+local oldScale = editor:GetScale()
+A.widgets.rescale(editor, 0.75, "barEditorPos")
+local _, _, _, scaledX, scaledY = editor:GetPoint()
+check(
+    math.abs(scaledX * 0.75 - 160 * oldScale) < 0.0001
+        and math.abs(scaledY * 0.75 + 70 * oldScale) < 0.0001,
+    "editor scale changes preserve its physical anchor"
+)
+A.ApplyUI()
+check(
+    editor:GetScale() == A.window:GetScale(),
+    "independent editor follows the accessible UI scale"
+)
+local screenWidth = UIParent:GetWidth()
+UIParent:SetWidth(1920)
+A.db.settings.barEditorPos = { "TOPLEFT", "TOPLEFT", 900, -60 }
+A.widgets.place(editor, "barEditorPos", "CENTER", 0, 0, true)
+local _, _, _, wideX = editor:GetPoint()
+check(wideX == 900, "wide-screen editor positions do not use legacy main-window limits")
+UIParent:SetWidth(screenWidth)
+A.ResetPosition()
+local p, target = editor:GetPoint()
+check(
+    p == "CENTER" and target == UIParent and A.db.settings.barEditorPos == nil,
+    "resetpos also restores the independent editor"
+)
+A.db.settings.barEditorPos = { "UNTRUSTED", "CENTER", 0, 0 }
+A.InitDB()
+check(A.db.settings.barEditorPos == nil, "malformed saved editor anchors are rejected")
 local stored = A.Sign(A.db.settings.hud)
 editor.draft.width = 1230
 editor.draft.icons = false
