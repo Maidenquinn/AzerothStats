@@ -1,90 +1,105 @@
 # Azeroth Stats
 
-[![Checks](https://github.com/Maidenquinn/AzerothStats/actions/workflows/checks.yml/badge.svg)](https://github.com/Maidenquinn/AzerothStats/actions/workflows/checks.yml)
+Persistent run history and build statistics for **Azeroth Survivors on Windows**, using the client's Lua addon interface (11200 / Lua 5.0).
 
-**Persistent run history and build statistics for Azeroth Survivors on Windows.**
+## Review status
 
-Track your progress, revisit previous builds and inspect combat performance in a dark, gold-trimmed interface inspired by WoW.
+**1.5.1-review.1 is a review candidate, not an approved release.** This branch prepares the existing 1.5 beta for manual review by the game team. Automated checks establish specific behavior; they are neither independent certification nor permission to distribute an addon. Follow the game's current approval policy before installing or sharing a build.
 
-**[Download the latest beta](https://github.com/Maidenquinn/AzerothStats/releases)** · [Report a bug](https://github.com/Maidenquinn/AzerothStats/issues/new/choose) · [Known limitations](docs/KNOWN-ISSUES.md)
-
-## Public beta: 1.5.0-beta.1
-
-This release adds **peak observed run-average DPS** (server damage / server time, sampled after 10 seconds), persistent class/global records and an optional native sound once per run when beating a previous class record. The first record seeds silently. Use `/azstats sound` to toggle and `/azstats sound test` to preview.
-
-**Usage → Co-op** stores names/classes actually observed in fresh `AZSPARTY` samples and counts observed runs globally/per class. A victory count means your run was won and that name was seen during it; it does **not** prove shared completion or a shared achievement. Names are not stable account IDs. `/azstats coop` opens a per-run scoreboard with you and your teammates: damage, DPS, damage share and top spell where available. The run selector opens earlier games; All runs lists companions, whose rows open their retained game history. Rankings and team totals require one common group sample. Older independent records remain explicitly partial.
-
-**Favorites** bookmark runs, spell views, collection equipment, run accessories and companions. Favorite runs survive history pruning; item descriptions remain available from captured data. **Nemesis** records observed deaths and recent combat-log evidence. A last attacker within two seconds is labeled probable; an explicit native slain-by message, if emitted, is labeled confirmed. No enemy-specific victory count is invented. See [the implementation and audit notes](docs/INSIGHTS.md). Favorites have separate History, Combat, Spells, Equipment, Jewelry and Co-op categories, with outlined/filled heart controls.
+Start with the [reviewer guide](docs/REVIEWER-GUIDE.md), [security review](docs/SECURITY-REVIEW.md) and [API contracts](docs/API-CONTRACTS.md). The latest published beta and this source candidate are different artifacts. This work does not update the installed game or publish a release.
 
 ## Features
 
-- Global and per-class dashboards, personal records and detailed run history.
-- Damage, effective healing and damage-taken breakdowns, spell rankings and available rates.
-- Current and historical runs, cumulative views where supported, and the last available boss fight.
-- Recorded spell ranks, collection equipment, run jewelry and native item descriptions.
-- Observed spell/accessory popularity, maximum ranks and rank gains; accessory variants grouped together.
-- Compact top bar, minimap button, adjustable opacity, scale and font size, persistent preferences.
-- **14 languages:** English, Polish, Czech, German, Brazilian Portuguese, Spanish, French, Romanian, Turkish, Russian, Ukrainian, Simplified Chinese, Japanese and Korean.
+Azeroth Stats observes native counters during play and keeps local history after the next run starts. Its eleven pages provide:
 
-Standalone addon. No extra addon dependencies or external account. Data stays local.
+- **Overview / Classes:** observed runs, time, kills, gold and available totals, globally or per class.
+- **History:** retained runs, outcomes, builds and available official summaries.
+- **Combat:** damage, effective healing, damage taken, source rankings, contributions and available rates; selected runs, cumulative data and the last available boss meter.
+- **Character:** recorded spells/ranks, collection equipment, temporary accessories, attributes and progression snapshots. Hover for captured native descriptions or clearly labeled collection references.
+- **Records:** personal maxima, including peak observed run-average DPS.
+- **Diagnostics / Settings:** availability and provenance, retention, language, scale, text size, opacity, positions and visibility.
+- **Usage:** observed spell builds/rank gains, accessory families and cooperative runs/companions.
+- **Favorites:** History, Combat, Spells, Equipment, Jewelry and Co-op categories with heart controls. Bookmarked runs survive ordinary history pruning.
+- **Nemesis:** observed deaths and available attacker evidence, with probable and confirmed attribution kept separate.
 
-## Install
+The compact top bar and minimap button open the same interface. No additional addon, external account or launcher service is required.
 
-1. Exit the game normally.
-2. Download **[AzerothStats-1.5.0-beta.1.zip](https://github.com/Maidenquinn/AzerothStats/releases/download/v1.5.0-beta.1/AzerothStats-1.5.0-beta.1.zip)**. Use the attached addon ZIP rather than GitHub's automatically generated source archives.
-3. Extract it into the `AddOns` directory used by your client.
-4. Check that the final path is `AddOns/AzerothStats/AzerothStats.toc`, without a duplicate nested addon folder.
-5. Restart the client, enable the addon if required and type **`/azstats`**. Verify version **1.5.0-beta.1** in the window.
+## Meaning and limits of the numbers
 
-If it does not appear in the addon list, check the directory used by the running client. A common portable layout is `<game folder>/benilla-config/AddOns/AzerothStats/AzerothStats.toc`. Avoid nesting the addon inside another `AzerothStats` or release/source folder.
+Missing values stay unavailable. They are not silently converted into zero. Totals describe available samples, not a guaranteed complete lifetime record.
 
-**Updating:** back up the addon's SavedVariables, replace its addon files and keep the existing SavedVariables. Do not overwrite or import the game's `.sav` files.
+**Chests:** opened-chest counts use the official terminal summary. The live `Chest` display is a price and is never treated as the number opened. Old incorrect chest data is corrected by a one-time migration where supporting data exists.
 
-If installing from a Git clone, copy the **inner `AzerothStats` directory** into `AddOns`. The test files inside it are not loaded by the TOC.
+**Usage:** counts observed builds, rank increases and accessory changes. It does not measure exact card clicks or spell casts. The first observed rank establishes a baseline. Accessory tiers II/III/IV are grouped into a family, with class-aware spell aliases where possible.
 
-## Commands
+**DPS records:** maximum observed `AZS_RUN.dealt / AZS_RUN.t` after ten server seconds in valid playing/endless samples. This is run-average DPS, not instantaneous burst DPS. The first class record seeds silently; an optional native sound can announce a later record once per run.
 
-- `/azstats`, `/azstats show`, `/azstats hide` — toggle/open/close the main window.
-- `/azstats favorites` — open bookmarks; `/azstats favorite` toggles the selected/current run.
-- `/azstats nemesis` — inspect observed deaths and attacker evidence.
-- `/azstats coop` — compare your latest/current party; choose an earlier run from the selector.
-- `/azstats history` — open run history.
-- `/azstats diagnose` — open diagnostics and print diagnostic details in local chat.
-- `/azstats bar`, `/azstats minimap`, `/azstats lock`, `/azstats resetpos` — control visibility and placement.
-- `/azstats scale 0.9` — scale from `0.65` to `1.5`, subject to available screen space.
-- `/azstats opacity 1` — background opacity from `0.45` to `1`.
-- `/azstats lang auto` or `/azstats lang en` — language; codes: `en pl cs de pt es fr ro tr ru uk zh ja ko`.
-- `/azstats class all` or `/azstats class rogue` — class filter.
-- `/azstats retention 200` — retain 10–1,000 detailed runs; reducing this removes the oldest details.
-- `/azstats help` — command summary.
+**Co-op:** names/classes and damage/DPS/share/top spell come from fresh native party samples when exposed. A leaderboard/team total requires a common group sample; independently captured rows remain partial. A victory associated with a companion means that name was observed during a run you won. It does not establish shared completion or shared achievements. Names are not stable account identities.
 
-Left-click the minimap button to open the window, right-click for Settings. Item and stat details are available on hover. Window scale and text-size sliders apply on release.
+**Nemesis:** an explicit native slain-by message can confirm a source. A recent last attacker alone is probable, not proof of the fatal hit. There is no invented enemy-specific victory count.
 
-## What the numbers mean
+See [known limitations](docs/KNOWN-ISSUES.md) and [insight definitions](docs/INSIGHTS.md).
 
-Opened-chest counts come from the **final official summary**, not the price of the next chest. Usage tracks **observed builds, rank gains and accessory changes**, not exact card clicks or spell casts. The first observed rank is a baseline. Missing data stays unavailable rather than becoming a false zero.
+## Installation and updates
 
-Tracking depends on the packets the addon actually receives. Runs first observed in progress are partial. Save normally before exiting; crash recovery is not guaranteed. See [known limitations](docs/KNOWN-ISSUES.md).
+Use a build approved under the game's current rules. For a reviewed player ZIP:
 
-## Beta status and validation
+1. Close the client normally and back up the addon's own SavedVariables.
+2. Extract the ZIP into the **AddOns directory actually used by that client**.
+3. Verify the final path is `AddOns/AzerothStats/AzerothStats.toc`, without an extra nested directory.
+4. Restart, enable the addon if required and type `/azstats`. Verify the displayed version matches the chosen build.
 
-The current beta is **1.4.0-beta.1**, interface **11200**, Lua **5.0-compatible**. The first Discord attachment was renamed `AzerothStats-1.0.0-beta.zip`; its internal addon version and runtime code are the same as this beta.
+A portable layout may use `<game>/benilla-config/AddOns`. Installation does not require editing the executable or the game's `.sav` files. Replace addon source files on update while preserving `AzerothStatsDB`. The player ZIP excludes developer tests and tools. GitHub's automatic source archive is intended for source review; the inner `AzerothStats` folder contains the runtime.
 
-The pre-publication suite passed **2,383 assertions** under native Lua 5.0.3 and Lua 5.1. Additional simulated acceptance covered **27 scenarios across nine classes**, with **1,359 assertions in 81 fresh Lua processes**, repeated from a clean extraction of the release ZIP. These are automated simulations using the real client Lua parser, not manually played games.
+If a saved tree is malformed or from an unsupported schema, collection is disabled and the original root is preserved. Close the game, copy the addon's SavedVariables for recovery, then investigate. Details are in [Privacy](docs/PRIVACY.md).
 
-GitHub CI checks syntax, packaging, translations and offline model/UI behavior without requiring or distributing game files. Full packet-driven tests require your own client executable; see [development and validation](CONTRIBUTING.md).
+## Commands and controls
 
-## Repository layout
+- `/azstats`, `/azstats show`, `/azstats hide`: toggle, open or close the window.
+- `/azstats history`, `/azstats coop`, `/azstats favorites`, `/azstats nemesis`: open the relevant page.
+- `/azstats favorite`: toggle the selected/current run bookmark.
+- `/azstats diagnose`: open Diagnostics and print availability information to **your local chat display**.
+- `/azstats bar`, `/azstats minimap`, `/azstats lock`, `/azstats resetpos`: visibility and positioning.
+- `/azstats scale 0.9`: window scale, clamped to 0.65–1.5 and available screen space.
+- `/azstats opacity 1`: background opacity, 0.45–1. Text size is adjustable in Settings.
+- `/azstats retention 200`: retain 10–1,000 ordinary detailed runs, plus protected favorites. Reducing retention removes old details; cumulative statistics remain.
+- `/azstats class all` or `/azstats class rogue`: class filter.
+- `/azstats sound`, `/azstats sound test`: toggle or preview the record sound.
+- `/azstats lang auto` or `/azstats lang en`: automatic or manual language.
+- `/azstats help`: command summary.
 
-- `AzerothStats/` — installable addon, 16 production Lua modules, fonts and notices.
-- `AzerothStats/tests/` — synthetic fixtures and local-client validation tools.
-- `tools/checks.py` — offline CI checks.
-- `docs/` — limitations, credits and testing notes.
+Minimap left-click toggles the window; right-click opens Settings. Scale/text sliders apply on release. The window/bar can be moved when unlocked. Hover rows for details and use the heart to bookmark supported entries.
 
-No executable, MPQ assets, extracted client API, personal SavedVariables, `.sav` files or internal audit captures are included.
+Languages: English, Polish, Czech, German, Brazilian Portuguese, Spanish, French, Romanian, Turkish, Russian, Ukrainian, Simplified Chinese, Japanese and Korean. Codes: `en pl cs de pt es fr ro tr ru uk zh ja ko`. Translation coverage is tested; native-speaker wording review is still welcome.
 
-## Feedback and credits
+## Data and capabilities
 
-For bugs, include the addon/client version, your class, reproduction steps, expected/actual result and relevant `/azstats diagnose` output. Check personal data before attaching logs or saves.
+Only `AzerothStatsDB` is declared as SavedVariables (schema 1). The client handles disk serialization, normally at logout. The addon reads fixed native `AZS_*` tables/helpers, inventory tooltips and relevant combat/lifecycle events. It creates its own frames, local chat output and optional sound. It does not send chat/addon messages, download code, evaluate packet strings, change game settings/bindings, cast abilities, equip items or implement gameplay automation. These statements describe the reviewed runtime source; they are not a security guarantee about the host client or other addons.
 
-Developed by Kevin / Codex for Azeroth Survivors. See [credits and third-party notices](docs/CREDITS.md); bundled fonts retain their SIL Open Font License notices.
+Names, timestamps, builds and death evidence can be personal data even when stored locally. No automatic export/upload exists. Read [Privacy](docs/PRIVACY.md) before sharing diagnostics, screenshots or saved data.
+
+The game API lacks an authenticated run UUID and stable companion account IDs. Freshness and resume detection therefore use conservative local heuristics. Bounds and partial markers limit new data growth; favorites and cumulative data have their own limits. See [Architecture](docs/ARCHITECTURE.md).
+
+**RSE1 save import is excluded.** There is no dormant executable importer. A future import would require a separate, reviewed parser and explicit user action.
+
+## Build, test and audit
+
+Python tools run on a developer machine, never inside the player addon:
+
+```sh
+python -m pip install -r requirements-dev.txt
+python tools/build_catalogs.py --check
+python tools/build_insights_strings.py --check
+python -m unittest discover -s tools -p "test_*.py"
+python tools/security_review.py --report release-assets/runtime-policy.json
+python tools/checks.py
+python tools/build_release.py --output release-assets
+```
+
+The build checks an explicit player-file allowlist and SHA-256 manifest. Formatting uses StyLua 2.6.0 with the committed configuration; actual Lua 5.0 tests remain necessary because Lua51 formatter mode does not prove 5.0 compatibility. [Testing](docs/TESTING.md) explains native fixtures, fresh-process acceptance, existing-save checks and the remaining in-game recipe.
+
+## Contributing and ownership
+
+Read [CONTRIBUTING](CONTRIBUTING.md), [data provenance](docs/DATA-PROVENANCE.md), [credits](AzerothStats/CREDITS.md) and [security reporting](SECURITY.md). Reference metadata may become stale and must not override observed native values. This audit does not establish permission to redistribute game-derived catalogs; that remains a question for the game team. Bundled fonts retain their OFL notices. No new blanket license grant is made by this review.
+
+Maintained by Kevin / Maidenhead. Existing Kevin / Codex development credit is retained. [Source repository](https://github.com/Maidenquinn/AzerothStats). Game-team approval is pending.

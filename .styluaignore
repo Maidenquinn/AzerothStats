@@ -1,0 +1,6 @@
+# Generated data are checked by their deterministic JSON/text compilers.
+AzerothStats/Strings.lua
+AzerothStats/GameText.lua
+AzerothStats/Collection.lua
+AzerothStats/Icons.lua
+AzerothStats/InsightsStrings.lua

@@ -1,3 +1,12 @@
+## 1.5.1-review.1 — manual review candidate (unreleased)
+
+- Add bounded input contracts and whole-tree SavedVariables validation; preserve malformed input and disable collection.
+- Guard meter/tooltip inputs, resource growth, summary metadata and translated accessory ambiguity.
+- Separate migrations, document contracts and format Lua; remove unused importer plumbing and unrelated labels.
+- Reproduce catalogs from JSON; enforce literal-only data and an explicit player-package allowlist.
+- Add adversarial tests, capability inventory and reviewer/security/privacy/architecture documentation.
+- No public release or approval asserted. The installed beta is not updated by this source review.
+
 # 1.5.0-beta.1 — bêta publique
 
 Nouveautés depuis la 1.4.0-beta.1 :
