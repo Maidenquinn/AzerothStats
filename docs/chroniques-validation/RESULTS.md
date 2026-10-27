@@ -2,7 +2,7 @@
 
 Version: **1.6.0-dev.8**. Recorded 2026-10-27. Automated maintainer checks and simulated clients; game-team approval remains pending.
 
-- Complete suite: **3,976 assertions**, with Lua 5.1/Lupa and native Lua 5.0.3; persistence and existing schema-1 compatibility checked in memory.
+- Complete suite: **3,977 assertions in Lua 5.1/Lupa and 3,976 in native Lua 5.0.3**; persistence and existing schema-1 compatibility checked in memory.
 - Client-independent suite: **3,344 assertions**, overlapping the full suite.
 - Exact player ZIP: **27 class/outcome cases**, **81 fresh Lua 5.0 processes**, **1,629 assertions**, including settings across independent restarts. These are simulated scenarios, not in-game playthroughs.
 - **15 Python unit tests**. All packaged TGAs are RGBA, power-of-two and at most 256 pixels per edge. Original source hashes, per-zone mapping and UV framing checked.
