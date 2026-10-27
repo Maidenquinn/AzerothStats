@@ -181,6 +181,61 @@ local function overview(model, group)
     model.note = A.T("Values from available samples")
 end
 
+--- Build the curated landing page from existing totals and the three newest retained runs.
+local function dashboard(model, group)
+    overview(model, group)
+    -- Keep the complete original statistics page reachable; the landing page prioritizes discovery.
+    table.remove(model.cards, 6)
+    table.remove(model.cards, 5)
+    model.cards[2].detail = A.T("Wins")
+        .. " / "
+        .. A.T("Observed runs")
+        .. " : "
+        .. A.Format(group.wins or 0)
+        .. " / "
+        .. A.Format(group.runs or 0)
+    model.rows = {}
+    model.records = {}
+    for index = table.getn(A.db.runs), 1, -1 do
+        local run = A.db.runs[index]
+        if not A.view.class or run.class == A.view.class then
+            local id = run.id
+            local entry = row(
+                model.rows,
+                A.ZoneName(run),
+                A.Duration(run.values and run.values.duration),
+                A.ClassName(run.class)
+                    .. " · "
+                    .. A.Date(run.startedAt)
+                    .. " · "
+                    .. A.Status(run.result or run.status),
+                function()
+                    A.SelectRun(id)
+                end
+            )
+            entry.class = run.class
+            entry.favorite = A.RunFavorite(run)
+            if table.getn(model.rows) == 3 then
+                break
+            end
+        end
+    end
+    for _, key in ipairs({ "duration", "kills", "damage" }) do
+        local record = group.records and group.records[key]
+        table.insert(model.records, {
+            label = A.Metric(key),
+            value = key == "duration" and A.Duration(record and record.value)
+                or A.Short(record and record.value),
+            exact = key == "duration" and A.Duration(record and record.value)
+                or A.Format(record and record.value),
+        })
+    end
+    model.layout = "dashboard"
+    model.rowY = 322
+    model.rowHeight = 59
+    model.capacity = 3
+end
+
 --- Build one navigation card per observed class aggregate.
 local function classes(model)
     model.layout = "classes"
@@ -529,7 +584,11 @@ function A.PageModel()
         model.rowY = 386
         model.rowHeight = 26
         model.capacity = 7
-        overview(model, group)
+        if A.view.overviewStats then
+            overview(model, group)
+        else
+            dashboard(model, group)
+        end
     elseif tab == 2 then
         classes(model)
     elseif tab == 3 then

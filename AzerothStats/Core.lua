@@ -45,6 +45,7 @@ local function initialize()
                 end
             end
             A.view.cumulative = viewSettings.cumulative == true
+            A.view.overviewStats = viewSettings.overviewStats == true
             if viewSettings.usageTab == "Jewelry" or viewSettings.usageTab == "Co-op" then
                 A.view.usageTab = viewSettings.usageTab
             end
@@ -123,6 +124,8 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         A.ToggleUI(true)
     elseif command == "hide" then
         A.ToggleUI(false)
+    elseif command == "hud" or (command == "bar" and value == "config") then
+        A.OpenBarEditor()
     elseif command == "bar" then
         settings.bar = not settings.bar
         A.ApplyUI()
@@ -199,7 +202,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, coop, favorites, favorite, nemesis, diagnose, bar, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
+            "/azstats show, hide, history, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")

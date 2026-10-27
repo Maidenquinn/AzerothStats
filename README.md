@@ -4,9 +4,11 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**1.5.1-review.1 is a review candidate, not an approved release.** This branch prepares the existing 1.5 beta for manual review by the game team. Automated checks establish specific behavior; they are neither independent certification nor permission to distribute an addon. Follow the game's current approval policy before installing or sharing a build.
+**1.6.0-dev.1 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
 
-Start with the [reviewer guide](docs/REVIEWER-GUIDE.md), [security review](docs/SECURITY-REVIEW.md) and [API contracts](docs/API-CONTRACTS.md). The latest published beta and this source candidate are different artifacts. This work does not update the installed game or publish a release.
+The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
+
+Read [the UI implementation and test guide](docs/CHRONIQUES.md), [architecture](docs/ARCHITECTURE.md) and the earlier [security review](docs/SECURITY-REVIEW.md).
 
 ## Features
 
@@ -59,6 +61,7 @@ If a saved tree is malformed or from an unsupported schema, collection is disabl
 - `/azstats history`, `/azstats coop`, `/azstats favorites`, `/azstats nemesis`: open the relevant page.
 - `/azstats favorite`: toggle the selected/current run bookmark.
 - `/azstats diagnose`: open Diagnostics and print availability information to **your local chat display**.
+- `/azstats hud` or `/azstats bar config`: open the HUD editor.
 - `/azstats bar`, `/azstats minimap`, `/azstats lock`, `/azstats resetpos`: visibility and positioning.
 - `/azstats scale 0.9`: window scale, clamped to 0.65–1.5 and available screen space.
 - `/azstats opacity 1`: background opacity, 0.45–1. Text size is adjustable in Settings.
@@ -89,6 +92,8 @@ Python tools run on a developer machine, never inside the player addon:
 ```sh
 python -m pip install -r requirements-dev.txt
 python tools/build_catalogs.py --check
+python tools/build_theme_assets.py --check
+python tools/check_fonts.py
 python tools/build_insights_strings.py --check
 python -m unittest discover -s tools -p "test_*.py"
 python tools/security_review.py --report release-assets/runtime-policy.json

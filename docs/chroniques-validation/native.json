@@ -1,0 +1,136 @@
+{
+  "runtime": "Lua 5.1 via lupa; NOT a Lua 5.0 VM or an in-game visual test",
+  "files": {
+    "Util.lua": {
+      "sha256": "f001e0637015f699bb6f59c8a3c78d57dbb40d3fd8f2b804891b4e2bb7b9d0cd",
+      "prototypes": 19,
+      "maxUpvalues": 4
+    },
+    "Safety.lua": {
+      "sha256": "e5998688db56d4962719cd8373cdffb459e1eb4ba7c47bc1215761ce3fe3c8a8",
+      "prototypes": 14,
+      "maxUpvalues": 5
+    },
+    "Theme.lua": {
+      "sha256": "e6a8ee12a7dc7da78d5d605efe453afd765fdf2d7c2e0e00f5e2b5dbf7e2ddde",
+      "prototypes": 2,
+      "maxUpvalues": 1
+    },
+    "Strings.lua": {
+      "sha256": "8f9e2df6442521a682af30f144d753a872f2d83c9dbd1abc18a61f12bdd8eefc",
+      "prototypes": 1,
+      "maxUpvalues": 0
+    },
+    "GameText.lua": {
+      "sha256": "f0ac347e7f8562a17fb599307b2865fa86df8d074929b93ec06c4cb64a95d73d",
+      "prototypes": 1,
+      "maxUpvalues": 0
+    },
+    "Icons.lua": {
+      "sha256": "edccac07748638d6c7b5ddc6eec911eba10457fd1a80c6d9d984891b1e364f63",
+      "prototypes": 1,
+      "maxUpvalues": 0
+    },
+    "Locale.lua": {
+      "sha256": "ab591228301d8ada9dc61892fd04b9d99a09b66139ef7752b2589b504cce1ff0",
+      "prototypes": 16,
+      "maxUpvalues": 2
+    },
+    "Database.lua": {
+      "sha256": "4c46576650fbd3a510f199d1a2ff6d79c6e6f06bb5d138102524805b8debfb6c",
+      "prototypes": 5,
+      "maxUpvalues": 2
+    },
+    "API.lua": {
+      "sha256": "e37e919569cab68781f1b94260758524823f5a897f9589c1a8c074d0b8413ceb",
+      "prototypes": 10,
+      "maxUpvalues": 1
+    },
+    "Collection.lua": {
+      "sha256": "fb093608408c9cf3d18ee47f68d68074326efd36f8cff5abbf32df6a5884b6b1",
+      "prototypes": 1,
+      "maxUpvalues": 0
+    },
+    "Items.lua": {
+      "sha256": "b71bc14e7d11ce2dd2e20f6158b1c701ee8fba837895af8554660c40b2590b09",
+      "prototypes": 9,
+      "maxUpvalues": 3
+    },
+    "Usage.lua": {
+      "sha256": "b52208411431bf4202847e0bdbb5ad87315f4a70a0f1300f2c0aa1a6c594fd27",
+      "prototypes": 6,
+      "maxUpvalues": 1
+    },
+    "Migrations.lua": {
+      "sha256": "7f5fb4b2ba589b3479af6de3c44c4d0a54d239a06244bfba00e116e531968985",
+      "prototypes": 3,
+      "maxUpvalues": 1
+    },
+    "InsightsStrings.lua": {
+      "sha256": "3cbda17f7866690e45ce9785a4114a1d13c0033a7ccfed20765e2ee97c6dc95f",
+      "prototypes": 1,
+      "maxUpvalues": 0
+    },
+    "Insights.lua": {
+      "sha256": "c85e49f0db1fc45c1778e628c440430369b40c224b8482c1ac0ac5c50d4a2a5c",
+      "prototypes": 11,
+      "maxUpvalues": 3
+    },
+    "Favorites.lua": {
+      "sha256": "c2c2fea94af12c5d1ae661509ea5d34d8f099618400492193d6e6ddf7d7951eb",
+      "prototypes": 16,
+      "maxUpvalues": 2
+    },
+    "Nemesis.lua": {
+      "sha256": "2059428afe0511308dea1f6c3a8b5eb325d51784d57de769267a4383760a715d",
+      "prototypes": 13,
+      "maxUpvalues": 4
+    },
+    "Tracker.lua": {
+      "sha256": "2189808108bb91e8950a79f54b62cb154b5d230440114f8259745a74ab0df574",
+      "prototypes": 7,
+      "maxUpvalues": 6
+    },
+    "Bar.lua": {
+      "sha256": "46278d0f6deaa0840e2af4c4848abbc599f69c8d20f3cd5e046c7cde54522904",
+      "prototypes": 11,
+      "maxUpvalues": 1
+    },
+    "Views.lua": {
+      "sha256": "b009889afdea1e81110473467a0d3db550fa39f51005b89c1ba365b22d1ece99",
+      "prototypes": 26,
+      "maxUpvalues": 9
+    },
+    "UI.lua": {
+      "sha256": "4c79f1bbceadbf303b13a17ec37d984598f41dae514543c85e2d83d43b11cda6",
+      "prototypes": 87,
+      "maxUpvalues": 14
+    },
+    "BarUI.lua": {
+      "sha256": "66332bf631dcec3ad269894bd8abb8f9a924ceef8f42111640be7df4e428bb0b",
+      "prototypes": 35,
+      "maxUpvalues": 7
+    },
+    "Core.lua": {
+      "sha256": "98186f161d417b177ce36f48d8c907e75f78c15bc3a3f8e284f9dbe8567797f2",
+      "prototypes": 5,
+      "maxUpvalues": 3
+    }
+  },
+  "fixture": {
+    "mode": "trusted-api-file",
+    "apiSha256": "96d50efa87d13a3fdbf2a5d5669d281f0f7bcea81fb10c6497b685c57e5003d4"
+  },
+  "assertions": 3524,
+  "persistenceRoundTrip": true,
+  "existingV1Database": {
+    "runsTotalsClassesUnchangedAfterChestCorrection": true,
+    "chestMigrationIdempotent": true
+  },
+  "tocReferences": "all present, correct order, all production Lua included",
+  "nativeLua50": {
+    "version": "Lua 5.0.3",
+    "exitCode": 0,
+    "output": "LUA50 SYNTAX OK\tUtil.lua\nLUA50 SYNTAX OK\tSafety.lua\nLUA50 SYNTAX OK\tTheme.lua\nLUA50 SYNTAX OK\tStrings.lua\nLUA50 SYNTAX OK\tGameText.lua\nLUA50 SYNTAX OK\tIcons.lua\nLUA50 SYNTAX OK\tLocale.lua\nLUA50 SYNTAX OK\tDatabase.lua\nLUA50 SYNTAX OK\tAPI.lua\nLUA50 SYNTAX OK\tCollection.lua\nLUA50 SYNTAX OK\tItems.lua\nLUA50 SYNTAX OK\tUsage.lua\nLUA50 SYNTAX OK\tMigrations.lua\nLUA50 SYNTAX OK\tInsightsStrings.lua\nLUA50 SYNTAX OK\tInsights.lua\nLUA50 SYNTAX OK\tFavorites.lua\nLUA50 SYNTAX OK\tNemesis.lua\nLUA50 SYNTAX OK\tTracker.lua\nLUA50 SYNTAX OK\tBar.lua\nLUA50 SYNTAX OK\tViews.lua\nLUA50 SYNTAX OK\tUI.lua\nLUA50 SYNTAX OK\tBarUI.lua\nLUA50 SYNTAX OK\tCore.lua\nLUA50 SYNTAX OK\ttests/mock.lua\nLUA50 SYNTAX OK\ttests/scenarios.lua\nLUA50 SYNTAX OK\ttests/serialize.lua\nLUA50 SYNTAX OK\ttests/native50.lua\nLUA50 SYNTAX OK\ttests/interface.lua\nLUA50 SYNTAX OK\ttests/usage.lua\nLUA50 SYNTAX OK\ttests/collection.lua\nLUA50 SYNTAX OK\ttests/release_case.lua\nLUA50 SYNTAX OK\ttests/release_runner.lua\nLUA50 SYNTAX OK\ttests/insights.lua\nLUA50 SYNTAX OK\ttests/favorites_deaths.lua\nLUA50 SYNTAX OK\ttests/security.lua\nLUA50 SYNTAX OK\ttests/bar.lua\nSCENARIOS PASSED\t49\nINTERFACE AND LOCALES PASSED\t3103\nUX REGRESSIONS PASSED\t3205\nCHESTS, BUILD USAGE AND TOOLTIPS PASSED\t3227\nCOLLECTION AND VARIANT REGRESSIONS PASSED\t3269\nDPS RECORDS AND CO-OP PASSED\t3314\nFAVORITES AND DEATH EVIDENCE PASSED\t3356\nADVERSARIAL INPUT AND CAPABILITY TESTS PASSED\t3405\nCHRONIQUES HUD AND EDITOR PASSED\t3524\nLUA50 PERSISTENCE OK\n"
+  }
+}

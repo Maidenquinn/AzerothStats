@@ -4,12 +4,12 @@
 
 The TOC is executable load order. Modules extend one `AzerothStats` table; no loader/download mechanism is used.
 
-1. `Util` provides finite numbers, bounded copy/signatures and formatting. `Safety` defines contracts and saved-tree checks.
+1. `Util` provides finite numbers, bounded copy/signatures and formatting. `Theme` defines reusable visual tokens and original atlas references. `Safety` defines contracts and saved-tree checks.
 2. `Strings`, `GameText`, `Icons`, `Locale` provide static labels, icon references and language selection.
 3. `Database` owns schema-1 storage and ledger deltas; `API` translates native values into validated snapshots.
 4. `Collection`, `Items`, `Usage`, `Migrations` provide reference data, captured descriptions, build observations and old-data repairs. Functions may be declared before dependencies because initialization happens in `Core`, after all modules load.
 5. `InsightsStrings`, `Insights`, `Favorites`, `Nemesis` add labels, DPS/co-op observations, bookmarks and death evidence.
-6. `Tracker` turns snapshots into run state. `Views` builds page models. `UI` renders them. `Core` registers events/commands and drives the sampler.
+6. `Tracker` turns snapshots into run state. `Bar` normalizes per-block HUD preferences and reads counters without changing accounting. `Views` builds page models. `UI` renders them; `BarUI` owns the separate draft HUD editor and renderer. `Core` registers events/commands and drives the sampler.
 
 Read a function's contract comment, then its callers with `rg 'FunctionName' AzerothStats`. `A` means the addon namespace. A *run* is one local observation record; a *ledger* is the portion already added to lifetime totals. A *gate* remembers old signatures/update stamps at a boundary.
 

@@ -7,6 +7,8 @@ From the repository root, with Python 3.12+:
 ```sh
 python -m pip install -r requirements-dev.txt
 python tools/build_catalogs.py --check
+python tools/build_theme_assets.py --check
+python tools/check_fonts.py
 python tools/build_insights_strings.py --check
 python -m unittest discover -s tools -p "test_*.py"
 python tools/security_review.py --report release-assets/runtime-policy.json
@@ -14,7 +16,7 @@ python tools/checks.py
 python tools/build_release.py --output release-assets
 ```
 
-The Lupa dependency is developer-only and pinned. Offline tests validate all twenty TOC modules, syntax/upvalue constraints, catalogs, assets, manifest, model/UI logic, favorites, persistence and hostile input boundaries. Policy tests exercise the static scanner itself. No runtime evaluation/OS library used by these tools is part of the player addon.
+The Lupa dependency is developer-only and pinned. Offline tests validate all twenty-three TOC modules, syntax/upvalue constraints, catalogs, assets, manifest, model/UI logic, favorites, persistence and hostile input boundaries. Policy tests exercise the static scanner itself. No runtime evaluation/OS library used by these tools is part of the player addon.
 
 StyLua 2.6.0: `stylua --check AzerothStats`. CI downloads its official Linux archive and verifies a pinned SHA-256 before execution. Its Lua51 formatter syntax is not proof of Lua 5.0 compatibility.
 
@@ -39,7 +41,7 @@ The full native suite runs Lua 5.0.3, round-trips own SavedVariables and simulat
 
 Perform in a test profile/copy approved for review, with own SavedVariables backed up:
 
-1. Install the exact reviewed ZIP and verify `1.5.1-review.1`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
+1. Install the exact reviewed ZIP and verify `1.6.0-dev.1`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
 2. Start a solo run; choose/upgrade spells and accessories; pause/resume; inspect totals, ranks, item hover and partial indicators. Opening one chest must not increase a supposed live opened count: wait for the official final summary.
 3. Complete and lose separate runs; verify exactly one history entry per run, authoritative final counters and no stale previous-run data on reset. Test victory-to-endless handling where supported.
 4. Restart normally midway/in a menu and after a terminal summary; check history/aggregates/favorites survive without duplication. A hard crash is not guaranteed to persist recent data.

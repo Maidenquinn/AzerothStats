@@ -1,3 +1,13 @@
+## 1.6.0-dev.1 - Chroniques UI and configurable HUD (development preview)
+
+- Introduce the reusable slate/bronze Chroniques theme, original compass/glyph artwork and grouped navigation.
+- Prioritize four totals, recent retained runs and records on Overview; preserve the complete totals through All statistics.
+- Add an eight-block HUD with per-block run/current-class/fixed-class/global scopes, dimensions, ordering, icons/labels, opacity and locking.
+- Add a draft/preview/Apply/Cancel editor with three presets, accessible via `/azstats hud`, `/azstats bar config`, HUD gear/right-click and Settings.
+- Keep the native run timer out of default presets. Use existing counters/maxima, explicit unknowns/coverage, overflow and scope-aware navigation.
+- Translate 22 new labels in fourteen languages and extend the renamed OFL CJK font derivatives for the new glyphs.
+- Retain all existing accounting/migrations; add native Lua 5.0/editor/serialization regression coverage. Manual in-game validation remains required.
+
 ## 1.5.1-review.1 — manual review candidate (unreleased)
 
 - Add bounded input contracts and whole-tree SavedVariables validation; preserve malformed input and disable collection.

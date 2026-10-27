@@ -72,6 +72,7 @@ function A.InitDB()
     if s.language ~= "auto" and not A.uiText[s.language] then
         s.language = "auto"
     end
+    s.hud = A.NormalizeBar(s.hud)
     database.version = A.version
     return true
 end

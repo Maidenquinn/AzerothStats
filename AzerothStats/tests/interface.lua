@@ -125,7 +125,10 @@ A.RefreshUI()
 check(A.ui.model.capacity >= 1 and A.ui.model.rowY == 301, "combat layout has a dedicated ranking")
 A.view.tab = 1
 A.RefreshUI()
-check(table.getn(A.ui.model.cards) == 6, "dashboard summary cards")
+check(
+    table.getn(A.ui.model.cards) == 4 and table.getn(A.ui.model.records) == 3,
+    "curated dashboard prioritizes four totals and three records"
+)
 A.view.tab = 8
 A.RefreshUI()
 check(A.ui.settings:IsShown(), "real settings controls shown")

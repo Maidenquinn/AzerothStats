@@ -6,16 +6,8 @@
 local A = AzerothStats
 local UI = { fonts = {}, solids = {}, cards = {}, rows = {}, nav = {}, controls = {} }
 A.ui = UI
-local COLORS = {
-    gold = { 0.91, 0.74, 0.43 },
-    text = { 0.87, 0.84, 0.77 },
-    muted = { 0.56, 0.54, 0.48 },
-    green = {
-        0.5,
-        0.76,
-        0.5,
-    },
-}
+local COLORS = A.theme
+
 local coords = {
     warrior = { 0, 0.25, 0, 0.25 },
     mage = { 0.25, 0.496, 0, 0.25 },
@@ -48,20 +40,28 @@ end
 --- Bound and paint display text, caching font/text state and shrinking only within the readability floor.
 local function put(t, value)
     value = string.sub(tostring(value or ""), 1, 4096)
-    local size = t.baseSize * (t.titleFont and 1 or ((A.db and A.db.settings.textSize or 12) / 12))
+    local size = t.baseSize
+        * ((t.titleFont or t.fixedSize) and 1 or ((A.db and A.db.settings.textSize or 12) / 12))
+    size = math.max(11, size)
     local path = A.Font(t.titleFont, t.localeFont)
-    if t.fullText == value and t.paintFont == path and t.paintBase == size then
+    if
+        t.fullText == value
+        and t.paintFont == path
+        and t.paintBase == size
+        and t.paintWidth == t.fontWidth
+    then
         return
     end
     t.fullText = value
     t.paintFont = path
     t.paintBase = size
+    t.paintWidth = t.fontWidth
     if t.activeFont ~= path or t.activeSize ~= size then
         t:SetFont(path, size, "")
     end
     t:SetText(value)
     if t.GetStringWidth then
-        while size > 10 and t:GetStringWidth() > t.fontWidth do
+        while size > 11 and t:GetStringWidth() > t.fontWidth do
             size = size - 0.5
             t:SetFont(path, size, "")
         end
@@ -81,20 +81,21 @@ end
 
 --- Apply an owned frame backdrop and register its base for opacity updates.
 local function surface(frame, kind)
-    local base = solid(
-        frame,
-        kind == "card" and 0.075 or 0.028,
-        kind == "card" and 0.061 or 0.023,
-        kind == "card" and 0.038 or 0.018,
-        1
-    )
+    local color = kind == "card" and A.theme.panel or A.theme.background
+    local base = solid(frame, color[1], color[2], color[3], 1)
     table.insert(UI.solids, { texture = base, main = kind == "main" })
+    local grain = frame:CreateTexture(nil, "BACKGROUND")
+    grain:SetAllPoints(frame)
+    grain:SetTexture(A.theme.grain)
+    grain:SetAlpha(0.16)
+    table.insert(UI.solids, { texture = grain, multiplier = 0.16 })
+    frame.grain = grain
     frame:SetBackdrop({
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
-        edgeSize = kind == "main" and 20 or 10,
-        insets = { left = 1, right = 1, top = 1, bottom = 1 },
+        edgeFile = A.theme.edge,
+        edgeSize = kind == "main" and 32 or 16,
+        insets = { left = 4, right = 4, top = 4, bottom = 4 },
     })
-    frame:SetBackdropBorderColor(0.46, 0.35, 0.18, 1)
+    frame:SetBackdropBorderColor(0.85, 0.71, 0.42, 1)
     frame.base = base
     return base
 end
@@ -140,14 +141,9 @@ end
 --- Paint the active-state background/border of an addon button.
 local function selected(b, active)
     b.selected = active and true or false
-    b.base:SetTexture(active and 0.22 or 0.028, active and 0.12 or 0.023, active and 0.035 or 0.018)
+    b.base:SetTexture(active and 0.21 or 0.063, active and 0.17 or 0.09, active and 0.10 or 0.106)
     b.base:SetAlpha(A.db.settings.opacity)
-    b:SetBackdropBorderColor(
-        active and 1 or 0.46,
-        active and 0.72 or 0.35,
-        active and 0.28 or 0.18,
-        1
-    )
+    b:SetBackdropBorderColor(0.85, 0.71, 0.42, (b.navigation and not active) and 0 or 1)
     if b.marker then
         if active then
             b.marker:Show()
@@ -477,11 +473,12 @@ function A.ApplyUI()
         put(t, t.fullText or "")
     end
     for _, v in ipairs(UI.solids) do
-        v.texture:SetAlpha(settings.opacity)
+        v.texture:SetAlpha(settings.opacity * (v.multiplier or 1))
     end
     if UI.menu then
         UI.menu.base:SetAlpha(1)
     end
+    A.RefreshBar()
     if settings.bar then
         A.bar:Show()
     else
@@ -500,7 +497,7 @@ function A.ResetPosition()
     A.db.settings.barPos = nil
     A.db.settings.miniAngle = 0.785398
     place(A.window, "windowPos", "CENTER", 0, 0)
-    place(A.bar, "barPos", "TOP", 0, -2)
+    place(A.bar, "barPos", "TOP", 0, -38)
     A.mini:ClearAllPoints()
     A.mini:SetPoint("CENTER", Minimap or UIParent, "CENTER", 56, 56)
 end
@@ -584,25 +581,11 @@ function A.RefreshUI()
         characterTab = A.view.characterTab,
         usageTab = A.view.usageTab,
         favoriteCategory = A.view.favoriteCategory or "run",
+        overviewStats = A.view.overviewStats == true,
     }
     local live = A.run
     local r = A.Selected()
-    put(
-        A.bar.label,
-        not live and ("|cffd9b66fAZEROTH STATS|r  ·  " .. A.T("Out of run"))
-            or "|cffd9b66fAZEROTH STATS|r  ·  "
-                .. (live and A.ClassName(live.class) or A.T("Out of run"))
-                .. "  ·  "
-                .. A.Duration(live and live.values.duration)
-                .. "  ·  "
-                .. A.Metric("kills")
-                .. " "
-                .. A.Short(live and live.values.kills)
-                .. "  ·  "
-                .. A.Metric("gold")
-                .. " "
-                .. A.Short(live and live.values.gold)
-    )
+    A.RefreshBar()
     if not A.window:IsShown() then
         return
     end
@@ -625,6 +608,8 @@ function A.RefreshUI()
     put(UI.sectionTitle, model.title)
     put(UI.subtitle, model.subtitle)
     put(UI.sidebarNote, A.T("Collected since installation"))
+    put(UI.explore, A.T("Explore"))
+    put(UI.progression, A.T("Progression"))
     for i, b in ipairs(UI.nav) do
         put(b.label, A.T(A.tabs[i]))
         selected(b, i == A.view.tab)
@@ -679,6 +664,24 @@ function A.RefreshUI()
     put(UI.scopeAll.label, A.T("All runs"))
     selected(UI.scopeRun, not A.view.cumulative)
     selected(UI.scopeAll, A.view.cumulative)
+    local dashboard = model.layout == "dashboard"
+    show(UI.statsLink, tab == 1)
+    put(UI.statsLink.label, A.T(dashboard and "All statistics" or "Overview"))
+    show(UI.recentTitle, dashboard)
+    show(UI.recentEmpty, dashboard and table.getn(model.rows) == 0)
+    put(UI.recentEmpty, A.T("No data yet"))
+    show(UI.historyLink, dashboard)
+    show(UI.recordsTitle, dashboard)
+    show(UI.recordsLink, dashboard)
+    show(UI.recordPanel, dashboard)
+    put(UI.recentTitle, A.T("Recent runs"))
+    put(UI.recordsTitle, A.T("Your records"))
+    for index, record in ipairs(model.records or {}) do
+        local widget = UI.recordItems[index]
+        put(widget.label, record.label)
+        put(widget.value, record.value)
+        widget.item = { label = record.label, value = record.value, exact = record.exact }
+    end
     show(UI.settings, tab == 8)
     if tab == 8 then
         settingsRefresh()
@@ -731,14 +734,32 @@ function A.RefreshUI()
                 218 + math.mod(i - 1, 3) * 238,
                 -top - math.floor((i - 1) / 3) * (h + 10)
             )
+            local dashboard = model.layout == "dashboard"
+            if dashboard then
+                c:SetWidth(171)
+                c:SetPoint("TOPLEFT", A.window, "TOPLEFT", 218 + (i - 1) * 180, -163)
+                h = 106
+            else
+                c:SetWidth(224)
+            end
             c:SetHeight(h)
+            c.label.fontWidth = dashboard and 125 or 176
+            c.label:SetWidth(c.label.fontWidth)
+            c.value.fontWidth = dashboard and 144 or 199
+            c.value:SetWidth(c.value.fontWidth)
+            c.detail.fontWidth = dashboard and 144 or 199
+            c.detail:SetWidth(c.detail.fontWidth)
             c.detail:ClearAllPoints()
             c.detail:SetPoint("TOPLEFT", c, "TOPLEFT", 13, model.layout == "combat" and -58 or -69)
             c.value:SetHeight(model.layout == "combat" and 27 or 34)
-            icon(c.icon, d.icon, d.class)
+            if model.layout == "dashboard" then
+                A.ThemeIcon(c.icon, ({ 1, 6, 3, 11 })[i])
+            else
+                icon(c.icon, d.icon, d.class)
+            end
             put(c.label, d.label)
             put(c.value, d.value)
-            put(c.detail, d.detail)
+            put(c.detail, model.layout == "dashboard" and "" or d.detail)
             c:Show()
         else
             c:Hide()
@@ -950,6 +971,9 @@ local function buildSettings(frame)
     end)
     dropdown(UI.language)
     dropdown(UI.retention)
+    button(p, 370, 355, 330, 28, "Customize bar", function()
+        A.OpenBarEditor()
+    end)
     button(p, 370, 317, 330, 28, "Reset position", function()
         A.ResetPosition()
     end)
@@ -978,10 +1002,10 @@ function A.BuildUI()
         end
     end)
     local emblem = frame:CreateTexture(nil, "ARTWORK")
-    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -22)
-    emblem:SetWidth(34)
-    emblem:SetHeight(34)
-    icon(emblem, "INV_Misc_Book_09")
+    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 21, -15)
+    emblem:SetWidth(48)
+    emblem:SetHeight(48)
+    emblem:SetTexture(A.theme.seal)
     UI.title = font(frame, 72, 19, 370, 28, 23, COLORS.gold, true)
     UI.version = font(frame, 448, 23, 200, 20, 11, COLORS.muted)
     UI.breadcrumb = font(frame, 72, 49, 810, 18, 11, COLORS.muted)
@@ -997,23 +1021,13 @@ function A.BuildUI()
     divider:SetWidth(914)
     divider:SetHeight(1)
     divider:SetTexture(0.42, 0.32, 0.16)
-    UI.sidebarNote = font(frame, 29, 579, 152, 49, 10, COLORS.muted)
-    local navIcons = {
-        "INV_Misc_Book_09",
-        "Ability_Warrior_BattleShout",
-        "INV_Misc_PocketWatch_01",
-        "INV_Sword_04",
-        "INV_Chest_Chain_04",
-        "INV_Misc_Coin_02",
-        "INV_Misc_Gear_01",
-        "Trade_Engineering",
-        "INV_Misc_Book_09",
-        "Interface\\AddOns\\AzerothStats\\media\\FavoriteHeartFilled.tga",
-        "Ability_Creature_Cursed_02",
-    }
+    UI.sidebarNote = font(frame, 29, 625, 152, 16, 10, COLORS.muted)
+    UI.explore = font(frame, 29, 91, 160, 18, 10, COLORS.muted)
+    UI.progression = font(frame, 29, 296, 160, 18, 10, COLORS.muted)
+    local navY = { 115, 320, 155, 195, 235, 360, 588, 545, 440, 493, 400 }
     for i, key in ipairs(A.tabs) do
         local index = i
-        local b = button(frame, 23, 97 + (i - 1) * 43, 170, 36, "", function()
+        local b = button(frame, 23, navY[i], 170, i == 7 and 27 or 36, "", function()
             selectTab(index)
         end)
         b.marker = solid(b, 1, 0.68, 0.2, 1, "ARTWORK")
@@ -1030,7 +1044,8 @@ function A.BuildUI()
         b.icon:SetPoint("LEFT", b, "LEFT", 10, 0)
         b.icon:SetWidth(21)
         b.icon:SetHeight(21)
-        icon(b.icon, navIcons[i])
+        A.ThemeIcon(b.icon, i == 7 and 12 or i)
+        b.navigation = true
         UI.nav[i] = b
     end
     UI.sectionTitle = font(frame, 218, 96, 285, 28, 21, COLORS.gold, true)
@@ -1138,7 +1153,7 @@ function A.BuildUI()
     for i = 1, 12 do
         local r = CreateFrame("Button", nil, frame)
         r:SetWidth(714)
-        r.shade = solid(r, 0.14, 0.115, 0.07, math.mod(i, 2) == 0 and 0.28 or 0.11)
+        r.shade = solid(r, 0.22, 0.29, 0.32, math.mod(i, 2) == 0 and 0.28 or 0.11)
         r.fill = r:CreateTexture(nil, "ARTWORK")
         r.fill:SetPoint("LEFT", r, "LEFT", 0, 0)
         r.fill:SetHeight(27)
@@ -1166,6 +1181,44 @@ function A.BuildUI()
         end)
         UI.rows[i] = r
     end
+    UI.statsLink = button(frame, 518, 100, 186, 26, "", function()
+        A.view.overviewStats = not A.view.overviewStats
+        A.view.page = 1
+        A.RefreshUI()
+    end)
+    UI.recentTitle = font(frame, 218, 284, 430, 27, 18, COLORS.gold, true)
+    UI.recentEmpty = font(frame, 240, 370, 650, 55, 14, COLORS.muted)
+    UI.historyLink = button(frame, 714, 284, 218, 27, "History", function()
+        selectTab(3)
+    end)
+    UI.recordsTitle = font(frame, 218, 509, 430, 26, 18, COLORS.gold, true)
+    UI.recordsLink = button(frame, 714, 509, 218, 26, "Records", function()
+        selectTab(6)
+    end)
+    UI.recordPanel = CreateFrame("Frame", nil, frame)
+    UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -541)
+    UI.recordPanel:SetWidth(714)
+    UI.recordPanel:SetHeight(44)
+    surface(UI.recordPanel, "card")
+    UI.recordItems = {}
+    for index = 1, 3 do
+        local record = CreateFrame("Button", nil, UI.recordPanel)
+        record:SetPoint("TOPLEFT", UI.recordPanel, "TOPLEFT", 10 + (index - 1) * 238, 0)
+        record:SetWidth(218)
+        record:SetHeight(44)
+        record.label = font(record, 0, 1, 208, 16, 11, COLORS.muted)
+        record.value = font(record, 0, 17, 208, 25, 17, COLORS.text)
+        record:SetScript("OnEnter", function()
+            tooltip(this)
+        end)
+        record:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+        record:SetScript("OnClick", function()
+            selectTab(6)
+        end)
+        UI.recordItems[index] = record
+    end
     UI.empty = font(frame, 268, 293, 608, 80, 16, COLORS.muted, true)
     UI.note = font(frame, 218, 589, 714, 19, 10, COLORS.muted)
     UI.previous = button(frame, 218, 615, 38, 24, "<", function()
@@ -1192,18 +1245,7 @@ function A.BuildUI()
     A.tabButtons = UI.nav
     A.uiRows = UI.rows
     A.classButton = UI.classButton
-    local bar = CreateFrame("Button", "AzerothStatsBar", UIParent)
-    A.bar = bar
-    bar:SetWidth(700)
-    bar:SetHeight(27)
-    bar:SetFrameStrata("MEDIUM")
-    surface(bar, "main")
-    drag(bar, "barPos")
-    place(bar, "barPos", "TOP", 0, -2)
-    bar.label = font(bar, 12, 2, 676, 23, 11, COLORS.text)
-    bar:SetScript("OnClick", function()
-        A.ToggleUI()
-    end)
+    A.BuildBar()
     local mini = CreateFrame("Button", "AzerothStatsMinimap", Minimap or UIParent)
     A.mini = mini
     mini:SetWidth(30)
@@ -1214,7 +1256,7 @@ function A.BuildUI()
     mini.icon:SetPoint("CENTER", mini, "CENTER", 0, 0)
     mini.icon:SetWidth(21)
     mini.icon:SetHeight(21)
-    icon(mini.icon, "INV_Misc_Book_09")
+    mini.icon:SetTexture(A.theme.seal)
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")
     mini:SetScript("OnClick", function()
@@ -1277,3 +1319,16 @@ function A.BuildUI()
     A.ApplyUI()
     A.RefreshUI()
 end
+
+-- Shared trusted widget constructors for the separately owned HUD editor.
+A.widgets = {
+    font = font,
+    put = put,
+    solid = solid,
+    surface = surface,
+    icon = icon,
+    button = button,
+    dropdown = dropdown,
+    drag = drag,
+    place = place,
+}

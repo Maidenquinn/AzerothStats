@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.5.1-review.1
+# Azeroth Stats - 1.6.0-dev.1
 
-Review candidate for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
+Development preview of the Chroniques native UI and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
 
 ## Install an approved build
 
@@ -9,6 +9,8 @@ Close the client and back up the addon's SavedVariables. Extract to the AddOns d
 ## Features and controls
 
 Overview, classes, history, combat, character/builds, records, diagnostics, settings, usage/co-op, categorized heart favorites and Nemesis. Minimap left-click toggles the window; right-click opens Settings. Adjustable opacity/scale/text/retention, fourteen languages.
+
+Open the configurable HUD editor with `/azstats hud` or `/azstats bar config`. Choose per-block scope and metrics, order, width/height, icons/labels, opacity and locking. Apply saves; Cancel discards. No run clock is shown by default. All existing totals remain accessible through All statistics.
 
 Commands (after `/azstats`): `show`, `hide`, `history`, `coop`, `favorites`, `favorite`, `nemesis`, `diagnose`, `bar`, `minimap`, `lock`, `resetpos`, `scale 0.9`, `opacity 1`, `retention 200`, `lang auto`, `sound`, `sound test`, `help`.
 
