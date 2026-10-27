@@ -139,7 +139,13 @@ function A.ItemTooltip(frame, descriptor)
     end
     GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
-    if descriptor.run == A.run and descriptor.slot and type(GetInventoryItemLink) == "function" then
+    if
+        descriptor.run == A.run
+        and A.run
+        and A.run.status == "active"
+        and descriptor.slot
+        and type(GetInventoryItemLink) == "function"
+    then
         local ok, link = pcall(GetInventoryItemLink, "player", descriptor.slot)
         if ok and link == descriptor.link then
             local good, has = pcall(function()

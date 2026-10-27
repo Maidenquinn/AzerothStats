@@ -210,7 +210,7 @@ local function dashboard(model, group)
                     .. " · "
                     .. A.HeroicLabel(run),
                 function()
-                    A.SelectRun(id)
+                    A.OpenReport(id)
                 end
             )
             entry.class = run.class
@@ -304,7 +304,7 @@ local function history(model)
                     .. (run.hero or "?")
                     .. (run.partial and " · " .. A.T("Partial") or ""),
                 function()
-                    A.SelectRun(id)
+                    A.OpenReport(id)
                 end
             )
             item.favorite = A.RunFavorite(run)
@@ -620,6 +620,9 @@ end
 --- Apply shared presentation geometry only; this never accounts or rewrites a run.
 local function stylePage(model, run, group)
     local tab = A.view.tab
+    if model.report or model.comparison then
+        return
+    end
     model.columnLabel, model.columnValue = A.T("Details"), ""
     if tab == 1 or tab == 2 or tab == 8 then
         model.columnLabel = nil
@@ -631,7 +634,8 @@ local function stylePage(model, run, group)
     model.rowY, model.rowHeight = 296, 62
     if tab == 3 then
         model.layout, model.photoRows = "history", true
-        model.rowY, model.rowHeight = 322, 74
+        model.cardsTop = 204
+        model.rowY, model.rowHeight = 345, 74
         model.columnLabel, model.columnValue = A.T("Run"), A.T("Play time")
         for i, glyph in ipairs({ 9, 3, 4 }) do
             model.cards[i].glyph = glyph
@@ -731,7 +735,12 @@ local function stylePage(model, run, group)
 end
 
 function A.PageModel()
-    local tab, run, group = A.view.tab, A.Selected(), A.Group()
+    local tab, run, group = A.view.tab, nil, A.Group()
+    if tab == 3 and A.view.historySection == "Run report" and A.view.selected then
+        run = A.FindRun(A.view.selected)
+    else
+        run = A.Selected()
+    end
     local model = {
         title = A.T(A.tabs[tab]),
         subtitle = A.T("Collected since installation"),
@@ -1081,6 +1090,13 @@ function A.PageModel()
     end
     if tab == 1 or tab == 2 or tab == 6 or (tab == 4 and A.view.cumulative) then
         model.note = (model.note and model.note .. " · " or "") .. A.T("All difficulties")
+    end
+    if tab == 3 and A.view.historySection == "Run report" then
+        model.cards, model.rows = {}, {}
+        A.ReportModel(model, run)
+    elseif tab == 3 and A.view.historySection == "Compare runs" then
+        model.cards, model.rows = {}, {}
+        A.ComparisonModel(model)
     end
     A.DecorateFavorites(model, tab, run)
     stylePage(model, run, group)

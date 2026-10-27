@@ -41,3 +41,9 @@ Reads: identity/class, time/date, locale, inventory links, spellbook metadata, s
 Effects: own frames and visibility/position/texture/font settings; slash registration; local `DEFAULT_CHAT_FRAME:AddMessage`; own SavedVariables; optional source-defined native sound. No send-message function, CVar/binding edit, targeting/casting/equipping operation, dynamic evaluation or OS file/process API is used by the runtime. Widget `SetScript` registers source-defined callbacks; it never evaluates received code.
 
 The static report inventories calls for human verification. Its name-based policy is a regression aid, not exhaustive proof of allowed native behavior.
+
+## Reports and comparisons
+
+Reports.lua adds no native API reader, event subscription, outbound message or gameplay effect. It consumes validated own runs and the existing metrics/party/tooltip adapters. A new run captures at most thirteen class-record values in `recordBaseline.values`; an accepted summary computes optional `reportRecords` and sets `reportNotified`. Missing legacy baseline means no reconstructed milestone. The notice's expiry/ID is transient, while the boolean prevents replay across serialization. Summary freshness and matching retain their existing heuristic limits.
+
+Comparison scans at most retained-history capacity on explicit selection, thirteen metrics, at most 256 source/spell rows from each run and nineteen inventory slots. Missing sources are unavailable rather than exact zero. Percent difference divides by A only when A is positive; there is no composite winner. Historical item-ID equality does not establish equal upgrade/set context: only active-run descriptors may request a current inventory tooltip. Neither report navigation nor comparison adjusts any run ledger.

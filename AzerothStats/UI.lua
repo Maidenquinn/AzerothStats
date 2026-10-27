@@ -246,6 +246,9 @@ end
 local function selectTab(i)
     A.view.tab = i
     A.view.page = 1
+    if i == 3 then
+        A.view.historySection = "History"
+    end
     if i == 9 then
         A.view.cumulative = A.view.usageTab ~= "Co-op"
     end
@@ -382,6 +385,15 @@ function A.ShowMenu(anchor, options, offset)
             end)
             menu.items[i] = b
         end
+        b.item = { label = entry.label, detail = entry.detail or "", value = entry.value }
+        b:SetScript("OnEnter", function()
+            A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
+            tooltip(this)
+        end)
+        b:SetScript("OnLeave", function()
+            selected(this, this.selected)
+            GameTooltip:Hide()
+        end)
         b.option = entry
         b.label.localeFont = entry.locale
         put(b.label, entry.label)
@@ -453,6 +465,51 @@ function A.RunMenu(anchor)
         end
     end
     A.ShowMenu(anchor, options)
+end
+
+--- Owned selectors retain exact IDs; they do not change accounting or choose a gameplay action.
+function A.ComparisonRunMenu(anchor, side)
+    local choices = {}
+    for i = table.getn(A.db.runs), 1, -1 do
+        local run = A.db.runs[i]
+        local id = run.id
+        table.insert(choices, {
+            label = A.Date(run.startedAt) .. " · " .. A.ZoneName(run) .. " · " .. A.HeroicLabel(
+                run
+            ),
+            detail = A.ClassName(run.class)
+                .. " · "
+                .. A.Status(run.status == "active" and "active" or run.result or run.status)
+                .. " · "
+                .. A.Duration(run.values.duration),
+            value = run.id,
+            action = function()
+                A.view[side == "A" and "compareA" or "compareB"] = id
+                A.view.page = 1
+            end,
+        })
+    end
+    if table.getn(choices) == 0 then
+        table.insert(choices, { label = A.T("No data yet"), action = function() end })
+    end
+    A.ShowMenu(anchor, choices)
+end
+
+--- One short-lived actionable notice per accepted run summary; no auto-opening over gameplay.
+function A.RefreshReportNotice()
+    local pending = A.pendingReport
+    local visible = pending and GetTime() <= pending.expires and A.FindRun(pending.id)
+    if UI.reportToast then
+        if visible then
+            UI.reportToast:Show()
+        else
+            UI.reportToast:Hide()
+        end
+        put(UI.reportToast.label, A.T("Run report ready"))
+    end
+    if pending and not visible then
+        A.pendingReport = nil
+    end
 end
 
 --- Apply pending settings only after release, preventing scale/coordinate feedback during dragging.
@@ -597,6 +654,47 @@ end
 --- Render a reusable row with separate text/value/action areas and an optional
 --- thin contribution track. It never changes the row's underlying data or tooltip.
 local function paintRow(frame, d, model)
+    show(frame.leftCell, model.comparison)
+    show(frame.rightCell, model.comparison)
+    show(frame.leftValue, model.comparison)
+    show(frame.rightValue, model.comparison)
+    if model.comparison then
+        show(frame.icon, false)
+        show(frame.thumbnail, false)
+        show(frame.rank, false)
+        show(frame.share, false)
+        show(frame.extra, false)
+        frame.fill:SetAlpha(0)
+        frame.label:ClearAllPoints()
+        frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -6)
+        frame.label.fontWidth = 154
+        frame.label:SetWidth(154)
+        frame.label.baseSize = 12
+        frame.label.titleFont = false
+        frame.detail:ClearAllPoints()
+        frame.detail:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -29)
+        frame.detail.fontWidth = 154
+        frame.detail:SetWidth(154)
+        frame.detail:SetHeight(18)
+        frame.value:ClearAllPoints()
+        frame.value:SetPoint("TOPLEFT", frame, "TOPLEFT", 550, -7)
+        frame.value.fontWidth = 158
+        frame.value:SetWidth(158)
+        frame.value.baseSize = 12
+        frame.value:SetTextColor(unpack(COLORS.text))
+        put(frame.label, d.label)
+        put(frame.detail, d.detail)
+        put(frame.value, d.value)
+        frame.leftValue:SetJustifyH(d.leftItem and "LEFT" or "RIGHT")
+        frame.rightValue:SetJustifyH(d.rightItem and "LEFT" or "RIGHT")
+        put(frame.leftValue, d.left)
+        put(frame.rightValue, d.right)
+        frame.leftCell.item = d.leftItem
+            or { label = "A · " .. d.label, value = d.left, exact = d.exact }
+        frame.rightCell.item = d.rightItem
+            or { label = "B · " .. d.label, value = d.right, exact = d.exact }
+        return
+    end
     local photo = model.layout == "dashboard" or model.photoRows
     local hero = model.layout == "dashboard"
     local ranking = model.ranking
@@ -690,10 +788,22 @@ function A.RefreshUI()
         favoriteCategory = A.view.favoriteCategory or "run",
         overviewStats = A.view.overviewStats == true,
         difficulty = A.view.difficulty,
+        historySection = A.view.historySection,
+        reportSection = A.view.reportSection,
+        compareSection = A.view.compareSection,
+        compareA = A.view.compareA,
+        compareB = A.view.compareB,
+        reportRun = A.view.historySection == "Run report" and A.view.selected or nil,
     }
     local live = A.run
-    local r = A.Selected()
+    local r
+    if A.view.tab == 3 and A.view.historySection == "Run report" and A.view.selected then
+        r = A.FindRun(A.view.selected)
+    else
+        r = A.Selected()
+    end
     A.RefreshBar()
+    A.RefreshReportNotice()
     if not A.window:IsShown() then
         return
     end
@@ -732,7 +842,7 @@ function A.RefreshUI()
             A.view.selected and (A.T("History") .. " · " .. A.Date(r and r.startedAt))
             or A.T("Latest run")
         )
-    UI.favoriteRun.favorite = (tab == 4 or tab == 5 or tab == 9)
+    UI.favoriteRun.favorite = (tab == 4 or tab == 5 or tab == 9 or model.report)
             and not A.view.cumulative
             and A.RunFavorite(r)
         or nil
@@ -740,9 +850,17 @@ function A.RefreshUI()
     if UI.favoriteRun.favorite then
         paintFavorite(UI.favoriteRun)
     end
-    show(UI.classButton, tab == 1 or tab == 2 or tab == 3 or tab == 6 or tab == 10 or tab == 11)
+    show(
+        UI.classButton,
+        tab == 1
+            or tab == 2
+            or (tab == 3 and not model.report and not model.comparison)
+            or tab == 6
+            or tab == 10
+            or tab == 11
+    )
     put(UI.classButton.label, (A.view.class and A.ClassName(A.view.class) or A.T("All classes")))
-    show(UI.difficultyButton, tab == 3)
+    show(UI.difficultyButton, tab == 3 and not model.report and not model.comparison)
     put(
         UI.difficultyButton.label,
         A.view.difficulty == nil and A.T("All difficulties")
@@ -750,7 +868,7 @@ function A.RefreshUI()
                 heroic = A.view.difficulty ~= "unknown" and A.view.difficulty or nil,
             })
     )
-    show(UI.latest, tab == 5)
+    show(UI.latest, tab == 5 or model.report)
     put(UI.latest.label, selectorLabel)
     for _, b in ipairs(UI.modeButtons) do
         show(b, tab == 4)
@@ -759,6 +877,56 @@ function A.RefreshUI()
             or (not b.mode and A.view.combatTab == "Activity")
         selected(b, active)
     end
+    for _, b in ipairs(UI.historySections) do
+        show(b, tab == 3)
+        selected(b, b.key == (A.view.historySection or "History"))
+    end
+    for _, b in ipairs(UI.reportSections) do
+        show(b, model.report)
+        selected(b, b.key == (A.view.reportSection or "Overview"))
+    end
+    for _, b in ipairs(UI.compareSections) do
+        show(b, model.comparison)
+        selected(b, b.key == (A.view.compareSection or "Overview"))
+    end
+    show(UI.reportCompare, model.report)
+    show(UI.swapRuns, model.comparison)
+    for i = 1, 2 do
+        local band = UI.compareHeaders[i]
+        local data = model.compareRuns and model.compareRuns[i]
+        show(band, model.comparison)
+        show(UI.compareSelectors[i], model.comparison)
+        show(UI.compareColumns[i], model.comparison)
+        if model.comparison then
+            put(
+                UI.compareSelectors[i].label,
+                (i == 1 and "A" or "B")
+                    .. " · "
+                    .. (data and A.Date(data.startedAt) or A.T("Select another run"))
+            )
+            put(band.label, data and A.ZoneName(data) or A.T("Select another run"))
+            put(
+                band.detail,
+                data
+                        and (A.ClassName(data.class) .. " · " .. A.HeroicLabel(data) .. "\n" .. A.Status(
+                            data.status == "active" and "active" or data.result or data.status
+                        ) .. " · " .. A.Duration(data.values.duration))
+                    or ""
+            )
+            A.ZoneIllustration(band.icon, data and data.zone)
+            band.item = {
+                label = data and (data.hero or "?") or A.T("Unavailable"),
+                value = data and data.id or "",
+                detail = band.detail.fullText,
+            }
+            band.favorite.favorite = A.RunFavorite(data)
+            show(band.favorite, data ~= nil)
+            if data then
+                paintFavorite(band.favorite)
+            end
+        end
+    end
+    UI.columnValue.columnX = model.comparison and 768 or 738
     local counts = tab == 10 and A.FavoriteCounts() or {}
     for _, b in ipairs(UI.favoriteCategories) do
         show(b, tab == 10)
@@ -874,7 +1042,7 @@ function A.RefreshUI()
             c.item = d
             c:ClearAllPoints()
             local tall = model.layout == "classes"
-            local top = model.layout == "combat" and 195 or 181
+            local top = model.cardsTop or (model.layout == "combat" and 195 or 181)
             local h = tall and 156 or 104
             c:SetPoint(
                 "TOPLEFT",
@@ -1332,6 +1500,93 @@ function A.BuildUI()
         A.view.page = 1
         A.RefreshUI()
     end)
+    UI.historySections, UI.reportSections, UI.compareSections = {}, {}, {}
+    for i, key in ipairs({ "History", "Run report", "Compare runs" }) do
+        local section = key
+        local b = button(frame, 218 + (i - 1) * 240, 160, 232, 26, key, function()
+            if section == "Compare runs" then
+                A.OpenCompare(A.Selected() and A.Selected().id)
+            elseif section == "Run report" then
+                A.OpenReport(A.Selected() and A.Selected().id)
+            else
+                A.view.historySection, A.view.page = "History", 1
+            end
+            A.RefreshUI()
+        end)
+        table.insert(UI.historySections, b)
+    end
+    for i, key in ipairs({ "Overview", "Combat", "Character", "Co-op", "Records" }) do
+        local section = key
+        local b = button(frame, 218 + (i - 1) * 144, 274, 136, 26, key, function()
+            A.view.reportSection, A.view.page = section, 1
+            A.RefreshUI()
+        end)
+        table.insert(UI.reportSections, b)
+    end
+    for i, key in ipairs({ "Overview", "Combat", "Spells", "Equipment" }) do
+        local section = key
+        local b = button(frame, 218 + (i - 1) * 180, 330, 172, 26, key, function()
+            A.view.compareSection, A.view.page = section, 1
+            A.RefreshUI()
+        end)
+        table.insert(UI.compareSections, b)
+    end
+    UI.reportCompare = button(frame, 518, 100, 198, 26, "Compare runs", function()
+        A.OpenCompare(A.Selected() and A.Selected().id)
+        A.RefreshUI()
+    end)
+    UI.swapRuns = button(frame, 724, 100, 208, 26, "Swap runs", function()
+        A.view.compareA, A.view.compareB, A.view.page = A.view.compareB, A.view.compareA, 1
+        A.RefreshUI()
+    end)
+    UI.compareHeaders, UI.compareSelectors, UI.compareColumns = {}, {}, {}
+    for i = 1, 2 do
+        local side = i == 1 and "A" or "B"
+        UI.compareSelectors[i] = button(frame, 218 + (i - 1) * 360, 198, 354, 26, "", function(self)
+            A.ComparisonRunMenu(self, side)
+        end)
+        dropdown(UI.compareSelectors[i])
+        local band = CreateFrame("Button", nil, frame)
+        band:SetPoint("TOPLEFT", frame, "TOPLEFT", 218 + (i - 1) * 360, -232)
+        band:SetWidth(354)
+        band:SetHeight(83)
+        surface(band, "card")
+        band.icon = band:CreateTexture(nil, "ARTWORK")
+        band.icon:SetPoint("LEFT", band, "LEFT", 8, 0)
+        band.icon:SetWidth(100)
+        band.icon:SetHeight(100 * 66 / 178)
+        band.label = font(band, 119, 7, 207, 23, 14, COLORS.gold, true)
+        band.detail = font(band, 119, 33, 203, 43, 11, COLORS.muted)
+        band.favorite = favoriteButton(band, 328, 52)
+        band:SetScript("OnEnter", function()
+            tooltip(this)
+        end)
+        band:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+        UI.compareHeaders[i] = band
+        UI.compareColumns[i] = font(frame, 398 + (i - 1) * 185, 392, 170, 22, 12, COLORS.gold)
+        UI.compareColumns[i]:SetJustifyH("RIGHT")
+        put(UI.compareColumns[i], side)
+    end
+    UI.reportToast = button(UIParent, 0, 0, 360, 42, "", function()
+        if A.pendingReport and A.FindRun(A.pendingReport.id) then
+            A.OpenReport(A.pendingReport.id)
+            A.ToggleUI(true)
+        end
+        A.pendingReport = nil
+        UI.reportToast:Hide()
+    end)
+    UI.reportToast:ClearAllPoints()
+    UI.reportToast:SetPoint("TOP", UIParent, "TOP", 0, -170)
+    UI.reportToast:SetFrameStrata("DIALOG")
+    UI.reportToast.label.fontWidth = 316
+    UI.reportToast.label:SetWidth(316)
+    UI.reportToast.dismiss = button(UI.reportToast, 330, 8, 22, 24, "X", function()
+        A.pendingReport = nil
+        UI.reportToast:Hide()
+    end)
+    UI.reportToast:Hide()
     UI.context = CreateFrame("Button", nil, frame)
     UI.context:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -199)
     UI.context:SetWidth(714)
@@ -1409,6 +1664,21 @@ function A.BuildUI()
         r.rank:SetJustifyH("CENTER")
         r.share = font(r, 435, 8, 70, 23, 12, COLORS.muted)
         r.share:SetJustifyH("RIGHT")
+        r.leftValue = font(r, 180, 5, 170, 38, 12, COLORS.text)
+        r.rightValue = font(r, 365, 5, 170, 38, 12, COLORS.text)
+        for _, side in ipairs({ "left", "right" }) do
+            local cell = CreateFrame("Button", nil, r)
+            cell:SetPoint("TOPLEFT", r, "TOPLEFT", side == "left" and 180 or 365, -2)
+            cell:SetWidth(170)
+            cell:SetHeight(44)
+            cell:SetScript("OnEnter", function()
+                tooltip(this)
+            end)
+            cell:SetScript("OnLeave", function()
+                GameTooltip:Hide()
+            end)
+            r[side .. "Cell"] = cell
+        end
         r:SetScript("OnEnter", function()
             tooltip(this)
         end)

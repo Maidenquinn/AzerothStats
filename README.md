@@ -4,7 +4,7 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**1.6.0-dev.8 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
+**1.6.0-dev.9 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -112,3 +112,9 @@ Maintained by Kevin / Maidenhead. Existing Kevin / Codex development credit is r
 ## Game update 0.121
 
 Observed Normal/Heroic I-V is retained per run and filterable in History. Older/missing difficulty remains unknown; lifetime records combine difficulties. Native item tooltips preserve long set/star descriptions and decimal bonuses; reference fallbacks may differ from the historical upgrade level. Fixed legacy drop percentages are no longer shown. Marks, affixes and structured stars are unavailable unless a verified native API exposes them; no save import or gameplay action was added.
+
+## Run reports and comparisons
+
+History now contains History, Run report and Compare runs. Click a retained run, recent run or run Favorite to inspect its report. Use `/azstats report` for the selected/current/latest run and `/azstats compare` to select two retained runs. The comparison initially prefers the same class, zone and known difficulty; either selector can choose a different retained run, and Swap runs reverses B minus A. Missing data stays unavailable, and no percentage is inferred from a zero baseline.
+
+Reports include native/observed totals, damage sources, recorded build/equipment, available group snapshots and class records identified at the native summary. Those class records combine difficulties and require a baseline captured before that run; older reports do not reconstruct milestones. A dismissible notice appears once for 30 seconds after an accepted native summary. It never forces the window open.

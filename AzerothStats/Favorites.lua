@@ -153,7 +153,7 @@ function A.OpenFavorite(entry)
         end
     end
     if entry.kind == "run" then
-        A.SelectRun(entry.key)
+        A.OpenReport(entry.key)
     elseif entry.kind == "companion" then
         A.view.tab = 9
         A.view.usageTab = "Co-op"

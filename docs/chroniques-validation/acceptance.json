@@ -7,18 +7,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7434
+          "assertions": 12,
+          "savedBytes": 7470
         },
         {
           "stage": 2,
           "assertions": 28,
-          "savedBytes": 10054
+          "savedBytes": 10316
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10055
+          "assertions": 23,
+          "savedBytes": 10317
         }
       ]
     },
@@ -28,18 +28,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7434
+          "assertions": 12,
+          "savedBytes": 7470
         },
         {
           "stage": 2,
           "assertions": 28,
-          "savedBytes": 9774
+          "savedBytes": 10047
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9775
+          "assertions": 23,
+          "savedBytes": 10048
         }
       ]
     },
@@ -49,18 +49,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7434
+          "assertions": 12,
+          "savedBytes": 7470
         },
         {
           "stage": 2,
           "assertions": 29,
-          "savedBytes": 10214
+          "savedBytes": 10487
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10215
+          "assertions": 23,
+          "savedBytes": 10488
         }
       ]
     },
@@ -70,18 +70,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7434
+          "assertions": 12,
+          "savedBytes": 7470
         },
         {
           "stage": 2,
           "assertions": 28,
-          "savedBytes": 10054
+          "savedBytes": 10316
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10055
+          "assertions": 23,
+          "savedBytes": 10317
         }
       ]
     },
@@ -91,18 +91,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7434
+          "assertions": 12,
+          "savedBytes": 7470
         },
         {
           "stage": 2,
           "assertions": 28,
-          "savedBytes": 9774
+          "savedBytes": 10047
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9775
+          "assertions": 23,
+          "savedBytes": 10048
         }
       ]
     },
@@ -112,18 +112,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7434
+          "assertions": 12,
+          "savedBytes": 7470
         },
         {
           "stage": 2,
           "assertions": 29,
-          "savedBytes": 10214
+          "savedBytes": 10487
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10215
+          "assertions": 23,
+          "savedBytes": 10488
         }
       ]
     },
@@ -133,18 +133,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7414
+          "assertions": 12,
+          "savedBytes": 7450
         },
         {
           "stage": 2,
           "assertions": 28,
-          "savedBytes": 10031
+          "savedBytes": 10293
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10032
+          "assertions": 23,
+          "savedBytes": 10294
         }
       ]
     },
@@ -154,18 +154,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7414
+          "assertions": 12,
+          "savedBytes": 7450
         },
         {
           "stage": 2,
           "assertions": 28,
-          "savedBytes": 9751
+          "savedBytes": 10024
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9752
+          "assertions": 23,
+          "savedBytes": 10025
         }
       ]
     },
@@ -175,18 +175,18 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7414
+          "assertions": 12,
+          "savedBytes": 7450
         },
         {
           "stage": 2,
           "assertions": 29,
-          "savedBytes": 10191
+          "savedBytes": 10464
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10192
+          "assertions": 23,
+          "savedBytes": 10465
         }
       ]
     },
@@ -196,8 +196,155 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7450
+          "assertions": 12,
+          "savedBytes": 7486
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10326
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10327
+        }
+      ]
+    },
+    {
+      "class": "rogue",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7486
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10057
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10058
+        }
+      ]
+    },
+    {
+      "class": "rogue",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7486
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10497
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10498
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7498
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10341
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10342
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7498
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10072
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10073
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7498
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10512
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10513
+        }
+      ]
+    },
+    {
+      "class": "shaman",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7490
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10333
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10334
+        }
+      ]
+    },
+    {
+      "class": "shaman",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7490
         },
         {
           "stage": 2,
@@ -206,176 +353,29 @@
         },
         {
           "stage": 3,
-          "assertions": 21,
+          "assertions": 23,
           "savedBytes": 10065
         }
       ]
     },
     {
-      "class": "rogue",
-      "result": "left",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7450
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 9784
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9785
-        }
-      ]
-    },
-    {
-      "class": "rogue",
-      "result": "victory",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7450
-        },
-        {
-          "stage": 2,
-          "assertions": 29,
-          "savedBytes": 10224
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10225
-        }
-      ]
-    },
-    {
-      "class": "priest",
-      "result": "defeat",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7462
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10079
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10080
-        }
-      ]
-    },
-    {
-      "class": "priest",
-      "result": "left",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7462
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 9799
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9800
-        }
-      ]
-    },
-    {
-      "class": "priest",
-      "result": "victory",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7462
-        },
-        {
-          "stage": 2,
-          "assertions": 29,
-          "savedBytes": 10239
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10240
-        }
-      ]
-    },
-    {
-      "class": "shaman",
-      "result": "defeat",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7454
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10071
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10072
-        }
-      ]
-    },
-    {
-      "class": "shaman",
-      "result": "left",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7454
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 9791
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9792
-        }
-      ]
-    },
-    {
       "class": "shaman",
       "result": "victory",
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7454
+          "assertions": 12,
+          "savedBytes": 7490
         },
         {
           "stage": 2,
           "assertions": 29,
-          "savedBytes": 10231
+          "savedBytes": 10504
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10232
+          "assertions": 23,
+          "savedBytes": 10505
         }
       ]
     },
@@ -385,8 +385,155 @@
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
+          "assertions": 12,
+          "savedBytes": 7490
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10327
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10328
+        }
+      ]
+    },
+    {
+      "class": "mage",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7490
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10058
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10059
+        }
+      ]
+    },
+    {
+      "class": "mage",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7490
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10498
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10499
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
           "savedBytes": 7454
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10300
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10301
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7454
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10031
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10032
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7454
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10471
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10472
+        }
+      ]
+    },
+    {
+      "class": "druid",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7494
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10334
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10335
+        }
+      ]
+    },
+    {
+      "class": "druid",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7494
         },
         {
           "stage": 2,
@@ -395,181 +542,34 @@
         },
         {
           "stage": 3,
-          "assertions": 21,
+          "assertions": 23,
           "savedBytes": 10066
         }
       ]
     },
     {
-      "class": "mage",
-      "result": "left",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7454
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 9785
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9786
-        }
-      ]
-    },
-    {
-      "class": "mage",
-      "result": "victory",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7454
-        },
-        {
-          "stage": 2,
-          "assertions": 29,
-          "savedBytes": 10225
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10226
-        }
-      ]
-    },
-    {
-      "class": "warlock",
-      "result": "defeat",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7418
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10038
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10039
-        }
-      ]
-    },
-    {
-      "class": "warlock",
-      "result": "left",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7418
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 9758
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9759
-        }
-      ]
-    },
-    {
-      "class": "warlock",
-      "result": "victory",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7418
-        },
-        {
-          "stage": 2,
-          "assertions": 29,
-          "savedBytes": 10198
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10199
-        }
-      ]
-    },
-    {
-      "class": "druid",
-      "result": "defeat",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7458
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 10072
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10073
-        }
-      ]
-    },
-    {
-      "class": "druid",
-      "result": "left",
-      "stages": [
-        {
-          "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7458
-        },
-        {
-          "stage": 2,
-          "assertions": 28,
-          "savedBytes": 9792
-        },
-        {
-          "stage": 3,
-          "assertions": 21,
-          "savedBytes": 9793
-        }
-      ]
-    },
-    {
       "class": "druid",
       "result": "victory",
       "stages": [
         {
           "stage": 1,
-          "assertions": 11,
-          "savedBytes": 7458
+          "assertions": 12,
+          "savedBytes": 7494
         },
         {
           "stage": 2,
           "assertions": 29,
-          "savedBytes": 10232
+          "savedBytes": 10505
         },
         {
           "stage": 3,
-          "assertions": 21,
-          "savedBytes": 10233
+          "assertions": 23,
+          "savedBytes": 10506
         }
       ]
     }
   ],
-  "assertions": 1629,
+  "assertions": 1710,
   "freshProcesses": 81,
   "fixture": {
     "mode": "read-only-client",

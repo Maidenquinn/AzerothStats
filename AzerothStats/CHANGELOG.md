@@ -1,3 +1,14 @@
+## 1.6.0-dev.9 - Run reports and side-by-side comparison (development preview)
+
+- Add History / Run report / Compare runs views within History, keeping the eleven existing navigation destinations.
+- Open a selected run report from History, recent runs, run Favorites or /azstats report. Browse observed totals, damage sources, recorded spells/gear, available co-op snapshots and summary-time class milestones.
+- Offer one dismissible 30-second report notice after an accepted native summary; never auto-open over gameplay. Its saved deduplication flag prevents repeated notifications after reload.
+- Freeze pre-run class-record baselines for new runs. Legacy runs without a baseline do not claim reconstructed broken records; class milestones span all difficulties.
+- Compare two retained runs with separate zone/build context and A/B columns, absolute and percentage differences, swap controls, source/rank comparison and independently captured equipment tooltips. Prefer matching class/zone/known Heroic level; explicitly label mismatches, unknown coverage and identical selections. Missing values/sources are not zero, and a zero baseline has no percentage.
+- Preserve missing/pruned comparison selections as unavailable rather than silently substituting a different run. Presentation and filtering do not change accounting.
+- Fix historical gear tooltips borrowing live upgraded inventory when the ended run remains in the tracker. Only active-run descriptors can use live inventory; ended descriptions stay captured/reference-labeled.
+- Localize new labels in fourteen languages and expand bundled glyph coverage. Source review/testing documentation records the new Reports.lua module and bounded saved metadata.
+
 ## 1.6.0-dev.8 - Azeroth Survivors 0.121 compatibility (development preview)
 
 - Audit the newly installed 0.121 client read-only. Record its verified AZS_ZONE.heroic field: explicit Normal (0) or Heroic I-V (1-5); missing/legacy values remain unknown.

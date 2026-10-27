@@ -20,6 +20,7 @@ for _, language in ipairs(A.languages) do
         check(A.SetLanguage(lg) and A.Locale() == lg, "manual locale " .. lg)
         for tab = 1, table.getn(A.tabs) do
             A.view.tab = tab
+            A.view.historySection = "History"
             A.view.page = 1
             A.ToggleUI(true)
             A.RefreshUI()

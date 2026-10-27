@@ -122,6 +122,10 @@ if RELEASE_STAGE == 1 then
     packet("AZSRUN", "ph=ready;t=0")
     check(table.getn(A.db.runs) == 0, "ready does not count as a game")
     progress(0, 100, 1)
+    check(
+        A.run.recordBaseline ~= nil,
+        "new run freezes record baseline before its ledger contributes"
+    )
     check(A.run.heroic == heroic, "new packet preserves exact difficulty")
     equipped()
     packet("AZSSPELLS", spell .. ",53,1,0,3")
@@ -281,6 +285,14 @@ elseif RELEASE_STAGE == 3 then
     check(
         A.db.runs[1].equipmentTooltips[1][2].text == "+21 Health",
         "historical descriptions survive a fresh VM"
+    )
+    check(
+        A.db.runs[1].recordBaseline and A.db.runs[1].reportNotified,
+        "record baseline and summary notice deduplication survive fresh processes"
+    )
+    check(
+        A.pendingReport == nil,
+        "restoring a completed game does not replay its transient report notice"
     )
     check(A.db.runs[1].heroic == heroic, "historical difficulty survives final restoration")
     packet("AZSZONE", "zone=feralas;class=" .. cls .. ";heroic=" .. heroic)

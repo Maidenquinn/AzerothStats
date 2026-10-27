@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.6.0-dev.8
+# Azeroth Stats - 1.6.0-dev.9
 
 Development preview of the Chroniques native UI and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
 
@@ -12,7 +12,7 @@ Overview, classes, history, combat, character/builds, records, diagnostics, sett
 
 Open the configurable HUD editor with `/azstats hud` or `/azstats bar config`. Choose per-block scope and metrics, order, width/height, icons/labels, opacity and locking. Apply saves; Cancel discards. No run clock is shown by default. All existing totals remain accessible through All statistics.
 
-Commands (after `/azstats`): `show`, `hide`, `history`, `coop`, `favorites`, `favorite`, `nemesis`, `diagnose`, `bar`, `minimap`, `lock`, `resetpos`, `scale 0.9`, `opacity 1`, `retention 200`, `lang auto`, `sound`, `sound test`, `help`.
+Commands (after `/azstats`): `show`, `hide`, `history`, `report`, `compare`, `coop`, `favorites`, `favorite`, `nemesis`, `diagnose`, `bar`, `minimap`, `lock`, `resetpos`, `scale 0.9`, `opacity 1`, `retention 200`, `lang auto`, `sound`, `sound test`, `help`.
 
 Missing data stays unavailable. Chests require the official final summary; live chest value is a price. Usage counts builds/rank gains, not clicks/casts. DPS records are observed run averages after ten server seconds. Co-op rankings need a common native sample. Last attacker is probable unless explicitly confirmed. RSE1 import is excluded.
 
@@ -25,3 +25,9 @@ Full source, privacy/reviewer notes, tests and limits: https://github.com/Maiden
 ## Game update 0.121
 
 Observed Normal/Heroic I-V is retained per run and filterable in History. Older/missing difficulty remains unknown; lifetime records combine difficulties. Native item tooltips preserve long set/star descriptions and decimal bonuses; reference fallbacks may differ from the historical upgrade level. Fixed legacy drop percentages are no longer shown. Marks, affixes and structured stars are unavailable unless a verified native API exposes them; no save import or gameplay action was added.
+
+## Run reports and comparisons
+
+History now contains History, Run report and Compare runs. Click a retained run, recent run or run Favorite to inspect its report. Use `/azstats report` for the selected/current/latest run and `/azstats compare` to select two retained runs. The comparison initially prefers the same class, zone and known difficulty; either selector can choose a different retained run, and Swap runs reverses B minus A. Missing data stays unavailable, and no percentage is inferred from a zero baseline.
+
+Reports include native/observed totals, damage sources, recorded build/equipment, available group snapshots and class records identified at the native summary. Those class records combine difficulties and require a baseline captured before that run; older reports do not reconstruct milestones. A dismissible notice appears once for 30 seconds after an accepted native summary. It never forces the window open.

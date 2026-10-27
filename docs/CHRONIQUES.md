@@ -1,4 +1,4 @@
-# Chroniques native UI preview — 1.6.0-dev.8
+# Chroniques native UI preview — 1.6.0-dev.9
 
 This implements the approved visual direction using native Lua 5.0/11200 frames. It is a development preview, not a public release or game-team approval. The AI concept board is a design reference, not a screenshot or a runtime texture.
 
@@ -37,7 +37,7 @@ Run the documented offline/native suites, plus `python tools/build_theme_assets.
 
 Before considering a public release, verify in the actual client:
 
-1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.8**. Preserve/back up own SavedVariables first.
+1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.9**. Preserve/back up own SavedVariables first.
 2. Open all pages and All statistics; inspect selected/hover states, row spacing, hearts and item tooltips. Verify both fresh and existing databases.
 3. In the HUD editor, add global runs, class wins, fixed-class kills, observed lifetime duration and current-run damage. Check each tooltip and navigation target. No current-run duration appears unless explicitly chosen.
 4. Change dimensions through minimum/maximum values; test narrow-screen overflow, tall/two-row layout, label/icon toggles, fonts and opacity. Check both live HUD and preview.
@@ -66,3 +66,11 @@ History and run Favorites use the same reviewed zone images as Overview, with se
 Character, Usage, Favorites and Diagnostics use bounded context bands and consistently spaced rows; Classes uses taller cards; Records promotes survival, observed DPS and kills into source-linked cards. Nemesis separately labels observed deaths, confirmed and probable attribution. Settings groups appearance, behavior, storage and HUD editing. Page capacity is derived from available body height without allocating new frames during refresh. Every label uses existing localization keys.
 
 Live map resolution and its limits are documented in API-CONTRACTS.md. Native screenshots of dev.6 confirm the supplied photos load; dev.7 layout and fallback behavior still need a real-client check. Software previews use synthetic data and are not native screenshots.
+
+## Run report and comparison interaction (dev.9)
+
+The History destination keeps three local subviews. Clicking a retained History/recent/Favorite run opens its report; historical damage/build views remain available in the sidebar. Reports have Overview, Combat (damage sources), Character (recorded ranks/equipment), Co-op (available group snapshot) and Records sections. An actionable notice lasts 30 seconds after an accepted official summary, is dismissible, does not open the main window automatically, and is not replayed on reload.
+
+Compare runs uses two independently chosen exact retained IDs, illustrated context panels, run hearts, and Overview/Combat/Spells/Equipment sections. Columns are A, B and B minus A; the equipment cells each expose that run's own tooltip. Default matching checks class, zone and known difficulty only, not equal gear/co-op/duration. Unknown/mismatching context and identical selections are labeled. A missing retained selection stays unavailable until the user chooses another. Models and widgets are bounded and reused; there is no aggregate score, inferred zero or invented drop/upgrade data.
+
+All captions are localized. Native screenshots are still required for the new subviews; software previews use synthetic fixtures, not client rendering.

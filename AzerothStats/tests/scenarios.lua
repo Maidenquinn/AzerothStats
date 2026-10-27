@@ -323,7 +323,11 @@ for _, row in ipairs(A.Rows()) do
         break
     end
 end
-check(A.view.selected ~= nil and A.view.tab == 4, "history selection")
+check(
+    A.view.selected ~= nil and A.view.tab == 3 and A.view.historySection == "Run report",
+    "history opens selected run report"
+)
+A.view.historySection, A.view.tab = "History", 4
 -- Rotation only removes detailed rows; lifetime totals and records survive.
 for i = 1, 15 do
     emit("AZSRUN", "ph=ready;t=0")

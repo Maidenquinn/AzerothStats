@@ -42,6 +42,7 @@ local function applySummary(run, summary)
             run.values[k] = A.Number(summary[field])
         end
     end
+    A.FinishReport(run)
     A.Event(run, "summary", "Resume officiel : " .. summary.result)
 end
 
@@ -122,6 +123,7 @@ local function start(phase, serverTime)
             inventoryBaseline = A.inventoryBaseline,
             bootTerminal = not A.newBoundary and (phase == "dead" or phase == "victory"),
         }
+        A.BeginReport(run)
         A.run = run
         table.insert(database.runs, run)
         A.Event(

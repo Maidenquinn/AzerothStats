@@ -41,7 +41,7 @@ The full native suite runs Lua 5.0.3, round-trips own SavedVariables and simulat
 
 Perform in a test profile/copy approved for review, with own SavedVariables backed up:
 
-1. Install the exact reviewed ZIP and verify `1.6.0-dev.8`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
+1. Install the exact reviewed ZIP and verify `1.6.0-dev.9`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
 2. Start a solo run; choose/upgrade spells and accessories; pause/resume; inspect totals, ranks, item hover and partial indicators. Opening one chest must not increase a supposed live opened count: wait for the official final summary.
 3. Complete and lose separate runs; verify exactly one history entry per run, authoritative final counters and no stale previous-run data on reset. Test victory-to-endless handling where supported.
 4. Restart normally midway/in a menu and after a terminal summary; check history/aggregates/favorites survive without duplication. A hard crash is not guaranteed to persist recent data.
@@ -74,3 +74,14 @@ This archives the exact Git revision, without Git history, private inputs or ign
 ### 0.121 / dev.8
 
 Follow CLIENT-0.121.md for Normal/Heroic, History filter, reload continuity, historical/long native set tooltip and missing-field checks. New font bytes require a full restart for this installed build. Automated native acceptance cycles all six difficulty values across classes/outcomes.
+
+### Dev.9 report/comparison recipe
+
+1. Fully restart after installing (font bytes changed). Check dev.9. Open History and a retained run; switch all five report sections, hover gear, favorite/unfavorite and follow the run selector. Older runs should explicitly lack a record baseline.
+2. Start and finish one new run normally. After the accepted official result, confirm a short report notice appears once; dismiss/click it, reload and check it does not reappear. Starting a new run must not replace the old report's recorded equipment descriptions.
+3. Open Compare runs or `/azstats compare`. Confirm the default chooses a distinct matching class/zone/difficulty when retained. Select mismatching/unknown/same runs and inspect the warning; swap and confirm signs reverse. Check a missing metric/source stays unavailable and a zero A baseline has no percentage.
+4. Compare spells and equipment; hover A and B for their independent historical tooltips. Change star upgrades in the native armory after a run and ensure its ended report does not borrow the new live description.
+5. Inspect available co-op snapshots and their sample/partial labels; do not expect unsupported peer data. Use `/azstats report` and `/azstats history` too.
+6. Switch languages (including CJK), text size 11/16, scale and empty/no-second-run states. Remove an unprotected comparison run through normal retention and confirm no unrelated selection is substituted. Check favorites protect retained runs, pagination and all row/heart/menu hit areas in the native client.
+
+Automated tests cover arithmetic, missing coverage, compatible selection, identical/pruned runs, separate tooltips, milestones/serialization, notice timeout/deduplication, all fourteen language layouts, widget reuse and unchanged ledgers. These are synthetic tests and offline previews, not native playthroughs.

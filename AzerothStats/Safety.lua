@@ -372,6 +372,29 @@ function A.ValidateDatabase(database)
         then
             return false
         end
+        if run.recordBaseline ~= nil then
+            if
+                type(run.recordBaseline) ~= "table"
+                or type(run.recordBaseline.values) ~= "table"
+            then
+                return false
+            end
+            for key, value in pairs(run.recordBaseline.values) do
+                if type(key) ~= "string" or not A.Number(value) then
+                    return false
+                end
+            end
+        end
+        if run.reportRecords ~= nil then
+            if type(run.reportRecords) ~= "table" then
+                return false
+            end
+            for key, value in pairs(run.reportRecords) do
+                if type(key) ~= "string" or not A.Number(value) then
+                    return false
+                end
+            end
+        end
         for _, name in ipairs({ "values", "accounted", "events", "meters" }) do
             if type(run[name]) ~= "table" then
                 return false

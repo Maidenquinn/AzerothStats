@@ -51,6 +51,23 @@ local function initialize()
                 A.view.difficulty = viewSettings.difficulty == "unknown" and "unknown"
                     or A.HeroicLevel(viewSettings.difficulty)
             end
+            local sections = {
+                historySection = { "History", "Run report", "Compare runs" },
+                reportSection = { "Overview", "Combat", "Character", "Co-op", "Records" },
+                compareSection = { "Overview", "Combat", "Spells", "Equipment" },
+            }
+            for key, choices in pairs(sections) do
+                for _, option in ipairs(choices) do
+                    if viewSettings[key] == option then
+                        A.view[key] = option
+                    end
+                end
+            end
+            A.view.compareA, A.view.compareB =
+                A.Text(viewSettings.compareA, 80), A.Text(viewSettings.compareB, 80)
+            if A.view.historySection == "Run report" then
+                A.view.selected = A.Text(viewSettings.reportRun, 80)
+            end
             A.view.cumulative = viewSettings.cumulative == true
             A.view.overviewStats = viewSettings.overviewStats == true
             if viewSettings.usageTab == "Jewelry" or viewSettings.usageTab == "Co-op" then
@@ -191,7 +208,14 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
     elseif command == "coop" then
         A.SelectCoopRun(nil)
         A.ToggleUI(true)
+    elseif command == "report" then
+        A.OpenReport(A.Selected() and A.Selected().id)
+        A.ToggleUI(true)
+    elseif command == "compare" then
+        A.OpenCompare(A.Selected() and A.Selected().id)
+        A.ToggleUI(true)
     elseif command == "history" then
+        A.view.historySection = "History"
         A.view.tab = 3
         A.view.page = 1
         A.ToggleUI(true)
@@ -209,7 +233,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
+            "/azstats show, hide, history, report, compare, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")
