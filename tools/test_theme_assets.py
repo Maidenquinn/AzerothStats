@@ -8,6 +8,20 @@ from build_theme_assets import build
 
 
 class ThemeAssetsTests(unittest.TestCase):
+    def test_run_photo_framing_preserves_geometry_and_has_no_source_cuts(self):
+        from build_run_images import recipe, framing
+
+        data = recipe()
+        for entry in data["zones"].values():
+            left, right, top, bottom = framing(
+                entry["size"], entry["focus"], data["viewport"]
+            )
+            self.assertTrue(0 <= left < right <= 1 and 0 <= top < bottom <= 1)
+            width, height = entry["size"]
+            self.assertAlmostEqual(
+                (right - left) * width / ((bottom - top) * height), 178 / 66, places=4
+            )
+
     def test_native_components_stay_small_and_preserve_alpha(self):
         from encode_painted_assets import ASSETS, images
         from package_policy import MEDIA

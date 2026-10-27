@@ -1,0 +1,180 @@
+{
+  "version": 1,
+  "sourceArchive": "images zones.zip",
+  "sourceArchiveSha256": "6e0993feac44ebb4e48600a7558c2faa5bc821a22d941ba976e4cedeb20fde3e",
+  "viewport": [
+    178,
+    66
+  ],
+  "provenance": "Images supplied by the maintainer. Original creators/licenses were not supplied; no original authorship or official affiliation is claimed.",
+  "zones": {
+    "arena": {
+      "source": "design/run-images/arena.jpg",
+      "sha256": "a64db729a09e3c5d1b1e9100a293b6b7d0b1220c30028c3bf72008c75792b8df",
+      "size": [
+        1200,
+        675
+      ],
+      "focus": [
+        0.5,
+        0.49
+      ],
+      "texture": "RunZone-arena.tga",
+      "archiveEntry": "images zones/arenedegurubashi.jpg"
+    },
+    "ab": {
+      "source": "design/run-images/ab.jpg",
+      "sha256": "9998a40c73b685ff999ffba1c6848366c4a3288b5cabccfcd1c2a99809aec579",
+      "size": [
+        600,
+        319
+      ],
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "texture": "RunZone-ab.tga",
+      "archiveEntry": "images zones/bassindarathi.jpg"
+    },
+    "duskwood": {
+      "source": "design/run-images/duskwood.jpg",
+      "sha256": "5c1c1977f69427396ec167fdea5648c4bb7ac50e8b7286063bcfad614aaf0563",
+      "size": [
+        1920,
+        1200
+      ],
+      "focus": [
+        0.5,
+        0.6
+      ],
+      "texture": "RunZone-duskwood.tga",
+      "archiveEntry": "images zones/boisdelapenombre.jpg"
+    },
+    "ungoro": {
+      "source": "design/run-images/ungoro.jpg",
+      "sha256": "47e46fe61bd365b60a52df4c35a0ceb9fb2f9c53a09f56188d694604fe8109e9",
+      "size": [
+        1366,
+        768
+      ],
+      "focus": [
+        0.5,
+        0.57
+      ],
+      "texture": "RunZone-ungoro.tga",
+      "archiveEntry": "images zones/cratereungoro.jpg"
+    },
+    "elwynn": {
+      "source": "design/run-images/elwynn.jpg",
+      "sha256": "4d8066ad8f23084a61c07bb945b8be0b8e55d5b04cc4dae7fadd5024a8bb3f0a",
+      "size": [
+        1600,
+        900
+      ],
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "texture": "RunZone-elwynn.tga",
+      "archiveEntry": "images zones/foret-elwynn.jpg"
+    },
+    "feralas": {
+      "source": "design/run-images/feralas.jpg",
+      "sha256": "7970c19243cc76738c79c578e366852022fff3ca557ecd84e399bb4f2ed8cbcd",
+      "size": [
+        1600,
+        901
+      ],
+      "focus": [
+        0.5,
+        0.5
+      ],
+      "texture": "RunZone-feralas.tga",
+      "archiveEntry": "images zones/f\u00e9ralas.jpg"
+    },
+    "wsg": {
+      "source": "design/run-images/wsg.jpg",
+      "sha256": "57d30109cbcf386f877fd44ceccc98680dbb3f4b8e683c0ff09286459392b003",
+      "size": [
+        800,
+        449
+      ],
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "texture": "RunZone-wsg.tga",
+      "archiveEntry": "images zones/gouletdeschanteguerres.jpg"
+    },
+    "sm": {
+      "source": "design/run-images/sm.jpg",
+      "sha256": "217051197755af8147efd20245da99d216fd66b9f221a8d15be5a09aa6b21fba",
+      "size": [
+        1670,
+        936
+      ],
+      "focus": [
+        0.5,
+        0.58
+      ],
+      "texture": "RunZone-sm.tga",
+      "archiveEntry": "images zones/monastereecarlate.jpg"
+    },
+    "brm": {
+      "source": "design/run-images/brm.jpg",
+      "sha256": "f617dfcaccf045206e9da74c7d41f58b122c99fb1ba57daa4b38308e32070ea4",
+      "size": [
+        1023,
+        589
+      ],
+      "focus": [
+        0.5,
+        0.58
+      ],
+      "texture": "RunZone-brm.tga",
+      "archiveEntry": "images zones/montrochenoire.jpg"
+    },
+    "naxx": {
+      "source": "design/run-images/naxx.jpg",
+      "sha256": "23c6eac10b8a434a7966e9c2177933523053b3026ab5d52ae9ebeee3ae17e82d",
+      "size": [
+        600,
+        319
+      ],
+      "focus": [
+        0.5,
+        0.52
+      ],
+      "texture": "RunZone-naxx.tga",
+      "archiveEntry": "images zones/naxxramas.jpg"
+    },
+    "aq": {
+      "source": "design/run-images/aq.jpg",
+      "sha256": "a3ba3987fde72b3fc35e376cb1d3331e9505e2cbf65892c374ca2428dc424f71",
+      "size": [
+        600,
+        319
+      ],
+      "focus": [
+        0.5,
+        0.53
+      ],
+      "texture": "RunZone-aq.tga",
+      "archiveEntry": "images zones/portesahnqiraj.jpg"
+    },
+    "av": {
+      "source": "design/run-images/av.jpg",
+      "sha256": "c2f3c311e69e90dd3a0883e6012f4b95ee1151f8930052070db62072d6ddcfa0",
+      "size": [
+        600,
+        319
+      ],
+      "focus": [
+        0.5,
+        0.54
+      ],
+      "texture": "RunZone-av.tga",
+      "archiveEntry": "images zones/valleealterac.jpg"
+    }
+  }
+}

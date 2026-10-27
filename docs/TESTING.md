@@ -41,7 +41,7 @@ The full native suite runs Lua 5.0.3, round-trips own SavedVariables and simulat
 
 Perform in a test profile/copy approved for review, with own SavedVariables backed up:
 
-1. Install the exact reviewed ZIP and verify `1.6.0-dev.5`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
+1. Install the exact reviewed ZIP and verify `1.6.0-dev.6`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
 2. Start a solo run; choose/upgrade spells and accessories; pause/resume; inspect totals, ranks, item hover and partial indicators. Opening one chest must not increase a supposed live opened count: wait for the official final summary.
 3. Complete and lose separate runs; verify exactly one history entry per run, authoritative final counters and no stale previous-run data on reset. Test victory-to-endless handling where supported.
 4. Restart normally midway/in a menu and after a terminal summary; check history/aggregates/favorites survive without duplication. A hard crash is not guaranteed to persist recent data.

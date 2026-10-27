@@ -1,3 +1,11 @@
+## 1.6.0-dev.6 - Supplied recent-run zone photos (development preview)
+
+- Replace the four generated landscapes with the twelve zone photos supplied by the maintainer.
+- Match every supported native zone ID to its exact source image; retain the historical Naxxramas alias.
+- Frame each photo through reviewed focal points and native UV coordinates, preserving the original proportions in the 178 x 66 thumbnail.
+- Keep original JPEG bytes unchanged in source and encode small 256 x 256 native textures. Unknown zones use a neutral placeholder.
+- Record image hashes/provenance and deterministic build checks. No statistics, history or settings change.
+
 ## 1.6.0-dev.5 - Independently movable HUD editor (development preview)
 
 - Move My bar by dragging its header; keep a separate screen anchor and saved position.

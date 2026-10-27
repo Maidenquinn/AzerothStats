@@ -15,7 +15,6 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = tuple(
     [f"ChronicleGlyph{i:02d}.tga" for i in range(1, 17)]
-    + [f"ChronicleZone{i}.tga" for i in range(1, 5)]
     + [f"ChroniclePlate{i}.tga" for i in range(1, 5)]
 )
 
@@ -32,15 +31,6 @@ def images():
     for i in range(16):
         x, y = (i % 4) * 256, (i // 4) * 256
         yield f"ChronicleGlyph{i + 1:02d}.tga", glyphs.crop((x, y, x + 256, y + 256))
-    landscapes = Image.open(folder / "landscapes-source.png").convert("RGBA")
-    for i in range(4):
-        w, h = landscapes.width // 2, landscapes.height // 2
-        x, y = (i % 2) * w, (i // 2) * h
-        crop_height = round(w * 66 / 178)
-        top = y + (h - crop_height) // 2
-        yield f"ChronicleZone{i + 1}.tga", landscapes.crop(
-            (x, top, x + w, top + crop_height)
-        ).resize((256, 128), Image.Resampling.LANCZOS)
     surfaces = Image.open(folder / "surfaces-source.png").convert("RGBA")
     middle = round(surfaces.height * 0.466)
     for i in range(4):
@@ -60,7 +50,9 @@ def build(check=False):
             assert path.read_bytes() == data.getvalue(), f"{name} encoding drift"
         else:
             path.write_bytes(data.getvalue())
-    print("24 original components: deterministic RGBA TGA encoding, maximum edge 256")
+    print(
+        "20 original UI components: deterministic RGBA TGA encoding, maximum edge 256"
+    )
 
 
 if __name__ == "__main__":

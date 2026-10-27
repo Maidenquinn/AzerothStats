@@ -26,11 +26,37 @@ function A.PaintedGlyph(texture, index)
     texture:SetTexCoord(0, 1, 0, 1)
 end
 
---- Decorative zone illustrations are original art, not recorded gameplay or telemetry.
+-- Source photos/framing: data/run-image-sources.json and tools/build_run_images.py.
+-- BEGIN GENERATED RUN IMAGE MAP
+local runImages = {
+    ab = { "RunZone-ab.tga", 0, 1, 0.211298, 0.908702 },
+    aq = { "RunZone-aq.tga", 0, 1, 0.181298, 0.878702 },
+    arena = { "RunZone-arena.tga", 0, 1, 0.160412, 0.819588 },
+    av = { "RunZone-av.tga", 0, 1, 0.191298, 0.888702 },
+    brm = { "RunZone-brm.tga", 0, 1, 0.258001, 0.901999 },
+    duskwood = { "RunZone-duskwood.tga", 0, 1, 0.303371, 0.896629 },
+    elwynn = { "RunZone-elwynn.tga", 0, 1, 0.230412, 0.889588 },
+    feralas = { "RunZone-feralas.tga", 0, 1, 0.170778, 0.829222 },
+    naxx = { "RunZone-naxx.tga", 0, 1, 0.171298, 0.868702 },
+    sm = { "RunZone-sm.tga", 0, 1, 0.249224, 0.910776 },
+    ungoro = { "RunZone-ungoro.tga", 0, 1, 0.240251, 0.899749 },
+    wsg = { "RunZone-wsg.tga", 0, 1, 0.229678, 0.890322 },
+}
+-- END GENERATED RUN IMAGE MAP
+
+--- Use the supplied zone photo with aspect-correct native framing. Historical names
+--- and unknown zones never select a different map just to fill the thumbnail.
 function A.ZoneIllustration(texture, zone)
-    local index = ({ elwynn = 0, naxx = 1, naxxramas = 1, feralas = 2, ungoro = 3 })[zone] or 0
-    texture:SetTexture(A.theme.media .. "ChronicleZone" .. (index + 1) .. ".tga")
-    texture:SetTexCoord(0, 1, 0, 1)
+    if zone == "naxxramas" then
+        zone = "naxx"
+    end
+    local entry = runImages[zone]
+    texture:SetTexture(A.theme.media .. (entry and entry[1] or "ChroniclePlate4.tga"))
+    if entry then
+        texture:SetTexCoord(entry[2], entry[3], entry[4], entry[5])
+    else
+        texture:SetTexCoord(0, 1, 0, 1)
+    end
 end
 
 --- Select one original glyph from the fixed atlas; callers cannot choose an arbitrary texture path.

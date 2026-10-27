@@ -13,6 +13,37 @@ check(A.InitDB(), "HUD preferences initialize with a new schema-1 database")
 A.view.tab = 1
 A.view.overviewStats = false
 A.RefreshUI()
+local photo = A.ui.rows[1].thumbnail
+for _, zone in ipairs({
+    "ab",
+    "aq",
+    "arena",
+    "av",
+    "brm",
+    "duskwood",
+    "elwynn",
+    "feralas",
+    "naxx",
+    "sm",
+    "ungoro",
+    "wsg",
+}) do
+    A.ZoneIllustration(photo, zone)
+    check(
+        photo.texture == A.theme.media .. "RunZone-" .. zone .. ".tga",
+        "recent run selects the exact zone photo: " .. zone
+    )
+end
+A.ZoneIllustration(photo, "naxxramas")
+check(
+    photo.texture == A.theme.media .. "RunZone-naxx.tga",
+    "historical Naxxramas alias keeps the correct photo"
+)
+A.ZoneIllustration(photo, "unavailable-zone")
+check(
+    photo.texture == A.theme.media .. "ChroniclePlate4.tga",
+    "unknown zones use a neutral placeholder instead of another map"
+)
 check(
     A.ui.recentEmpty:IsShown(),
     "a fresh dashboard explains missing retained runs instead of leaving a blank panel"

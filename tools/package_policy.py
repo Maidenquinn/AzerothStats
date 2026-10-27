@@ -20,8 +20,24 @@ MEDIA = (
     "OFL-NotoCJK.txt",
 ) + tuple(
     [f"ChronicleGlyph{i:02d}.tga" for i in range(1, 17)]
-    + [f"ChronicleZone{i}.tga" for i in range(1, 5)]
     + [f"ChroniclePlate{i}.tga" for i in range(1, 5)]
+    + [
+        "RunZone-" + zone + ".tga"
+        for zone in (
+            "ab",
+            "aq",
+            "arena",
+            "av",
+            "brm",
+            "duskwood",
+            "elwynn",
+            "feralas",
+            "naxx",
+            "sm",
+            "ungoro",
+            "wsg",
+        )
+    ]
 )
 
 
