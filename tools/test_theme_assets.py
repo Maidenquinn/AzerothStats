@@ -2,11 +2,27 @@
 
 import io
 import unittest
+from pathlib import Path
 from PIL import Image
 from build_theme_assets import build
 
 
 class ThemeAssetsTests(unittest.TestCase):
+    def test_painted_atlases_have_native_size_and_real_alpha(self):
+        media = Path(__file__).resolve().parent.parent / "AzerothStats/media"
+        for name in [
+            "ChronicleGlyphs",
+            "ChronicleLandscapes",
+            "ChronicleSurfaces",
+            "ChronicleWindow",
+        ]:
+            with self.subTest(name=name):
+                with Image.open(media / (name + ".tga")) as image:
+                    self.assertEqual(image.size, (1024, 1024))
+                    self.assertEqual(image.mode, "RGBA")
+                    if name in {"ChronicleGlyphs", "ChronicleWindow"}:
+                        self.assertEqual(image.getchannel("A").getextrema(), (0, 255))
+
     def test_original_assets_have_native_dimensions_and_alpha(self):
         assets = build()
         dimensions = {

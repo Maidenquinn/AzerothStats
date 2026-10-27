@@ -4,7 +4,7 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**1.6.0-dev.1 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
+**1.6.0-dev.3 is a development preview of the approved Chroniques art direction.** Game-team approval is still pending; the existing 1.5.1-review.1 source audit is historical evidence, not certification of these new UI modules. This branch does not publish a new public release.
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 

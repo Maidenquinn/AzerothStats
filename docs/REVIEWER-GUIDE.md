@@ -1,6 +1,6 @@
-# Current UI preview addendum - 1.6.0-dev.1
+# Current UI preview addendum - 1.6.0-dev.3
 
-The guide below records the earlier 1.5.1 review candidate. Current code additionally loads Theme.lua, Bar.lua and BarUI.lua (23 modules total), with four original textures and updated CJK derivatives. The player ZIP has 41 files including its manifest. Read CHRONIQUES.md and the new draft-editor tests; prior audit/source hashes do not certify the new source. Game-team approval remains pending.
+The guide below records the earlier 1.5.1 review candidate. Current code additionally loads Theme.lua, Bar.lua and BarUI.lua (23 modules total), with eight original Chroniques textures and updated CJK derivatives. The player ZIP has 45 files including its manifest. Read CHRONIQUES.md and the new draft-editor tests; prior audit/source hashes do not certify the new source. Game-team approval remains pending.
 
 # Reviewer guide: 1.5.1-review.1
 

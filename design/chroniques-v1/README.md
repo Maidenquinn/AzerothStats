@@ -1,6 +1,6 @@
 # Chroniques d’Azeroth — proposition de direction artistique V1
 
-Statut : **direction validée**, implémentation native en développement dans `1.6.0-dev.1` (voir [CHRONIQUES.md](../../docs/CHRONIQUES.md)). La planche est une référence artistique ; les nombres, dates, paysages et états sont illustratifs. Ce n’est pas une capture du client. Le rendu réel reste à valider en jeu.
+Statut : **direction validée**, implémentation native en développement dans `1.6.0-dev.3` (voir [CHRONIQUES.md](../../docs/CHRONIQUES.md)). La planche est une référence artistique ; les nombres, dates, paysages et états sont illustratifs. Ce n’est pas une capture du client. Le rendu réel reste à valider en jeu.
 
 
 ## Intention

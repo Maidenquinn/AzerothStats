@@ -214,6 +214,8 @@ local function dashboard(model, group)
                 end
             )
             entry.class = run.class
+            entry.zone = run.zone
+            entry.result = run.result or run.status
             entry.favorite = A.RunFavorite(run)
             if table.getn(model.rows) == 3 then
                 break
@@ -231,8 +233,8 @@ local function dashboard(model, group)
         })
     end
     model.layout = "dashboard"
-    model.rowY = 322
-    model.rowHeight = 59
+    model.rowY = 360
+    model.rowHeight = 88
     model.capacity = 3
 end
 

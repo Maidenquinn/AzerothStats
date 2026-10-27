@@ -17,6 +17,25 @@ check(
     A.ui.recentEmpty:IsShown(),
     "a fresh dashboard explains missing retained runs instead of leaving a blank panel"
 )
+check(
+    A.window:GetHeight() > A.window:GetWidth() * 0.8,
+    "landing window keeps the approved taller proportions"
+)
+for i = 1, 4 do
+    local card = A.ui.cards[i]
+    check(table.getn(card.materialParts) == 9, "card uses explicit owned material slices")
+    check(card.icon:GetWidth() >= 32, "hero metric icons remain legible")
+    for _, texture in ipairs(card.materialParts) do
+        check(
+            texture:GetWidth() > 0 and texture:GetHeight() > 0,
+            "material slices have explicit native dimensions"
+        )
+    end
+end
+check(
+    A.ui.model.rowY + A.ui.model.rowHeight * 3 < -A.ui.recordsTitle.point[5],
+    "recent runs fit above records without overlap"
+)
 local original = A.Sign(A.db.totals)
 local defaults = A.db.settings.hud
 for _, block in ipairs(defaults.blocks) do
@@ -167,13 +186,19 @@ check(
 A.ui.menu.items[2].option.action()
 check(editor.draft.blocks[1].scope == "current", "scope selection modifies only the draft")
 local count = table.getn(editor.draft.blocks)
+local compactHeight = editor:GetHeight()
 editor.add.callback(editor.add)
 check(
     table.getn(editor.draft.blocks) == count + 1,
     "statistic addition is reachable through real editor controls"
 )
+check(
+    editor:GetHeight() == compactHeight + 29,
+    "editor grows by one row instead of reserving blank space"
+)
 editor.rows[2].remove.callback(editor.rows[2].remove)
 check(table.getn(editor.draft.blocks) == count, "removal is reachable through real editor controls")
+check(editor:GetHeight() == compactHeight, "removing a block collapses the editor again")
 for _, language in ipairs(A.languages) do
     if language[1] ~= "auto" then
         A.SetLanguage(language[1])

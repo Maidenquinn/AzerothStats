@@ -12,8 +12,8 @@ Collection metadata originated from local Azerloot/game data, as already credite
 
 ## Media
 
-The player package contains five fonts, two OFL notices/licenses, two original geometric heart textures and four original Chroniques textures. Derived Noto fonts retain existing names/notices and subset naming; the UI preview adds needed glyphs from hash-pinned originals, using tools/check_fonts.py and data/font-sources.json. Native game borders/icons are Interface references, not copied graphics. See `AzerothStats/CREDITS.md` and `media/OFL-*.txt`.
+The player package contains five fonts, two OFL notices/licenses, two original geometric heart textures and eight original Chroniques textures. Derived Noto fonts retain existing names/notices and subset naming; the UI preview adds needed glyphs from hash-pinned originals, using tools/check_fonts.py and data/font-sources.json. Native game borders/icons are Interface references, not copied graphics. See `AzerothStats/CREDITS.md` and `media/OFL-*.txt`.
 
-Chroniques textures are reproducible geometric artwork from tools/build_theme_assets.py, with no image/game-art inputs. The original AI-generated concept board remains source-only and is not a runtime texture.
+Four geometric Chroniques textures are reproduced by tools/build_theme_assets.py. Four painted Chroniques textures are encoded from original AI-generated source PNGs by tools/encode_frame_art.py and tools/encode_painted_assets.py; see the committed design sources and credits. They contain no copied game assets. The original AI-generated concept board remains source-only and is not a runtime texture.
 
 No executable, DLL, `.sav`, native API extract or personal SavedVariables is committed or placed in the player ZIP. Optional local compatibility checks read a selected executable; private inputs stay outside archives. SHA-256 identifies bytes, not approval or safety.

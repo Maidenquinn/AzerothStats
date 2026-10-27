@@ -52,11 +52,13 @@ local function barFrame(parent, preview)
     local frame =
         CreateFrame("Button", preview and "AzerothStatsBarPreview" or "AzerothStatsBar", parent)
     frame.preview = preview
-    frame:SetFrameStrata("DIALOG")
+    frame:SetFrameStrata("FULLSCREEN_DIALOG")
     W.surface(frame, "main")
     frame.cells = {}
+    frame.scopeTitle = W.font(frame, 30, 0, 70, 30, 11, A.theme.muted)
+    frame.scopeTitle.fixedSize = true
     frame.seal = frame:CreateTexture(nil, "ARTWORK")
-    frame.seal:SetTexture(A.theme.seal)
+    A.PaintedGlyph(frame.seal, 1)
     frame.seal:SetPoint("LEFT", frame, "LEFT", 5, 0)
     frame.seal:SetWidth(30)
     frame.seal:SetHeight(30)
@@ -139,7 +141,27 @@ local function paintBar(frame, config)
     frame.models = {}
     frame:SetWidth(layout.width)
     frame:SetHeight(layout.height)
+    A.UpdateThemeFrame(frame)
     frame.base:SetAlpha(config.opacity)
+    if frame.materialCenter then
+        frame.materialCenter:SetAlpha(config.opacity)
+    end
+    frame.seal:SetWidth(layout.width < 600 and 22 or 30)
+    frame.seal:SetHeight(layout.width < 600 and 22 or 30)
+    frame.scopeTitle:ClearAllPoints()
+    frame.scopeTitle:SetPoint("TOPLEFT", frame, "TOPLEFT", layout.width < 600 and 30 or 40, -3)
+    frame.scopeTitle:SetHeight(layout.height - 6)
+    frame.scopeTitle.fontWidth = layout.lead - (layout.width < 600 and 36 or 46)
+    frame.scopeTitle:SetWidth(frame.scopeTitle.fontWidth)
+    if layout.commonScope then
+        local first = config.blocks[1]
+        local scope = first.scope == "all" and A.T("Global")
+            or (first.scope == "run" and A.T("Current run") or A.ClassName(A.BarClass(first)))
+        barText(frame.scopeTitle, scope)
+        frame.scopeTitle:Show()
+    else
+        frame.scopeTitle:Hide()
+    end
     if frame.grain then
         frame.grain:SetAlpha(config.opacity * 0.16)
     end
@@ -152,7 +174,7 @@ local function paintBar(frame, config)
     else
         frame.overflow:Hide()
     end
-    local width = (layout.width - (layout.overflow > 0 and 100 or 68)) / layout.columns
+    local width = (layout.width - layout.lead - (layout.overflow > 0 and 68 or 36)) / layout.columns
     local height = (layout.height - 6) / layout.rows
     for index, block in ipairs(config.blocks) do
         frame.models[index] = A.BarBlockModel(block)
@@ -164,16 +186,26 @@ local function paintBar(frame, config)
             local col, row =
                 math.mod(index - 1, layout.columns), math.floor((index - 1) / layout.columns)
             cell:ClearAllPoints()
-            cell:SetPoint("TOPLEFT", frame, "TOPLEFT", 38 + col * width, -3 - row * height)
+            cell:SetPoint("TOPLEFT", frame, "TOPLEFT", layout.lead + col * width, -3 - row * height)
             cell:SetWidth(width)
             cell:SetHeight(height)
             cell.line:SetHeight(math.max(12, height - 10))
             local x = config.icons and 30 or 9
             cell.icon:ClearAllPoints()
             cell.icon:SetPoint("LEFT", cell, "LEFT", 7, 0)
-            local glyph = { runs = 1, wins = 6, duration = 3, kills = 11 }
+            local glyph = {
+                runs = 2,
+                wins = 3,
+                duration = 4,
+                kills = 5,
+                gold = 15,
+                chests = 14,
+                damage = 2,
+                taken = 16,
+                bosses = 5,
+            }
             if glyph[model.block.metric] then
-                A.ThemeIcon(cell.icon, glyph[model.block.metric])
+                A.PaintedGlyph(cell.icon, glyph[model.block.metric])
             else
                 W.icon(cell.icon, model.icon)
             end
@@ -189,7 +221,8 @@ local function paintBar(frame, config)
                     model.block.scope == "run" and A.T("Current run")
                     or A.ClassName(A.BarClass(model.block))
                 )
-            local caption = shortScope .. (config.labels and (" · " .. model.label) or "")
+            local caption = layout.commonScope and (config.labels and model.label or "")
+                or (shortScope .. (config.labels and (" · " .. model.label) or ""))
             cell.caption:ClearAllPoints()
             cell.caption:SetPoint("TOPLEFT", cell, "TOPLEFT", x, twoLines and -1 or 0)
             cell.caption.fontWidth = width - x - 7
@@ -252,6 +285,31 @@ end
 --- Synchronize editor labels/controls from the draft without recursively changing slider values.
 local function refreshEditor()
     local draft = editor.draft
+    -- Collapse unused reserved rows. Keep a fixed bounded pool, but let the panel
+    -- and appearance controls follow the actual draft rather than eight empty slots.
+    local delta = (table.getn(draft.blocks) - 8) * 29
+    editor:SetHeight(695 + delta)
+    A.UpdateThemeFrame(editor)
+    local function move(widget, x, y)
+        widget:ClearAllPoints()
+        widget:SetPoint("TOPLEFT", editor, "TOPLEFT", x, -y - delta)
+    end
+    move(editor.add, 24, 407)
+    move(editor.appearance, 24, 445)
+    for index, slider in ipairs(editor.sliders) do
+        local x, y = 24 + math.mod(index - 1, 3) * 280, index <= 3 and 483 or 549
+        move(slider, x + 8, y + 22)
+        move(slider.caption, x, y)
+        move(slider.number, x + 200, y)
+    end
+    for index, check in ipairs(editor.checks) do
+        local x, y = index == 3 and 584 or 304, index == 2 and 577 or 545
+        move(check, x, y)
+        move(check.caption, x + 29, y)
+    end
+    for _, control in ipairs(editor.translated) do
+        move(control, control.editorX, 622)
+    end
     W.put(editor.title, A.T("My bar"))
     W.put(editor.hint, A.T("Bar scope hint"))
     W.put(editor.appearance, A.T("Appearance"))
@@ -348,16 +406,16 @@ local function buildEditor()
     editor = CreateFrame("Frame", "AzerothStatsBarEditor", A.window)
     A.barEditor = editor
     editor:SetWidth(870)
-    editor:SetHeight(650)
-    editor:SetFrameStrata("DIALOG")
+    editor:SetHeight(695)
+    editor:SetFrameStrata("FULLSCREEN_DIALOG")
     editor:SetFrameLevel(A.window:GetFrameLevel() + 10)
     editor:SetPoint("CENTER", A.window, "CENTER", 0, 0)
     editor:EnableMouse(true)
     W.surface(editor, "main")
-    editor.title = W.font(editor, 24, 14, 720, 30, 23, A.theme.gold, true)
-    editor.hint = W.font(editor, 24, 120, 814, 22, 11, A.theme.muted)
+    editor.title = W.font(editor, 24, 32, 720, 30, 23, A.theme.gold, true)
+    editor.hint = W.font(editor, 24, 140, 814, 22, 11, A.theme.muted)
     editor.preview = barFrame(editor, true)
-    editor.preview:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -54)
+    editor.preview:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -74)
     local close = CreateFrame("Button", nil, editor, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", editor, "TOPRIGHT", -6, -5)
     close:SetScript("OnClick", function()
@@ -375,7 +433,7 @@ local function buildEditor()
     for index = 1, 8 do
         local position = index
         local row = CreateFrame("Frame", nil, editor)
-        row:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -150 - (index - 1) * 29)
+        row:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -170 - (index - 1) * 29)
         row:SetWidth(814)
         row:SetHeight(28)
         row.metric = W.button(row, 0, 0, 255, 27, "", function(anchor)
@@ -411,21 +469,21 @@ local function buildEditor()
         end)
         editor.rows[index] = row
     end
-    editor.add = W.button(editor, 24, 387, 814, 27, "", function(anchor)
+    editor.add = W.button(editor, 24, 407, 814, 27, "", function(anchor)
         if table.getn(editor.draft.blocks) < 8 then
             table.insert(editor.draft.blocks, { metric = "kills", scope = "all" })
             refreshEditor()
             metricMenu(anchor, table.getn(editor.draft.blocks))
         end
     end)
-    editor.appearance = W.font(editor, 24, 425, 814, 24, 17, A.theme.gold, true)
+    editor.appearance = W.font(editor, 24, 445, 814, 24, 17, A.theme.gold, true)
     for index, def in ipairs({
         { "width", "Width", 240, 1600, 10 },
         { "height", "Height", 28, 96, 1 },
         { "textSize", "Font size", 11, 16, 1 },
         { "opacity", "Background opacity", 0.45, 1, 0.05 },
     }) do
-        local x, y = 24 + math.mod(index - 1, 3) * 280, index <= 3 and 463 or 529
+        local x, y = 24 + math.mod(index - 1, 3) * 280, index <= 3 and 483 or 549
         local slider = CreateFrame(
             "Slider",
             "AzerothStatsHUDSlider" .. def[1],
@@ -462,7 +520,7 @@ local function buildEditor()
         { "locked", "Lock position" },
     }) do
         local check = CreateFrame("CheckButton", nil, editor, "UICheckButtonTemplate")
-        local x, y = index == 3 and 584 or 304, index == 2 and 557 or 525
+        local x, y = index == 3 and 584 or 304, index == 2 and 577 or 545
         check.setting = def[1]
         check.key = def[2]
         check:SetPoint("TOPLEFT", editor, "TOPLEFT", x, -y)
@@ -481,22 +539,25 @@ local function buildEditor()
         { "journey", "My journey" },
     }) do
         local id = preset[1]
-        local control = W.button(editor, 24 + (index - 1) * 136, 602, 128, 30, preset[2], function()
+        local control = W.button(editor, 24 + (index - 1) * 136, 622, 128, 30, preset[2], function()
             editor.draft = A.BarPreset(id)
             refreshEditor()
         end)
         table.insert(editor.translated, control)
+        control.editorX = 24 + (index - 1) * 136
     end
-    editor.cancel = W.button(editor, 580, 602, 122, 30, "Cancel", function()
+    editor.cancel = W.button(editor, 580, 622, 122, 30, "Cancel", function()
         editor:Hide()
     end)
-    editor.apply = W.button(editor, 714, 602, 124, 30, "Apply", function()
+    editor.apply = W.button(editor, 714, 622, 124, 30, "Apply", function()
         A.db.settings.hud = A.NormalizeBar(editor.draft)
         editor:Hide()
         A.RefreshBar()
     end)
     table.insert(editor.translated, editor.cancel)
     table.insert(editor.translated, editor.apply)
+    editor.cancel.editorX = 580
+    editor.apply.editorX = 714
     if UISpecialFrames then
         table.insert(UISpecialFrames, "AzerothStatsBarEditor")
     end

@@ -90,12 +90,10 @@ local function surface(frame, kind)
     grain:SetAlpha(0.16)
     table.insert(UI.solids, { texture = grain, multiplier = 0.16 })
     frame.grain = grain
-    frame:SetBackdrop({
-        edgeFile = A.theme.edge,
-        edgeSize = kind == "main" and 32 or 16,
-        insets = { left = 4, right = 4, top = 4, bottom = 4 },
-    })
-    frame:SetBackdropBorderColor(0.85, 0.71, 0.42, 1)
+    A.ThemeFrame(frame, kind)
+    if frame.materialCenter then
+        table.insert(UI.solids, { texture = frame.materialCenter })
+    end
     frame.base = base
     return base
 end
@@ -143,7 +141,11 @@ local function selected(b, active)
     b.selected = active and true or false
     b.base:SetTexture(active and 0.21 or 0.063, active and 0.17 or 0.09, active and 0.10 or 0.106)
     b.base:SetAlpha(A.db.settings.opacity)
-    b:SetBackdropBorderColor(0.85, 0.71, 0.42, (b.navigation and not active) and 0 or 1)
+    A.MaterialState(b, active)
+    if b.materialCenter then
+        b.materialCenter:SetAlpha((b.navigation and not active) and 0 or A.db.settings.opacity)
+    end
+    A.PaintBorder(b, 0.85, 0.71, 0.42, (b.navigation and not active) and 0 or (active and 1 or 0.5))
     if b.marker then
         if active then
             b.marker:Show()
@@ -180,7 +182,7 @@ local function button(parent, x, y, w, h, label, fn)
         end
     end)
     b:SetScript("OnEnter", function()
-        this:SetBackdropBorderColor(0.9, 0.7, 0.34, 1)
+        A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
     end)
     b:SetScript("OnLeave", function()
         selected(this, this.selected)
@@ -305,7 +307,7 @@ function A.ShowMenu(anchor, options, offset)
     if not UI.menu then
         UI.menu = CreateFrame("Frame", "AzerothStatsMenu", A.window)
         surface(UI.menu, "main")
-        UI.menu:SetFrameStrata("DIALOG")
+        UI.menu:SetFrameStrata("FULLSCREEN_DIALOG")
         UI.menu:SetFrameLevel(A.window:GetFrameLevel() + 30)
         UI.menu.items = {}
     end
@@ -342,6 +344,7 @@ function A.ShowMenu(anchor, options, offset)
     menu:SetPoint("TOPRIGHT", anchor, "BOTTOMRIGHT", 0, -3)
     menu:SetWidth(268)
     menu:SetHeight(table.getn(options) * 24 + 12)
+    A.UpdateThemeFrame(menu)
     for i, entry in ipairs(options) do
         local b = menu.items[i]
         if not b then
@@ -453,7 +456,7 @@ function A.ApplyUI()
     local fit = math.min(
         settings.scale,
         math.max(0.45, (UIParent:GetWidth() - 24) / 960),
-        math.max(0.45, (UIParent:GetHeight() - 40) / 650)
+        math.max(0.45, (UIParent:GetHeight() - 40) / 780)
     )
     UI.effectiveScale = fit
     local old = A.window:GetScale()
@@ -593,6 +596,9 @@ function A.RefreshUI()
     UI.model = model
     put(UI.title, "AZEROTH STATS")
     put(UI.version, A.version)
+    local _, heroClass = A.Identity()
+    put(UI.profileName, A.Text(A.Call(UnitName, "player"), 80) or "?")
+    put(UI.profileClass, A.ClassName(heroClass))
     put(
         UI.breadcrumb,
         (A.view.tab == 4 or A.view.tab == 9)
@@ -665,6 +671,7 @@ function A.RefreshUI()
     selected(UI.scopeRun, not A.view.cumulative)
     selected(UI.scopeAll, A.view.cumulative)
     local dashboard = model.layout == "dashboard"
+    show(UI.note, not dashboard)
     show(UI.statsLink, tab == 1)
     put(UI.statsLink.label, A.T(dashboard and "All statistics" or "Overview"))
     show(UI.recentTitle, dashboard)
@@ -687,7 +694,12 @@ function A.RefreshUI()
         settingsRefresh()
     end
     -- Two-line rows keep a real gap even at the largest accessibility font size.
-    if model.layout ~= "overview" and model.layout ~= "classes" and model.layout ~= "settings" then
+    if
+        model.layout ~= "overview"
+        and model.layout ~= "classes"
+        and model.layout ~= "settings"
+        and not dashboard
+    then
         local hasDetail = false
         for _, d in ipairs(model.rows) do
             if d.detail and d.detail ~= "" then
@@ -736,25 +748,41 @@ function A.RefreshUI()
             )
             local dashboard = model.layout == "dashboard"
             if dashboard then
-                c:SetWidth(171)
-                c:SetPoint("TOPLEFT", A.window, "TOPLEFT", 218 + (i - 1) * 180, -163)
-                h = 106
+                c:SetWidth(178.5)
+                c:SetPoint("TOPLEFT", A.window, "TOPLEFT", 218 + (i - 1) * 178.5, -181)
+                h = 128
             else
                 c:SetWidth(224)
             end
             c:SetHeight(h)
-            c.label.fontWidth = dashboard and 125 or 176
+            A.UpdateThemeFrame(c)
+            c.label.fontWidth = dashboard and 154 or 176
             c.label:SetWidth(c.label.fontWidth)
-            c.value.fontWidth = dashboard and 144 or 199
+            c.value.fontWidth = dashboard and 154 or 199
             c.value:SetWidth(c.value.fontWidth)
             c.detail.fontWidth = dashboard and 144 or 199
             c.detail:SetWidth(c.detail.fontWidth)
             c.detail:ClearAllPoints()
             c.detail:SetPoint("TOPLEFT", c, "TOPLEFT", 13, model.layout == "combat" and -58 or -69)
-            c.value:SetHeight(model.layout == "combat" and 27 or 34)
+            c.label:ClearAllPoints()
+            c.value:ClearAllPoints()
+            c.icon:ClearAllPoints()
+            c.label:SetPoint("TOPLEFT", c, "TOPLEFT", 13, dashboard and -47 or -9)
+            c.value:SetPoint("TOPLEFT", c, "TOPLEFT", 13, dashboard and -71 or -32)
+            c.label:SetJustifyH(dashboard and "CENTER" or "LEFT")
+            c.value:SetJustifyH(dashboard and "CENTER" or "LEFT")
+            c.value.baseSize = dashboard and 27 or 23
+            c.value:SetTextColor(
+                unpack(dashboard and (i == 2 and COLORS.green or COLORS.text) or COLORS.gold)
+            )
+            c.value:SetHeight(model.layout == "combat" and 27 or 38)
+            c.icon:SetWidth(dashboard and 34 or 22)
+            c.icon:SetHeight(dashboard and 34 or 22)
             if model.layout == "dashboard" then
-                A.ThemeIcon(c.icon, ({ 1, 6, 3, 11 })[i])
+                c.icon:SetPoint("TOP", c, "TOP", 0, -9)
+                A.PaintedGlyph(c.icon, i + 1)
             else
+                c.icon:SetPoint("TOPRIGHT", c, "TOPRIGHT", -12, -12)
                 icon(c.icon, d.icon, d.class)
             end
             put(c.label, d.label)
@@ -798,8 +826,43 @@ function A.RefreshUI()
             frame.icon:SetWidth(compact and 17 or 22)
             frame.icon:SetHeight(compact and 17 or 22)
             icon(frame.icon, d.icon, d.class)
+            frame.label:ClearAllPoints()
+            frame.label:SetPoint(
+                "TOPLEFT",
+                frame,
+                "TOPLEFT",
+                dashboard and 158 or 35,
+                dashboard and -14 or -1
+            )
+            frame.label.fontWidth = dashboard and 360 or 412
+            frame.label:SetWidth(frame.label.fontWidth)
+            frame.detail:ClearAllPoints()
+            frame.detail:SetPoint(
+                "TOPLEFT",
+                frame,
+                "TOPLEFT",
+                dashboard and 158 or 35,
+                dashboard and -41 or -(model.rowHeight >= 40 and 24 or 16)
+            )
+            frame.detail.fontWidth = dashboard and 360 or 670
+            frame.detail:SetWidth(frame.detail.fontWidth)
+            frame.value:ClearAllPoints()
+            frame.value:SetPoint("TOPLEFT", frame, "TOPLEFT", 455, dashboard and -17 or 0)
+            frame.favorite:ClearAllPoints()
+            frame.favorite:SetPoint("TOPLEFT", frame, "TOPLEFT", 687, dashboard and -16 or -1)
+            show(frame.thumbnail, dashboard)
+            show(frame.icon, not dashboard)
+            if dashboard then
+                A.ZoneIllustration(frame.thumbnail, d.zone)
+            end
             put(frame.label, d.label)
-            put(frame.value, d.value)
+            frame.value:SetTextColor(
+                unpack(
+                    dashboard and (d.result == "victory" and COLORS.green or COLORS.gold)
+                        or COLORS.gold
+                )
+            )
+            put(frame.value, dashboard and (A.Status(d.result) .. " · " .. d.value) or d.value)
             put(frame.detail, compact and "" or d.detail)
             frame.fill:SetWidth(
                 math.max(1, 710 * math.max(0, math.min(1, d.fraction or (d.focused and 1) or 0)))
@@ -984,8 +1047,10 @@ function A.BuildUI()
     local frame = CreateFrame("Frame", "AzerothStatsWindow", UIParent)
     A.window = frame
     frame:SetWidth(960)
-    frame:SetHeight(650)
-    frame:SetFrameStrata("DIALOG")
+    frame:SetHeight(780)
+    frame:SetFrameStrata("FULLSCREEN_DIALOG")
+    frame:SetFrameLevel(100)
+    frame:SetToplevel(true)
     surface(frame, "main")
     drag(frame, "windowPos")
     place(frame, "windowPos", "CENTER", 0, 0)
@@ -1002,13 +1067,13 @@ function A.BuildUI()
         end
     end)
     local emblem = frame:CreateTexture(nil, "ARTWORK")
-    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 21, -15)
-    emblem:SetWidth(48)
-    emblem:SetHeight(48)
-    emblem:SetTexture(A.theme.seal)
-    UI.title = font(frame, 72, 19, 370, 28, 23, COLORS.gold, true)
-    UI.version = font(frame, 448, 23, 200, 20, 11, COLORS.muted)
-    UI.breadcrumb = font(frame, 72, 49, 810, 18, 11, COLORS.muted)
+    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 27, -32)
+    emblem:SetWidth(58)
+    emblem:SetHeight(58)
+    A.PaintedGlyph(emblem, 1)
+    UI.title = font(frame, 100, 32, 500, 40, 32, COLORS.gold, true)
+    UI.version = font(frame, 730, 42, 150, 20, 11, COLORS.muted)
+    UI.breadcrumb = font(frame, 103, 75, 750, 18, 11, COLORS.muted)
     local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -7, -6)
     close:SetWidth(30)
@@ -1017,14 +1082,22 @@ function A.BuildUI()
         A.ToggleUI(false)
     end)
     local divider = frame:CreateTexture(nil, "ARTWORK")
-    divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -79)
+    divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -98)
     divider:SetWidth(914)
     divider:SetHeight(1)
     divider:SetTexture(0.42, 0.32, 0.16)
-    UI.sidebarNote = font(frame, 29, 625, 152, 16, 10, COLORS.muted)
-    UI.explore = font(frame, 29, 91, 160, 18, 10, COLORS.muted)
-    UI.progression = font(frame, 29, 296, 160, 18, 10, COLORS.muted)
-    local navY = { 115, 320, 155, 195, 235, 360, 588, 545, 440, 493, 400 }
+    local profile = frame:CreateTexture(nil, "ARTWORK")
+    profile:SetPoint("TOPLEFT", frame, "TOPLEFT", 32, -127)
+    profile:SetWidth(48)
+    profile:SetHeight(48)
+    A.PaintedGlyph(profile, 7)
+    UI.profileName = font(frame, 90, 129, 112, 23, 16, COLORS.text)
+    UI.profileClass = font(frame, 90, 153, 112, 20, 11, COLORS.muted)
+    UI.sidebarNote = font(frame, 29, 738, 160, 17, 10, COLORS.muted)
+    UI.sidebarNote:Hide()
+    UI.explore = font(frame, 29, 198, 160, 18, 10, COLORS.muted)
+    UI.progression = font(frame, 29, 406, 160, 18, 10, COLORS.muted)
+    local navY = { 221, 429, 264, 307, 350, 472, 709, 666, 558, 611, 515 }
     for i, key in ipairs(A.tabs) do
         local index = i
         local b = button(frame, 23, navY[i], 170, i == 7 and 27 or 36, "", function()
@@ -1048,8 +1121,8 @@ function A.BuildUI()
         b.navigation = true
         UI.nav[i] = b
     end
-    UI.sectionTitle = font(frame, 218, 96, 285, 28, 21, COLORS.gold, true)
-    UI.subtitle = font(frame, 218, 128, 710, 22, 11, COLORS.muted)
+    UI.sectionTitle = font(frame, 218, 109, 285, 32, 24, COLORS.gold, true)
+    UI.subtitle = font(frame, 218, 143, 710, 16, 11, COLORS.muted)
     UI.classButton = button(frame, 714, 100, 218, 26, "", function()
         A.CycleClass()
     end)
@@ -1162,6 +1235,11 @@ function A.BuildUI()
         r.icon:SetPoint("LEFT", r, "LEFT", 6, 0)
         r.icon:SetWidth(22)
         r.icon:SetHeight(22)
+        r.thumbnail = r:CreateTexture(nil, "ARTWORK")
+        r.thumbnail:SetPoint("TOPLEFT", r, "TOPLEFT", 5, -8)
+        r.thumbnail:SetWidth(138)
+        r.thumbnail:SetHeight(70)
+        r.thumbnail:Hide()
         r.label = font(r, 35, 1, 412, 22, 12, COLORS.text)
         r.value = font(r, 455, 0, 225, 23, 13, COLORS.gold)
         r.value:SetJustifyH("RIGHT")
@@ -1186,28 +1264,33 @@ function A.BuildUI()
         A.view.page = 1
         A.RefreshUI()
     end)
-    UI.recentTitle = font(frame, 218, 284, 430, 27, 18, COLORS.gold, true)
+    UI.recentTitle = font(frame, 218, 322, 430, 30, 22, COLORS.gold, true)
     UI.recentEmpty = font(frame, 240, 370, 650, 55, 14, COLORS.muted)
-    UI.historyLink = button(frame, 714, 284, 218, 27, "History", function()
+    UI.historyLink = button(frame, 772, 322, 160, 30, "History", function()
         selectTab(3)
     end)
-    UI.recordsTitle = font(frame, 218, 509, 430, 26, 18, COLORS.gold, true)
-    UI.recordsLink = button(frame, 714, 509, 218, 26, "Records", function()
+    UI.recordsTitle = font(frame, 218, 641, 430, 30, 22, COLORS.gold, true)
+    UI.recordsLink = button(frame, 772, 641, 160, 30, "Records", function()
         selectTab(6)
     end)
     UI.recordPanel = CreateFrame("Frame", nil, frame)
-    UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -541)
+    UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -682)
     UI.recordPanel:SetWidth(714)
-    UI.recordPanel:SetHeight(44)
+    UI.recordPanel:SetHeight(60)
     surface(UI.recordPanel, "card")
     UI.recordItems = {}
     for index = 1, 3 do
         local record = CreateFrame("Button", nil, UI.recordPanel)
         record:SetPoint("TOPLEFT", UI.recordPanel, "TOPLEFT", 10 + (index - 1) * 238, 0)
         record:SetWidth(218)
-        record:SetHeight(44)
-        record.label = font(record, 0, 1, 208, 16, 11, COLORS.muted)
-        record.value = font(record, 0, 17, 208, 25, 17, COLORS.text)
+        record:SetHeight(60)
+        local glyph = record:CreateTexture(nil, "ARTWORK")
+        glyph:SetPoint("LEFT", record, "LEFT", 2, 0)
+        glyph:SetWidth(30)
+        glyph:SetHeight(30)
+        A.PaintedGlyph(glyph, ({ 4, 5, 2 })[index])
+        record.label = font(record, 42, 5, 166, 18, 11, COLORS.muted)
+        record.value = font(record, 42, 25, 166, 28, 21, COLORS.text)
         record:SetScript("OnEnter", function()
             tooltip(this)
         end)
@@ -1220,17 +1303,17 @@ function A.BuildUI()
         UI.recordItems[index] = record
     end
     UI.empty = font(frame, 268, 293, 608, 80, 16, COLORS.muted, true)
-    UI.note = font(frame, 218, 589, 714, 19, 10, COLORS.muted)
-    UI.previous = button(frame, 218, 615, 38, 24, "<", function()
+    UI.note = font(frame, 218, 738, 714, 19, 10, COLORS.muted)
+    UI.previous = button(frame, 218, 714, 38, 24, "<", function()
         A.view.page = math.max(1, A.view.page - 1)
         A.RefreshUI()
     end)
-    UI.next = button(frame, 265, 615, 38, 24, ">", function()
+    UI.next = button(frame, 265, 714, 38, 24, ">", function()
         local model = A.PageModel()
         A.view.page = math.min(math.ceil(table.getn(model.rows) / model.capacity), A.view.page + 1)
         A.RefreshUI()
     end)
-    UI.paging = font(frame, 320, 616, 400, 23, 11, COLORS.muted)
+    UI.paging = font(frame, 320, 715, 400, 23, 11, COLORS.muted)
     if frame.EnableMouseWheel then
         frame:EnableMouseWheel(true)
         frame:SetScript("OnMouseWheel", function()
@@ -1256,7 +1339,7 @@ function A.BuildUI()
     mini.icon:SetPoint("CENTER", mini, "CENTER", 0, 0)
     mini.icon:SetWidth(21)
     mini.icon:SetHeight(21)
-    mini.icon:SetTexture(A.theme.seal)
+    A.PaintedGlyph(mini.icon, 1)
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")
     mini:SetScript("OnClick", function()

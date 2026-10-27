@@ -195,19 +195,28 @@ end
 function A.BarLayout(config, availableWidth)
     local width = math.min(config.width, math.max(160, availableWidth - 16))
     local rows = config.height >= 72 and 2 or 1
-    local minimum = config.labels and 142 or 104
-    local columns = math.max(1, math.floor((width - 68) / minimum))
+    local first = config.blocks[1]
+    local common = true
+    for _, block in ipairs(config.blocks) do
+        if block.scope ~= first.scope or block.class ~= first.class then
+            common = false
+        end
+    end
+    local lead = common and (width >= 600 and 112 or 76) or 38
+    local minimum = config.labels and (common and 128 or 160) or 104
+    local columns = math.max(1, math.floor((width - lead - 36) / minimum))
     local count = table.getn(config.blocks)
     local capacity = math.min(count, columns * rows)
-    local overflow = count > capacity
-    if overflow then
-        columns = math.max(1, math.floor((width - 96) / minimum))
+    if count > capacity then
+        columns = math.max(1, math.floor((width - lead - 68) / minimum))
         capacity = math.min(count, columns * rows)
     end
     return {
         width = width,
         height = config.height,
         rows = rows,
+        commonScope = common,
+        lead = lead,
         columns = math.min(columns, math.max(1, math.ceil(capacity / rows))),
         capacity = capacity,
         overflow = count - capacity,

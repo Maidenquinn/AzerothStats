@@ -1,3 +1,12 @@
+## 1.6.0-dev.3 - Native visual fidelity follow-up (development preview)
+
+- Replace thin geometric UI glyphs with a painted sixteen-icon atlas; add original material plates, window ornament and decorative zone illustrations.
+- Use explicit nine-slice textures and native dimensions instead of the custom backdrop strip that repeated gold strokes.
+- Rework the landing page proportions, player profile, centered metric cards, ivory values, recent-run thumbnails and record strip.
+- Collapse unused HUD-editor rows and show a shared scope once in the HUD when appropriate.
+- Add material/dimension/editor regressions, deterministic artwork encoders and provenance documentation.
+- Preserve accounting, history and settings. Not publicly released; native visual verification and game-team approval remain pending.
+
 ## 1.6.0-dev.1 - Chroniques UI and configurable HUD (development preview)
 
 - Introduce the reusable slate/bronze Chroniques theme, original compass/glyph artwork and grouped navigation.
