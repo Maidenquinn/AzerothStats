@@ -143,3 +143,27 @@ function A.UpdateThemeFrame(frame)
         texture:SetHeight(y == 2 and math.max(1, height - 2 * corner) or corner)
     end
 end
+
+--- Static inset sections share the native nine-slice material without introducing
+--- extra child-frame layering over labels or controls. Returned textures stay owned.
+function A.ThemePanel(parent, x, y, width, height)
+    local parts, cuts, edge = {}, { 0, 0.07, 0.93, 1 }, 12
+    local xs, ys = { 0, edge, width - edge }, { 0, edge, height - edge }
+    for row = 1, 3 do
+        for col = 1, 3 do
+            local texture = parent:CreateTexture(nil, "BACKGROUND")
+            if col == 2 and row == 2 then
+                texture:SetTexture(A.theme.panel[1], A.theme.panel[2], A.theme.panel[3])
+            else
+                texture:SetTexture(A.theme.media .. "ChroniclePlate3.tga")
+                texture:SetTexCoord(cuts[col], cuts[col + 1], cuts[row], cuts[row + 1])
+            end
+            texture:SetPoint("TOPLEFT", parent, "TOPLEFT", x + xs[col], -y - ys[row])
+            texture:SetWidth(col == 2 and (width - 2 * edge) or edge)
+            texture:SetHeight(row == 2 and (height - 2 * edge) or edge)
+            texture:SetAlpha(0.65)
+            table.insert(parts, texture)
+        end
+    end
+    return parts
+end

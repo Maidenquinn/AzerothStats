@@ -1,3 +1,12 @@
+## 1.6.0-dev.7 - Live zone continuity and shared page layouts (development preview)
+
+- Resolve missing zone packets through exact localized catalog matches from native zone readers; enrich the current run without splitting it when metadata arrives late.
+- Preserve a previously observed zone during a compatible increasing-clock resume; never borrow a zone after a run-clock reset or rewrite ended unknown runs.
+- Preserve UTF-8 names in the bounded text sanitizer on Windows locales.
+- Extend Chroniques to History, Combat, Character, Classes, Records, Usage, Favorites, Nemesis, Diagnostics and Settings: context bands, landscape run rows, readable column spacing, featured records and explicit death-confidence cards.
+- Keep combat share/rank/total in separate columns and use a thin contribution track. Show the active selection as Current run. Group appearance, behavior, storage and HUD controls in Settings.
+- Add multilingual zone, resume/reset, text-safety and page-geometry regressions. No public release or game-team approval is claimed.
+
 ## 1.6.0-dev.6 - Supplied recent-run zone photos (development preview)
 
 - Replace the four generated landscapes with the twelve zone photos supplied by the maintainer.

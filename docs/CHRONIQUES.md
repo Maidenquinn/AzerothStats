@@ -1,4 +1,4 @@
-# Chroniques native UI preview — 1.6.0-dev.6
+# Chroniques native UI preview — 1.6.0-dev.7
 
 This implements the approved visual direction using native Lua 5.0/11200 frames. It is a development preview, not a public release or game-team approval. The AI concept board is a design reference, not a screenshot or a runtime texture.
 
@@ -37,7 +37,7 @@ Run the documented offline/native suites, plus `python tools/build_theme_assets.
 
 Before considering a public release, verify in the actual client:
 
-1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.6**. Preserve/back up own SavedVariables first.
+1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.7**. Preserve/back up own SavedVariables first.
 2. Open all pages and All statistics; inspect selected/hover states, row spacing, hearts and item tooltips. Verify both fresh and existing databases.
 3. In the HUD editor, add global runs, class wins, fixed-class kills, observed lifetime duration and current-run damage. Check each tooltip and navigation target. No current-run duration appears unless explicitly chosen.
 4. Change dimensions through minimum/maximum values; test narrow-screen overflow, tall/two-row layout, label/icon toggles, fonts and opacity. Check both live HUD and preview.
@@ -58,3 +58,11 @@ Dev.5 gives My bar an independent UIParent anchor and scale. Drag only its title
 ## Recent-run photo framing
 
 The exact native zone IDs map to the twelve supplied sources through data/run-image-sources.json. tools/build_run_images.py verifies original hashes/dimensions, resamples complete images to 256-square RGBA TGA, and generates the fixed Theme.lua map. No image is generated or downloaded. Native SetTexCoord bounds preserve original proportions in the 178 x 66 viewport with reviewed focal points. The legacy naxxramas ID maps to naxx; unknown values use a neutral plate. Saved zones/run records are not rewritten. Source attribution is recorded in CREDITS.md.
+
+## Shared detail-page presentation (dev.7)
+
+History and run Favorites use the same reviewed zone images as Overview, with separate date/class/player metadata, level/kill context and result/duration. History summary cards count only retained matching rows; duration shows its coverage. Combat separates ordinal, source, contribution percentage and amount, with a thin bottom contribution track; its exact native rates remain in tooltips. Selecting the live run displays Current run.
+
+Character, Usage, Favorites and Diagnostics use bounded context bands and consistently spaced rows; Classes uses taller cards; Records promotes survival, observed DPS and kills into source-linked cards. Nemesis separately labels observed deaths, confirmed and probable attribution. Settings groups appearance, behavior, storage and HUD editing. Page capacity is derived from available body height without allocating new frames during refresh. Every label uses existing localization keys.
+
+Live map resolution and its limits are documented in API-CONTRACTS.md. Native screenshots of dev.6 confirm the supplied photos load; dev.7 layout and fallback behavior still need a real-client check. Software previews use synthetic data and are not native screenshots.

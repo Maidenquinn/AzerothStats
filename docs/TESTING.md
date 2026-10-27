@@ -41,7 +41,7 @@ The full native suite runs Lua 5.0.3, round-trips own SavedVariables and simulat
 
 Perform in a test profile/copy approved for review, with own SavedVariables backed up:
 
-1. Install the exact reviewed ZIP and verify `1.6.0-dev.6`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
+1. Install the exact reviewed ZIP and verify `1.6.0-dev.7`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
 2. Start a solo run; choose/upgrade spells and accessories; pause/resume; inspect totals, ranks, item hover and partial indicators. Opening one chest must not increase a supposed live opened count: wait for the official final summary.
 3. Complete and lose separate runs; verify exactly one history entry per run, authoritative final counters and no stale previous-run data on reset. Test victory-to-endless handling where supported.
 4. Restart normally midway/in a menu and after a terminal summary; check history/aggregates/favorites survive without duplication. A hard crash is not guaranteed to persist recent data.
@@ -62,3 +62,11 @@ python tools/build_review_bundle.py --output release-assets/approval-review
 ```
 
 This archives the exact Git revision, without Git history, private inputs or ignored build outputs. It checks prohibited artifact types and writes the archive hash/revision alongside it. It does not publish or install anything.
+
+### Dev.7 targeted in-game checks
+
+- With an active run, open Overview, History and Combat. Confirm the same current zone and duration; Diagnostics shows `AZS_ZONE.zone` and the retained `run.zoneSource`.
+- Reload UI mid-run. The current run should resume without a second history row when hero/class/map/time continuity agrees. A new run with reset server time must get a new identity. Unrecognized map names stay unknown.
+- Visit all eleven tabs, every Combat/Character/Usage/Favorites subtab, and all three Favorites run/combat/item categories. Check right-aligned values, readable share percentages, native tooltips, hearts, pagination and navigation to source runs.
+- Inspect History's retained-only summary, Records' featured source cards and Nemesis' explicit confirmed/probable counts. Test empty history/categories too.
+- Change text size 11/16, window scale and language (including Japanese/Chinese). Check the footer, Settings sections, independent My bar editor and keyboard Escape/close behavior. Preserve the native game's own prompts; they are not hidden by this addon.

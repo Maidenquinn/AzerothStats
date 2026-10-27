@@ -4,6 +4,15 @@ local function check(ok, message)
     assert(ok, message)
     TEST_COUNT = TEST_COUNT + 1
 end
+-- Windows locale character classes must not strip or case-fold UTF-8 bytes.
+check(
+    A.Text("バトル · Арена · Féralas", 140) == "バトル · Арена · Féralas",
+    "text sanitizer preserves multibyte game labels"
+)
+check(
+    A.Text("a\000\001\031\127|b", 140) == "ab",
+    "text sanitizer removes only explicit ASCII controls and markup delimiter"
+)
 local savedDatabase, savedRun, savedView = AzerothStatsDB, A.run, A.view
 local savedWatch, savedParty = A.deathWatch, A.partySession
 local globals = {}

@@ -14,6 +14,14 @@ Contracts derive from locally inspected client helpers and regression fixtures. 
 - `AZS_ZONE`, `AZS_SPELLS`, `AZS_STATS`: identity/map, build ranks and attributes. Only bounded copies/scalars are retained.
 - `AZS_PARTY`, its stamp and `AZSPARTY`: group rows `name,class,dmg,dps,share,top,topdps`. `AZS_GetPartyMeter()` exists in the inspected client, but the addon reads validated raw rows. Team comparisons require one common sample.
 
+### Missing live zone metadata
+
+`A.Identity()` keeps a supplied zone ID authoritative. If it is absent/unknown, it matches the packet label, then `GetMinimapZoneText`, `GetSubZoneText`, `GetRealZoneText` and `GetZoneText`, against exact names in the fourteen shipped game catalogs. These four read functions were found in the installed client's native API export strings on 2026-10-27. Missing functions/errors/unrecognized names yield no map; there is no fuzzy match or prior-map guess. `zoneSource` records which observation supplied the map and is exposed in Diagnostics.
+
+A live unknown run is enriched when matching metadata arrives. On reload, same hero/class, compatible map, nondecreasing server time, no close reason and no ready/new-run boundary allow the existing heuristic resume to retain its already observed zone. A clock reset starts a new run. No server UUID exists, so this is continuity evidence rather than guaranteed identity; ended unknown records and historical duplicates are not silently rewritten or merged.
+
+The text sanitizer removes explicit ASCII control bytes and UI markup, rather than locale-dependent `%c` classes that can corrupt multibyte UTF-8 labels on Windows. Zone matching folds ASCII letters only.
+
 Stamps/signatures/notifications support freshness, not authentication. Conflicting supplied summary hero/map is rejected. Missing legacy identity remains heuristic.
 
 ## Events and notifications

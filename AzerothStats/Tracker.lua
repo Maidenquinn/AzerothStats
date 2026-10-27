@@ -62,13 +62,13 @@ end
 --- Resume only plausible continuity or create one new local run, then freeze counter freshness baselines.
 local function start(phase, serverTime)
     local database = A.db
-    local key, class, hero, zone, zoneName = A.Identity()
+    local key, class, hero, zone, zoneName, zoneSource = A.Identity()
     local old = database.runs[table.getn(database.runs)]
     -- No server run UUID exists. Continuity after a UI reload is explicitly heuristic.
     if
         not A.newBoundary
         and old
-        and old.identity == key
+        and (old.identity == key or (old.hero == hero and old.class == class and (not zone or not old.zone or zone == old.zone)))
         and serverTime
         and old.lastRawTime
         and serverTime >= old.lastRawTime
@@ -77,6 +77,13 @@ local function start(phase, serverTime)
     then
         A.run = old
         old.resumeHeuristic = true
+        if zone then
+            old.zone, old.zoneName, old.zoneSource, old.identity =
+                zone, zoneName or old.zoneName, zoneSource, key
+        end
+        if not zone then
+            old.zoneSource = old.zoneSource or "resumed observation"
+        end
         A.Event(old, "resume", "Reprise probable apres rechargement ; pas d'identifiant serveur")
     else
         if old and old.status == "active" then
@@ -91,6 +98,7 @@ local function start(phase, serverTime)
             hero = hero,
             zone = zone,
             zoneName = zoneName,
+            zoneSource = zone and zoneSource or nil,
             startedAt = A.Wall(),
             status = "active",
             phase = phase,
@@ -186,16 +194,17 @@ function A.Sample()
     local raw = A.ReadProgress()
     local phase = raw.ph
     local serverTime = A.Number(raw.t) -- server sample, never the interpolated helper for records
-    local key, class, hero, zone, zoneName = A.Identity()
+    local key, class, hero, zone, zoneName, zoneSource = A.Identity()
     if
         A.run
         and class == A.run.class
         and hero == A.run.hero
         and (not zone or not A.run.zone or zone == A.run.zone)
     then
-        if zone then
+        if zone and phase ~= "ready" then
             A.run.zone = zone
             A.run.zoneName = zoneName or A.run.zoneName
+            A.run.zoneSource = zoneSource
             A.run.identity = key
         else
             key = A.run.identity
