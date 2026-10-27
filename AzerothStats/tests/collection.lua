@@ -136,8 +136,8 @@ A.view.selected = "one"
 A.run = nil
 A.RefreshUI()
 check(
-    not string.find(A.bar.label.fullText, A.T("Unavailable"), 1, true),
-    "out-of-run bar is compact"
+    A.bar.models[1].block.scope == "all" and A.bar.models[1].block.metric == "runs",
+    "out-of-run HUD keeps its configured lifetime scope instead of a redundant clock"
 )
 -- Summary data repairs a missing zone, without creating another run on a delayed zone packet.
 local oldSummary = one.summary

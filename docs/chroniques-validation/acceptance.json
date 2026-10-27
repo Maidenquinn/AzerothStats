@@ -1,0 +1,583 @@
+{
+  "runtime": "Lua 5.0.3 native; new process per stage; game UI simulated",
+  "cases": [
+    {
+      "class": "warrior",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7473
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10319
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10320
+        }
+      ]
+    },
+    {
+      "class": "warrior",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7473
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10050
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10051
+        }
+      ]
+    },
+    {
+      "class": "warrior",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7473
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10490
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10491
+        }
+      ]
+    },
+    {
+      "class": "paladin",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7473
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10319
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10320
+        }
+      ]
+    },
+    {
+      "class": "paladin",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7473
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10050
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10051
+        }
+      ]
+    },
+    {
+      "class": "paladin",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7473
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10490
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10491
+        }
+      ]
+    },
+    {
+      "class": "hunter",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7453
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10296
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10297
+        }
+      ]
+    },
+    {
+      "class": "hunter",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7453
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10027
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10028
+        }
+      ]
+    },
+    {
+      "class": "hunter",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7453
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10467
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10468
+        }
+      ]
+    },
+    {
+      "class": "rogue",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7489
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10329
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10330
+        }
+      ]
+    },
+    {
+      "class": "rogue",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7489
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10060
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10061
+        }
+      ]
+    },
+    {
+      "class": "rogue",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7489
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10500
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10501
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7501
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10344
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10345
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7501
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10075
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10076
+        }
+      ]
+    },
+    {
+      "class": "priest",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7501
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10515
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10516
+        }
+      ]
+    },
+    {
+      "class": "shaman",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7493
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10336
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10337
+        }
+      ]
+    },
+    {
+      "class": "shaman",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7493
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10067
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10068
+        }
+      ]
+    },
+    {
+      "class": "shaman",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7493
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10507
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10508
+        }
+      ]
+    },
+    {
+      "class": "mage",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7493
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10330
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10331
+        }
+      ]
+    },
+    {
+      "class": "mage",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7493
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10061
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10062
+        }
+      ]
+    },
+    {
+      "class": "mage",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7493
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10501
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10502
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7457
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10303
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10304
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7457
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10034
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10035
+        }
+      ]
+    },
+    {
+      "class": "warlock",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7457
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10474
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10475
+        }
+      ]
+    },
+    {
+      "class": "druid",
+      "result": "defeat",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7497
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10337
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10338
+        }
+      ]
+    },
+    {
+      "class": "druid",
+      "result": "left",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7497
+        },
+        {
+          "stage": 2,
+          "assertions": 28,
+          "savedBytes": 10068
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10069
+        }
+      ]
+    },
+    {
+      "class": "druid",
+      "result": "victory",
+      "stages": [
+        {
+          "stage": 1,
+          "assertions": 12,
+          "savedBytes": 7497
+        },
+        {
+          "stage": 2,
+          "assertions": 29,
+          "savedBytes": 10508
+        },
+        {
+          "stage": 3,
+          "assertions": 23,
+          "savedBytes": 10509
+        }
+      ]
+    }
+  ],
+  "assertions": 1710,
+  "freshProcesses": 81,
+  "fixture": {
+    "mode": "read-only-client",
+    "sha256": "22f7938eb4f99f2857dc091b1c57c147bd848eaabfeaa81e444c0a3393ca8150",
+    "apiSha256": "f73763ffc2f5852ff3f76a4945656ea5494d2d89db75833b71a89327738506db",
+    "apiOffset": 120607162,
+    "apiEnd": 120623825
+  },
+  "inGamePlaythroughsPerformed": false,
+  "passed": true
+}

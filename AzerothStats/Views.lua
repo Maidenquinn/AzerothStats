@@ -181,6 +181,63 @@ local function overview(model, group)
     model.note = A.T("Values from available samples")
 end
 
+--- Build the curated landing page from existing totals and the three newest retained runs.
+local function dashboard(model, group)
+    overview(model, group)
+    -- Keep the complete original statistics page reachable; the landing page prioritizes discovery.
+    table.remove(model.cards, 6)
+    table.remove(model.cards, 5)
+    model.cards[2].detail = A.T("Wins")
+        .. " / "
+        .. A.T("Observed runs")
+        .. " : "
+        .. A.Format(group.wins or 0)
+        .. " / "
+        .. A.Format(group.runs or 0)
+    model.rows = {}
+    model.records = {}
+    for index = table.getn(A.db.runs), 1, -1 do
+        local run = A.db.runs[index]
+        if not A.view.class or run.class == A.view.class then
+            local id = run.id
+            local entry = row(
+                model.rows,
+                A.ZoneName(run),
+                A.Duration(run.values and run.values.duration),
+                A.ClassName(run.class)
+                    .. " · "
+                    .. A.Date(run.startedAt)
+                    .. " · "
+                    .. A.HeroicLabel(run),
+                function()
+                    A.OpenReport(id)
+                end
+            )
+            entry.class = run.class
+            entry.zone = run.zone
+            entry.result = run.result or run.status
+            entry.favorite = A.RunFavorite(run)
+            if table.getn(model.rows) == 3 then
+                break
+            end
+        end
+    end
+    for _, key in ipairs({ "duration", "kills", "damage" }) do
+        local record = group.records and group.records[key]
+        table.insert(model.records, {
+            label = A.Metric(key),
+            value = key == "duration" and A.Duration(record and record.value)
+                or A.Short(record and record.value),
+            exact = key == "duration" and A.Duration(record and record.value)
+                or A.Format(record and record.value),
+        })
+    end
+    model.layout = "dashboard"
+    model.rowY = 360
+    model.rowHeight = 78
+    model.capacity = 3
+end
+
 --- Build one navigation card per observed class aggregate.
 local function classes(model)
     model.layout = "classes"
@@ -205,6 +262,13 @@ local function classes(model)
             end
         )
         c.class = cls
+        c.detail = c.detail
+            .. "\n"
+            .. A.Duration(b.sum and b.sum.duration)
+            .. " · "
+            .. A.Metric("kills")
+            .. " "
+            .. A.Short(b.sum and b.sum.kills)
     end
 end
 
@@ -213,26 +277,51 @@ local function history(model)
     model.rowHeight = 43
     model.rowY = 164
     model.capacity = 9
+    local retained, wins, duration, coverage = 0, 0, 0, 0
     for i = table.getn(A.db.runs), 1, -1 do
         local run = A.db.runs[i]
         local id = run.id
-        if not A.view.class or A.view.class == run.class then
+        if
+            (not A.view.class or A.view.class == run.class)
+            and A.MatchesDifficulty(run, A.view.difficulty)
+        then
+            retained = retained + 1
+            if run.result == "victory" then
+                wins = wins + 1
+            end
+            if A.Number(run.values.duration) then
+                duration = duration + run.values.duration
+                coverage = coverage + 1
+            end
             local item = row(
                 model.rows,
-                (run.hero or "?") .. " · " .. A.ClassName(run.class),
+                A.ZoneName(run),
                 A.Duration(run.values.duration),
                 A.Date(run.startedAt)
                     .. " · "
-                    .. A.ZoneName(run)
+                    .. A.ClassName(run.class)
                     .. " · "
-                    .. A.Status(run.result or run.status)
+                    .. (run.hero or "?")
                     .. (run.partial and " · " .. A.T("Partial") or ""),
                 function()
-                    A.SelectRun(id)
+                    A.OpenReport(id)
                 end
             )
             item.favorite = A.RunFavorite(run)
             item.class = run.class
+            item.zone, item.result = run.zone, run.result or run.status
+            item.extra = A.Metric("level")
+                .. " "
+                .. A.Format(run.values.level)
+                .. " · "
+                .. A.Metric("kills")
+                .. " "
+                .. A.Short(run.values.kills)
+                .. " · "
+                .. A.Metric("gold")
+                .. " "
+                .. A.Short(run.values.gold)
+            item.extra = item.extra .. " · " .. A.HeroicLabel(run)
             item.exact = run.id
                 .. " · "
                 .. A.Metric("kills")
@@ -244,6 +333,16 @@ local function history(model)
                 .. A.Format(run.values.level)
         end
     end
+    model.subtitle = A.T("Retained runs") .. " · " .. A.Format(retained)
+    card(model, A.T("Retained runs"), A.Format(retained), A.T("History"), A.metricIcons.level)
+    card(model, A.T("Wins"), A.Format(wins), A.T("History"), A.metricIcons.gold)
+    card(
+        model,
+        A.T("Play time"),
+        A.Duration(coverage > 0 and duration or nil),
+        A.T("Coverage") .. " · " .. coverage .. "/" .. retained,
+        A.metricIcons.duration
+    )
 end
 
 --- Build one sampled/cumulative meter, keeping unavailable rates and last-boss scope explicit.
@@ -377,7 +476,13 @@ local function combat(model, run, group)
             runId = not A.view.cumulative and run and run.id or nil,
         }
         item.rank = i
+        item.share = A.Decimal(share * 100, 1) .. "%"
+        item.detail = spell.dps and (A.T("Per second") .. " " .. A.Short(spell.dps)) or ""
+        if spell.proc == 1 then
+            item.detail = item.detail .. " · " .. A.T("Proc")
+        end
         item.exact = A.Format(spell.dmg)
+            .. (spell.dps and (" · " .. A.T("Per second") .. " " .. A.Rate(spell.dps)) or "")
     end
 end
 
@@ -512,8 +617,130 @@ local function character(model, run)
 end
 
 --- Dispatch the active page and annotate partial coverage; return cards/rows for the renderer.
+--- Apply shared presentation geometry only; this never accounts or rewrites a run.
+local function stylePage(model, run, group)
+    local tab = A.view.tab
+    if model.report or model.comparison then
+        return
+    end
+    model.columnLabel, model.columnValue = A.T("Details"), ""
+    if tab == 1 or tab == 2 or tab == 8 then
+        model.columnLabel = nil
+        if tab == 1 and model.layout == "overview" then
+            model.rowY, model.rowHeight, model.capacity = 425, 38, 7
+        end
+        return
+    end
+    model.rowY, model.rowHeight = 296, 62
+    if tab == 3 then
+        model.layout, model.photoRows = "history", true
+        model.cardsTop = 204
+        model.rowY, model.rowHeight = 345, 74
+        model.columnLabel, model.columnValue = A.T("Run"), A.T("Play time")
+        for i, glyph in ipairs({ 9, 3, 4 }) do
+            model.cards[i].glyph = glyph
+        end
+    elseif tab == 4 and A.view.combatTab ~= "Activity" then
+        model.ranking = true
+        model.rowY, model.rowHeight = 350, 58
+        model.columnLabel, model.columnValue = A.T("Source"), A.T("Total")
+    elseif tab == 6 then
+        local featured = {}
+        for i = table.getn(model.rows), 1, -1 do
+            local item = model.rows[i]
+            if item.metric == "duration" or item.metric == "peakDps" or item.metric == "kills" then
+                featured[item.metric] = item
+                table.remove(model.rows, i)
+            end
+        end
+        for _, key in ipairs({ "duration", "peakDps", "kills" }) do
+            local item = featured[key]
+            if item then
+                card(model, item.label, item.value, item.date or "", item.icon, item.action).exact = item.exact
+                    or item.detail
+            end
+        end
+        model.rowY, model.rowHeight = 330, 60
+        model.columnLabel, model.columnValue = A.T("Records"), A.T("Record")
+    elseif tab == 11 then
+        local evidence = group.deathEvidence or {}
+        local confirmed, probable = 0, 0
+        for _, source in pairs(evidence.sources or {}) do
+            confirmed = confirmed + (A.Number(source.confirmed) or 0)
+            probable = probable + (A.Number(source.probable) or 0)
+        end
+        card(
+            model,
+            A.T("Observed deaths"),
+            A.Format(evidence.deaths or 0),
+            A.T("Nemesis"),
+            A.metricIcons.bosses
+        )
+        card(
+            model,
+            A.T("Confirmed"),
+            A.Format(confirmed),
+            A.T("Observed deaths"),
+            A.metricIcons.taken
+        )
+        card(
+            model,
+            A.T("Probable"),
+            A.Format(probable),
+            A.T("Last attacker is not proof of a killing blow"),
+            A.metricIcons.level
+        )
+        model.rowY, model.rowHeight = 330, 60
+        model.columnLabel = A.T("Nemesis")
+    end
+    if table.getn(model.cards) == 0 then
+        if run and (tab == 5 or ((tab == 4 or tab == 9) and not A.view.cumulative)) then
+            model.banner = {
+                label = A.ZoneName(run)
+                    .. " · "
+                    .. A.ClassName(run.class)
+                    .. " · "
+                    .. A.HeroicLabel(run),
+                detail = A.Date(run.startedAt)
+                    .. " · "
+                    .. A.T("Last sample")
+                    .. " "
+                    .. A.Duration(run.snapshotAt or run.values.duration),
+                value = A.Status(run.result or run.status) .. " · " .. A.Duration(
+                    run.values.duration
+                ),
+                zone = run.zone,
+                photo = true,
+            }
+        else
+            model.banner = {
+                label = model.subtitle,
+                detail = model.note or A.T("Values from available samples"),
+                value = A.Format(table.getn(model.rows)) .. " · " .. A.T("Details"),
+            }
+        end
+    end
+    if tab == 10 and (A.view.favoriteCategory or "run") == "run" then
+        model.photoRows, model.rowHeight = true, 74
+        model.columnLabel, model.columnValue = A.T("Run"), A.T("Play time")
+    end
+    if tab == 7 then
+        model.rowHeight = 50
+    end
+    if tab == 5 then
+        model.columnLabel = A.T(A.view.characterTab or "Spells")
+        model.rowHeight = 56
+    end
+    model.capacity = math.max(1, math.min(12, math.floor((700 - model.rowY) / model.rowHeight)))
+end
+
 function A.PageModel()
-    local tab, run, group = A.view.tab, A.Selected(), A.Group()
+    local tab, run, group = A.view.tab, nil, A.Group()
+    if tab == 3 and A.view.historySection == "Run report" and A.view.selected then
+        run = A.FindRun(A.view.selected)
+    else
+        run = A.Selected()
+    end
     local model = {
         title = A.T(A.tabs[tab]),
         subtitle = A.T("Collected since installation"),
@@ -529,7 +756,11 @@ function A.PageModel()
         model.rowY = 386
         model.rowHeight = 26
         model.capacity = 7
-        overview(model, group)
+        if A.view.overviewStats then
+            overview(model, group)
+        else
+            dashboard(model, group)
+        end
     elseif tab == 2 then
         classes(model)
     elseif tab == 3 then
@@ -560,7 +791,7 @@ function A.PageModel()
     elseif tab == 6 then
         for _, key in ipairs(A.metrics) do
             local rec = group.records and group.records[key]
-            local action
+            local action, context
             if rec then
                 for _, run in ipairs(A.db.runs) do
                     if run.id == rec.id then
@@ -568,11 +799,12 @@ function A.PageModel()
                         action = function()
                             A.SelectRun(id)
                         end
+                        context = A.ZoneName(run)
                         break
                     end
                 end
             end
-            row(
+            local item = row(
                 model.rows,
                 A.Metric(key),
                 rec
@@ -581,13 +813,16 @@ function A.PageModel()
                         ) or A.Format(rec.value)))
                     or A.T("Unavailable"),
                 rec
-                        and (A.Date(rec.at) .. " · " .. rec.id .. (key == "peakDps" and (" · " .. A.T(
+                        and (A.Date(rec.at) .. (context and (" · " .. context) or "") .. (key == "peakDps" and (" · " .. A.T(
                             "Server-sample run average (10s+)"
                         )) or ""))
                     or "",
                 action,
                 A.metricIcons[key]
             )
+            item.metric = key
+            item.date = rec and A.Date(rec.at) or ""
+            item.exact = (rec and A.Format(rec.value) or A.T("Unavailable")) .. "\n" .. item.detail
         end
         model.note = A.T("Values from available samples")
     elseif tab == 7 then
@@ -853,8 +1088,22 @@ function A.PageModel()
     then
         model.note = (model.note or "") .. " · " .. A.T("Partial")
     end
+    if tab == 1 or tab == 2 or tab == 6 or (tab == 4 and A.view.cumulative) then
+        model.note = (model.note and model.note .. " · " or "") .. A.T("All difficulties")
+    end
+    if tab == 3 and A.view.historySection == "Run report" then
+        model.cards, model.rows = {}, {}
+        A.ReportModel(model, run)
+    elseif tab == 3 and A.view.historySection == "Compare runs" then
+        model.cards, model.rows = {}, {}
+        A.ComparisonModel(model)
+    end
     A.DecorateFavorites(model, tab, run)
+    stylePage(model, run, group)
     if table.getn(model.rows) == 0 and table.getn(model.cards) == 0 and tab ~= 8 then
+        model.empty = true
+    end
+    if table.getn(model.rows) == 0 and tab ~= 1 and tab ~= 2 and tab ~= 8 then
         model.empty = true
     end
     return model

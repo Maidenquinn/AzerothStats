@@ -46,6 +46,7 @@ function A.InitDB()
     local s = database.settings
     s.windowPos = A.FramePosition(s.windowPos)
     s.barPos = A.FramePosition(s.barPos)
+    s.barEditorPos = A.FramePosition(s.barEditorPos)
     if
         type(s.miniAngle) ~= "number"
         or s.miniAngle ~= s.miniAngle
@@ -72,6 +73,7 @@ function A.InitDB()
     if s.language ~= "auto" and not A.uiText[s.language] then
         s.language = "auto"
     end
+    s.hud = A.NormalizeBar(s.hud)
     database.version = A.version
     return true
 end

@@ -14,7 +14,7 @@ modules = [
     for line in toc.splitlines()
     if line.strip() and not line.startswith("#")
 ]
-assert len(modules) == 20 and set(modules) == {p.name for p in addon.glob("*.lua")}
+assert len(modules) == 24 and set(modules) == {p.name for p in addon.glob("*.lua")}
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"
@@ -134,6 +134,9 @@ lua.execute((addon / "tests/ci_smoke.lua").read_text(encoding="utf-8-sig"))
 lua.execute("TEST_COUNT=CI_CHECKS")
 lua.execute((addon / "tests/favorites_deaths.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/security.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/bar.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/heroic.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/reports.lua").read_text(encoding="utf-8"))
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",

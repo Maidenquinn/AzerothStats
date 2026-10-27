@@ -10,10 +10,34 @@ MEDIA = (
     "AzerothSans-zh.otf",
     "AzerothSans-ja.otf",
     "AzerothSans-ko.otf",
+    "ChronicleEdge.tga",
+    "ChronicleGrain.tga",
+    "ChronicleSeal.tga",
+    "ChronicleIcons.tga",
     "FavoriteHeartEmpty.tga",
     "FavoriteHeartFilled.tga",
     "OFL-NotoSans.txt",
     "OFL-NotoCJK.txt",
+) + tuple(
+    [f"ChronicleGlyph{i:02d}.tga" for i in range(1, 17)]
+    + [f"ChroniclePlate{i}.tga" for i in range(1, 5)]
+    + [
+        "RunZone-" + zone + ".tga"
+        for zone in (
+            "ab",
+            "aq",
+            "arena",
+            "av",
+            "brm",
+            "duskwood",
+            "elwynn",
+            "feralas",
+            "naxx",
+            "sm",
+            "ungoro",
+            "wsg",
+        )
+    ]
 )
 
 

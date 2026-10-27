@@ -49,7 +49,9 @@ function A.Text(value, limit)
     value = string.gsub(value, "|r", "")
     value = string.gsub(value, "|H.-|h(.-)|h", "%1")
     value = string.gsub(value, "|T.-|t", "")
-    value = string.gsub(value, "[%c|]", "")
+    -- Explicit ASCII controls: locale-dependent %c can classify UTF-8 continuation
+    -- bytes as Windows C1 controls and corrupt otherwise valid CJK names.
+    value = string.gsub(value, "[%z\001-\031\127|]", "")
     return value
 end
 -- Native texture loading is restricted to the client's Interface namespace.
@@ -364,6 +366,34 @@ function A.ValidateDatabase(database)
     for _, run in ipairs(database.runs) do
         if type(run) ~= "table" or type(run.id) ~= "string" or type(run.class) ~= "string" then
             return false
+        end
+        if
+            run.heroic ~= nil and (type(run.heroic) ~= "number" or not A.HeroicLevel(run.heroic))
+        then
+            return false
+        end
+        if run.recordBaseline ~= nil then
+            if
+                type(run.recordBaseline) ~= "table"
+                or type(run.recordBaseline.values) ~= "table"
+            then
+                return false
+            end
+            for key, value in pairs(run.recordBaseline.values) do
+                if type(key) ~= "string" or not A.Number(value) then
+                    return false
+                end
+            end
+        end
+        if run.reportRecords ~= nil then
+            if type(run.reportRecords) ~= "table" then
+                return false
+            end
+            for key, value in pairs(run.reportRecords) do
+                if type(key) ~= "string" or not A.Number(value) then
+                    return false
+                end
+            end
         end
         for _, name in ipairs({ "values", "accounted", "events", "meters" }) do
             if type(run[name]) ~= "table" then

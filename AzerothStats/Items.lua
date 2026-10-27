@@ -4,11 +4,11 @@
 
 local A = AzerothStats
 
---- Capture at most 40 native tooltip lines as bounded text/color data; always hide the scanner afterward.
+--- Capture at most 64 native tooltip lines as bounded text/color data; always hide the scanner afterward.
 local function readLines(tip)
     local lines = {}
     local count = tip.NumLines and A.Number(tip:NumLines()) or 0
-    for i = 1, math.min(count or 0, 40) do
+    for i = 1, math.min(count or 0, 64) do
         local left = getglobal("AzerothStatsItemScanTextLeft" .. i)
         local right = getglobal("AzerothStatsItemScanTextRight" .. i)
         local text = left and left:GetText()
@@ -76,7 +76,8 @@ function A.CollectionReference(link)
     if not id then
         return nil
     end
-    -- Old runs may lack descriptions: reuse a newer observation of this static collection item.
+    -- Item ID no longer identifies its upgrade level or worn set context. Other
+    -- observations are references only, never reconstructed historical bonuses.
     for i = table.getn(A.db.runs), 1, -1 do
         local r = A.db.runs[i]
         for slot, value in pairs(r.equipment or {}) do
@@ -122,7 +123,7 @@ local function dropSources(descriptor)
             true
         )
         GameTooltip:AddLine(
-            A.T("Base drop chance") .. " : " .. A.Format(source.chance) .. "%",
+            A.T("Drop chance varies with Heroic and bad-luck protection"),
             0.7,
             0.7,
             0.6,
@@ -138,7 +139,13 @@ function A.ItemTooltip(frame, descriptor)
     end
     GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
-    if descriptor.run == A.run and descriptor.slot and type(GetInventoryItemLink) == "function" then
+    if
+        descriptor.run == A.run
+        and A.run
+        and A.run.status == "active"
+        and descriptor.slot
+        and type(GetInventoryItemLink) == "function"
+    then
         local ok, link = pcall(GetInventoryItemLink, "player", descriptor.slot)
         if ok and link == descriptor.link then
             local good, has = pcall(function()
@@ -158,7 +165,7 @@ function A.ItemTooltip(frame, descriptor)
         reference = lines ~= nil
     end
     if lines and table.getn(lines) > 0 then
-        for i = 1, math.min(table.getn(lines), 40) do
+        for i = 1, math.min(table.getn(lines), 64) do
             local line = lines[i]
             if type(line) == "table" and type(line.text) == "string" then
                 if line.right and line.right ~= "" and GameTooltip.AddDoubleLine then
@@ -182,6 +189,15 @@ function A.ItemTooltip(frame, descriptor)
                     )
                 end
             end
+        end
+        if reference then
+            GameTooltip:AddLine(
+                A.T("Reference only; stars and set bonuses may differ"),
+                0.9,
+                0.75,
+                0.4,
+                true
+            )
         end
         GameTooltip:AddLine(
             A.T(reference and "Current collection reference" or "Captured item description"),

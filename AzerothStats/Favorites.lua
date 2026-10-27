@@ -153,7 +153,7 @@ function A.OpenFavorite(entry)
         end
     end
     if entry.kind == "run" then
-        A.SelectRun(entry.key)
+        A.OpenReport(entry.key)
     elseif entry.kind == "companion" then
         A.view.tab = 9
         A.view.usageTab = "Co-op"
@@ -209,14 +209,23 @@ function A.FavoritesModel(model)
             if run then
                 descriptor.detail = A.Date(run.startedAt)
                     .. " · "
-                    .. A.ZoneName(run)
+                    .. A.ClassName(run.class)
                     .. " · "
-                    .. A.Status(run.result or run.status)
+                    .. (run.hero or A.T("Unknown"))
                 descriptor.value = A.Duration(run.values.duration)
+                descriptor.runLabel = A.ZoneName(run)
+                descriptor.zone, descriptor.result = run.zone, run.result or run.status
+                descriptor.extra = A.Metric("level")
+                    .. " "
+                    .. A.Format(run.values.level)
+                    .. " · "
+                    .. A.Metric("kills")
+                    .. " "
+                    .. A.Short(run.values.kills)
             end
         end
-        descriptor.label = entry.kind == "run"
-                and (A.T("Run") .. " · " .. A.Date(entry.startedAt or entry.at))
+        descriptor.label = descriptor.runLabel
+            or entry.kind == "run" and (A.T("Run") .. " · " .. A.Date(entry.startedAt or entry.at))
             or entry.label
         if entry.kind == "spell" then
             descriptor.label = A.G("ability." .. entry.key .. ".name") or A.SourceName(entry.label)
@@ -240,6 +249,10 @@ function A.FavoritesModel(model)
                     .. A.ModeName(entry.mode or "damage")
                 descriptor.value = A.Duration(run.values.duration)
             end
+        end
+        if descriptor.runLabel then
+            local sourceRun = runs[entry.key]
+            descriptor.extra = descriptor.extra .. " · " .. A.HeroicLabel(sourceRun)
         end
         descriptor.value = descriptor.value
             or A.T(

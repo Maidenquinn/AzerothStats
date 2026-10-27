@@ -6,6 +6,7 @@ local function check(ok, text)
     checks = checks + 1
 end
 local cls = RELEASE_CLASS
+local heroic = RELEASE_INDEX - math.floor(RELEASE_INDEX / 6) * 6
 UnitClass = function()
     return cls, string.upper(cls)
 end
@@ -117,10 +118,15 @@ if RELEASE_STAGE == 1 then
         A.db.totals.runs == nil and table.getn(A.db.runs) == 0,
         "clean install has no fabricated runs"
     )
-    packet("AZSZONE", "zone=feralas;class=" .. cls)
+    packet("AZSZONE", "zone=feralas;class=" .. cls .. ";heroic=" .. heroic)
     packet("AZSRUN", "ph=ready;t=0")
     check(table.getn(A.db.runs) == 0, "ready does not count as a game")
     progress(0, 100, 1)
+    check(
+        A.run.recordBaseline ~= nil,
+        "new run freezes record baseline before its ledger contributes"
+    )
+    check(A.run.heroic == heroic, "new packet preserves exact difficulty")
     equipped()
     packet("AZSSPELLS", spell .. ",53,1,0,3")
     packet("AZSMETER", "Fixture attack,100,10,100,0")
@@ -137,8 +143,21 @@ if RELEASE_STAGE == 1 then
     A.db.settings.scale = 0.85
     A.db.settings.opacity = 0.9
     A.db.settings.textSize = 14
+    A.db.settings.hud = A.NormalizeBar({
+        version = 1,
+        width = 610,
+        height = 72,
+        icons = false,
+        labels = true,
+        locked = true,
+        blocks = {
+            { metric = "duration", scope = "all" },
+            { metric = "kills", scope = "class", class = cls },
+        },
+    })
     A.SetLanguage("fr")
     A.view.tab = 5
+    A.view.difficulty = heroic
     A.view.characterTab = "Equipment"
     A.ApplyUI()
     A.RefreshUI()
@@ -148,6 +167,18 @@ if RELEASE_STAGE == 1 then
     A.driver:GetScript("OnEvent")()
     check(A.db.totals.sum.damage == 200, "normal logout accounts last sample without duplication")
 elseif RELEASE_STAGE == 2 then
+    check(
+        A.db.runs[1].heroic == heroic and A.view.difficulty == heroic,
+        "difficulty and history filter survive a fresh VM"
+    )
+    check(
+        A.db.settings.hud.width == 610 and not A.db.settings.hud.icons and A.db.settings.hud.locked,
+        "HUD size and explicit false/lock preferences survive a fresh VM"
+    )
+    check(
+        A.db.settings.hud.blocks[2].scope == "class" and A.db.settings.hud.blocks[2].class == cls,
+        "fixed-class block scope survives a fresh VM"
+    )
     check(
         A.view.tab == 5 and A.view.characterTab == "Equipment" and A.Locale() == "fr",
         "view and language survive a fresh VM"
@@ -159,7 +190,7 @@ elseif RELEASE_STAGE == 2 then
         "appearance persists across a fresh VM"
     )
     equipped()
-    packet("AZSZONE", "zone=feralas;class=" .. cls)
+    packet("AZSZONE", "zone=feralas;class=" .. cls .. ";heroic=" .. heroic)
     progress(16, 200, 8)
     local run = A.run
     packet("AZSSPELLS", spell .. ",53,3,0,3")
@@ -229,6 +260,12 @@ elseif RELEASE_STAGE == 2 then
     A.RefreshUI()
 elseif RELEASE_STAGE == 3 then
     check(
+        A.db.settings.hud.width == 610
+            and A.db.settings.hud.height == 72
+            and table.getn(A.db.settings.hud.blocks) == 2,
+        "HUD configuration survives terminal save and second restart"
+    )
+    check(
         A.db.totals.runs == 1 and table.getn(A.db.runs) == 1,
         "final save restores exactly one game"
     )
@@ -249,7 +286,16 @@ elseif RELEASE_STAGE == 3 then
         A.db.runs[1].equipmentTooltips[1][2].text == "+21 Health",
         "historical descriptions survive a fresh VM"
     )
-    packet("AZSZONE", "zone=feralas;class=" .. cls)
+    check(
+        A.db.runs[1].recordBaseline and A.db.runs[1].reportNotified,
+        "record baseline and summary notice deduplication survive fresh processes"
+    )
+    check(
+        A.pendingReport == nil,
+        "restoring a completed game does not replay its transient report notice"
+    )
+    check(A.db.runs[1].heroic == heroic, "historical difficulty survives final restoration")
+    packet("AZSZONE", "zone=feralas;class=" .. cls .. ";heroic=" .. heroic)
     packet("AZSRUN", "ph=ready;t=0")
     check(
         A.run == nil and A.db.totals.runs == 1,

@@ -6,16 +6,8 @@
 local A = AzerothStats
 local UI = { fonts = {}, solids = {}, cards = {}, rows = {}, nav = {}, controls = {} }
 A.ui = UI
-local COLORS = {
-    gold = { 0.91, 0.74, 0.43 },
-    text = { 0.87, 0.84, 0.77 },
-    muted = { 0.56, 0.54, 0.48 },
-    green = {
-        0.5,
-        0.76,
-        0.5,
-    },
-}
+local COLORS = A.theme
+
 local coords = {
     warrior = { 0, 0.25, 0, 0.25 },
     mage = { 0.25, 0.496, 0, 0.25 },
@@ -48,20 +40,28 @@ end
 --- Bound and paint display text, caching font/text state and shrinking only within the readability floor.
 local function put(t, value)
     value = string.sub(tostring(value or ""), 1, 4096)
-    local size = t.baseSize * (t.titleFont and 1 or ((A.db and A.db.settings.textSize or 12) / 12))
+    local size = t.baseSize
+        * ((t.titleFont or t.fixedSize) and 1 or ((A.db and A.db.settings.textSize or 12) / 12))
+    size = math.max(11, size)
     local path = A.Font(t.titleFont, t.localeFont)
-    if t.fullText == value and t.paintFont == path and t.paintBase == size then
+    if
+        t.fullText == value
+        and t.paintFont == path
+        and t.paintBase == size
+        and t.paintWidth == t.fontWidth
+    then
         return
     end
     t.fullText = value
     t.paintFont = path
     t.paintBase = size
+    t.paintWidth = t.fontWidth
     if t.activeFont ~= path or t.activeSize ~= size then
         t:SetFont(path, size, "")
     end
     t:SetText(value)
     if t.GetStringWidth then
-        while size > 10 and t:GetStringWidth() > t.fontWidth do
+        while size > 11 and t:GetStringWidth() > t.fontWidth do
             size = size - 0.5
             t:SetFont(path, size, "")
         end
@@ -81,20 +81,19 @@ end
 
 --- Apply an owned frame backdrop and register its base for opacity updates.
 local function surface(frame, kind)
-    local base = solid(
-        frame,
-        kind == "card" and 0.075 or 0.028,
-        kind == "card" and 0.061 or 0.023,
-        kind == "card" and 0.038 or 0.018,
-        1
-    )
+    local color = kind == "card" and A.theme.panel or A.theme.background
+    local base = solid(frame, color[1], color[2], color[3], 1)
     table.insert(UI.solids, { texture = base, main = kind == "main" })
-    frame:SetBackdrop({
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
-        edgeSize = kind == "main" and 20 or 10,
-        insets = { left = 1, right = 1, top = 1, bottom = 1 },
-    })
-    frame:SetBackdropBorderColor(0.46, 0.35, 0.18, 1)
+    local grain = frame:CreateTexture(nil, "BACKGROUND")
+    grain:SetAllPoints(frame)
+    grain:SetTexture(A.theme.grain)
+    grain:SetAlpha(0.16)
+    table.insert(UI.solids, { texture = grain, multiplier = 0.16 })
+    frame.grain = grain
+    A.ThemeFrame(frame, kind)
+    if frame.materialCenter then
+        table.insert(UI.solids, { texture = frame.materialCenter })
+    end
     frame.base = base
     return base
 end
@@ -140,14 +139,13 @@ end
 --- Paint the active-state background/border of an addon button.
 local function selected(b, active)
     b.selected = active and true or false
-    b.base:SetTexture(active and 0.22 or 0.028, active and 0.12 or 0.023, active and 0.035 or 0.018)
+    b.base:SetTexture(active and 0.21 or 0.063, active and 0.17 or 0.09, active and 0.10 or 0.106)
     b.base:SetAlpha(A.db.settings.opacity)
-    b:SetBackdropBorderColor(
-        active and 1 or 0.46,
-        active and 0.72 or 0.35,
-        active and 0.28 or 0.18,
-        1
-    )
+    A.MaterialState(b, active)
+    if b.materialCenter then
+        b.materialCenter:SetAlpha((b.navigation and not active) and 0 or A.db.settings.opacity)
+    end
+    A.PaintBorder(b, 0.85, 0.71, 0.42, (b.navigation and not active) and 0 or (active and 1 or 0.5))
     if b.marker then
         if active then
             b.marker:Show()
@@ -184,7 +182,7 @@ local function button(parent, x, y, w, h, label, fn)
         end
     end)
     b:SetScript("OnEnter", function()
-        this:SetBackdropBorderColor(0.9, 0.7, 0.34, 1)
+        A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
     end)
     b:SetScript("OnLeave", function()
         selected(this, this.selected)
@@ -248,6 +246,9 @@ end
 local function selectTab(i)
     A.view.tab = i
     A.view.page = 1
+    if i == 3 then
+        A.view.historySection = "History"
+    end
     if i == 9 then
         A.view.cumulative = A.view.usageTab ~= "Co-op"
     end
@@ -258,28 +259,54 @@ local function selectTab(i)
 end
 
 --- Attach legacy mouse handlers that save only an addon frame position when unlocked.
-local function drag(frame, key)
+local function drag(frame, key, handle)
     frame:SetMovable(true)
     frame:EnableMouse(true)
-    frame:RegisterForDrag("LeftButton")
+    handle = handle or frame
+    handle:EnableMouse(true)
+    handle:RegisterForDrag("LeftButton")
     if frame.SetClampedToScreen then
         frame:SetClampedToScreen(true)
     end
-    frame:SetScript("OnDragStart", function()
+    handle:SetScript("OnDragStart", function()
         if not A.db.settings.locked then
-            this:StartMoving()
+            frame:StartMoving()
         end
     end)
-    frame:SetScript("OnDragStop", function()
-        this:StopMovingOrSizing()
-        local p, _, rel, x, y = this:GetPoint()
-        A.db.settings[key] = { p, rel, x, y }
+    handle:SetScript("OnDragStop", function()
+        frame:StopMovingOrSizing()
+        local p, _, rel, x, y = frame:GetPoint()
+        A.db.settings[key] = A.FramePosition({ p, rel, x, y })
     end)
 end
 
+--- Change an owned top-level frame's scale while preserving its physical anchor.
+local function rescale(frame, value, key)
+    local old = frame:GetScale()
+    if old == value then
+        return
+    end
+    local p, parent, rel, x, y = frame:GetPoint()
+    frame:SetScale(value)
+    if p and x and y then
+        frame:ClearAllPoints()
+        frame:SetPoint(p, parent, rel, x * old / value, y * old / value)
+        if A.db.settings[key] then
+            A.db.settings[key] = A.FramePosition({ p, rel, x * old / value, y * old / value })
+        end
+    end
+end
+
 --- Restore a normalized own frame anchor or use the supplied default position.
-local function place(frame, key, p, x, y)
+local function place(frame, key, p, x, y, screenBounds)
     local settings = A.db.settings[key]
+    -- Independent panels can legitimately exceed the legacy main-window limits.
+    -- Native clamping still keeps their final rectangle on screen.
+    local limitX, limitY = 600, 450
+    if screenBounds then
+        local scale = math.max(0.45, frame:GetScale())
+        limitX, limitY = UIParent:GetWidth() / scale, UIParent:GetHeight() / scale
+    end
     frame:ClearAllPoints()
     if
         type(settings) == "table"
@@ -292,8 +319,8 @@ local function place(frame, key, p, x, y)
             settings[1],
             UIParent,
             settings[2],
-            math.max(-600, math.min(600, settings[3])),
-            math.max(-450, math.min(450, settings[4]))
+            math.max(-limitX, math.min(limitX, settings[3])),
+            math.max(-limitY, math.min(limitY, settings[4]))
         )
     else
         frame:SetPoint(p, UIParent, p, x, y)
@@ -309,7 +336,7 @@ function A.ShowMenu(anchor, options, offset)
     if not UI.menu then
         UI.menu = CreateFrame("Frame", "AzerothStatsMenu", A.window)
         surface(UI.menu, "main")
-        UI.menu:SetFrameStrata("DIALOG")
+        UI.menu:SetFrameStrata("FULLSCREEN_DIALOG")
         UI.menu:SetFrameLevel(A.window:GetFrameLevel() + 30)
         UI.menu.items = {}
     end
@@ -346,6 +373,7 @@ function A.ShowMenu(anchor, options, offset)
     menu:SetPoint("TOPRIGHT", anchor, "BOTTOMRIGHT", 0, -3)
     menu:SetWidth(268)
     menu:SetHeight(table.getn(options) * 24 + 12)
+    A.UpdateThemeFrame(menu)
     for i, entry in ipairs(options) do
         local b = menu.items[i]
         if not b then
@@ -357,6 +385,15 @@ function A.ShowMenu(anchor, options, offset)
             end)
             menu.items[i] = b
         end
+        b.item = { label = entry.label, detail = entry.detail or "", value = entry.value }
+        b:SetScript("OnEnter", function()
+            A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
+            tooltip(this)
+        end)
+        b:SetScript("OnLeave", function()
+            selected(this, this.selected)
+            GameTooltip:Hide()
+        end)
         b.option = entry
         b.label.localeFont = entry.locale
         put(b.label, entry.label)
@@ -430,6 +467,51 @@ function A.RunMenu(anchor)
     A.ShowMenu(anchor, options)
 end
 
+--- Owned selectors retain exact IDs; they do not change accounting or choose a gameplay action.
+function A.ComparisonRunMenu(anchor, side)
+    local choices = {}
+    for i = table.getn(A.db.runs), 1, -1 do
+        local run = A.db.runs[i]
+        local id = run.id
+        table.insert(choices, {
+            label = A.Date(run.startedAt) .. " · " .. A.ZoneName(run) .. " · " .. A.HeroicLabel(
+                run
+            ),
+            detail = A.ClassName(run.class)
+                .. " · "
+                .. A.Status(run.status == "active" and "active" or run.result or run.status)
+                .. " · "
+                .. A.Duration(run.values.duration),
+            value = run.id,
+            action = function()
+                A.view[side == "A" and "compareA" or "compareB"] = id
+                A.view.page = 1
+            end,
+        })
+    end
+    if table.getn(choices) == 0 then
+        table.insert(choices, { label = A.T("No data yet"), action = function() end })
+    end
+    A.ShowMenu(anchor, choices)
+end
+
+--- One short-lived actionable notice per accepted run summary; no auto-opening over gameplay.
+function A.RefreshReportNotice()
+    local pending = A.pendingReport
+    local visible = pending and GetTime() <= pending.expires and A.FindRun(pending.id)
+    if UI.reportToast then
+        if visible then
+            UI.reportToast:Show()
+        else
+            UI.reportToast:Hide()
+        end
+        put(UI.reportToast.label, A.T("Run report ready"))
+    end
+    if pending and not visible then
+        A.pendingReport = nil
+    end
+end
+
 --- Apply pending settings only after release, preventing scale/coordinate feedback during dragging.
 function A.CommitSliders()
     local changed = false
@@ -457,31 +539,23 @@ function A.ApplyUI()
     local fit = math.min(
         settings.scale,
         math.max(0.45, (UIParent:GetWidth() - 24) / 960),
-        math.max(0.45, (UIParent:GetHeight() - 40) / 650)
+        math.max(0.45, (UIParent:GetHeight() - 40) / 780)
     )
     UI.effectiveScale = fit
-    local old = A.window:GetScale()
-    if old ~= fit then
-        -- Keep the saved physical anchor stable while changing the window's coordinate scale.
-        local p, parent, rel, x, y = A.window:GetPoint()
-        A.window:SetScale(fit)
-        if p and x and y then
-            A.window:ClearAllPoints()
-            A.window:SetPoint(p, parent, rel, x * old / fit, y * old / fit)
-            if settings.windowPos then
-                settings.windowPos = { p, rel, x * old / fit, y * old / fit }
-            end
-        end
+    rescale(A.window, fit, "windowPos")
+    if A.barEditor then
+        rescale(A.barEditor, fit, "barEditorPos")
     end
     for _, t in ipairs(UI.fonts) do
         put(t, t.fullText or "")
     end
     for _, v in ipairs(UI.solids) do
-        v.texture:SetAlpha(settings.opacity)
+        v.texture:SetAlpha(settings.opacity * (v.multiplier or 1))
     end
     if UI.menu then
         UI.menu.base:SetAlpha(1)
     end
+    A.RefreshBar()
     if settings.bar then
         A.bar:Show()
     else
@@ -498,9 +572,13 @@ end
 function A.ResetPosition()
     A.db.settings.windowPos = nil
     A.db.settings.barPos = nil
+    A.db.settings.barEditorPos = nil
     A.db.settings.miniAngle = 0.785398
     place(A.window, "windowPos", "CENTER", 0, 0)
-    place(A.bar, "barPos", "TOP", 0, -2)
+    place(A.bar, "barPos", "TOP", 0, -38)
+    if A.barEditor then
+        place(A.barEditor, "barEditorPos", "CENTER", 0, 0, true)
+    end
     A.mini:ClearAllPoints()
     A.mini:SetPoint("CENTER", Minimap or UIParent, "CENTER", 56, 56)
 end
@@ -565,12 +643,136 @@ local function settingsRefresh()
     put(UI.retentionCaption, A.T("Retained runs"))
     put(UI.retention.label, A.Format(settings.maxRuns))
     put(UI.appearance, A.T("Appearance"))
+    put(UI.hudSettingsTitle, A.T("Top bar"))
+    put(UI.hudSettingsHint, A.T("Bar scope hint"))
     put(UI.behaviour, A.T("Behaviour"))
     put(UI.storage, A.T("Storage"))
     put(UI.saveNote, A.T("Saved on normal game exit"))
 end
 
 --- Paint the active model and local top bar; skip expensive page building while the window is hidden.
+--- Render a reusable row with separate text/value/action areas and an optional
+--- thin contribution track. It never changes the row's underlying data or tooltip.
+local function paintRow(frame, d, model)
+    show(frame.leftCell, model.comparison)
+    show(frame.rightCell, model.comparison)
+    show(frame.leftValue, model.comparison)
+    show(frame.rightValue, model.comparison)
+    if model.comparison then
+        show(frame.icon, false)
+        show(frame.thumbnail, false)
+        show(frame.rank, false)
+        show(frame.share, false)
+        show(frame.extra, false)
+        frame.fill:SetAlpha(0)
+        frame.label:ClearAllPoints()
+        frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -6)
+        frame.label.fontWidth = 154
+        frame.label:SetWidth(154)
+        frame.label.baseSize = 12
+        frame.label.titleFont = false
+        frame.detail:ClearAllPoints()
+        frame.detail:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -29)
+        frame.detail.fontWidth = 154
+        frame.detail:SetWidth(154)
+        frame.detail:SetHeight(18)
+        frame.value:ClearAllPoints()
+        frame.value:SetPoint("TOPLEFT", frame, "TOPLEFT", 550, -7)
+        frame.value.fontWidth = 158
+        frame.value:SetWidth(158)
+        frame.value.baseSize = 12
+        frame.value:SetTextColor(unpack(COLORS.text))
+        put(frame.label, d.label)
+        put(frame.detail, d.detail)
+        put(frame.value, d.value)
+        frame.leftValue:SetJustifyH(d.leftItem and "LEFT" or "RIGHT")
+        frame.rightValue:SetJustifyH(d.rightItem and "LEFT" or "RIGHT")
+        put(frame.leftValue, d.left)
+        put(frame.rightValue, d.right)
+        frame.leftCell.item = d.leftItem
+            or { label = "A · " .. d.label, value = d.left, exact = d.exact }
+        frame.rightCell.item = d.rightItem
+            or { label = "B · " .. d.label, value = d.right, exact = d.exact }
+        return
+    end
+    local photo = model.layout == "dashboard" or model.photoRows
+    local hero = model.layout == "dashboard"
+    local ranking = model.ranking
+    local compact = model.layout == "overview"
+    local left = hero and 198 or (photo and 160 or (ranking and 72 or 56))
+    local width = hero and 256 or (photo and 350 or (ranking and 340 or 390))
+    frame.label:ClearAllPoints()
+    frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", left, -7)
+    frame.label:SetWidth(width)
+    frame.label.fontWidth = width
+    frame.label:SetHeight(23)
+    frame.label.baseSize = photo and 14 or 13
+    frame.label.titleFont = photo
+    frame.detail:ClearAllPoints()
+    frame.detail:SetPoint("TOPLEFT", frame, "TOPLEFT", left, -31)
+    frame.detail:SetWidth(hero and 256 or (photo and 510 or 615))
+    frame.detail.fontWidth = hero and 256 or (photo and 510 or 615)
+    frame.detail:SetHeight(20)
+    frame.detail.baseSize = 11
+    frame.extra:ClearAllPoints()
+    frame.extra:SetPoint("TOPLEFT", frame, "TOPLEFT", left, -51)
+    frame.extra:SetWidth(510)
+    frame.extra.fontWidth = 510
+    put(frame.extra, d.extra or "")
+    show(frame.extra, model.photoRows and d.extra ~= nil)
+    frame.value:ClearAllPoints()
+    frame.value:SetPoint("TOPLEFT", frame, "TOPLEFT", photo and 520 or (ranking and 520 or 480), -8)
+    frame.value.fontWidth = (photo or ranking) and 152 or 192
+    frame.value:SetWidth(frame.value.fontWidth)
+    frame.value:SetHeight(23)
+    frame.value.baseSize = compact and 16 or 14
+    frame.value:SetTextColor(
+        unpack(
+            photo
+                    and (d.result == "victory" and COLORS.green or (d.result == "defeat" and COLORS.red or COLORS.gold))
+                or COLORS.gold
+        )
+    )
+    frame.favorite:ClearAllPoints()
+    frame.favorite:SetPoint("TOPLEFT", frame, "TOPLEFT", 687, -7)
+    frame.icon:ClearAllPoints()
+    frame.icon:SetPoint("LEFT", frame, "LEFT", ranking and 32 or 12, 0)
+    frame.icon:SetWidth(compact and 24 or 30)
+    frame.icon:SetHeight(compact and 24 or 30)
+    if d.icon or d.class then
+        icon(frame.icon, d.icon, d.class)
+    else
+        A.ThemeIcon(frame.icon, A.view.tab)
+    end
+    show(frame.icon, not photo)
+    show(frame.thumbnail, photo)
+    if photo then
+        frame.thumbnail:ClearAllPoints()
+        frame.thumbnail:SetPoint("LEFT", frame, "LEFT", 5, 0)
+        frame.thumbnail:SetWidth(hero and 178 or 138)
+        frame.thumbnail:SetHeight((hero and 178 or 138) * 66 / 178)
+        A.ZoneIllustration(frame.thumbnail, d.zone)
+    end
+    show(frame.rank, ranking)
+    show(frame.share, ranking)
+    put(frame.rank, d.rank or "")
+    put(frame.share, d.share or "")
+    put(frame.label, d.label)
+    put(frame.detail, compact and "" or d.detail)
+    put(frame.value, photo and (A.Status(d.result) .. " · " .. d.value) or d.value)
+    frame.fill:ClearAllPoints()
+    frame.fill:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 8, 3)
+    frame.fill:SetHeight(3)
+    frame.fill:SetWidth(
+        math.max(1, 698 * math.max(0, math.min(1, d.fraction or (d.focused and 1) or 0)))
+    )
+    frame.fill:SetAlpha(d.fraction and 0.7 or (d.focused and 0.35) or 0)
+    if compact then
+        frame.label:ClearAllPoints()
+        frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", left, -6)
+    end
+end
+
 function A.RefreshUI()
     if not A.window then
         return
@@ -584,25 +786,24 @@ function A.RefreshUI()
         characterTab = A.view.characterTab,
         usageTab = A.view.usageTab,
         favoriteCategory = A.view.favoriteCategory or "run",
+        overviewStats = A.view.overviewStats == true,
+        difficulty = A.view.difficulty,
+        historySection = A.view.historySection,
+        reportSection = A.view.reportSection,
+        compareSection = A.view.compareSection,
+        compareA = A.view.compareA,
+        compareB = A.view.compareB,
+        reportRun = A.view.historySection == "Run report" and A.view.selected or nil,
     }
     local live = A.run
-    local r = A.Selected()
-    put(
-        A.bar.label,
-        not live and ("|cffd9b66fAZEROTH STATS|r  ·  " .. A.T("Out of run"))
-            or "|cffd9b66fAZEROTH STATS|r  ·  "
-                .. (live and A.ClassName(live.class) or A.T("Out of run"))
-                .. "  ·  "
-                .. A.Duration(live and live.values.duration)
-                .. "  ·  "
-                .. A.Metric("kills")
-                .. " "
-                .. A.Short(live and live.values.kills)
-                .. "  ·  "
-                .. A.Metric("gold")
-                .. " "
-                .. A.Short(live and live.values.gold)
-    )
+    local r
+    if A.view.tab == 3 and A.view.historySection == "Run report" and A.view.selected then
+        r = A.FindRun(A.view.selected)
+    else
+        r = A.Selected()
+    end
+    A.RefreshBar()
+    A.RefreshReportNotice()
     if not A.window:IsShown() then
         return
     end
@@ -610,6 +811,9 @@ function A.RefreshUI()
     UI.model = model
     put(UI.title, "AZEROTH STATS")
     put(UI.version, A.version)
+    local _, heroClass = A.Identity()
+    put(UI.profileName, A.Text(A.Call(UnitName, "player"), 80) or "?")
+    put(UI.profileClass, A.ClassName(heroClass))
     put(
         UI.breadcrumb,
         (A.view.tab == 4 or A.view.tab == 9)
@@ -617,20 +821,28 @@ function A.RefreshUI()
                 and (A.T("All runs") .. " · " .. (A.view.class and A.ClassName(A.view.class) or A.T(
                     "All classes"
                 )))
-            or r and ((r.hero or "?") .. " · " .. A.ClassName(r.class) .. " · " .. A.ZoneName(r) .. " · " .. A.Status(
-                r.result or r.status
-            ))
+            or r and ((r.hero or "?") .. " · " .. A.ClassName(r.class) .. " · " .. A.ZoneName(r) .. " · " .. A.HeroicLabel(
+                r
+            ) .. " · " .. A.Status(r.result or r.status))
             or A.T("Start a run to begin")
     )
     put(UI.sectionTitle, model.title)
     put(UI.subtitle, model.subtitle)
     put(UI.sidebarNote, A.T("Collected since installation"))
+    put(UI.explore, A.T("Explore"))
+    put(UI.progression, A.T("Progression"))
     for i, b in ipairs(UI.nav) do
         put(b.label, A.T(A.tabs[i]))
         selected(b, i == A.view.tab)
     end
     local tab = A.view.tab
-    UI.favoriteRun.favorite = (tab == 4 or tab == 5 or tab == 9)
+    local selectedLive = r and live and r.id == live.id and live.status == "active"
+    local selectorLabel = selectedLive and A.T("Current run")
+        or (
+            A.view.selected and (A.T("History") .. " · " .. A.Date(r and r.startedAt))
+            or A.T("Latest run")
+        )
+    UI.favoriteRun.favorite = (tab == 4 or tab == 5 or tab == 9 or model.report)
             and not A.view.cumulative
             and A.RunFavorite(r)
         or nil
@@ -638,14 +850,26 @@ function A.RefreshUI()
     if UI.favoriteRun.favorite then
         paintFavorite(UI.favoriteRun)
     end
-    show(UI.classButton, tab == 1 or tab == 2 or tab == 3 or tab == 6 or tab == 10 or tab == 11)
-    put(UI.classButton.label, (A.view.class and A.ClassName(A.view.class) or A.T("All classes")))
-    show(UI.latest, tab == 5)
-    put(
-        UI.latest.label,
-        A.view.selected and (A.T("History") .. " · " .. A.Date(r and r.startedAt))
-            or A.T("Latest run")
+    show(
+        UI.classButton,
+        tab == 1
+            or tab == 2
+            or (tab == 3 and not model.report and not model.comparison)
+            or tab == 6
+            or tab == 10
+            or tab == 11
     )
+    put(UI.classButton.label, (A.view.class and A.ClassName(A.view.class) or A.T("All classes")))
+    show(UI.difficultyButton, tab == 3 and not model.report and not model.comparison)
+    put(
+        UI.difficultyButton.label,
+        A.view.difficulty == nil and A.T("All difficulties")
+            or A.HeroicLabel({
+                heroic = A.view.difficulty ~= "unknown" and A.view.difficulty or nil,
+            })
+    )
+    show(UI.latest, tab == 5 or model.report)
+    put(UI.latest.label, selectorLabel)
     for _, b in ipairs(UI.modeButtons) do
         show(b, tab == 4)
         put(b.label, b.mode and A.ModeName(b.mode) or A.T("Activity"))
@@ -653,6 +877,56 @@ function A.RefreshUI()
             or (not b.mode and A.view.combatTab == "Activity")
         selected(b, active)
     end
+    for _, b in ipairs(UI.historySections) do
+        show(b, tab == 3)
+        selected(b, b.key == (A.view.historySection or "History"))
+    end
+    for _, b in ipairs(UI.reportSections) do
+        show(b, model.report)
+        selected(b, b.key == (A.view.reportSection or "Overview"))
+    end
+    for _, b in ipairs(UI.compareSections) do
+        show(b, model.comparison)
+        selected(b, b.key == (A.view.compareSection or "Overview"))
+    end
+    show(UI.reportCompare, model.report)
+    show(UI.swapRuns, model.comparison)
+    for i = 1, 2 do
+        local band = UI.compareHeaders[i]
+        local data = model.compareRuns and model.compareRuns[i]
+        show(band, model.comparison)
+        show(UI.compareSelectors[i], model.comparison)
+        show(UI.compareColumns[i], model.comparison)
+        if model.comparison then
+            put(
+                UI.compareSelectors[i].label,
+                (i == 1 and "A" or "B")
+                    .. " · "
+                    .. (data and A.Date(data.startedAt) or A.T("Select another run"))
+            )
+            put(band.label, data and A.ZoneName(data) or A.T("Select another run"))
+            put(
+                band.detail,
+                data
+                        and (A.ClassName(data.class) .. " · " .. A.HeroicLabel(data) .. "\n" .. A.Status(
+                            data.status == "active" and "active" or data.result or data.status
+                        ) .. " · " .. A.Duration(data.values.duration))
+                    or ""
+            )
+            A.ZoneIllustration(band.icon, data and data.zone)
+            band.item = {
+                label = data and (data.hero or "?") or A.T("Unavailable"),
+                value = data and data.id or "",
+                detail = band.detail.fullText,
+            }
+            band.favorite.favorite = A.RunFavorite(data)
+            show(band.favorite, data ~= nil)
+            if data then
+                paintFavorite(band.favorite)
+            end
+        end
+    end
+    UI.columnValue.columnX = model.comparison and 768 or 738
     local counts = tab == 10 and A.FavoriteCounts() or {}
     for _, b in ipairs(UI.favoriteCategories) do
         show(b, tab == 10)
@@ -671,31 +945,77 @@ function A.RefreshUI()
     end
     show(UI.scopeRun, tab == 4 or tab == 9)
     show(UI.scopeAll, tab == 4 or tab == 9)
-    put(
-        UI.scopeRun.label,
-        A.view.selected and (A.T("History") .. " · " .. A.Date(r and r.startedAt))
-            or A.T(A.run and A.run.status == "active" and "Current run" or "Latest run")
-    )
+    put(UI.scopeRun.label, selectorLabel)
     put(UI.scopeAll.label, A.T("All runs"))
     selected(UI.scopeRun, not A.view.cumulative)
     selected(UI.scopeAll, A.view.cumulative)
+    local dashboard = model.layout == "dashboard"
+    show(UI.context, model.banner ~= nil)
+    show(UI.subtitle, model.banner == nil)
+    if model.banner then
+        local band, data = UI.context, model.banner
+        band.item = data
+        band.icon:SetWidth(data.photo and 110 or 32)
+        band.icon:SetHeight(data.photo and (110 * 66 / 178) or 32)
+        if data.photo then
+            A.ZoneIllustration(band.icon, data.zone)
+        else
+            A.ThemeIcon(band.icon, tab)
+        end
+        local left = data.photo and 136 or 56
+        band.label:ClearAllPoints()
+        band.label:SetPoint("TOPLEFT", band, "TOPLEFT", left, -6)
+        band.detail:ClearAllPoints()
+        band.detail:SetPoint("TOPLEFT", band, "TOPLEFT", left, -33)
+        band.label.fontWidth = 500 - left
+        band.label:SetWidth(band.label.fontWidth)
+        band.detail.fontWidth = 690 - left
+        band.detail:SetWidth(band.detail.fontWidth)
+        put(band.label, data.label)
+        put(band.detail, data.detail)
+        put(band.value, data.value)
+    end
+    show(UI.columnLabel, model.columnLabel ~= nil)
+    show(UI.columnValue, model.columnLabel ~= nil)
+    show(UI.columnShare, model.ranking)
+    for _, label in ipairs({ UI.columnLabel, UI.columnValue, UI.columnShare }) do
+        label:ClearAllPoints()
+        label:SetPoint("TOPLEFT", A.window, "TOPLEFT", label.columnX, -model.rowY + 28)
+    end
+    put(UI.columnLabel, model.columnLabel or "")
+    put(UI.columnValue, model.columnValue or "")
+    put(UI.columnShare, A.T("Share"))
+    show(UI.note, not dashboard)
+    show(UI.statsLink, tab == 1)
+    put(UI.statsLink.label, A.T(dashboard and "All statistics" or "Overview"))
+    show(UI.recentTitle, dashboard)
+    show(UI.recentEmpty, dashboard and table.getn(model.rows) == 0)
+    put(UI.recentEmpty, A.T("No data yet"))
+    show(UI.historyLink, dashboard)
+    show(UI.recordsTitle, dashboard)
+    show(UI.recordsLink, dashboard)
+    show(UI.recordPanel, dashboard)
+    put(UI.recentTitle, A.T("Recent runs"))
+    put(UI.recordsTitle, A.T("Your records"))
+    for index, record in ipairs(model.records or {}) do
+        local widget = UI.recordItems[index]
+        put(widget.label, record.label)
+        put(widget.value, record.value)
+        widget.item = { label = record.label, value = record.value, exact = record.exact }
+    end
     show(UI.settings, tab == 8)
     if tab == 8 then
         settingsRefresh()
     end
-    -- Two-line rows keep a real gap even at the largest accessibility font size.
-    if model.layout ~= "overview" and model.layout ~= "classes" and model.layout ~= "settings" then
-        local hasDetail = false
-        for _, d in ipairs(model.rows) do
-            if d.detail and d.detail ~= "" then
-                hasDetail = true
-                break
-            end
-        end
-        if hasDetail then
-            model.rowHeight = math.max(model.rowHeight, 46)
-            model.capacity = math.max(1, math.floor((580 - model.rowY) / model.rowHeight))
-        end
+    -- Shared body geometry extends to the footer; translated two-line rows keep
+    -- dedicated space instead of the old fixed 580-unit content cutoff.
+    if
+        model.layout ~= "overview"
+        and model.layout ~= "dashboard"
+        and model.layout ~= "classes"
+        and model.layout ~= "settings"
+    then
+        model.capacity = math.max(1, math.min(12, math.floor((700 - model.rowY) / model.rowHeight)))
     end
     if A.view.focusFavorite then
         for i, d in ipairs(model.rows) do
@@ -722,23 +1042,65 @@ function A.RefreshUI()
             c.item = d
             c:ClearAllPoints()
             local tall = model.layout == "classes"
-            local top = model.layout == "combat" and 195 or 163
-            local h = tall and 116 or (model.layout == "combat" and 76 or 94)
+            local top = model.cardsTop or (model.layout == "combat" and 195 or 181)
+            local h = tall and 156 or 104
             c:SetPoint(
                 "TOPLEFT",
                 A.window,
                 "TOPLEFT",
                 218 + math.mod(i - 1, 3) * 238,
-                -top - math.floor((i - 1) / 3) * (h + 10)
+                -top - math.floor((i - 1) / 3) * (h + 12)
             )
+            local dashboard = model.layout == "dashboard"
+            if dashboard then
+                c:SetWidth(178.5)
+                c:SetPoint("TOPLEFT", A.window, "TOPLEFT", 218 + (i - 1) * 178.5, -181)
+                h = 128
+            else
+                c:SetWidth(224)
+            end
             c:SetHeight(h)
+            A.UpdateThemeFrame(c)
+            c.label.fontWidth = dashboard and 154 or 176
+            c.label:SetWidth(c.label.fontWidth)
+            c.value.fontWidth = dashboard and 154 or 199
+            c.value:SetWidth(c.value.fontWidth)
+            c.detail.fontWidth = dashboard and 144 or 199
+            c.detail:SetWidth(c.detail.fontWidth)
             c.detail:ClearAllPoints()
-            c.detail:SetPoint("TOPLEFT", c, "TOPLEFT", 13, model.layout == "combat" and -58 or -69)
-            c.value:SetHeight(model.layout == "combat" and 27 or 34)
-            icon(c.icon, d.icon, d.class)
+            c.detail:SetPoint("TOPLEFT", c, "TOPLEFT", 13, tall and -82 or -72)
+            c.label:ClearAllPoints()
+            c.value:ClearAllPoints()
+            c.icon:ClearAllPoints()
+            c.label:SetPoint("TOPLEFT", c, "TOPLEFT", 13, dashboard and -47 or -9)
+            c.value:SetPoint("TOPLEFT", c, "TOPLEFT", 13, dashboard and -71 or -32)
+            c.label:SetJustifyH(dashboard and "CENTER" or "LEFT")
+            c.label.baseSize = dashboard and 14 or 12
+            c.label.titleFont = dashboard
+            c.value:SetJustifyH(dashboard and "CENTER" or "LEFT")
+            c.value.baseSize = dashboard and 31 or 27
+            c.value:SetTextColor(
+                unpack(dashboard and (i == 2 and COLORS.green or COLORS.text) or COLORS.text)
+            )
+            c.value:SetHeight(38)
+            c.detail:SetHeight(tall and 58 or 22)
+            c.detail.baseSize = 11
+            c.icon:SetWidth(dashboard and 38 or (tall and 36 or 28))
+            c.icon:SetHeight(dashboard and 38 or (tall and 36 or 28))
+            if model.layout == "dashboard" then
+                c.icon:SetPoint("TOP", c, "TOP", 0, -9)
+                A.PaintedGlyph(c.icon, i + 1)
+            else
+                c.icon:SetPoint("TOPRIGHT", c, "TOPRIGHT", -12, -12)
+                if d.glyph then
+                    A.PaintedGlyph(c.icon, d.glyph)
+                else
+                    icon(c.icon, d.icon, d.class)
+                end
+            end
             put(c.label, d.label)
             put(c.value, d.value)
-            put(c.detail, d.detail)
+            put(c.detail, model.layout == "dashboard" and "" or d.detail)
             c:Show()
         else
             c:Hide()
@@ -763,33 +1125,15 @@ function A.RefreshUI()
                 -model.rowY - (i - 1) * model.rowHeight
             )
             frame:SetHeight(model.rowHeight - 1)
-            local compact = model.layout == "overview"
-            frame.detail:ClearAllPoints()
-            frame.detail:SetPoint(
-                "TOPLEFT",
-                frame,
-                "TOPLEFT",
-                35,
-                -(model.rowHeight >= 40 and 24 or 16)
-            )
-            frame.detail:SetHeight(model.rowHeight >= 40 and 20 or 12)
-            frame.label:SetHeight(model.rowHeight >= 40 and 22 or 22)
-            frame.icon:SetWidth(compact and 17 or 22)
-            frame.icon:SetHeight(compact and 17 or 22)
-            icon(frame.icon, d.icon, d.class)
-            put(frame.label, d.label)
-            put(frame.value, d.value)
-            put(frame.detail, compact and "" or d.detail)
-            frame.fill:SetWidth(
-                math.max(1, 710 * math.max(0, math.min(1, d.fraction or (d.focused and 1) or 0)))
-            )
-            frame.fill:SetAlpha(d.fraction and 0.15 or (d.focused and 0.1) or 0)
+            paintRow(frame, d, model)
             frame:Show()
         else
             frame.item = nil
             frame:Hide()
         end
     end
+    UI.empty:ClearAllPoints()
+    UI.empty:SetPoint("TOPLEFT", A.window, "TOPLEFT", 248, -math.min(540, model.rowY + 64))
     show(UI.empty, model.empty)
     put(
         UI.empty,
@@ -831,14 +1175,24 @@ end
 --- Create own setting sliders, checks and menus with validated ranges and deferred scale updates.
 local function buildSettings(frame)
     local p = CreateFrame("Frame", nil, frame)
-    p:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -158)
+    p:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -184)
     p:SetWidth(712)
-    p:SetHeight(421)
+    p:SetHeight(580)
     UI.settings = p
+    for _, rect in ipairs({
+        { -12, -12, 736, 241 },
+        { -12, 232, 356, 180 },
+        { 358, 232, 356, 180 },
+        { -12, 457, 736, 116 },
+    }) do
+        for _, texture in ipairs(A.ThemePanel(p, unpack(rect))) do
+            table.insert(UI.solids, { texture = texture, multiplier = 0.65 })
+        end
+    end
     UI.appearance = font(p, 0, 0, 690, 24, 16, COLORS.gold, true)
-    UI.behaviour = font(p, 0, 205, 320, 24, 16, COLORS.gold, true)
-    UI.storage = font(p, 370, 205, 320, 24, 16, COLORS.gold, true)
-    UI.saveNote = font(p, 0, 388, 710, 30, 11, COLORS.muted)
+    UI.behaviour = font(p, 0, 232, 320, 24, 16, COLORS.gold, true)
+    UI.storage = font(p, 370, 232, 320, 24, 16, COLORS.gold, true)
+    UI.saveNote = font(p, 0, 415, 710, 30, 11, COLORS.muted)
     UI.sliders = {}
     UI.checks = {}
     local definitions = {
@@ -920,12 +1274,12 @@ local function buildSettings(frame)
         { "recordSound", "Record sounds" },
     }) do
         local b = CreateFrame("CheckButton", nil, p, "UICheckButtonTemplate")
-        b:SetPoint("TOPLEFT", p, "TOPLEFT", 0, -237 - (i - 1) * 39)
+        b:SetPoint("TOPLEFT", p, "TOPLEFT", 0, -264 - (i - 1) * 39)
         b:SetWidth(24)
         b:SetHeight(24)
         b.setting = def[1]
         b.key = def[2]
-        b.caption = font(p, 32, 237 + (i - 1) * 39, 310, 24, 12, COLORS.text)
+        b.caption = font(p, 32, 264 + (i - 1) * 39, 310, 24, 12, COLORS.text)
         b:SetScript("OnClick", function()
             A.db.settings[this.setting] = not A.db.settings[this.setting]
             A.ApplyUI()
@@ -933,8 +1287,8 @@ local function buildSettings(frame)
         end)
         table.insert(UI.checks, b)
     end
-    UI.retentionCaption = font(p, 370, 235, 330, 22, 12, COLORS.text)
-    UI.retention = button(p, 370, 263, 330, 28, "", function(self)
+    UI.retentionCaption = font(p, 370, 262, 330, 22, 12, COLORS.text)
+    UI.retention = button(p, 370, 290, 330, 28, "", function(self)
         local options = {}
         for _, n in ipairs({ 50, 100, 200, 500, 1000 }) do
             local value = n
@@ -950,7 +1304,12 @@ local function buildSettings(frame)
     end)
     dropdown(UI.language)
     dropdown(UI.retention)
-    button(p, 370, 317, 330, 28, "Reset position", function()
+    UI.hudSettingsTitle = font(p, 0, 465, 690, 26, 18, COLORS.gold, true)
+    UI.hudSettingsHint = font(p, 0, 504, 340, 48, 12, COLORS.muted)
+    button(p, 370, 506, 330, 32, "Customize bar", function()
+        A.OpenBarEditor()
+    end)
+    button(p, 370, 344, 330, 28, "Reset position", function()
         A.ResetPosition()
     end)
 end
@@ -960,12 +1319,17 @@ function A.BuildUI()
     local frame = CreateFrame("Frame", "AzerothStatsWindow", UIParent)
     A.window = frame
     frame:SetWidth(960)
-    frame:SetHeight(650)
-    frame:SetFrameStrata("DIALOG")
+    frame:SetHeight(780)
+    frame:SetFrameStrata("FULLSCREEN_DIALOG")
+    frame:SetFrameLevel(100)
+    frame:SetToplevel(true)
     surface(frame, "main")
     drag(frame, "windowPos")
     place(frame, "windowPos", "CENTER", 0, 0)
     frame:SetScript("OnHide", function()
+        if A.barEditor then
+            A.barEditor:Hide()
+        end
         A.CommitSliders()
         A.db.settings.open = false
         if UI.menu then
@@ -978,13 +1342,13 @@ function A.BuildUI()
         end
     end)
     local emblem = frame:CreateTexture(nil, "ARTWORK")
-    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -22)
-    emblem:SetWidth(34)
-    emblem:SetHeight(34)
-    icon(emblem, "INV_Misc_Book_09")
-    UI.title = font(frame, 72, 19, 370, 28, 23, COLORS.gold, true)
-    UI.version = font(frame, 448, 23, 200, 20, 11, COLORS.muted)
-    UI.breadcrumb = font(frame, 72, 49, 810, 18, 11, COLORS.muted)
+    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -6)
+    emblem:SetWidth(90)
+    emblem:SetHeight(90)
+    A.PaintedGlyph(emblem, 1)
+    UI.title = font(frame, 126, 14, 540, 48, 36, COLORS.gold, true)
+    UI.version = font(frame, 730, 42, 150, 20, 11, COLORS.muted)
+    UI.breadcrumb = font(frame, 130, 65, 750, 20, 12, COLORS.muted)
     local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -7, -6)
     close:SetWidth(30)
@@ -993,27 +1357,25 @@ function A.BuildUI()
         A.ToggleUI(false)
     end)
     local divider = frame:CreateTexture(nil, "ARTWORK")
-    divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -79)
+    divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -98)
     divider:SetWidth(914)
     divider:SetHeight(1)
     divider:SetTexture(0.42, 0.32, 0.16)
-    UI.sidebarNote = font(frame, 29, 579, 152, 49, 10, COLORS.muted)
-    local navIcons = {
-        "INV_Misc_Book_09",
-        "Ability_Warrior_BattleShout",
-        "INV_Misc_PocketWatch_01",
-        "INV_Sword_04",
-        "INV_Chest_Chain_04",
-        "INV_Misc_Coin_02",
-        "INV_Misc_Gear_01",
-        "Trade_Engineering",
-        "INV_Misc_Book_09",
-        "Interface\\AddOns\\AzerothStats\\media\\FavoriteHeartFilled.tga",
-        "Ability_Creature_Cursed_02",
-    }
+    local profile = frame:CreateTexture(nil, "ARTWORK")
+    profile:SetPoint("TOPLEFT", frame, "TOPLEFT", 32, -127)
+    profile:SetWidth(48)
+    profile:SetHeight(48)
+    A.PaintedGlyph(profile, 7)
+    UI.profileName = font(frame, 90, 129, 112, 23, 16, COLORS.text)
+    UI.profileClass = font(frame, 90, 153, 112, 20, 11, COLORS.muted)
+    UI.sidebarNote = font(frame, 29, 738, 160, 17, 10, COLORS.muted)
+    UI.sidebarNote:Hide()
+    UI.explore = font(frame, 29, 198, 160, 18, 10, COLORS.muted)
+    UI.progression = font(frame, 29, 406, 160, 18, 10, COLORS.muted)
+    local navY = { 221, 429, 264, 307, 350, 472, 709, 666, 558, 611, 515 }
     for i, key in ipairs(A.tabs) do
         local index = i
-        local b = button(frame, 23, 97 + (i - 1) * 43, 170, 36, "", function()
+        local b = button(frame, 23, navY[i], 170, i == 7 and 27 or 36, "", function()
             selectTab(index)
         end)
         b.marker = solid(b, 1, 0.68, 0.2, 1, "ARTWORK")
@@ -1025,16 +1387,17 @@ function A.BuildUI()
         b.label:SetPoint("TOPLEFT", b, "TOPLEFT", 39, 0)
         b.label:SetWidth(123)
         b.label.fontWidth = 123
-        b.label.baseSize = 13
+        b.label.baseSize = 14
         b.icon = b:CreateTexture(nil, "ARTWORK")
         b.icon:SetPoint("LEFT", b, "LEFT", 10, 0)
-        b.icon:SetWidth(21)
-        b.icon:SetHeight(21)
-        icon(b.icon, navIcons[i])
+        b.icon:SetWidth(26)
+        b.icon:SetHeight(26)
+        A.ThemeIcon(b.icon, i == 7 and 12 or i)
+        b.navigation = true
         UI.nav[i] = b
     end
-    UI.sectionTitle = font(frame, 218, 96, 285, 28, 21, COLORS.gold, true)
-    UI.subtitle = font(frame, 218, 128, 710, 22, 11, COLORS.muted)
+    UI.sectionTitle = font(frame, 218, 109, 285, 32, 24, COLORS.gold, true)
+    UI.subtitle = font(frame, 218, 143, 710, 16, 11, COLORS.muted)
     UI.classButton = button(frame, 714, 100, 218, 26, "", function()
         A.CycleClass()
     end)
@@ -1099,6 +1462,33 @@ function A.BuildUI()
         b.key = key
         table.insert(UI.usageButtons, b)
     end
+    UI.difficultyButton = button(frame, 518, 100, 198, 26, "", function(self)
+        local choices = {
+            {
+                label = A.T("All difficulties"),
+                action = function()
+                    A.view.difficulty, A.view.page = nil, 1
+                end,
+            },
+        }
+        for level = 0, 5 do
+            local value = level
+            table.insert(choices, {
+                label = A.HeroicLabel({ heroic = value }),
+                action = function()
+                    A.view.difficulty, A.view.page = value, 1
+                end,
+            })
+        end
+        table.insert(choices, {
+            label = A.T("Difficulty unknown"),
+            action = function()
+                A.view.difficulty, A.view.page = "unknown", 1
+            end,
+        })
+        A.ShowMenu(self, choices)
+    end)
+    dropdown(UI.difficultyButton)
     UI.scopeRun = button(frame, 518, 100, 198, 26, "", function(self)
         A.RunMenu(self)
     end)
@@ -1110,6 +1500,118 @@ function A.BuildUI()
         A.view.page = 1
         A.RefreshUI()
     end)
+    UI.historySections, UI.reportSections, UI.compareSections = {}, {}, {}
+    for i, key in ipairs({ "History", "Run report", "Compare runs" }) do
+        local section = key
+        local b = button(frame, 218 + (i - 1) * 240, 160, 232, 26, key, function()
+            if section == "Compare runs" then
+                A.OpenCompare(A.Selected() and A.Selected().id)
+            elseif section == "Run report" then
+                A.OpenReport(A.Selected() and A.Selected().id)
+            else
+                A.view.historySection, A.view.page = "History", 1
+            end
+            A.RefreshUI()
+        end)
+        table.insert(UI.historySections, b)
+    end
+    for i, key in ipairs({ "Overview", "Combat", "Character", "Co-op", "Records" }) do
+        local section = key
+        local b = button(frame, 218 + (i - 1) * 144, 274, 136, 26, key, function()
+            A.view.reportSection, A.view.page = section, 1
+            A.RefreshUI()
+        end)
+        table.insert(UI.reportSections, b)
+    end
+    for i, key in ipairs({ "Overview", "Combat", "Spells", "Equipment" }) do
+        local section = key
+        local b = button(frame, 218 + (i - 1) * 180, 330, 172, 26, key, function()
+            A.view.compareSection, A.view.page = section, 1
+            A.RefreshUI()
+        end)
+        table.insert(UI.compareSections, b)
+    end
+    UI.reportCompare = button(frame, 518, 100, 198, 26, "Compare runs", function()
+        A.OpenCompare(A.Selected() and A.Selected().id)
+        A.RefreshUI()
+    end)
+    UI.swapRuns = button(frame, 724, 100, 208, 26, "Swap runs", function()
+        A.view.compareA, A.view.compareB, A.view.page = A.view.compareB, A.view.compareA, 1
+        A.RefreshUI()
+    end)
+    UI.compareHeaders, UI.compareSelectors, UI.compareColumns = {}, {}, {}
+    for i = 1, 2 do
+        local side = i == 1 and "A" or "B"
+        UI.compareSelectors[i] = button(frame, 218 + (i - 1) * 360, 198, 354, 26, "", function(self)
+            A.ComparisonRunMenu(self, side)
+        end)
+        dropdown(UI.compareSelectors[i])
+        local band = CreateFrame("Button", nil, frame)
+        band:SetPoint("TOPLEFT", frame, "TOPLEFT", 218 + (i - 1) * 360, -232)
+        band:SetWidth(354)
+        band:SetHeight(83)
+        surface(band, "card")
+        band.icon = band:CreateTexture(nil, "ARTWORK")
+        band.icon:SetPoint("LEFT", band, "LEFT", 8, 0)
+        band.icon:SetWidth(100)
+        band.icon:SetHeight(100 * 66 / 178)
+        band.label = font(band, 119, 7, 207, 23, 14, COLORS.gold, true)
+        band.detail = font(band, 119, 33, 203, 43, 11, COLORS.muted)
+        band.favorite = favoriteButton(band, 328, 52)
+        band:SetScript("OnEnter", function()
+            tooltip(this)
+        end)
+        band:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+        UI.compareHeaders[i] = band
+        UI.compareColumns[i] = font(frame, 398 + (i - 1) * 185, 392, 170, 22, 12, COLORS.gold)
+        UI.compareColumns[i]:SetJustifyH("RIGHT")
+        put(UI.compareColumns[i], side)
+    end
+    UI.reportToast = button(UIParent, 0, 0, 360, 42, "", function()
+        if A.pendingReport and A.FindRun(A.pendingReport.id) then
+            A.OpenReport(A.pendingReport.id)
+            A.ToggleUI(true)
+        end
+        A.pendingReport = nil
+        UI.reportToast:Hide()
+    end)
+    UI.reportToast:ClearAllPoints()
+    UI.reportToast:SetPoint("TOP", UIParent, "TOP", 0, -170)
+    UI.reportToast:SetFrameStrata("DIALOG")
+    UI.reportToast.label.fontWidth = 316
+    UI.reportToast.label:SetWidth(316)
+    UI.reportToast.dismiss = button(UI.reportToast, 330, 8, 22, 24, "X", function()
+        A.pendingReport = nil
+        UI.reportToast:Hide()
+    end)
+    UI.reportToast:Hide()
+    UI.context = CreateFrame("Button", nil, frame)
+    UI.context:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -199)
+    UI.context:SetWidth(714)
+    UI.context:SetHeight(62)
+    surface(UI.context, "card")
+    UI.context.icon = UI.context:CreateTexture(nil, "ARTWORK")
+    UI.context.icon:SetPoint("LEFT", UI.context, "LEFT", 12, 0)
+    UI.context.label = font(UI.context, 56, 6, 444, 24, 14, COLORS.text, true)
+    UI.context.detail = font(UI.context, 56, 33, 634, 20, 11, COLORS.muted)
+    UI.context.value = font(UI.context, 520, 6, 170, 24, 13, COLORS.gold)
+    UI.context.value:SetJustifyH("RIGHT")
+    UI.context:SetScript("OnEnter", function()
+        tooltip(this)
+    end)
+    UI.context:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+    UI.columnLabel = font(frame, 218, 270, 410, 22, 11, COLORS.muted)
+    UI.columnLabel.columnX = 218
+    UI.columnValue = font(frame, 738, 270, 152, 22, 11, COLORS.muted)
+    UI.columnValue.columnX = 738
+    UI.columnValue:SetJustifyH("RIGHT")
+    UI.columnShare = font(frame, 653, 270, 70, 22, 11, COLORS.muted)
+    UI.columnShare.columnX = 653
+    UI.columnShare:SetJustifyH("RIGHT")
     for i = 1, 9 do
         local c = CreateFrame("Button", nil, frame)
         c:SetWidth(224)
@@ -1138,7 +1640,7 @@ function A.BuildUI()
     for i = 1, 12 do
         local r = CreateFrame("Button", nil, frame)
         r:SetWidth(714)
-        r.shade = solid(r, 0.14, 0.115, 0.07, math.mod(i, 2) == 0 and 0.28 or 0.11)
+        r.shade = solid(r, 0.22, 0.29, 0.32, math.mod(i, 2) == 0 and 0.28 or 0.11)
         r.fill = r:CreateTexture(nil, "ARTWORK")
         r.fill:SetPoint("LEFT", r, "LEFT", 0, 0)
         r.fill:SetHeight(27)
@@ -1147,11 +1649,36 @@ function A.BuildUI()
         r.icon:SetPoint("LEFT", r, "LEFT", 6, 0)
         r.icon:SetWidth(22)
         r.icon:SetHeight(22)
+        r.thumbnail = r:CreateTexture(nil, "ARTWORK")
+        r.thumbnail:SetPoint("TOPLEFT", r, "TOPLEFT", 5, -8)
+        r.thumbnail:SetWidth(178)
+        r.thumbnail:SetHeight(66)
+        r.thumbnail:Hide()
         r.label = font(r, 35, 1, 412, 22, 12, COLORS.text)
         r.value = font(r, 455, 0, 225, 23, 13, COLORS.gold)
         r.value:SetJustifyH("RIGHT")
         r.favorite = favoriteButton(r, 687, 1)
         r.detail = font(r, 35, 19, 670, 15, 9, COLORS.muted)
+        r.extra = font(r, 160, 51, 510, 18, 11, COLORS.muted)
+        r.rank = font(r, 4, 10, 22, 24, 11, COLORS.gold)
+        r.rank:SetJustifyH("CENTER")
+        r.share = font(r, 435, 8, 70, 23, 12, COLORS.muted)
+        r.share:SetJustifyH("RIGHT")
+        r.leftValue = font(r, 180, 5, 170, 38, 12, COLORS.text)
+        r.rightValue = font(r, 365, 5, 170, 38, 12, COLORS.text)
+        for _, side in ipairs({ "left", "right" }) do
+            local cell = CreateFrame("Button", nil, r)
+            cell:SetPoint("TOPLEFT", r, "TOPLEFT", side == "left" and 180 or 365, -2)
+            cell:SetWidth(170)
+            cell:SetHeight(44)
+            cell:SetScript("OnEnter", function()
+                tooltip(this)
+            end)
+            cell:SetScript("OnLeave", function()
+                GameTooltip:Hide()
+            end)
+            r[side .. "Cell"] = cell
+        end
         r:SetScript("OnEnter", function()
             tooltip(this)
         end)
@@ -1166,18 +1693,61 @@ function A.BuildUI()
         end)
         UI.rows[i] = r
     end
+    UI.statsLink = button(frame, 518, 100, 186, 26, "", function()
+        A.view.overviewStats = not A.view.overviewStats
+        A.view.page = 1
+        A.RefreshUI()
+    end)
+    UI.recentTitle = font(frame, 218, 322, 430, 30, 22, COLORS.gold, true)
+    UI.recentEmpty = font(frame, 240, 370, 650, 55, 14, COLORS.muted)
+    UI.historyLink = button(frame, 772, 322, 160, 30, "History", function()
+        selectTab(3)
+    end)
+    UI.recordsTitle = font(frame, 218, 612, 430, 30, 22, COLORS.gold, true)
+    UI.recordsLink = button(frame, 772, 612, 160, 30, "Records", function()
+        selectTab(6)
+    end)
+    UI.recordPanel = CreateFrame("Frame", nil, frame)
+    UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -649)
+    UI.recordPanel:SetWidth(714)
+    UI.recordPanel:SetHeight(60)
+    surface(UI.recordPanel, "card")
+    UI.recordItems = {}
+    for index = 1, 3 do
+        local record = CreateFrame("Button", nil, UI.recordPanel)
+        record:SetPoint("TOPLEFT", UI.recordPanel, "TOPLEFT", 10 + (index - 1) * 238, 0)
+        record:SetWidth(218)
+        record:SetHeight(60)
+        local glyph = record:CreateTexture(nil, "ARTWORK")
+        glyph:SetPoint("LEFT", record, "LEFT", 2, 0)
+        glyph:SetWidth(30)
+        glyph:SetHeight(30)
+        A.PaintedGlyph(glyph, ({ 4, 5, 2 })[index])
+        record.label = font(record, 42, 5, 166, 18, 11, COLORS.muted)
+        record.value = font(record, 42, 25, 166, 28, 21, COLORS.text)
+        record:SetScript("OnEnter", function()
+            tooltip(this)
+        end)
+        record:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+        record:SetScript("OnClick", function()
+            selectTab(6)
+        end)
+        UI.recordItems[index] = record
+    end
     UI.empty = font(frame, 268, 293, 608, 80, 16, COLORS.muted, true)
-    UI.note = font(frame, 218, 589, 714, 19, 10, COLORS.muted)
-    UI.previous = button(frame, 218, 615, 38, 24, "<", function()
+    UI.note = font(frame, 218, 738, 714, 19, 10, COLORS.muted)
+    UI.previous = button(frame, 218, 714, 38, 24, "<", function()
         A.view.page = math.max(1, A.view.page - 1)
         A.RefreshUI()
     end)
-    UI.next = button(frame, 265, 615, 38, 24, ">", function()
+    UI.next = button(frame, 265, 714, 38, 24, ">", function()
         local model = A.PageModel()
         A.view.page = math.min(math.ceil(table.getn(model.rows) / model.capacity), A.view.page + 1)
         A.RefreshUI()
     end)
-    UI.paging = font(frame, 320, 616, 400, 23, 11, COLORS.muted)
+    UI.paging = font(frame, 320, 715, 400, 23, 11, COLORS.muted)
     if frame.EnableMouseWheel then
         frame:EnableMouseWheel(true)
         frame:SetScript("OnMouseWheel", function()
@@ -1192,18 +1762,7 @@ function A.BuildUI()
     A.tabButtons = UI.nav
     A.uiRows = UI.rows
     A.classButton = UI.classButton
-    local bar = CreateFrame("Button", "AzerothStatsBar", UIParent)
-    A.bar = bar
-    bar:SetWidth(700)
-    bar:SetHeight(27)
-    bar:SetFrameStrata("MEDIUM")
-    surface(bar, "main")
-    drag(bar, "barPos")
-    place(bar, "barPos", "TOP", 0, -2)
-    bar.label = font(bar, 12, 2, 676, 23, 11, COLORS.text)
-    bar:SetScript("OnClick", function()
-        A.ToggleUI()
-    end)
+    A.BuildBar()
     local mini = CreateFrame("Button", "AzerothStatsMinimap", Minimap or UIParent)
     A.mini = mini
     mini:SetWidth(30)
@@ -1214,7 +1773,7 @@ function A.BuildUI()
     mini.icon:SetPoint("CENTER", mini, "CENTER", 0, 0)
     mini.icon:SetWidth(21)
     mini.icon:SetHeight(21)
-    icon(mini.icon, "INV_Misc_Book_09")
+    A.PaintedGlyph(mini.icon, 1)
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")
     mini:SetScript("OnClick", function()
@@ -1277,3 +1836,17 @@ function A.BuildUI()
     A.ApplyUI()
     A.RefreshUI()
 end
+
+-- Shared trusted widget constructors for the separately owned HUD editor.
+A.widgets = {
+    font = font,
+    put = put,
+    solid = solid,
+    surface = surface,
+    icon = icon,
+    button = button,
+    dropdown = dropdown,
+    drag = drag,
+    place = place,
+    rescale = rescale,
+}

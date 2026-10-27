@@ -21,6 +21,10 @@ jobs:
           unzip /tmp/stylua.zip -d /tmp/azerothstats-stylua
           /tmp/azerothstats-stylua/stylua --check AzerothStats
       - run: python tools/build_catalogs.py --check
+      - run: python tools/build_theme_assets.py --check
+      - run: python tools/encode_painted_assets.py --check
+      - run: python tools/build_run_images.py --check
+      - run: python tools/check_fonts.py
       - run: python tools/build_insights_strings.py --check
       - run: python -m unittest discover -s tools -p 'test_*.py'
       - run: python tools/security_review.py --report release-assets/ci/runtime-policy.json

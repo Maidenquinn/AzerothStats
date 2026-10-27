@@ -55,6 +55,69 @@ local function playing(t, kills)
     )
     A.Sample()
 end
+-- A reload can miss the one-shot zone packet. Only recognized native names or
+-- plausible continuity may fill that gap; neither a different map nor an ended
+-- run is silently borrowed to improve the display.
+local zoneFunctions = { GetMinimapZoneText, GetSubZoneText, GetRealZoneText, GetZoneText }
+GetMinimapZoneText = function()
+    return A.gameText.fr["zone.arena.name"]
+end
+GetSubZoneText, GetRealZoneText, GetZoneText = nil, nil, nil
+reset()
+AZS_ZONE = {}
+playing(120, 5)
+local observed = A.run
+check(
+    observed.zone == "arena" and observed.zoneSource == "GetMinimapZoneText",
+    "recognized native zone fills a missed packet"
+)
+GetMinimapZoneText = function()
+    return "Unrelated Hall"
+end
+A.run = nil
+local sequence = A.db.sequence
+playing(121, 6)
+check(
+    A.run == observed and A.db.sequence == sequence and A.run.zone == "arena",
+    "reload continuity preserves the observed map without duplicating the run"
+)
+reset()
+AZS_ZONE = {}
+playing(10, 1)
+observed = A.run
+check(not observed.zone, "unknown native labels never become a guessed map")
+GetRealZoneText = function()
+    return A.gameText.en["zone.arena.name"]
+end
+playing(11, 2)
+check(
+    A.run == observed and A.run.zone == "arena",
+    "late recognized native metadata repairs the same live run"
+)
+AZS_ZONE = { zone = "feralas", class = "rogue" }
+local _, _, _, packetZone = A.Identity()
+check(packetZone == "feralas", "explicit packet map wins over native fallback")
+GetRealZoneText = nil
+for language, dictionary in pairs(A.gameText) do
+    AZS_ZONE = {}
+    GetMinimapZoneText = function()
+        return dictionary["zone.arena.name"]
+    end
+    local _, _, _, localized = A.Identity()
+    check(localized == "arena", "native zone names resolve across catalog language " .. language)
+end
+GetMinimapZoneText = function()
+    return "Unrelated Hall"
+end
+reset()
+playing(120, 5)
+observed = A.run
+A.run = nil
+AZS_ZONE = {}
+playing(1, 1)
+check(A.run.id ~= observed.id and not A.run.zone, "a reset clock does not inherit the prior map")
+GetMinimapZoneText, GetSubZoneText, GetRealZoneText, GetZoneText =
+    zoneFunctions[1], zoneFunctions[2], zoneFunctions[3], zoneFunctions[4]
 reset()
 A.Sample()
 check(table.getn(A.db.runs) == 0, "no phantom run outside game")
@@ -260,7 +323,11 @@ for _, row in ipairs(A.Rows()) do
         break
     end
 end
-check(A.view.selected ~= nil and A.view.tab == 4, "history selection")
+check(
+    A.view.selected ~= nil and A.view.tab == 3 and A.view.historySection == "Run report",
+    "history opens selected run report"
+)
+A.view.historySection, A.view.tab = "History", 4
 -- Rotation only removes detailed rows; lifetime totals and records survive.
 for i = 1, 15 do
     emit("AZSRUN", "ph=ready;t=0")

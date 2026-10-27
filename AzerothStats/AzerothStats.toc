@@ -2,11 +2,12 @@
 ## Title: Azeroth Stats
 ## Notes: Historique local, statistiques et diagnostics Azeroth Survivors.
 ## Author: Kevin / Codex
-## Version: 1.5.1-review.1
+## Version: 1.6.0-beta.1
 ## SavedVariables: AzerothStatsDB
 
 Util.lua
 Safety.lua
+Theme.lua
 Strings.lua
 GameText.lua
 Icons.lua
@@ -21,7 +22,10 @@ InsightsStrings.lua
 Insights.lua
 Favorites.lua
 Nemesis.lua
+Reports.lua
 Tracker.lua
+Bar.lua
 Views.lua
 UI.lua
+BarUI.lua
 Core.lua

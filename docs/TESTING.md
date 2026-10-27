@@ -7,6 +7,8 @@ From the repository root, with Python 3.12+:
 ```sh
 python -m pip install -r requirements-dev.txt
 python tools/build_catalogs.py --check
+python tools/build_theme_assets.py --check
+python tools/check_fonts.py
 python tools/build_insights_strings.py --check
 python -m unittest discover -s tools -p "test_*.py"
 python tools/security_review.py --report release-assets/runtime-policy.json
@@ -14,7 +16,7 @@ python tools/checks.py
 python tools/build_release.py --output release-assets
 ```
 
-The Lupa dependency is developer-only and pinned. Offline tests validate all twenty TOC modules, syntax/upvalue constraints, catalogs, assets, manifest, model/UI logic, favorites, persistence and hostile input boundaries. Policy tests exercise the static scanner itself. No runtime evaluation/OS library used by these tools is part of the player addon.
+The Lupa dependency is developer-only and pinned. Offline tests validate all twenty-four TOC modules, syntax/upvalue constraints, catalogs, assets, manifest, model/UI logic, favorites, persistence and hostile input boundaries. Policy tests exercise the static scanner itself. No runtime evaluation/OS library used by these tools is part of the player addon.
 
 StyLua 2.6.0: `stylua --check AzerothStats`. CI downloads its official Linux archive and verifies a pinned SHA-256 before execution. Its Lua51 formatter syntax is not proof of Lua 5.0 compatibility.
 
@@ -39,7 +41,7 @@ The full native suite runs Lua 5.0.3, round-trips own SavedVariables and simulat
 
 Perform in a test profile/copy approved for review, with own SavedVariables backed up:
 
-1. Install the exact reviewed ZIP and verify `1.5.1-review.1`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
+1. Install the exact reviewed ZIP and verify `1.6.0-beta.1`; confirm no Lua error at startup and all pages open. Test default settings and an existing schema-1 backup separately.
 2. Start a solo run; choose/upgrade spells and accessories; pause/resume; inspect totals, ranks, item hover and partial indicators. Opening one chest must not increase a supposed live opened count: wait for the official final summary.
 3. Complete and lose separate runs; verify exactly one history entry per run, authoritative final counters and no stale previous-run data on reset. Test victory-to-endless handling where supported.
 4. Restart normally midway/in a menu and after a terminal summary; check history/aggregates/favorites survive without duplication. A hard crash is not guaranteed to persist recent data.
@@ -60,3 +62,26 @@ python tools/build_review_bundle.py --output release-assets/approval-review
 ```
 
 This archives the exact Git revision, without Git history, private inputs or ignored build outputs. It checks prohibited artifact types and writes the archive hash/revision alongside it. It does not publish or install anything.
+
+### Dev.7 targeted in-game checks
+
+- With an active run, open Overview, History and Combat. Confirm the same current zone and duration; Diagnostics shows `AZS_ZONE.zone` and the retained `run.zoneSource`.
+- Reload UI mid-run. The current run should resume without a second history row when hero/class/map/time continuity agrees. A new run with reset server time must get a new identity. Unrecognized map names stay unknown.
+- Visit all eleven tabs, every Combat/Character/Usage/Favorites subtab, and all three Favorites run/combat/item categories. Check right-aligned values, readable share percentages, native tooltips, hearts, pagination and navigation to source runs.
+- Inspect History's retained-only summary, Records' featured source cards and Nemesis' explicit confirmed/probable counts. Test empty history/categories too.
+- Change text size 11/16, window scale and language (including Japanese/Chinese). Check the footer, Settings sections, independent My bar editor and keyboard Escape/close behavior. Preserve the native game's own prompts; they are not hidden by this addon.
+
+### 0.121 / dev.8
+
+Follow CLIENT-0.121.md for Normal/Heroic, History filter, reload continuity, historical/long native set tooltip and missing-field checks. New font bytes require a full restart for this installed build. Automated native acceptance cycles all six difficulty values across classes/outcomes.
+
+### Dev.9 report/comparison recipe
+
+1. Fully restart after installing (font bytes changed). Check dev.9. Open History and a retained run; switch all five report sections, hover gear, favorite/unfavorite and follow the run selector. Older runs should explicitly lack a record baseline.
+2. Start and finish one new run normally. After the accepted official result, confirm a short report notice appears once; dismiss/click it, reload and check it does not reappear. Starting a new run must not replace the old report's recorded equipment descriptions.
+3. Open Compare runs or `/azstats compare`. Confirm the default chooses a distinct matching class/zone/difficulty when retained. Select mismatching/unknown/same runs and inspect the warning; swap and confirm signs reverse. Check a missing metric/source stays unavailable and a zero A baseline has no percentage.
+4. Compare spells and equipment; hover A and B for their independent historical tooltips. Change star upgrades in the native armory after a run and ensure its ended report does not borrow the new live description.
+5. Inspect available co-op snapshots and their sample/partial labels; do not expect unsupported peer data. Use `/azstats report` and `/azstats history` too.
+6. Switch languages (including CJK), text size 11/16, scale and empty/no-second-run states. Remove an unprotected comparison run through normal retention and confirm no unrelated selection is substituted. Check favorites protect retained runs, pagination and all row/heart/menu hit areas in the native client.
+
+Automated tests cover arithmetic, missing coverage, compatible selection, identical/pruned runs, separate tooltips, milestones/serialization, notice timeout/deduplication, all fourteen language layouts, widget reuse and unchanged ledgers. These are synthetic tests and offline previews, not native playthroughs.

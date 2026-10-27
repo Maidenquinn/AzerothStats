@@ -30,3 +30,5 @@ Follow `docs/TESTING.md`. Offline checks need no client or personal save. Add fo
 After player-file changes, run `python tools/update_manifest.py`, checks and deterministic packaging. `tools/package_policy.py` owns the exact player allowlist. Developer tools/tests/catalog sources belong only in the source-review bundle.
 
 A future release needs current game-team approval, automated evidence, actual-client validation, archive inspection and an accurate changelog. CI alone does not authorize publishing.
+
+The Chroniques texture recipe is source-defined geometry (tools/build_theme_assets.py). Check localized glyphs with tools/check_fonts.py. HUD metric changes require valid scope/availability contracts and draft-editor persistence tests. See docs/CHRONIQUES.md.

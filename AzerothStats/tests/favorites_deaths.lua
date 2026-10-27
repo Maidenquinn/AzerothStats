@@ -41,6 +41,24 @@ check(
         and A.db.runs[1].id == "fav-5",
     "unfavorite permits normal pruning"
 )
+local photoRun = A.db.runs[table.getn(A.db.runs)]
+photoRun.zone = "arena"
+A.ToggleFavorite(A.RunFavorite(photoRun))
+A.view.tab, A.view.favoriteCategory, A.view.class = 10, "run", nil
+A.ToggleUI(true)
+A.RefreshUI()
+check(
+    A.ui.model.photoRows and A.ui.model.rows[1].zone == "arena",
+    "favorite history uses its recorded zone photo"
+)
+check(
+    A.ui.model.rows[1].label == A.ZoneName(photoRun),
+    "favorite run primary label matches history zone"
+)
+local widgetCount = table.getn(objects)
+A.RefreshUI()
+check(table.getn(objects) == widgetCount, "shared page redraw reuses existing widgets")
+A.ToggleFavorite(A.RunFavorite(photoRun))
 A.ToggleFavorite({
     kind = "spell",
     key = "backstab",

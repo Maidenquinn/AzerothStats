@@ -20,10 +20,32 @@ for _, language in ipairs(A.languages) do
         check(A.SetLanguage(lg) and A.Locale() == lg, "manual locale " .. lg)
         for tab = 1, table.getn(A.tabs) do
             A.view.tab = tab
+            A.view.historySection = "History"
             A.view.page = 1
             A.ToggleUI(true)
             A.RefreshUI()
             check(A.PageModel().title == A.T(A.tabs[tab]), "localized page " .. lg .. tab)
+            local page = A.ui.model
+            if tab ~= 1 and tab ~= 2 and tab ~= 8 then
+                check(
+                    page.rowY + page.capacity * page.rowHeight <= 700,
+                    "shared body fits footer " .. lg .. tab
+                )
+                check(
+                    table.getn(page.cards) > 0 or page.banner ~= nil,
+                    "every detail page has scoped context " .. lg .. tab
+                )
+            end
+            if tab == 3 then
+                check(
+                    page.photoRows and page.columnLabel == A.T("Run"),
+                    "history uses landscape run rows " .. lg
+                )
+                check(
+                    page.cards[1].value == A.Format(table.getn(page.rows)),
+                    "history count describes retained rows " .. lg
+                )
+            end
         end
         for _, mode in ipairs({ "damage", "healing", "taken", "boss" }) do
             A.view.tab = 4
@@ -116,16 +138,22 @@ A.view.combatTab = "Activity"
 A.RefreshUI()
 local activity = A.PageModel()
 check(
-    activity.rowY == 191 and table.getn(activity.cards) == 0,
+    activity.banner ~= nil and table.getn(activity.cards) == 0,
     "activity separated from spell ranking"
 )
 A.view.combatTab = "Spells"
 A.view.mode = "damage"
 A.RefreshUI()
-check(A.ui.model.capacity >= 1 and A.ui.model.rowY == 301, "combat layout has a dedicated ranking")
+check(
+    A.ui.model.capacity >= 1 and A.ui.model.ranking == true,
+    "combat layout has a dedicated ranking"
+)
 A.view.tab = 1
 A.RefreshUI()
-check(table.getn(A.ui.model.cards) == 6, "dashboard summary cards")
+check(
+    table.getn(A.ui.model.cards) == 4 and table.getn(A.ui.model.records) == 3,
+    "curated dashboard prioritizes four totals and three records"
+)
 A.view.tab = 8
 A.RefreshUI()
 check(A.ui.settings:IsShown(), "real settings controls shown")
@@ -241,7 +269,7 @@ for _, size in ipairs({ 11, 12, 16 }) do
         A.view.tab = tab
         A.RefreshUI()
         check(
-            A.ui.model.rowY + A.ui.model.capacity * A.ui.model.rowHeight <= 580,
+            A.ui.model.rowY + A.ui.model.capacity * A.ui.model.rowHeight <= 700,
             "rows remain above footer at text size " .. size
         )
         for _, row in ipairs(A.ui.rows) do

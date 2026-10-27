@@ -38,7 +38,51 @@ function A.ReadFields(value)
     return result
 end
 
---- Resolve a sanitized observed hero/class/map tuple with a native class fallback.
+--- Match only exact known names across the fourteen game catalogs. No fuzzy map inference.
+local function recognizedZone(name)
+    name = A.Text(name, 140)
+    if not name then
+        return nil
+    end
+    if not A.zoneNames then
+        A.zoneNames = {}
+        for _, dictionary in pairs(A.gameText) do
+            for key, label in pairs(dictionary) do
+                local _, _, id = string.find(key, "^zone%.([%w_%-]+)%.name$")
+                if id then
+                    local folded = string.gsub(label, "[A-Z]", function(c)
+                        return string.char(string.byte(c) + 32)
+                    end)
+                    A.zoneNames[folded] = id
+                end
+            end
+        end
+    end
+    local folded = string.gsub(name, "[A-Z]", function(c)
+        return string.char(string.byte(c) + 32)
+    end)
+    return A.zoneNames[folded]
+end
+
+--- Read client-exported zone labels when a one-shot AZS_ZONE packet was missed on reload.
+--- These functions are present in the audited client. A missing function is harmless;
+--- unrecognized labels never become a guessed map ID.
+local function nativeZone()
+    for _, api in ipairs({
+        "GetMinimapZoneText",
+        "GetSubZoneText",
+        "GetRealZoneText",
+        "GetZoneText",
+    }) do
+        local label = A.Text(A.Call(getglobal(api)), 140)
+        local id = recognizedZone(label)
+        if id then
+            return id, label, api
+        end
+    end
+end
+
+--- Resolve sanitized hero/class/map metadata; packet identity remains authoritative.
 function A.Identity()
     local _, nativeClass = A.Call(UnitClass, "player")
     local zone = A.ReadFields(AZS_ZONE)
@@ -54,11 +98,43 @@ function A.Identity()
     if id and not string.find(id, "^[%w_%-]+$") then
         id = nil
     end
-    return hero .. ":" .. class .. ":" .. tostring(id or "?"),
-        class,
-        hero,
-        id,
-        A.Text(zone.zname, 140)
+    local label, source = A.Text(zone.zname, 140), "AZS_ZONE"
+    if not id or id == "unknown" or id == "?" then
+        id = recognizedZone(label)
+        if not id then
+            id, label, source = nativeZone()
+        end
+    end
+    return hero .. ":" .. class .. ":" .. tostring(id or "?"), class, hero, id, label, source
+end
+
+--- The 0.121 server's AZSZONE payload explicitly exports heroic (0=Normal, 1..5).
+--- Absence never means Normal, and zone.diff is a separate base-zone multiplier.
+function A.HeroicLevel(value)
+    local level = A.Number(value)
+    if level and level <= 5 and level == math.floor(level) then
+        return level
+    end
+end
+
+function A.ReadHeroic()
+    return A.HeroicLevel(A.ReadFields(AZS_ZONE).heroic)
+end
+
+--- Keep unknown historical difficulty distinct from explicitly observed Normal.
+function A.HeroicLabel(run)
+    local level = run and A.HeroicLevel(run.heroic)
+    if level == nil then
+        return A.T("Difficulty unknown")
+    end
+    return level == 0 and A.T("Normal")
+        or (A.T("Heroic") .. " " .. ({ "I", "II", "III", "IV", "V" })[level])
+end
+
+--- Only the retained History list is filtered; lifetime ledgers stay unchanged.
+function A.MatchesDifficulty(run, filter)
+    local level = A.HeroicLevel(run.heroic)
+    return filter == nil or (filter == "unknown" and level == nil) or level == filter
 end
 
 --- Read server counters and recognize only audited run phases; missing fields stay missing.
@@ -217,6 +293,25 @@ function A.DiagnosticRows()
         { A.T("Local storage"), A.T("Saved on normal game exit") },
         { A.T("Interpolation"), A.Rate(A.Call(AZS_GetRunTime)), "AZS_GetRunTime" },
     }
+    table.insert(out, {
+        "AZS_ZONE.heroic",
+        A.HeroicLabel({ heroic = A.ReadHeroic() }),
+        "0 = Normal; 1..5 = Heroic; absent = unknown",
+    })
+    table.insert(out, {
+        "0.121: marks / affixes / stars",
+        A.T("Unavailable"),
+        "No verified public structured fields; native gear tooltip text only",
+    })
+    local _, _, _, id, label, source = A.Identity()
+    table.insert(out, {
+        "AZS_ZONE.zone",
+        id or A.T("Unknown"),
+        (source or "AZS_ZONE") .. " · " .. (label or A.T("Unavailable")),
+    })
+    if A.run and A.run.zoneSource then
+        table.insert(out, { "run.zoneSource", A.run.zoneSource })
+    end
     table.insert(out, {
         A.T("Nemesis"),
         A.T("Observed deaths"),
