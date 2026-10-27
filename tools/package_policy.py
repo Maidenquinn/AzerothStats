@@ -13,15 +13,15 @@ MEDIA = (
     "ChronicleEdge.tga",
     "ChronicleGrain.tga",
     "ChronicleSeal.tga",
-    "ChronicleWindow.tga",
     "ChronicleIcons.tga",
-    "ChronicleGlyphs.tga",
-    "ChronicleLandscapes.tga",
-    "ChronicleSurfaces.tga",
     "FavoriteHeartEmpty.tga",
     "FavoriteHeartFilled.tga",
     "OFL-NotoSans.txt",
     "OFL-NotoCJK.txt",
+) + tuple(
+    [f"ChronicleGlyph{i:02d}.tga" for i in range(1, 17)]
+    + [f"ChronicleZone{i}.tga" for i in range(1, 5)]
+    + [f"ChroniclePlate{i}.tga" for i in range(1, 5)]
 )
 
 

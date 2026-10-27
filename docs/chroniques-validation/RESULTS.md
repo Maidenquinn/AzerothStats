@@ -1,19 +1,20 @@
 # Chroniques development preview validation
 
-Version: **1.6.0-dev.3**. Recorded 2026-10-27. Automated maintainer checks and simulated clients; no game-team approval or native visual sign-off is claimed.
+Version: **1.6.0-dev.4**. Recorded 2026-10-27. Automated maintainer checks and simulated clients; no game-team approval or native visual sign-off is claimed.
 
-- Complete suite: **3,572 assertions**, passing with Lua 5.1/Lupa and native Lua 5.0.3; persistence and existing schema-1 compatibility checked in memory.
-- Client-independent suite: **3,187 assertions**, overlapping the full suite.
+- Complete suite: **3,577 assertions**, with Lua 5.1/Lupa and native Lua 5.0.3; persistence and existing schema-1 compatibility checked in memory.
+- Client-independent suite: **3,192 assertions**, overlapping the full suite.
 - Exact player ZIP: **27 class/outcome cases**, **81 fresh Lua 5.0 processes**, **1,548 assertions**, including settings across independent restarts.
-- **14 Python unit tests**; all fourteen locale key sets and UI glyph coverage checked.
-- Twenty-three TOC modules, literal-only catalogs, native syntax/upvalue limits, formatting, runtime policy, deterministic original artwork encoding and the 44-file allowlist checked. Manifest makes **45 ZIP members**.
-- New UI contracts cover explicit nine-slice dimensions, legible card glyphs, taller proportions, recent-run/record separation and dynamic editor height. These tests do not prove native rendering fidelity.
-- Private saved data and its identifiers are excluded from this dossier. Original artwork provenance is documented in CREDITS.md and CHRONIQUES.md.
+- **14 Python unit tests**. Every packaged TGA is RGBA, power-of-two and has a maximum edge of 256 pixels; source component identity, transparency and package inclusion are checked.
+- Twenty-three TOC modules, literal-only catalogs, native syntax/upvalue limits, formatters, runtime policy and the 64-file allowlist checked. Manifest makes **65 ZIP members**.
+- All fourteen locale key sets/glyph coverage checked. The renamed heading face has actual bold weight, with official input commit/hash and embedded OFL notices retained.
+- HUD tests exercise full-size draft preview, cancel restoring the stored layout, original hidden-state restoration across repeated opens, independent settings, geometry, locales and widget reuse.
+- Private saved data and identifiers are excluded from this dossier.
 
-Player archive: `AzerothStats-1.6.0-dev.3.zip`
+Player archive: `AzerothStats-1.6.0-dev.4.zip`
 
-SHA-256: `84228b4faf7fb5978e4aaddcb0b6db341657735a0b9666057e2448a011180d6e`
+SHA-256: `4e18bf674c07aac930c73f66a37255b9abe20c5f6680449e4a5c99bbc9d05e99`
 
-Machine-readable evidence: `native.json`, `acceptance.json`, `runtime-policy.json`. An explicitly selected trusted local API fixture was used; its bytes are not distributed.
+Machine-readable evidence: native.json, acceptance.json, runtime-policy.json. The explicitly selected trusted API fixture is not distributed.
 
-Source-derived previews use synthetic data and approximate compositing. The first implementation failed native border tiling and visual fidelity; it is not considered visually validated. This follow-up removes custom backdrop tiling and supplies painted materials, glyphs, landscapes and corrected geometry. All dev.3 artwork, mouse/slider/drag ordering, screen edges/scales and language layouts still need native verification. The client move-to-start prompt was seen over addon windows; no verified fix is claimed and native HUD elements are not hidden to disguise it. Follow docs/CHRONIQUES.md before public delivery.
+**Native limitation:** dev.3's four 1024-square images did not display after a confirmed complete client restart, despite passing format/model tests. Their exact rejection mechanism is unknown. Dev.4 replaces them with 24 small components matching prior working dimensions/depth; this is a conservative packaging change, not a verified universal size limit or a confirmed native fix. The newly packaged components, modified heading face and closer layout still need native image-loading/fidelity confirmation. The client move-to-start foreground prompt was observed over addon windows; no verified fix is claimed and no native HUD element is hidden to disguise it. Offline previews use synthetic data and approximate compositing. Follow docs/CHRONIQUES.md before public delivery.

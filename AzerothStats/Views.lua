@@ -204,11 +204,7 @@ local function dashboard(model, group)
                 model.rows,
                 A.ZoneName(run),
                 A.Duration(run.values and run.values.duration),
-                A.ClassName(run.class)
-                    .. " · "
-                    .. A.Date(run.startedAt)
-                    .. " · "
-                    .. A.Status(run.result or run.status),
+                A.ClassName(run.class) .. " · " .. A.Date(run.startedAt),
                 function()
                     A.SelectRun(id)
                 end
@@ -234,7 +230,7 @@ local function dashboard(model, group)
     end
     model.layout = "dashboard"
     model.rowY = 360
-    model.rowHeight = 88
+    model.rowHeight = 78
     model.capacity = 3
 end
 

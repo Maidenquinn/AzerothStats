@@ -264,14 +264,21 @@ function A.RefreshBar()
     if not A.bar or not A.db then
         return
     end
-    paintBar(A.bar, A.db.settings.hud)
+    -- The real HUD is the readable, full-size preview. The small editor preview
+    -- preserves its proportions; neither preview writes the stored draft.
+    paintBar(
+        A.bar,
+        editor and editor:IsShown() and A.window:IsShown() and editor.draft or A.db.settings.hud
+    )
     if editor and editor:IsShown() then
         editor.base:SetAlpha(1)
         editor.grain:SetAlpha(0.16)
         paintBar(editor.preview, editor.draft)
-        editor.preview:SetScale(
-            math.min(1, 814 / editor.preview.layout.width, 62 / editor.preview.layout.height)
-        )
+        local previewScale =
+            math.min(1, 472 / editor.preview.layout.width, 62 / editor.preview.layout.height)
+        editor.preview:SetScale(previewScale)
+        editor.preview:ClearAllPoints()
+        editor.preview:SetPoint("TOPLEFT", editor, "TOPLEFT", 24 / previewScale, -74 / previewScale)
     end
 end
 
@@ -288,7 +295,7 @@ local function refreshEditor()
     -- Collapse unused reserved rows. Keep a fixed bounded pool, but let the panel
     -- and appearance controls follow the actual draft rather than eight empty slots.
     local delta = (table.getn(draft.blocks) - 8) * 29
-    editor:SetHeight(695 + delta)
+    editor:SetHeight(770 + delta)
     A.UpdateThemeFrame(editor)
     local function move(widget, x, y)
         widget:ClearAllPoints()
@@ -297,18 +304,18 @@ local function refreshEditor()
     move(editor.add, 24, 407)
     move(editor.appearance, 24, 445)
     for index, slider in ipairs(editor.sliders) do
-        local x, y = 24 + math.mod(index - 1, 3) * 280, index <= 3 and 483 or 549
+        local x, y = 24 + math.mod(index - 1, 2) * 244, index <= 2 and 483 or 549
         move(slider, x + 8, y + 22)
         move(slider.caption, x, y)
-        move(slider.number, x + 200, y)
+        move(slider.number, x + 160, y)
     end
     for index, check in ipairs(editor.checks) do
-        local x, y = index == 3 and 584 or 304, index == 2 and 577 or 545
+        local x, y = index == 3 and 268 or 24, index == 2 and 625 or 595
         move(check, x, y)
         move(check.caption, x + 29, y)
     end
     for _, control in ipairs(editor.translated) do
-        move(control, control.editorX, 622)
+        move(control, control.editorX, control.editorY)
     end
     W.put(editor.title, A.T("My bar"))
     W.put(editor.hint, A.T("Bar scope hint"))
@@ -318,7 +325,7 @@ local function refreshEditor()
         if block then
             W.put(row.metric.label, A.BarLabel(A.BarMetric(block.metric)))
             W.put(row.scope.label, A.BarScope(block))
-            W.put(row.remove.label, A.T("Remove"))
+            W.put(row.remove.label, "×")
             row:Show()
         else
             row:Hide()
@@ -405,15 +412,15 @@ end
 local function buildEditor()
     editor = CreateFrame("Frame", "AzerothStatsBarEditor", A.window)
     A.barEditor = editor
-    editor:SetWidth(870)
-    editor:SetHeight(695)
+    editor:SetWidth(520)
+    editor:SetHeight(770)
     editor:SetFrameStrata("FULLSCREEN_DIALOG")
     editor:SetFrameLevel(A.window:GetFrameLevel() + 10)
     editor:SetPoint("CENTER", A.window, "CENTER", 0, 0)
     editor:EnableMouse(true)
     W.surface(editor, "main")
-    editor.title = W.font(editor, 24, 32, 720, 30, 23, A.theme.gold, true)
-    editor.hint = W.font(editor, 24, 140, 814, 22, 11, A.theme.muted)
+    editor.title = W.font(editor, 24, 24, 440, 38, 23, A.theme.gold, true)
+    editor.hint = W.font(editor, 24, 132, 472, 32, 11, A.theme.muted)
     editor.preview = barFrame(editor, true)
     editor.preview:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -74)
     local close = CreateFrame("Button", nil, editor, "UIPanelCloseButton")
@@ -425,6 +432,12 @@ local function buildEditor()
         if A.ui.menu then
             A.ui.menu:Hide()
         end
+        A.RefreshBar()
+        if editor.liveBarWasShown then
+            A.bar:Show()
+        else
+            A.bar:Hide()
+        end
     end)
     editor.rows = {}
     editor.sliders = {}
@@ -434,19 +447,19 @@ local function buildEditor()
         local position = index
         local row = CreateFrame("Frame", nil, editor)
         row:SetPoint("TOPLEFT", editor, "TOPLEFT", 24, -170 - (index - 1) * 29)
-        row:SetWidth(814)
+        row:SetWidth(472)
         row:SetHeight(28)
-        row.metric = W.button(row, 0, 0, 255, 27, "", function(anchor)
+        row.metric = W.button(row, 0, 0, 180, 27, "", function(anchor)
             metricMenu(anchor, position)
         end)
-        row.scope = W.button(row, 265, 0, 300, 27, "", function(anchor)
+        row.scope = W.button(row, 188, 0, 178, 27, "", function(anchor)
             scopeMenu(anchor, position)
         end)
         W.dropdown(row.metric)
         W.dropdown(row.scope)
         for direction = -1, 1, 2 do
             local delta = direction
-            local arrow = W.button(row, direction == -1 and 576 or 616, 0, 34, 27, "", function()
+            local arrow = W.button(row, direction == -1 and 374 or 402, 0, 24, 27, "", function()
                 local target = position + delta
                 if target >= 1 and target <= table.getn(editor.draft.blocks) then
                     local blocks = editor.draft.blocks
@@ -461,7 +474,7 @@ local function buildEditor()
                     or "Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Up"
             )
         end
-        row.remove = W.button(row, 662, 0, 152, 27, "", function()
+        row.remove = W.button(row, 434, 0, 38, 27, "", function()
             if table.getn(editor.draft.blocks) > 1 then
                 table.remove(editor.draft.blocks, position)
                 refreshEditor()
@@ -469,21 +482,21 @@ local function buildEditor()
         end)
         editor.rows[index] = row
     end
-    editor.add = W.button(editor, 24, 407, 814, 27, "", function(anchor)
+    editor.add = W.button(editor, 24, 407, 472, 27, "", function(anchor)
         if table.getn(editor.draft.blocks) < 8 then
             table.insert(editor.draft.blocks, { metric = "kills", scope = "all" })
             refreshEditor()
             metricMenu(anchor, table.getn(editor.draft.blocks))
         end
     end)
-    editor.appearance = W.font(editor, 24, 445, 814, 24, 17, A.theme.gold, true)
+    editor.appearance = W.font(editor, 24, 445, 472, 24, 17, A.theme.gold, true)
     for index, def in ipairs({
         { "width", "Width", 240, 1600, 10 },
         { "height", "Height", 28, 96, 1 },
         { "textSize", "Font size", 11, 16, 1 },
         { "opacity", "Background opacity", 0.45, 1, 0.05 },
     }) do
-        local x, y = 24 + math.mod(index - 1, 3) * 280, index <= 3 and 483 or 549
+        local x, y = 24 + math.mod(index - 1, 2) * 244, index <= 2 and 483 or 549
         local slider = CreateFrame(
             "Slider",
             "AzerothStatsHUDSlider" .. def[1],
@@ -493,7 +506,7 @@ local function buildEditor()
         slider.setting = def[1]
         slider.key = def[2]
         slider:SetPoint("TOPLEFT", editor, "TOPLEFT", x + 8, -y - 22)
-        slider:SetWidth(240)
+        slider:SetWidth(200)
         slider:SetHeight(18)
         slider:SetMinMaxValues(def[3], def[4])
         slider:SetValueStep(def[5])
@@ -503,8 +516,8 @@ local function buildEditor()
                 label:Hide()
             end
         end
-        slider.caption = W.font(editor, x, y, 200, 20, 12, A.theme.text)
-        slider.number = W.font(editor, x + 200, y, 55, 20, 12, A.theme.gold)
+        slider.caption = W.font(editor, x, y, 150, 20, 12, A.theme.text)
+        slider.number = W.font(editor, x + 160, y, 55, 20, 12, A.theme.gold)
         slider.number:SetJustifyH("RIGHT")
         slider:SetScript("OnValueChanged", function()
             if not this.syncing then
@@ -520,13 +533,13 @@ local function buildEditor()
         { "locked", "Lock position" },
     }) do
         local check = CreateFrame("CheckButton", nil, editor, "UICheckButtonTemplate")
-        local x, y = index == 3 and 584 or 304, index == 2 and 577 or 545
+        local x, y = index == 3 and 268 or 24, index == 2 and 625 or 595
         check.setting = def[1]
         check.key = def[2]
         check:SetPoint("TOPLEFT", editor, "TOPLEFT", x, -y)
         check:SetWidth(24)
         check:SetHeight(24)
-        check.caption = W.font(editor, x + 29, y, 230, 24, 12, A.theme.text)
+        check.caption = W.font(editor, x + 29, y, 188, 24, 12, A.theme.text)
         check:SetScript("OnClick", function()
             editor.draft[this.setting] = not editor.draft[this.setting]
             refreshEditor()
@@ -539,25 +552,28 @@ local function buildEditor()
         { "journey", "My journey" },
     }) do
         local id = preset[1]
-        local control = W.button(editor, 24 + (index - 1) * 136, 622, 128, 30, preset[2], function()
+        local control = W.button(editor, 24 + (index - 1) * 160, 666, 152, 30, preset[2], function()
             editor.draft = A.BarPreset(id)
             refreshEditor()
         end)
         table.insert(editor.translated, control)
-        control.editorX = 24 + (index - 1) * 136
+        control.editorX = 24 + (index - 1) * 160
+        control.editorY = 666
     end
-    editor.cancel = W.button(editor, 580, 622, 122, 30, "Cancel", function()
+    editor.cancel = W.button(editor, 230, 706, 122, 30, "Cancel", function()
         editor:Hide()
     end)
-    editor.apply = W.button(editor, 714, 622, 124, 30, "Apply", function()
+    editor.apply = W.button(editor, 364, 706, 124, 30, "Apply", function()
         A.db.settings.hud = A.NormalizeBar(editor.draft)
         editor:Hide()
         A.RefreshBar()
     end)
     table.insert(editor.translated, editor.cancel)
     table.insert(editor.translated, editor.apply)
-    editor.cancel.editorX = 580
-    editor.apply.editorX = 714
+    editor.cancel.editorX = 230
+    editor.cancel.editorY = 706
+    editor.apply.editorX = 364
+    editor.apply.editorY = 706
     if UISpecialFrames then
         table.insert(UISpecialFrames, "AzerothStatsBarEditor")
     end
@@ -566,6 +582,8 @@ end
 --- Open a fresh editing transaction; close/cancel never mutates persisted HUD preferences.
 function A.OpenBarEditor()
     A.ToggleUI(true)
+    local alreadyOpen = editor and editor:IsShown()
+    local barWasShown = A.bar:IsShown()
     if A.ui.menu then
         A.ui.menu:Hide()
     end
@@ -573,6 +591,10 @@ function A.OpenBarEditor()
         buildEditor()
     end
     editor.draft = A.NormalizeBar(A.db.settings.hud)
+    if not alreadyOpen then
+        editor.liveBarWasShown = barWasShown
+    end
     editor:Show()
+    A.bar:Show()
     refreshEditor()
 end

@@ -83,6 +83,15 @@ def main():
             language,
             sorted(needed - set(font.getBestCmap())),
         )
+        if language not in recipe:
+            heading = TTFont(ROOT / "AzerothStats/media/AzerothSerif.ttf")
+            assert (
+                heading["OS/2"].usWeightClass >= 700
+            ), "heading face must be genuinely bold"
+            assert not needed - set(heading.getBestCmap()), (
+                language,
+                "heading glyph coverage",
+            )
     print(
         "UI glyph coverage verified in all fourteen languages; derivative names and OFL notices retained"
     )

@@ -164,8 +164,30 @@ local editor = A.barEditor
 local stored = A.Sign(A.db.settings.hud)
 editor.draft.width = 1230
 editor.draft.icons = false
+A.RefreshBar()
+check(
+    A.bar:GetWidth() == A.BarLayout(editor.draft, UIParent:GetWidth()).width,
+    "real HUD previews the draft at readable native size"
+)
 editor.cancel.callback(editor.cancel)
 check(A.Sign(A.db.settings.hud) == stored, "Cancel never commits the editor draft")
+A.RefreshBar()
+check(
+    A.bar:GetWidth() == A.BarLayout(A.db.settings.hud, UIParent:GetWidth()).width,
+    "Cancel restores the stored HUD layout"
+)
+A.bar:Hide()
+A.OpenBarEditor()
+check(A.bar:IsShown(), "hidden HUD is temporarily visible while editing")
+A.OpenBarEditor()
+editor.cancel.callback(editor.cancel)
+-- The mock does not fire native OnHide automatically; exercise that real handler.
+editor:GetScript("OnHide")()
+check(not A.bar:IsShown(), "reopening an editor does not lose the original hidden HUD state")
+check(
+    A.Sign(A.db.settings.hud) == stored,
+    "temporary visibility never changes stored HUD preferences"
+)
 A.OpenBarEditor()
 check(editor.draft.width == A.db.settings.hud.width, "reopening discards the cancelled draft")
 editor.draft.width = 1230

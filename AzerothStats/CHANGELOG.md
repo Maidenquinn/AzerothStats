@@ -1,3 +1,11 @@
+## 1.6.0-dev.4 - Small native components and closer proportions (development preview)
+
+- Replace four large images that failed to display in the native client with 24 separate RGBA components, each at most 256 pixels wide/high. The exact native rejection mechanism remains unconfirmed.
+- Replace the stretched window ornament with a fine sliced frame; enlarge the compass, use a properly licensed bold heading face, and improve card/list typography.
+- Widen recent-run illustrations, remove duplicate result labels and distinguish defeats in red.
+- Make the HUD editor narrower with two-column appearance controls and dynamically fitted height; preserve Apply/Cancel, all scopes and preset behavior. The actual HUD previews the draft and restores its layout/visibility on cancel.
+- Add component-size/alpha/package checks and pinned title-font provenance. Retire unused large runtime textures. Native visual review remains pending.
+
 ## 1.6.0-dev.3 - Native visual fidelity follow-up (development preview)
 
 - Replace thin geometric UI glyphs with a painted sixteen-icon atlas; add original material plates, window ornament and decorative zone illustrations.

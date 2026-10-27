@@ -8,20 +8,23 @@ from build_theme_assets import build
 
 
 class ThemeAssetsTests(unittest.TestCase):
-    def test_painted_atlases_have_native_size_and_real_alpha(self):
+    def test_native_components_stay_small_and_preserve_alpha(self):
+        from encode_painted_assets import ASSETS, images
+        from package_policy import MEDIA
+
         media = Path(__file__).resolve().parent.parent / "AzerothStats/media"
-        for name in [
-            "ChronicleGlyphs",
-            "ChronicleLandscapes",
-            "ChronicleSurfaces",
-            "ChronicleWindow",
-        ]:
-            with self.subTest(name=name):
-                with Image.open(media / (name + ".tga")) as image:
-                    self.assertEqual(image.size, (1024, 1024))
-                    self.assertEqual(image.mode, "RGBA")
-                    if name in {"ChronicleGlyphs", "ChronicleWindow"}:
-                        self.assertEqual(image.getchannel("A").getextrema(), (0, 255))
+        self.assertEqual(set(ASSETS), {name for name, _ in images()})
+        self.assertTrue(set(ASSETS) <= set(MEDIA))
+        for name in MEDIA:
+            if not name.endswith(".tga"):
+                continue
+            with self.subTest(name=name), Image.open(media / name) as image:
+                self.assertLessEqual(max(image.size), 256)
+                self.assertEqual(image.mode, "RGBA")
+                self.assertIn(image.width, {32, 128, 256})
+                self.assertIn(image.height, {32, 128, 256})
+                if name.startswith("ChronicleGlyph"):
+                    self.assertEqual(image.getchannel("A").getextrema(), (0, 255))
 
     def test_original_assets_have_native_dimensions_and_alpha(self):
         assets = build()

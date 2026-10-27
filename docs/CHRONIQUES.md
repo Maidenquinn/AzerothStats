@@ -1,4 +1,4 @@
-# Chroniques native UI preview — 1.6.0-dev.3
+# Chroniques native UI preview — 1.6.0-dev.4
 
 This implements the approved visual direction using native Lua 5.0/11200 frames. It is a development preview, not a public release or game-team approval. The AI concept board is a design reference, not a screenshot or a runtime texture.
 
@@ -23,17 +23,21 @@ Apply saves normalized preferences to `AzerothStatsDB.settings.hud`, version 1. 
 
 `Theme.lua` contains shared visual tokens/atlas selection. `Bar.lua` owns normalization, metric/scope/value/layout models and local navigation. `BarUI.lua` owns HUD/editor widgets and trusted callbacks, using constructors exposed by `UI.lua`. No modern WoW API, external helper, CVar, binding change or gameplay action is introduced.
 
-`tools/build_theme_assets.py` reproduces four original geometric TGA textures. `tools/encode_frame_art.py` and `tools/encode_painted_assets.py` deterministically resize/encode committed original AI-generated PNG artwork into four power-of-two RGBA TGA assets. The original concept is not loaded by the addon. Materials use nine explicit slices; a custom strip is never passed to the client backdrop tiler. Corners and slices receive explicit width/height, including after editor/HUD resizing. The editor collapses unused block rows instead of reserving all eight slots. Matching block scopes are shown once in the HUD header; mixed scopes remain per block. Landscape illustrations are decorative, not screenshots or evidence of map details; unmapped zones use a generic forest illustration. `tools/check_fonts.py` checks all localized UI glyphs and can rebuild CJK derivatives from explicitly supplied hash-pinned original fonts described by `data/font-sources.json`. Developer Pillow/fontTools dependencies are not included in the player archive.
+`tools/build_theme_assets.py` reproduces four geometric textures. `tools/encode_painted_assets.py` slices the original source PNGs into sixteen separate glyphs, four decorative landscape strips and four material plates; every runtime TGA has a maximum edge of 256 pixels. The four 1024-square dev.3 atlases failed to display after a confirmed full game restart. Their exact rejection mechanism is not established; this conservative component packaging follows the dimensions/depth of prior textures that rendered. It is not a claim that the client universally rejects 1024-pixel files.
 
-The exact player package has **45 files including SHA256SUMS.txt**: 23 Lua modules, TOC, three user documents and seventeen media/license files. Design files, Python, tests and JSON recipe/catalog sources are excluded.
+Materials use nine explicit slices and dimensions, with small separate plates on large windows as well as controls. No custom native backdrop tiling or full-window stretched ornament is used. Large windows retain the quiet slate background. The compact 520-unit HUD editor collapses unused rows; controls remain transactional. While it is open, the actual HUD previews the draft at readable native size. Cancel/close restores its stored layout and prior visibility; presets do not write settings until Apply. The miniature keeps the requested proportions. Decorative landscape strips are illustrations, not captured gameplay or evidence; unmapped zones use a generic forest.
+
+The existing `AzerothSerif.ttf` filename now contains a renamed Noto Serif Bold derivative. `data/title-font-source.json` pins the original official source commit and hash; `tools/build_title_font.py` verifies a maintainer-supplied original, preserves notices and deterministically renames it. `tools/check_fonts.py` verifies localized coverage and the bold face. CJK derivatives remain separate with their existing glyphs/notices. Developer tools are excluded from the player archive.
+
+The exact player package has **65 files including SHA256SUMS.txt**: 23 Lua modules, TOC, three user documents and thirty-seven media/license files. Development tools, source PNGs, tests, recipe/catalog JSON and retired atlases are excluded.
 
 ## Validation and manual test recipe
 
-Run the documented offline/native suites, plus `python tools/build_theme_assets.py --check`, `python tools/encode_frame_art.py --check`, `python tools/encode_painted_assets.py --check` and `python tools/check_fonts.py`. `tests/bar.lua` covers defaults, corrupt settings, scope/value separation, source availability, maxima, overflow, navigation, draft cancellation/application, actual editor callbacks, locales and widget reuse. Previous accounting, migration and persistence suites remain required.
+Run the documented offline/native suites, plus `python tools/build_theme_assets.py --check`, `python tools/encode_painted_assets.py --check` and `python tools/check_fonts.py`. `tests/bar.lua` covers defaults, corrupt settings, scope/value separation, source availability, maxima, overflow, navigation, draft cancellation/application, actual editor callbacks, locales and widget reuse. Previous accounting, migration and persistence suites remain required.
 
 Before considering a public release, verify in the actual client:
 
-1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.3**. Preserve/back up own SavedVariables first.
+1. Restart normally after installing the exact development ZIP and check version **1.6.0-dev.4**. Preserve/back up own SavedVariables first.
 2. Open all pages and All statistics; inspect selected/hover states, row spacing, hearts and item tooltips. Verify both fresh and existing databases.
 3. In the HUD editor, add global runs, class wins, fixed-class kills, observed lifetime duration and current-run damage. Check each tooltip and navigation target. No current-run duration appears unless explicitly chosen.
 4. Change dimensions through minimum/maximum values; test narrow-screen overflow, tall/two-row layout, label/icon toggles, fonts and opacity. Check both live HUD and preview.
@@ -45,4 +49,4 @@ Offline widget renders use synthetic data and approximate native rendering; they
 
 ## Fidelity and native verification
 
-Dev.1 did not reproduce the approved visual direction faithfully. The custom backdrop strip also repeated gold strokes in the client. Dev.2 removed native tiling; dev.3 adds actual painted materials and more faithful proportions/composition. Source-derived previews are explicitly labeled offline and use synthetic data. They approximate frame/font compositing and do not validate the native renderer. The game’s move-to-start foreground prompt was observed over addon windows; higher frame levels are not evidence of a fix. No native UI is hidden or changed to disguise that issue. Dev.3 still needs a real-client reload and visual review before public delivery.
+Dev.1 did not reproduce the approved visual direction faithfully. The custom backdrop strip also repeated gold strokes in the client. Dev.2 removed native tiling; dev.3 adds actual painted materials and more faithful proportions/composition. Source-derived previews are explicitly labeled offline and use synthetic data. They approximate frame/font compositing and do not validate the native renderer. The game’s move-to-start foreground prompt was observed over addon windows; higher frame levels are not evidence of a fix. No native UI is hidden or changed to disguise that issue. Dev.3 also failed native image loading despite a full restart. Dev.4 replaces those images with small components and adjusts typography/geometry; its native image loading and fidelity still need visual confirmation before public delivery.

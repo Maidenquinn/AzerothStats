@@ -770,14 +770,16 @@ function A.RefreshUI()
             c.label:SetPoint("TOPLEFT", c, "TOPLEFT", 13, dashboard and -47 or -9)
             c.value:SetPoint("TOPLEFT", c, "TOPLEFT", 13, dashboard and -71 or -32)
             c.label:SetJustifyH(dashboard and "CENTER" or "LEFT")
+            c.label.baseSize = dashboard and 14 or 11
+            c.label.titleFont = dashboard
             c.value:SetJustifyH(dashboard and "CENTER" or "LEFT")
-            c.value.baseSize = dashboard and 27 or 23
+            c.value.baseSize = dashboard and 31 or 23
             c.value:SetTextColor(
                 unpack(dashboard and (i == 2 and COLORS.green or COLORS.text) or COLORS.gold)
             )
             c.value:SetHeight(model.layout == "combat" and 27 or 38)
-            c.icon:SetWidth(dashboard and 34 or 22)
-            c.icon:SetHeight(dashboard and 34 or 22)
+            c.icon:SetWidth(dashboard and 38 or 22)
+            c.icon:SetHeight(dashboard and 38 or 22)
             if model.layout == "dashboard" then
                 c.icon:SetPoint("TOP", c, "TOP", 0, -9)
                 A.PaintedGlyph(c.icon, i + 1)
@@ -831,20 +833,22 @@ function A.RefreshUI()
                 "TOPLEFT",
                 frame,
                 "TOPLEFT",
-                dashboard and 158 or 35,
+                dashboard and 198 or 35,
                 dashboard and -14 or -1
             )
-            frame.label.fontWidth = dashboard and 360 or 412
+            frame.label.fontWidth = dashboard and 256 or 412
+            frame.label.baseSize = dashboard and 14 or 12
+            frame.label.titleFont = dashboard
             frame.label:SetWidth(frame.label.fontWidth)
             frame.detail:ClearAllPoints()
             frame.detail:SetPoint(
                 "TOPLEFT",
                 frame,
                 "TOPLEFT",
-                dashboard and 158 or 35,
+                dashboard and 198 or 35,
                 dashboard and -41 or -(model.rowHeight >= 40 and 24 or 16)
             )
-            frame.detail.fontWidth = dashboard and 360 or 670
+            frame.detail.fontWidth = dashboard and 256 or 670
             frame.detail:SetWidth(frame.detail.fontWidth)
             frame.value:ClearAllPoints()
             frame.value:SetPoint("TOPLEFT", frame, "TOPLEFT", 455, dashboard and -17 or 0)
@@ -858,7 +862,8 @@ function A.RefreshUI()
             put(frame.label, d.label)
             frame.value:SetTextColor(
                 unpack(
-                    dashboard and (d.result == "victory" and COLORS.green or COLORS.gold)
+                    dashboard
+                            and (d.result == "victory" and COLORS.green or (d.result == "defeat" and COLORS.red or COLORS.gold))
                         or COLORS.gold
                 )
             )
@@ -1055,6 +1060,9 @@ function A.BuildUI()
     drag(frame, "windowPos")
     place(frame, "windowPos", "CENTER", 0, 0)
     frame:SetScript("OnHide", function()
+        if A.barEditor then
+            A.barEditor:Hide()
+        end
         A.CommitSliders()
         A.db.settings.open = false
         if UI.menu then
@@ -1067,13 +1075,13 @@ function A.BuildUI()
         end
     end)
     local emblem = frame:CreateTexture(nil, "ARTWORK")
-    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 27, -32)
-    emblem:SetWidth(58)
-    emblem:SetHeight(58)
+    emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -6)
+    emblem:SetWidth(90)
+    emblem:SetHeight(90)
     A.PaintedGlyph(emblem, 1)
-    UI.title = font(frame, 100, 32, 500, 40, 32, COLORS.gold, true)
+    UI.title = font(frame, 126, 14, 540, 48, 36, COLORS.gold, true)
     UI.version = font(frame, 730, 42, 150, 20, 11, COLORS.muted)
-    UI.breadcrumb = font(frame, 103, 75, 750, 18, 11, COLORS.muted)
+    UI.breadcrumb = font(frame, 130, 65, 750, 20, 12, COLORS.muted)
     local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -7, -6)
     close:SetWidth(30)
@@ -1112,11 +1120,11 @@ function A.BuildUI()
         b.label:SetPoint("TOPLEFT", b, "TOPLEFT", 39, 0)
         b.label:SetWidth(123)
         b.label.fontWidth = 123
-        b.label.baseSize = 13
+        b.label.baseSize = 14
         b.icon = b:CreateTexture(nil, "ARTWORK")
         b.icon:SetPoint("LEFT", b, "LEFT", 10, 0)
-        b.icon:SetWidth(21)
-        b.icon:SetHeight(21)
+        b.icon:SetWidth(26)
+        b.icon:SetHeight(26)
         A.ThemeIcon(b.icon, i == 7 and 12 or i)
         b.navigation = true
         UI.nav[i] = b
@@ -1237,8 +1245,8 @@ function A.BuildUI()
         r.icon:SetHeight(22)
         r.thumbnail = r:CreateTexture(nil, "ARTWORK")
         r.thumbnail:SetPoint("TOPLEFT", r, "TOPLEFT", 5, -8)
-        r.thumbnail:SetWidth(138)
-        r.thumbnail:SetHeight(70)
+        r.thumbnail:SetWidth(178)
+        r.thumbnail:SetHeight(66)
         r.thumbnail:Hide()
         r.label = font(r, 35, 1, 412, 22, 12, COLORS.text)
         r.value = font(r, 455, 0, 225, 23, 13, COLORS.gold)
@@ -1269,12 +1277,12 @@ function A.BuildUI()
     UI.historyLink = button(frame, 772, 322, 160, 30, "History", function()
         selectTab(3)
     end)
-    UI.recordsTitle = font(frame, 218, 641, 430, 30, 22, COLORS.gold, true)
-    UI.recordsLink = button(frame, 772, 641, 160, 30, "Records", function()
+    UI.recordsTitle = font(frame, 218, 612, 430, 30, 22, COLORS.gold, true)
+    UI.recordsLink = button(frame, 772, 612, 160, 30, "Records", function()
         selectTab(6)
     end)
     UI.recordPanel = CreateFrame("Frame", nil, frame)
-    UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -682)
+    UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -649)
     UI.recordPanel:SetWidth(714)
     UI.recordPanel:SetHeight(60)
     surface(UI.recordPanel, "card")
