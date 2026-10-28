@@ -1,6 +1,6 @@
 # Chroniques native UI preview — 1.6.0-beta.1
 
-This implements the approved visual direction using native Lua 5.0/11200 frames. It ships in a beta prerelease; game-team approval remains pending. The AI concept board is a design reference, not a screenshot or a runtime texture.
+This implements the approved visual direction using native Lua 5.0/11200 frames. It ships in a beta prerelease; game-team permission to post as a verified addon was reported by the maintainer on 28 October 2026 (see APPROVAL-STATUS.md). The AI concept board is a design reference, not a screenshot or a runtime texture.
 
 ## Implemented
 

@@ -1,6 +1,6 @@
 # Security reporting
 
-The current candidate is pending game-team approval and is not independently certified.
+The maintainer reports permission to post Azeroth Stats as a verified addon on 28 October 2026. This is not independent security certification. See docs/APPROVAL-STATUS.md for scope.
 
 Report public reliability issues at https://github.com/Maidenquinn/AzerothStats/issues with addon/client version, reproduction, expected behavior and sanitized diagnostics. Do not attach personal saves or private co-op/death histories.
 

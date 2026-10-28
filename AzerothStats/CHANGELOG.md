@@ -1,3 +1,10 @@
+## 1.6.0-beta.2 - Verified addon distribution
+
+- Record game-team permission to post Azeroth Stats as a verified addon, reported by the maintainer on 28 October 2026.
+- Update current installation, security and distribution documentation; retain historical audit evidence as dated records.
+- Runtime behavior matches 1.6.0-beta.1; only displayed version and documentation change.
+- The experimental sampled build journal remains in draft PR #5 and is not included.
+
 ## 1.6.0-beta.1 - Chroniques, Heroic, run reports and comparison
 
 Beta prerelease for manual review; game-team approval remains pending. Consolidates the dev.1-dev.9 changes below.
