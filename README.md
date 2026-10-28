@@ -4,9 +4,9 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.6.1-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
+**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.6.2-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
 
-[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.1-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.6.1-beta.1.md)
+[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.2-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.6.2-beta.1.md)
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -129,3 +129,7 @@ Reports include native/observed totals, damage sources, recorded build/equipment
 History offers bounded literal search plus result, observed co-op and favorite filters alongside class/difficulty. Its cards describe the filtered retained list. Reset clears these filters. Missing party evidence does not mean solo. Run selectors share identity/context; `/azstats coop` and companion-history links open the selected/current/latest run report.
 
 Official/sample provenance is assigned per metric. Retention reductions that would remove detailed runs require explicit confirmation showing the current removal count. Cancel preserves data/settings; cumulative statistics, protected favorites and the live run remain protected. Search/result/kind/journal filters are session-only. See [UX behavior and test recipe](docs/UX-COHERENCE.md).
+
+## HUD editor hotfix
+
+1.6.2-beta.1 fixes My bar becoming hidden behind the main window after dropdown interaction. Editor menus now belong to the editor, ordering is refreshed and refocusing preserves an open draft. The maintainer confirmed the fix locally; feedback from the original reporter is still requested. See [hotfix details](docs/HUD-EDITOR-LAYERING.md).

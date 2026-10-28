@@ -1,3 +1,11 @@
+## 1.6.2-beta.1 - HUD editor visibility hotfix
+
+- Fix My bar becoming occluded by the main window during metric/scope dropdown interaction. Attach the shared popup to its owning window and refresh relative editor/menu frame levels.
+- Disable automatic main-window promotion only while the independent editor is open; restore normal behavior when it closes.
+- Preserve unsaved draft changes when the gear or `/azstats hud` refocuses an already open editor. Independent position/scale and Apply/Cancel are preserved.
+- Improve widget-mock coverage for frame levels, native menu roots, real callbacks, owner switching, recovery and restoration.
+- Maintainer confirmed 1.6.2-dev.1 works in game and authorized this beta. Confirmation from the originally affected player remains pending. Existing history/settings are preserved; no reset or new game-data capability.
+
 ## 1.6.2-dev.1 - HUD editor layering fix (test candidate)
 
 - Parent the reusable dropdown to the window owning its anchor; metric/scope menus now belong to the independent HUD editor instead of promoting the main window.

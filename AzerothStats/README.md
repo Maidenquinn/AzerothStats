@@ -1,8 +1,8 @@
-# Azeroth Stats - 1.6.2-dev.1
+# Azeroth Stats - 1.6.2-beta.1
 
-Local hotfix candidate (1.6.2-dev.1), not a public release. Tests do not replace native validation.
+Beta hotfix 1.6.2-beta.1. The maintainer confirmed the HUD editor fix in game and authorized publication; confirmation from the originally affected player remains pending.
 
-Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The earlier 1.6.1-beta.1 release was validated by the maintainer; this HUD-layering hotfix still needs its own native test. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
+Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
 ## Install an approved build
 

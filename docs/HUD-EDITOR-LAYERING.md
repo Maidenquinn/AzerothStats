@@ -1,3 +1,5 @@
+> Release update: the maintainer confirmed the dev.1 fix in game and authorized 1.6.2-beta.1. The original reporter still needs to retest; development-stage wording below records the initial investigation.
+
 # HUD editor layering — 1.6.2-dev.1 candidate
 
 A maintainer screenshot shows My bar partially behind Settings. The supplied user video (about 7–8 seconds) shows a metric change taking effect on the HUD while the editor disappears visually and the dropdown remains over the main report. This is consistent with occlusion; the video cannot establish the hidden frame’s internal IsShown state or exclude a separate error on another client.
