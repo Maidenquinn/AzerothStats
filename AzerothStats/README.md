@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.6.1-dev.3
+# Azeroth Stats - 1.6.1-beta.1
 
-Development preview of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Public 1.6.0-beta.2 has verified-distribution permission; these development changes are not covered by a separate approval claim. Automated tests do not authorize distribution or guarantee safety.
+Beta release of the Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The maintainer validated the dev.3 candidate in game and authorized this release. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
 ## Install an approved build
 
@@ -8,13 +8,13 @@ Close the client and back up the addon's SavedVariables. Extract to the AddOns d
 
 ## Features and controls
 
-Overview, classes, history, combat, character/builds, records, diagnostics, settings, usage/co-op, categorized heart favorites and Nemesis. Minimap left-click toggles the window; right-click opens Settings. Adjustable opacity/scale/text/retention, fourteen languages.
+Overview, classes, history, combat, character/builds, records, diagnostics, settings, Trends/co-op, categorized heart favorites and Nemesis. Minimap left-click toggles the window; right-click opens Settings. Adjustable opacity/scale/text/retention, fourteen languages.
 
 Open the configurable HUD editor with `/azstats hud` or `/azstats bar config`. Choose per-block scope and metrics, order, width/height, icons/labels, opacity and locking. Apply saves; Cancel discards. No run clock is shown by default. All existing totals remain accessible through All statistics.
 
-Commands (after `/azstats`): `show`, `hide`, `history`, `report`, `compare`, `coop`, `favorites`, `favorite`, `nemesis`, `diagnose`, `bar`, `minimap`, `lock`, `resetpos`, `scale 0.9`, `opacity 1`, `retention 200`, `lang auto`, `sound`, `sound test`, `help`.
+Commands (after `/azstats`): `show`, `hide`, `history`, `report`, `compare`, `journal`, `coop`, `favorites`, `favorite`, `nemesis`, `diagnose`, `bar`, `minimap`, `lock`, `resetpos`, `scale 0.9`, `opacity 1`, `retention 200`, `lang auto`, `sound`, `sound test`, `help`.
 
-Missing data stays unavailable. Chests require the official final summary; live chest value is a price. Usage counts builds/rank gains, not clicks/casts. DPS records are observed run averages after ten server seconds. Co-op rankings need a common native sample. Last attacker is probable unless explicitly confirmed. RSE1 import is excluded.
+Missing data stays unavailable. Chests require the official final summary; live chest value is a price. Trends counts builds/rank gains, not clicks/casts. DPS records are observed run averages after ten server seconds. Co-op rankings need a common native sample. Last attacker is probable unless explicitly confirmed. RSE1 import is excluded.
 
 ## Local data
 
@@ -36,6 +36,6 @@ Reports include native/observed totals, damage sources, recorded build/equipment
 
 Open a run report's Build journal section or type `/azstats journal`. The new journal keeps observed rank changes, global stat before/after values and periodic inventory changes. Hover for the complete observation. It does not identify the exact selected card, rarity or rolled bonus; global percentage-point changes are not causal card effects. Missing/batched/late/limited data remains explicit, and older runs are not reconstructed. Journals survive normal own-SavedVariables restarts and ordinary retained-run/favorite rules.
 
-## UX review preview
+## History and navigation
 
-This unmerged candidate adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. The public verified release is unchanged; test this preview before any merge.
+This release adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. Reducing retention asks for confirmation before removing detailed runs; cancel keeps the previous settings and history.

@@ -1,3 +1,5 @@
+> Release update, 28 October 2026: the maintainer validated dev.3 and authorized 1.6.1-beta.1. The development-state wording below records the original implementation/testing stage. See RELEASE-NOTES-1.6.1-beta.1.md for current behavior and limits.
+
 # Sampled build journal — 1.6.1-dev.1
 
 ## Scope and audited evidence

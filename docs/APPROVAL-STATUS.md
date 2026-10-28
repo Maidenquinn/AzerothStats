@@ -4,8 +4,10 @@ On 28 October 2026, Kevin / Maidenhead reported receiving permission from the Az
 
 This records the maintainer’s report; no private Discord message or independently verified approval certificate is included in this repository. It concerns permission to distribute the addon under the game’s manual process, not independent security certification.
 
-## Distribution build
+## Distribution builds
 
-1.6.0-beta.2 retains the runtime behavior of public 1.6.0-beta.1. Only the displayed version, manifest and documentation change. Earlier audit dossiers remain historical evidence and their pending-review wording is preserved where it describes that earlier date.
+1.6.0-beta.2 recorded that permission without changing the runtime behavior of 1.6.0-beta.1. Earlier audit dossiers remain historical evidence.
 
-The sampled build journal in draft PR #5 is excluded. Its native gameplay validation remains pending. Future functional revisions must follow any review requirements set by the game team; this status is not blanket approval for later changes.
+For 1.6.1-beta.1, the maintainer reported validating dev.3 in game and explicitly authorized merging the pending journal/co-op/UX pull requests and publishing the update on 28 October 2026. This is maintainer acceptance, not a claim of a separate game-team review of every changed line or an exhaustive native playthrough. Known API limitations remain documented.
+
+Future revisions must follow any review requirements set by the game team; this status is not blanket approval for later changes.

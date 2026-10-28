@@ -1,3 +1,5 @@
+> Release update, 28 October 2026: the maintainer validated dev.3 and authorized 1.6.1-beta.1. The development-state wording below records the original implementation/testing stage. See RELEASE-NOTES-1.6.1-beta.1.md for current behavior and limits.
+
 # UX coherence review branch — 1.6.1-dev.3
 
 Branch: codex/ux-coherence-review. Based on the unmerged co-op/journal previews. No merge or public release is authorized by creating this candidate. Public verified 1.6.0-beta.2 remains unchanged.

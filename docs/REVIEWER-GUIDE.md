@@ -1,3 +1,7 @@
+# Current release — 1.6.1-beta.1
+
+25 runtime modules and a 75-file player ZIP including its manifest. New sampled BuildJournal.lua and co-op/UX changes are documented in BUILD-JOURNAL.md, COOP-RUNS.md and UX-COHERENCE.md. The maintainer validated dev.3 in game and authorized this release; separate game-team re-review is not asserted. See APPROVAL-STATUS.md and RELEASE-VALIDATION-1.6.1-beta.1.md. Older dossiers below describe their original revisions.
+
 > Current public distribution status: see APPROVAL-STATUS.md. This branch contains development changes awaiting native validation.
 
 # Development addendum — 1.6.1-dev.1

@@ -1,11 +1,11 @@
 # Known limitations
 
-1.6.0-beta.2 is a beta prerelease. Game-team permission to post as a verified addon was reported by the maintainer on 28 October 2026; native report/comparison interaction checks remain part of beta testing. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
+1.6.1-beta.1 is a beta prerelease. The maintainer validated dev.3 and authorized this update; no exhaustive native test matrix is claimed. Game-team permission to post as a verified addon was reported by the maintainer on 28 October 2026; native report/comparison interaction checks remain part of beta testing. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
 
 - No authenticated run UUID/account ID: resume/freshness is heuristic; same-name companions can merge.
 - Missing/late native data stays unavailable/partial. Starting mid-run cannot reconstruct earlier builds. Oversized meters are rejected, not silently shown as exact partial totals.
 - Opened chests require the official terminal summary. Live chest price is not a count. Unsupported legacy values cannot be recovered exactly.
-- Usage measures builds/rank gains/accessory changes, not clicks or casts. First rank is a baseline; tiers group by known family.
+- Trends measures builds/rank gains/accessory changes, not clicks or casts. First rank is a baseline; tiers group by known family.
 - Co-op comparisons require exposed native group data. Independent samples stay partial; no shared achievement or guaranteed shared completion is inferred.
 - DPS record is peak observed run-average DPS after ten server seconds, not instantaneous DPS.
 - Last attacker is probable unless explicit native fatal-source evidence confirms it. Other deaths may remain unknown.
