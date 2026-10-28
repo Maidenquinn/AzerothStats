@@ -372,6 +372,9 @@ function A.ValidateDatabase(database)
         then
             return false
         end
+        if run.buildJournal ~= nil and not A.ValidateJournal(run.buildJournal) then
+            return false
+        end
         if run.recordBaseline ~= nil then
             if
                 type(run.recordBaseline) ~= "table"

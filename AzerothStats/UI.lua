@@ -41,7 +41,10 @@ end
 local function put(t, value)
     value = string.sub(tostring(value or ""), 1, 4096)
     local size = t.baseSize
-        * ((t.titleFont or t.fixedSize) and 1 or ((A.db and A.db.settings.textSize or 12) / 12))
+        * (
+            (t.fixedSize or (t.titleFont and not t.accessible)) and 1
+            or ((A.db and A.db.settings.textSize or 12) / 12)
+        )
     size = math.max(11, size)
     local path = A.Font(t.titleFont, t.localeFont)
     if
@@ -61,8 +64,10 @@ local function put(t, value)
     end
     t:SetText(value)
     if t.GetStringWidth then
-        while size > 11 and t:GetStringWidth() > t.fontWidth do
-            size = size - 0.5
+        local floor = (t.fixedSize or (t.titleFont and not t.accessible)) and 11
+            or math.min(size, A.db and A.db.settings.textSize or 12)
+        while size > floor and t:GetStringWidth() > t.fontWidth do
+            size = math.max(floor, size - 0.5)
             t:SetFont(path, size, "")
         end
     end
@@ -250,7 +255,7 @@ local function selectTab(i)
         A.view.historySection = "History"
     end
     if i == 9 then
-        A.view.cumulative = A.view.usageTab ~= "Co-op"
+        A.view.cumulative = true
     end
     if UI.menu then
         UI.menu:Hide()
@@ -446,20 +451,21 @@ function A.RunMenu(anchor)
             end,
         },
     }
+    local newest = A.run or A.db.runs[table.getn(A.db.runs)]
+    if newest then
+        options[1].label = options[1].label .. " · " .. A.RunLabel(newest)
+        options[1].detail = A.RunContext(newest)
+    end
     for i = table.getn(A.db.runs), 1, -1 do
-        local r = A.db.runs[i]
-        local id = r.id
-        if r ~= (A.run or A.db.runs[table.getn(A.db.runs)]) then
+        local run = A.db.runs[i]
+        local id = run.id
+        if run ~= newest then
             table.insert(options, {
-                label = A.Date(r.startedAt)
-                    .. " · "
-                    .. A.ClassName(r.class)
-                    .. " · "
-                    .. A.Duration(r.values.duration),
+                label = A.RunLabel(run),
+                detail = A.RunContext(run),
+                value = id,
                 action = function()
-                    A.view.selected = id
-                    A.view.cumulative = false
-                    A.view.page = 1
+                    A.view.selected, A.view.cumulative, A.view.page = id, false, 1
                 end,
             })
         end
@@ -474,14 +480,8 @@ function A.ComparisonRunMenu(anchor, side)
         local run = A.db.runs[i]
         local id = run.id
         table.insert(choices, {
-            label = A.Date(run.startedAt) .. " · " .. A.ZoneName(run) .. " · " .. A.HeroicLabel(
-                run
-            ),
-            detail = A.ClassName(run.class)
-                .. " · "
-                .. A.Status(run.status == "active" and "active" or run.result or run.status)
-                .. " · "
-                .. A.Duration(run.values.duration),
+            label = A.RunLabel(run),
+            detail = A.RunContext(run),
             value = run.id,
             action = function()
                 A.view[side == "A" and "compareA" or "compareB"] = id
@@ -682,6 +682,7 @@ local function paintRow(frame, d, model)
         frame.value:SetWidth(158)
         frame.value.baseSize = 12
         frame.value:SetTextColor(unpack(COLORS.text))
+        frame.label.accessible = true
         put(frame.label, d.label)
         put(frame.detail, d.detail)
         put(frame.value, d.value)
@@ -757,6 +758,7 @@ local function paintRow(frame, d, model)
     show(frame.share, ranking)
     put(frame.rank, d.rank or "")
     put(frame.share, d.share or "")
+    frame.label.accessible = true
     put(frame.label, d.label)
     put(frame.detail, compact and "" or d.detail)
     put(frame.value, photo and (A.Status(d.result) .. " · " .. d.value) or d.value)
@@ -814,25 +816,17 @@ function A.RefreshUI()
     local _, heroClass = A.Identity()
     put(UI.profileName, A.Text(A.Call(UnitName, "player"), 80) or "?")
     put(UI.profileClass, A.ClassName(heroClass))
-    put(
-        UI.breadcrumb,
-        (A.view.tab == 4 or A.view.tab == 9)
-                and A.view.cumulative
-                and (A.T("All runs") .. " · " .. (A.view.class and A.ClassName(A.view.class) or A.T(
-                    "All classes"
-                )))
-            or r and ((r.hero or "?") .. " · " .. A.ClassName(r.class) .. " · " .. A.ZoneName(r) .. " · " .. A.HeroicLabel(
-                r
-            ) .. " · " .. A.Status(r.result or r.status))
-            or A.T("Start a run to begin")
-    )
+    put(UI.breadcrumb, A.ViewScope(model, r))
+    if UI.retentionDialog and UI.retentionDialog:IsShown() and A.pendingRetention then
+        A.ShowRetentionConfirmation()
+    end
     put(UI.sectionTitle, model.title)
     put(UI.subtitle, model.subtitle)
     put(UI.sidebarNote, A.T("Collected since installation"))
     put(UI.explore, A.T("Explore"))
     put(UI.progression, A.T("Progression"))
     for i, b in ipairs(UI.nav) do
-        put(b.label, A.T(A.tabs[i]))
+        put(b.label, A.T(i == 9 and "Trends" or A.tabs[i]))
         selected(b, i == A.view.tab)
     end
     local tab = A.view.tab
@@ -868,6 +862,43 @@ function A.RefreshUI()
                 heroic = A.view.difficulty ~= "unknown" and A.view.difficulty or nil,
             })
     )
+    local browsingHistory = tab == 3 and not model.report and not model.comparison
+    for _, widget in ipairs(UI.historyFilters or {}) do
+        show(widget, browsingHistory)
+    end
+    if UI.historySearch and UI.historySearch:GetText() ~= (A.view.historySearch or "") then
+        UI.historySearch.syncing = true
+        UI.historySearch:SetText(A.view.historySearch or "")
+        UI.historySearch.syncing = nil
+    end
+    UI.historySearch:SetFont(A.Font(false), settings.textSize, "")
+    put(UI.historySearchCaption, A.T("Search runs"))
+    put(
+        UI.historyResult.label,
+        A.view.historyResult and A.Status(A.view.historyResult) or A.T("All results")
+    )
+    put(
+        UI.historyKind.label,
+        A.T(
+            A.view.historyKind == "coop" and "Co-op"
+                or A.view.historyKind == "favorite" and "Favorites"
+                or "All runs"
+        )
+    )
+    put(UI.historyReset.label, A.T("Reset filters"))
+    local journal = model.report and A.view.reportSection == "Build journal"
+    show(UI.journalFilter, journal)
+    put(
+        UI.journalFilter.label,
+        A.T(
+            ({ ranks = "Rank changes", stats = "Stat changes", gear = "Equipment changes" })[A.view.journalKind]
+                or "All changes"
+        )
+    )
+    local detailed = model.report
+        and (A.view.reportSection == "Combat" or A.view.reportSection == "Character")
+    show(UI.reportDetails, detailed)
+    put(UI.reportDetails.label, A.T("Click to inspect"))
     show(UI.latest, tab == 5 or model.report)
     put(UI.latest.label, selectorLabel)
     for _, b in ipairs(UI.modeButtons) do
@@ -945,7 +976,10 @@ function A.RefreshUI()
     end
     show(UI.scopeRun, tab == 4 or tab == 9)
     show(UI.scopeAll, tab == 4 or tab == 9)
-    put(UI.scopeRun.label, selectorLabel)
+    put(
+        UI.scopeRun.label,
+        tab == 9 and A.view.usageTab == "Co-op" and A.T("Run report") or selectorLabel
+    )
     put(UI.scopeAll.label, A.T("All runs"))
     selected(UI.scopeRun, not A.view.cumulative)
     selected(UI.scopeAll, A.view.cumulative)
@@ -1165,6 +1199,10 @@ function A.ToggleUI(value)
         A.RefreshUI()
     else
         A.window:Hide()
+        if UI.retentionDialog then
+            UI.retentionDialog:Hide()
+            A.pendingRetention = nil
+        end
         if UI.menu then
             UI.menu:Hide()
         end
@@ -1295,8 +1333,7 @@ local function buildSettings(frame)
             table.insert(options, {
                 label = A.Format(value),
                 action = function()
-                    A.db.settings.maxRuns = value
-                    A.Trim()
+                    A.RequestRetention(value)
                 end,
             })
         end
@@ -1327,6 +1364,13 @@ function A.BuildUI()
     drag(frame, "windowPos")
     place(frame, "windowPos", "CENTER", 0, 0)
     frame:SetScript("OnHide", function()
+        if UI.retentionDialog then
+            UI.retentionDialog:Hide()
+        end
+        if UI.retentionBlocker then
+            UI.retentionBlocker:Hide()
+        end
+        A.pendingRetention = nil
         if A.barEditor then
             A.barEditor:Hide()
         end
@@ -1454,7 +1498,7 @@ function A.BuildUI()
             A.view.usageTab = section
             A.view.coopPartner = nil
             if section == "Co-op" then
-                A.view.cumulative = false
+                A.view.cumulative = true
             end
             A.view.page = 1
             A.RefreshUI()
@@ -1490,7 +1534,12 @@ function A.BuildUI()
     end)
     dropdown(UI.difficultyButton)
     UI.scopeRun = button(frame, 518, 100, 198, 26, "", function(self)
-        A.RunMenu(self)
+        if A.view.tab == 9 and A.view.usageTab == "Co-op" then
+            A.SelectCoopRun(nil)
+            A.RefreshUI()
+        else
+            A.RunMenu(self)
+        end
     end)
     dropdown(UI.scopeRun)
     UI.scopeAll = button(frame, 724, 100, 208, 26, "", function()
@@ -1498,6 +1547,131 @@ function A.BuildUI()
         A.view.coopPartner = nil
         A.view.combatTab = "Spells"
         A.view.page = 1
+        A.RefreshUI()
+    end)
+    UI.historyFilters = {}
+    local searchPanel = CreateFrame("Frame", nil, frame)
+    searchPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -194)
+    searchPanel:SetWidth(228)
+    searchPanel:SetHeight(32)
+    surface(searchPanel, "card")
+    UI.historySearchCaption = font(searchPanel, 6, 0, 215, 12, 11, COLORS.muted)
+    UI.historySearchCaption.fixedSize = true
+    UI.historySearch = CreateFrame("EditBox", nil, searchPanel)
+    UI.historySearch:SetPoint("TOPLEFT", searchPanel, "TOPLEFT", 6, -13)
+    UI.historySearch:SetWidth(215)
+    UI.historySearch:SetHeight(18)
+    UI.historySearch:SetFont(A.Font(false), 12, "")
+    UI.historySearch:SetTextColor(COLORS.text[1], COLORS.text[2], COLORS.text[3])
+    if UI.historySearch.SetAutoFocus then
+        UI.historySearch:SetAutoFocus(false)
+    end
+    if UI.historySearch.SetMaxLetters then
+        UI.historySearch:SetMaxLetters(80)
+    end
+    UI.historySearch:SetScript("OnTextChanged", function()
+        if not this.syncing then
+            A.view.historySearch = A.Text(this:GetText() or "", 80)
+            A.view.page = 1
+            A.RefreshUI()
+        end
+    end)
+    UI.historySearch:SetScript("OnEscapePressed", function()
+        if this.ClearFocus then
+            this:ClearFocus()
+        end
+    end)
+    table.insert(UI.historyFilters, searchPanel)
+    UI.historyResult = button(frame, 454, 194, 148, 32, "", function(self)
+        local options = {
+            {
+                label = A.T("All results"),
+                action = function()
+                    A.view.historyResult = nil
+                    A.view.page = 1
+                end,
+            },
+        }
+        for _, result in ipairs({ "active", "victory", "defeat", "left", "interrupted" }) do
+            local key = result
+            table.insert(options, {
+                label = A.Status(key),
+                action = function()
+                    A.view.historyResult = key
+                    A.view.page = 1
+                end,
+            })
+        end
+        A.ShowMenu(self, options)
+    end)
+    UI.historyKind = button(frame, 610, 194, 148, 32, "", function(self)
+        local options = {}
+        for _, pair in ipairs({
+            { "all", "All runs" },
+            { "coop", "Co-op" },
+            {
+                "favorite",
+                "Favorites",
+            },
+        }) do
+            local key = pair[1]
+            table.insert(options, {
+                label = A.T(pair[2]),
+                action = function()
+                    A.view.historyKind = key
+                    A.view.page = 1
+                end,
+            })
+        end
+        A.ShowMenu(self, options)
+    end)
+    UI.historyReset = button(frame, 766, 194, 166, 32, "", function()
+        A.ClearHistoryFilters()
+        A.RefreshUI()
+    end)
+    for _, b in ipairs({ UI.historyResult, UI.historyKind, UI.historyReset }) do
+        b.label.fixedSize = true -- Compact toolbar; body rows honor the user's text size.
+        table.insert(UI.historyFilters, b)
+    end
+    dropdown(UI.historyResult)
+    dropdown(UI.historyKind)
+    UI.journalFilter = button(frame, 714, 318, 218, 26, "", function(self)
+        local options = {
+            {
+                label = A.T("All changes"),
+                action = function()
+                    A.view.journalKind = nil
+                    A.view.page = 1
+                end,
+            },
+        }
+        for _, pair in ipairs({
+            { "ranks", "Rank changes" },
+            { "stats", "Stat changes" },
+            { "gear", "Equipment changes" },
+        }) do
+            local key = pair[1]
+            table.insert(options, {
+                label = A.T(pair[2]),
+                action = function()
+                    A.view.journalKind = key
+                    A.view.page = 1
+                end,
+            })
+        end
+        A.ShowMenu(self, options)
+    end)
+    dropdown(UI.journalFilter)
+    UI.reportDetails = button(frame, 714, 318, 218, 26, "", function()
+        local id = A.view.selected or (A.Selected() and A.Selected().id)
+        if A.view.reportSection == "Combat" then
+            A.SelectRun(id)
+        else
+            A.view.tab = 5
+            A.view.selected = id
+            A.view.cumulative = false
+            A.view.page = 1
+        end
         A.RefreshUI()
     end)
     UI.historySections, UI.reportSections, UI.compareSections = {}, {}, {}
@@ -1515,9 +1689,9 @@ function A.BuildUI()
         end)
         table.insert(UI.historySections, b)
     end
-    for i, key in ipairs({ "Overview", "Combat", "Character", "Co-op", "Records" }) do
+    for i, key in ipairs({ "Overview", "Combat", "Character", "Co-op", "Records", "Build journal" }) do
         local section = key
-        local b = button(frame, 218 + (i - 1) * 144, 274, 136, 26, key, function()
+        local b = button(frame, 218 + (i - 1) * 120, 274, 112, 26, key, function()
             A.view.reportSection, A.view.page = section, 1
             A.RefreshUI()
         end)
@@ -1754,6 +1928,69 @@ function A.BuildUI()
             A.view.page = A.view.page - (arg1 or 0)
             A.RefreshUI()
         end)
+    end
+    UI.retentionBlocker = CreateFrame("Frame", nil, frame)
+    UI.retentionBlocker:SetAllPoints(frame)
+    UI.retentionBlocker:SetFrameStrata("FULLSCREEN_DIALOG")
+    UI.retentionBlocker:SetFrameLevel(frame:GetFrameLevel() + 49)
+    UI.retentionBlocker:EnableMouse(true)
+    UI.retentionBlocker:SetScript("OnMouseDown", function() end)
+    solid(UI.retentionBlocker, 0, 0, 0, 0.65)
+    UI.retentionBlocker:Hide()
+    UI.retentionDialog = CreateFrame("Frame", "AzerothStatsRetentionConfirmation", frame)
+    local dialog = UI.retentionDialog
+    dialog:SetPoint("CENTER", frame, "CENTER", 0, 0)
+    dialog:SetWidth(480)
+    dialog:SetHeight(250)
+    dialog:SetFrameStrata("FULLSCREEN_DIALOG")
+    dialog:SetFrameLevel(frame:GetFrameLevel() + 50)
+    dialog:EnableMouse(true)
+    surface(dialog, "main")
+    dialog.heading = font(dialog, 20, 20, 440, 52, 18, COLORS.gold, true)
+    dialog.message = font(dialog, 20, 78, 440, 100, 13, COLORS.text)
+    dialog.cancel = button(dialog, 20, 200, 210, 30, "Cancel", function()
+        A.pendingRetention = nil
+        UI.retentionBlocker:Hide()
+        dialog:Hide()
+    end)
+    dialog.confirm = button(dialog, 250, 200, 210, 30, "Apply", function()
+        local pending = A.pendingRetention
+        if pending and A.RequestRetention(pending.limit, true) then
+            UI.retentionBlocker:Hide()
+            dialog:Hide()
+            A.RefreshUI()
+        end
+    end)
+    dialog:SetScript("OnHide", function()
+        UI.retentionBlocker:Hide()
+        A.pendingRetention = nil
+    end)
+    dialog:Hide()
+    function A.ShowRetentionConfirmation()
+        local pending = A.pendingRetention
+        if not pending then
+            return
+        end
+        if not A.window:IsShown() then
+            A.window:Show()
+            A.db.settings.open = true
+        end
+        put(dialog.heading, A.T("Confirm history pruning"))
+        put(
+            dialog.message,
+            A.T("Run details to remove")
+                .. ": "
+                .. pending.count
+                .. "\n\n"
+                .. A.T("Cumulative statistics and favorites are kept")
+        )
+        put(dialog.cancel.label, A.T("Cancel"))
+        put(dialog.confirm.label, A.T("Apply"))
+        UI.retentionBlocker:Show()
+        dialog:Show()
+    end
+    if UISpecialFrames then
+        table.insert(UISpecialFrames, "AzerothStatsRetentionConfirmation")
     end
     buildSettings(frame)
     if UISpecialFrames then

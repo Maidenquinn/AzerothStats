@@ -1,9 +1,30 @@
-## 1.6.0-beta.2 - Verified addon distribution
+## 1.6.1-dev.3 - UX coherence review (unmerged test branch)
 
-- Record game-team permission to post Azeroth Stats as a verified addon, reported by the maintainer on 28 October 2026.
-- Update current installation, security and distribution documentation; retain historical audit evidence as dated records.
-- Runtime behavior matches 1.6.0-beta.1; only displayed version and documentation change.
-- The experimental sampled build journal remains in draft PR #5 and is not included.
+- Attribute each report metric to its own matching official summary field, last sample or unavailable state. Never label an entire report official just because a summary exists.
+- Require explicit confirmation before a retention reduction removes details. Display the current removal count; changed counts require reconfirmation. Cancel preserves settings/history; favorites, live run and cumulative ledgers stay protected.
+- Add bounded literal search and result/co-op/favorite filters to retained History, with one reset action and an explicit retained-history scope.
+- Unify run-menu identity (zone/result/duration plus date/class/difficulty/co-op context). Route co-op commands and companion-history drilldowns to the run report; rename Usage to Trends and default companion trends to cumulative data.
+- Add report links to detailed Combat/Character views without changing the selected run. Keep complete combat and character tools available.
+- Limit global-stat journal entries to observed build/choice checkpoints, including a short fresh-packet grace window. Preserve rank/gear changes and resource bounds; add journal category filters. These are not exact card effects.
+- Use neutral co-op headings for independent samples, compact large DPS presentation with exact hover values, and a clearer current data scope.
+- Respect requested body-text size when fitting row labels. Add fourteen-language labels and extend CJK derivatives from pinned originals.
+- Add isolated UX regressions for provenance, pruning/cancel/reconfirmation, search/filter semantics, navigation, unknown zones, all locales and text sizes. Native playthrough approval remains pending; public 1.6.0-beta.2 is unchanged.
+
+## 1.6.1-dev.2 - Visible co-op run context
+
+- Mark observed co-op runs in History, recent-run details, selectors and report banners, including last-snapshot player count where known. Missing group evidence never means solo.
+- Upgrade the report Co-op section with group damage/DPS/sample-size cards, supported ranking/share, player DPS and detailed top-spell/source tooltips.
+- Reuse the existing bounded native party snapshots; independent/incomplete samples remain partial. Other-player healing, kills and full spell breakdowns remain unavailable.
+- Keep the experimental sampled journal. Development preview only; public verified release unchanged.
+
+## 1.6.1-dev.1 - Sampled build-change journal (development preview)
+
+- Add Build journal to run reports and /azstats journal: timestamped initial states, observed spell-rank changes, global stat before/after values and periodic inventory-link changes, with detailed hover text.
+- Preserve raw numeric observations and show global stat differences in percentage points, never as an exact rolled card bonus. Missing data is not zero; initial observations are baselines and multiple gains between polls stay one batch.
+- Exclude changing cooldown timers, preserve last-state baselines across reloads, mark late/invalid observations partial and bound each journal to 128 observations / 256 changes. Captured inventory uses the existing 15-second snapshot, without additional native tooltip scans.
+- Recognize the audited native AZS stats notification as freshness only; no payload evaluation, gameplay write, UI interception or outbound message is added.
+- Keep exact card identity, rarity, offered/rejected options, rerolls and causal per-card effects unavailable: the audited public surface does not provide that contract. Historical runs are not reconstructed.
+- Localize journal UI in all fourteen languages and add regression/native persistence coverage. This preview is not the published 1.6.0-beta.1 or game-team approval.
 
 ## 1.6.0-beta.1 - Chroniques, Heroic, run reports and comparison
 

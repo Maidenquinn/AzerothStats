@@ -12,7 +12,7 @@ A.tabs = {
     "Records",
     "Diagnostics",
     "Settings",
-    "Usage",
+    "Trends",
     "Favorites",
     "Nemesis",
 }
@@ -83,12 +83,9 @@ end
 
 --- Set local navigation to one run comparison and clear the companion-list drilldown.
 function A.SelectCoopRun(id)
-    A.view.selected = id
-    A.view.tab = 9
-    A.view.usageTab = "Co-op"
-    A.view.cumulative = false
+    A.OpenReport(id or (A.Selected() and A.Selected().id))
+    A.view.reportSection = "Co-op"
     A.view.coopPartner = nil
-    A.view.page = 1
 end
 
 --- Describe how many observed runs supplied a metric; missing coverage is not assumed complete.
@@ -213,6 +210,10 @@ local function dashboard(model, group)
                     A.OpenReport(id)
                 end
             )
+            local coop = A.CoopLabel(run)
+            if coop then
+                entry.detail = entry.detail .. " · " .. coop
+            end
             entry.class = run.class
             entry.zone = run.zone
             entry.result = run.result or run.status
@@ -272,6 +273,77 @@ local function classes(model)
     end
 end
 
+--- Shared run identity across selectors; unknown context stays explicit.
+function A.RunLabel(run)
+    if not run then
+        return A.T("Unavailable")
+    end
+    return A.ZoneName(run)
+        .. " · "
+        .. A.Status(run.result or run.status)
+        .. " · "
+        .. A.Duration(run.values.duration)
+end
+
+function A.RunContext(run)
+    return A.Date(run.startedAt)
+        .. " · "
+        .. A.ClassName(run.class)
+        .. " · "
+        .. A.HeroicLabel(run)
+        .. (A.CoopLabel(run) and (" · " .. A.CoopLabel(run)) or "")
+end
+
+--- Search is bounded plain text, never a Lua pattern. No group evidence means unknown, not solo.
+function A.MatchesHistory(run)
+    if A.view.class and A.view.class ~= run.class then
+        return false
+    end
+    if not A.MatchesDifficulty(run, A.view.difficulty) then
+        return false
+    end
+    if A.view.historyResult and (run.result or run.status) ~= A.view.historyResult then
+        return false
+    end
+    if A.view.historyKind == "coop" and not A.CoopLabel(run) then
+        return false
+    end
+    if A.view.historyKind == "favorite" and not A.IsFavorite("run", run.id) then
+        return false
+    end
+    local search = string.lower(A.Text(A.view.historySearch or "", 80) or "")
+    if search ~= "" then
+        local text =
+            string.lower(A.RunLabel(run) .. " " .. A.RunContext(run) .. " " .. (run.hero or ""))
+        if not string.find(text, search, 1, true) then
+            return false
+        end
+    end
+    return true
+end
+
+function A.ClearHistoryFilters()
+    A.view.historySearch, A.view.historyResult, A.view.historyKind = nil, nil, nil
+    A.view.class, A.view.difficulty, A.view.page = nil, nil, 1
+end
+
+--- A visible scope independent of whichever run happened to be selected previously.
+function A.ViewScope(model, run)
+    local tab = A.view.tab
+    if model.comparison then
+        return A.T("Compare runs")
+    end
+    if model.report or tab == 5 or ((tab == 4 or tab == 9) and not A.view.cumulative) then
+        return run and (A.RunLabel(run) .. " · " .. A.HeroicLabel(run)) or A.T("Unavailable")
+    end
+    if tab == 3 then
+        return A.T("Retained history only")
+    end
+    return A.T("All runs")
+        .. " · "
+        .. (A.view.class and A.ClassName(A.view.class) or A.T("All classes"))
+end
+
 --- List retained observed runs under the class filter with stable-ID navigation and favorites.
 local function history(model)
     model.rowHeight = 43
@@ -281,10 +353,7 @@ local function history(model)
     for i = table.getn(A.db.runs), 1, -1 do
         local run = A.db.runs[i]
         local id = run.id
-        if
-            (not A.view.class or A.view.class == run.class)
-            and A.MatchesDifficulty(run, A.view.difficulty)
-        then
+        if A.MatchesHistory(run) then
             retained = retained + 1
             if run.result == "victory" then
                 wins = wins + 1
@@ -322,6 +391,11 @@ local function history(model)
                 .. " "
                 .. A.Short(run.values.gold)
             item.extra = item.extra .. " · " .. A.HeroicLabel(run)
+            local coop = A.CoopLabel(run)
+            if coop then
+                item.label = item.label .. " · " .. A.T("Co-op")
+                item.extra = item.extra .. " · " .. coop
+            end
             item.exact = run.id
                 .. " · "
                 .. A.Metric("kills")
@@ -333,7 +407,7 @@ local function history(model)
                 .. A.Format(run.values.level)
         end
     end
-    model.subtitle = A.T("Retained runs") .. " · " .. A.Format(retained)
+    model.subtitle = A.T("Retained history only") .. " · " .. A.Format(retained)
     card(model, A.T("Retained runs"), A.Format(retained), A.T("History"), A.metricIcons.level)
     card(model, A.T("Wins"), A.Format(wins), A.T("History"), A.metricIcons.gold)
     card(
@@ -634,8 +708,8 @@ local function stylePage(model, run, group)
     model.rowY, model.rowHeight = 296, 62
     if tab == 3 then
         model.layout, model.photoRows = "history", true
-        model.cardsTop = 204
-        model.rowY, model.rowHeight = 345, 74
+        model.cardsTop = 242
+        model.rowY, model.rowHeight = 383, 74
         model.columnLabel, model.columnValue = A.T("Run"), A.T("Play time")
         for i, glyph in ipairs({ 9, 3, 4 }) do
             model.cards[i].glyph = glyph
@@ -742,7 +816,7 @@ function A.PageModel()
         run = A.Selected()
     end
     local model = {
-        title = A.T(A.tabs[tab]),
+        title = A.T(tab == 9 and "Trends" or A.tabs[tab]),
         subtitle = A.T("Collected since installation"),
         cards = {},
         rows = {},

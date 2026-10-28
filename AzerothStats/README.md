@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.6.0-beta.2
+# Azeroth Stats - 1.6.1-dev.3
 
-Beta prerelease of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The maintainer reports game-team permission to post Azeroth Stats as a verified addon (28 October 2026). This beta retains the 1.6.0-beta.1 runtime behavior. Approval is not independent security certification; automated tests do not guarantee safety.
+Development preview of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Public 1.6.0-beta.2 has verified-distribution permission; these development changes are not covered by a separate approval claim. Automated tests do not authorize distribution or guarantee safety.
 
 ## Install an approved build
 
@@ -31,3 +31,11 @@ Observed Normal/Heroic I-V is retained per run and filterable in History. Older/
 History now contains History, Run report and Compare runs. Click a retained run, recent run or run Favorite to inspect its report. Use `/azstats report` for the selected/current/latest run and `/azstats compare` to select two retained runs. The comparison initially prefers the same class, zone and known difficulty; either selector can choose a different retained run, and Swap runs reverses B minus A. Missing data stays unavailable, and no percentage is inferred from a zero baseline.
 
 Reports include native/observed totals, damage sources, recorded build/equipment, available group snapshots and class records identified at the native summary. Those class records combine difficulties and require a baseline captured before that run; older reports do not reconstruct milestones. A dismissible notice appears once for 30 seconds after an accepted native summary. It never forces the window open.
+
+## Sampled build journal
+
+Open a run report's Build journal section or type `/azstats journal`. The new journal keeps observed rank changes, global stat before/after values and periodic inventory changes. Hover for the complete observation. It does not identify the exact selected card, rarity or rolled bonus; global percentage-point changes are not causal card effects. Missing/batched/late/limited data remains explicit, and older runs are not reconstructed. Journals survive normal own-SavedVariables restarts and ordinary retained-run/favorite rules.
+
+## UX review preview
+
+This unmerged candidate adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. The public verified release is unchanged; test this preview before any merge.

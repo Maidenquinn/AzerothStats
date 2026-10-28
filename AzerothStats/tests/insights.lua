@@ -251,13 +251,16 @@ check(
 A.ui.model.rows[1].action()
 A.RefreshUI()
 check(
-    A.view.tab == 9 and not A.view.cumulative and A.view.selected and A.ui.model.cards[1],
+    A.view.tab == 3 and A.view.reportSection == "Co-op" and A.view.selected and A.ui.model.cards[1],
     "historical run opens party scoreboard"
 )
 SlashCmdList.AZEROTHSTATS("coop")
 check(
-    A.view.selected == nil and not A.view.cumulative and A.view.usageTab == "Co-op",
-    "coop command opens latest run comparison"
+    A.view.tab == 3
+        and A.view.selected ~= nil
+        and A.view.reportSection == "Co-op"
+        and not A.view.cumulative,
+    "coop command preserves the selected report source"
 )
 local before = A.db.settings.recordSound
 SlashCmdList.AZEROTHSTATS("sound")

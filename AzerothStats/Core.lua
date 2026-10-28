@@ -53,7 +53,14 @@ local function initialize()
             end
             local sections = {
                 historySection = { "History", "Run report", "Compare runs" },
-                reportSection = { "Overview", "Combat", "Character", "Co-op", "Records" },
+                reportSection = {
+                    "Overview",
+                    "Combat",
+                    "Character",
+                    "Co-op",
+                    "Records",
+                    "Build journal",
+                },
                 compareSection = { "Overview", "Combat", "Spells", "Equipment" },
             }
             for key, choices in pairs(sections) do
@@ -80,6 +87,9 @@ local function initialize()
             then
                 A.view.characterTab = viewSettings.characterTab
             end
+        end
+        if A.view.tab == 9 and A.view.usageTab == "Co-op" then
+            A.view.cumulative = true
         end
         A.BuildUI()
         A.Say(A.T("Loaded") .. " · " .. A.version .. " · /azstats")
@@ -165,8 +175,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         settings.scale = math.max(0.65, math.min(1.5, tonumber(value)))
         A.ApplyUI()
     elseif command == "retention" and A.Number(value) then
-        settings.maxRuns = math.max(10, math.min(1000, math.floor(tonumber(value))))
-        A.Trim()
+        A.RequestRetention(tonumber(value))
         A.RefreshUI()
     elseif command == "opacity" and A.Number(value) then
         settings.opacity = math.max(0.45, math.min(1, tonumber(value)))
@@ -206,7 +215,12 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         A.view.page = 1
         A.ToggleUI(true)
     elseif command == "coop" then
-        A.SelectCoopRun(nil)
+        A.OpenReport(A.Selected() and A.Selected().id)
+        A.view.reportSection = "Co-op"
+        A.ToggleUI(true)
+    elseif command == "journal" then
+        A.OpenReport(A.Selected() and A.Selected().id)
+        A.view.reportSection = "Build journal"
         A.ToggleUI(true)
     elseif command == "report" then
         A.OpenReport(A.Selected() and A.Selected().id)
@@ -233,7 +247,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, report, compare, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
+            "/azstats show, hide, history, report, compare, journal, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")
