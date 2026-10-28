@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.6.0-beta.1
+# Azeroth Stats - 1.6.0-beta.2
 
-Beta prerelease of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
+Beta prerelease of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The maintainer reports game-team permission to post Azeroth Stats as a verified addon (28 October 2026). This beta retains the 1.6.0-beta.1 runtime behavior. Approval is not independent security certification; automated tests do not guarantee safety.
 
 ## Install an approved build
 

@@ -4,9 +4,9 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**1.6.0-beta.1 is a beta prerelease, awaiting manual game-team approval.** It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
+**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.6.0-beta.2.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
 
-[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.0-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/chroniques-validation/RESULTS.md)
+[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.0-beta.2) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/chroniques-validation/RESULTS.md)
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -109,7 +109,7 @@ The build checks an explicit player-file allowlist and SHA-256 manifest. Formatt
 
 Read [CONTRIBUTING](CONTRIBUTING.md), [data provenance](docs/DATA-PROVENANCE.md), [credits](AzerothStats/CREDITS.md) and [security reporting](SECURITY.md). Reference metadata may become stale and must not override observed native values. This audit does not establish permission to redistribute game-derived catalogs; that remains a question for the game team. Bundled fonts retain their OFL notices. No new blanket license grant is made by this review.
 
-Maintained by Kevin / Maidenhead. Existing Kevin / Codex development credit is retained. [Source repository](https://github.com/Maidenquinn/AzerothStats). Game-team approval is pending.
+Maintained by Kevin / Maidenhead. Existing Kevin / Codex development credit is retained. [Source repository](https://github.com/Maidenquinn/AzerothStats). See [approval status](docs/APPROVAL-STATUS.md) for the scope and provenance of approval.
 
 ## Game update 0.121
 
