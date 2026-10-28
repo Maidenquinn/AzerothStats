@@ -138,6 +138,7 @@ lua.execute((addon / "tests/bar.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/heroic.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/reports.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/journal.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/ux_review.lua").read_text(encoding="utf-8"))
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",

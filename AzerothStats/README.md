@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.6.1-dev.2
+# Azeroth Stats - 1.6.1-dev.3
 
 Development preview of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Public 1.6.0-beta.2 has verified-distribution permission; these development changes are not covered by a separate approval claim. Automated tests do not authorize distribution or guarantee safety.
 
@@ -35,3 +35,7 @@ Reports include native/observed totals, damage sources, recorded build/equipment
 ## Sampled build journal
 
 Open a run report's Build journal section or type `/azstats journal`. The new journal keeps observed rank changes, global stat before/after values and periodic inventory changes. Hover for the complete observation. It does not identify the exact selected card, rarity or rolled bonus; global percentage-point changes are not causal card effects. Missing/batched/late/limited data remains explicit, and older runs are not reconstructed. Journals survive normal own-SavedVariables restarts and ordinary retained-run/favorite rules.
+
+## UX review preview
+
+This unmerged candidate adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. The public verified release is unchanged; test this preview before any merge.

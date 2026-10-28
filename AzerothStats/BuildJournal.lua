@@ -141,6 +141,7 @@ local function observe(run, kind, current)
         end
     end
     journal.last[kind] = current
+    return table.getn(changes) > 0
 end
 
 --- Called once per sampler BEFORE usage clears spell freshness. Gear uses the existing 15s snapshot.
@@ -152,6 +153,7 @@ function A.ObserveJournal(run)
             and run.phase ~= "choosing"
             and run.phase ~= "paused"
             and run.phase ~= "endless"
+            and run.phase ~= "levelup"
         )
     then
         return
@@ -160,8 +162,8 @@ function A.ObserveJournal(run)
         A.BeginJournal(run)
         run.buildJournal.partial = true
     end
-    observe(run, "ranks", ranks(run))
-    observe(run, "stats", stats(run))
+    local rankChanged = observe(run, "ranks", ranks(run))
+    local gearChanged = false
     if run.snapshotAt ~= nil and run.buildJournal.gearAt ~= run.snapshotAt then
         local gear = {}
         for slot = 1, 19 do
@@ -170,9 +172,23 @@ function A.ObserveJournal(run)
                 gear[slot] = A.PrefixText(link, 500)
             end
         end
-        observe(run, "gear", gear)
+        gearChanged = observe(run, "gear", gear)
         run.buildJournal.gearAt = run.snapshotAt
     end
+    local previousPhase = A.journalPhaseRun == run and A.journalPhase or nil
+    local choosing = previousPhase == "choosing" or previousPhase == "levelup"
+    local choiceExit = choosing and run.phase ~= "choosing" and run.phase ~= "levelup"
+    local checkpoint = rankChanged or gearChanged or choiceExit
+    if checkpoint then
+        A.journalStatsWindow = { run = run, untilTime = GetTime() + 2 }
+    end
+    local window = A.journalStatsWindow
+    local delayed = A.statsPacket and window and window.run == run and GetTime() <= window.untilTime
+    if run.buildJournal.last.stats == nil or checkpoint or delayed then
+        observe(run, "stats", stats(run))
+    end
+    -- Session-only phase state: saved schema stays compatible; reload does not invent a choice exit.
+    A.journalPhaseRun, A.journalPhase = run, run.phase
 end
 
 --- Percentage-point changes of GLOBAL sampled stats, never the percentage rolled on a card.
@@ -220,6 +236,8 @@ function A.JournalModel(model, run)
     local journal = run and run.buildJournal
     model.columnLabel, model.columnValue = A.T("Build journal"), A.T("Details")
     model.note = A.T("Observed changes, not card effects")
+    model.subtitle = A.T("Observed build checkpoints")
+    model.rowY, model.rowHeight = 390, 58
     model.emptyText = A.T("No build journal recorded")
     if not journal then
         return
@@ -233,23 +251,21 @@ function A.JournalModel(model, run)
     local captions = { ranks = "Rank changes", stats = "Stat changes", gear = "Equipment changes" }
     for i = table.getn(journal.entries), 1, -1 do
         local entry, lines = journal.entries[i], {}
-        for _, change in ipairs(entry.changes) do
-            table.insert(lines, A.JournalChange(entry.kind, change))
+        if not A.view.journalKind or A.view.journalKind == entry.kind then
+            for _, change in ipairs(entry.changes) do
+                table.insert(lines, A.JournalChange(entry.kind, change))
+            end
+            local caption = A.T(entry.initial and "Initial observed state" or captions[entry.kind])
+            table.insert(model.rows, {
+                label = A.Duration(entry.t) .. " · " .. caption,
+                value = A.Format(table.getn(lines)) .. " · " .. A.T("Details"),
+                detail = lines[1] or "",
+                exact = table.concat(lines, "\n") .. "\n" .. A.T(
+                    "Observed changes, not card effects"
+                ) .. "\n" .. A.Metric("level") .. " " .. A.Format(entry.level),
+                icon = entry.kind == "stats" and "INV_Misc_Gear_01" or "INV_Misc_Book_09",
+            })
         end
-        local caption = A.T(entry.initial and "Initial observed state" or captions[entry.kind])
-        table.insert(model.rows, {
-            label = A.Duration(entry.t) .. " · " .. caption,
-            value = A.Format(table.getn(lines)) .. " · " .. A.T("Details"),
-            detail = lines[1] or "",
-            exact = table.concat(lines, "\n")
-                .. "\n"
-                .. A.T("Observed changes, not card effects")
-                .. "\n"
-                .. A.Metric("level")
-                .. " "
-                .. A.Format(entry.level),
-            icon = entry.kind == "stats" and "INV_Misc_Gear_01" or "INV_Misc_Book_09",
-        })
     end
 end
 

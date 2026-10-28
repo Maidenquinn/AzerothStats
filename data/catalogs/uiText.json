@@ -183,7 +183,17 @@
     "Width": "Šířka",
     "Window scale": "Měřítko okna",
     "Wins": "Vítězství",
-    "Your records": "Tvé rekordy"
+    "Your records": "Tvé rekordy",
+    "Trends": "Trendy",
+    "Search runs": "Hledat hry",
+    "Reset filters": "Obnovit filtry",
+    "Retained history only": "Pouze uložená historie",
+    "Confirm history pruning": "Potvrdit promazání historie",
+    "Run details to remove": "Podrobnosti her ke smazání",
+    "Cumulative statistics and favorites are kept": "Souhrnné statistiky a oblíbené zůstanou",
+    "All changes": "Všechny změny",
+    "Observed build checkpoints": "Pozorované kontrolní body sestavy",
+    "All results": "Všechny výsledky"
   },
   "de": {
     "API": "API",
@@ -369,7 +379,17 @@
     "Width": "Breite",
     "Window scale": "Fensterskalierung",
     "Wins": "Siege",
-    "Your records": "Deine Rekorde"
+    "Your records": "Deine Rekorde",
+    "Trends": "Trends",
+    "Search runs": "Partien suchen",
+    "Reset filters": "Filter zurücksetzen",
+    "Retained history only": "Nur gespeicherter Verlauf",
+    "Confirm history pruning": "Verlaufskürzung bestätigen",
+    "Run details to remove": "Zu löschende Partiedetails",
+    "Cumulative statistics and favorites are kept": "Gesamtstatistiken und Favoriten bleiben erhalten",
+    "All changes": "Alle Änderungen",
+    "Observed build checkpoints": "Beobachtete Build-Zwischenstände",
+    "All results": "Alle Ergebnisse"
   },
   "en": {
     "API": "API",
@@ -555,7 +575,17 @@
     "Width": "Width",
     "Window scale": "Window scale",
     "Wins": "Wins",
-    "Your records": "Your records"
+    "Your records": "Your records",
+    "Trends": "Trends",
+    "Search runs": "Search runs",
+    "Reset filters": "Reset filters",
+    "Retained history only": "Retained history only",
+    "Confirm history pruning": "Confirm history pruning",
+    "Run details to remove": "Run details to remove",
+    "Cumulative statistics and favorites are kept": "Cumulative statistics and favorites are kept",
+    "All changes": "All changes",
+    "Observed build checkpoints": "Observed build checkpoints",
+    "All results": "All results"
   },
   "es": {
     "API": "API",
@@ -741,7 +771,17 @@
     "Width": "Anchura",
     "Window scale": "Escala de ventana",
     "Wins": "Victorias",
-    "Your records": "Tus récords"
+    "Your records": "Tus récords",
+    "Trends": "Tendencias",
+    "Search runs": "Buscar partidas",
+    "Reset filters": "Restablecer filtros",
+    "Retained history only": "Solo historial conservado",
+    "Confirm history pruning": "Confirmar reducción del historial",
+    "Run details to remove": "Detalles de partidas que eliminar",
+    "Cumulative statistics and favorites are kept": "Se conservan estadísticas acumuladas y favoritos",
+    "All changes": "Todos los cambios",
+    "Observed build checkpoints": "Puntos observados de la configuración",
+    "All results": "Todos los resultados"
   },
   "fr": {
     "API": "API",
@@ -927,7 +967,17 @@
     "Width": "Largeur",
     "Window scale": "Échelle de la fenêtre",
     "Wins": "Victoires",
-    "Your records": "Vos records"
+    "Your records": "Vos records",
+    "Trends": "Tendances",
+    "Search runs": "Rechercher une partie",
+    "Reset filters": "Réinitialiser les filtres",
+    "Retained history only": "Historique conservé uniquement",
+    "Confirm history pruning": "Confirmer la réduction de l’historique",
+    "Run details to remove": "Détails de parties à supprimer",
+    "Cumulative statistics and favorites are kept": "Les statistiques cumulées et les favoris sont conservés",
+    "All changes": "Tous les changements",
+    "Observed build checkpoints": "Points de contrôle du build observé",
+    "All results": "Tous les résultats"
   },
   "ja": {
     "API": "API",
@@ -1113,7 +1163,17 @@
     "Width": "幅",
     "Window scale": "ウィンドウ倍率",
     "Wins": "勝利数",
-    "Your records": "自己記録"
+    "Your records": "自己記録",
+    "Trends": "傾向",
+    "Search runs": "プレイ履歴を検索",
+    "Reset filters": "フィルターをリセット",
+    "Retained history only": "保存済み履歴のみ",
+    "Confirm history pruning": "履歴の削除を確認",
+    "Run details to remove": "削除するプレイ詳細",
+    "Cumulative statistics and favorites are kept": "累計統計とお気に入りは保持されます",
+    "All changes": "すべての変更",
+    "Observed build checkpoints": "観測したビルドの記録時点",
+    "All results": "すべての結果"
   },
   "ko": {
     "API": "API",
@@ -1299,7 +1359,17 @@
     "Width": "너비",
     "Window scale": "창 크기 배율",
     "Wins": "승리",
-    "Your records": "개인 기록"
+    "Your records": "개인 기록",
+    "Trends": "추세",
+    "Search runs": "플레이 검색",
+    "Reset filters": "필터 초기화",
+    "Retained history only": "보관된 기록만",
+    "Confirm history pruning": "기록 정리 확인",
+    "Run details to remove": "삭제할 플레이 상세 기록",
+    "Cumulative statistics and favorites are kept": "누적 통계와 즐겨찾기는 유지됩니다",
+    "All changes": "모든 변경",
+    "Observed build checkpoints": "관측된 빌드 기록 시점",
+    "All results": "모든 결과"
   },
   "pl": {
     "API": "API",
@@ -1485,7 +1555,17 @@
     "Width": "Szerokość",
     "Window scale": "Skala okna",
     "Wins": "Zwycięstwa",
-    "Your records": "Twoje rekordy"
+    "Your records": "Twoje rekordy",
+    "Trends": "Trendy",
+    "Search runs": "Szukaj rozgrywek",
+    "Reset filters": "Resetuj filtry",
+    "Retained history only": "Tylko zachowana historia",
+    "Confirm history pruning": "Potwierdź usunięcie historii",
+    "Run details to remove": "Szczegóły rozgrywek do usunięcia",
+    "Cumulative statistics and favorites are kept": "Statystyki łączne i ulubione pozostają",
+    "All changes": "Wszystkie zmiany",
+    "Observed build checkpoints": "Obserwowane etapy konfiguracji",
+    "All results": "Wszystkie wyniki"
   },
   "pt": {
     "API": "API",
@@ -1671,7 +1751,17 @@
     "Width": "Largura",
     "Window scale": "Escala da janela",
     "Wins": "Vitórias",
-    "Your records": "Seus recordes"
+    "Your records": "Seus recordes",
+    "Trends": "Tendências",
+    "Search runs": "Buscar partidas",
+    "Reset filters": "Limpar filtros",
+    "Retained history only": "Apenas histórico mantido",
+    "Confirm history pruning": "Confirmar redução do histórico",
+    "Run details to remove": "Detalhes de partidas a remover",
+    "Cumulative statistics and favorites are kept": "Estatísticas acumuladas e favoritos são mantidos",
+    "All changes": "Todas as alterações",
+    "Observed build checkpoints": "Pontos observados da build",
+    "All results": "Todos os resultados"
   },
   "ro": {
     "API": "API",
@@ -1857,7 +1947,17 @@
     "Width": "Lățime",
     "Window scale": "Scara ferestrei",
     "Wins": "Victorii",
-    "Your records": "Recordurile tale"
+    "Your records": "Recordurile tale",
+    "Trends": "Tendințe",
+    "Search runs": "Caută partide",
+    "Reset filters": "Resetează filtrele",
+    "Retained history only": "Doar istoricul păstrat",
+    "Confirm history pruning": "Confirmă reducerea istoricului",
+    "Run details to remove": "Detalii de partide de șters",
+    "Cumulative statistics and favorites are kept": "Statisticile cumulate și favoritele sunt păstrate",
+    "All changes": "Toate schimbările",
+    "Observed build checkpoints": "Puncte observate ale configurației",
+    "All results": "Toate rezultatele"
   },
   "ru": {
     "API": "API",
@@ -2043,7 +2143,17 @@
     "Width": "Ширина",
     "Window scale": "Масштаб окна",
     "Wins": "Победы",
-    "Your records": "Ваши рекорды"
+    "Your records": "Ваши рекорды",
+    "Trends": "Тенденции",
+    "Search runs": "Поиск забегов",
+    "Reset filters": "Сбросить фильтры",
+    "Retained history only": "Только сохранённая история",
+    "Confirm history pruning": "Подтвердить очистку истории",
+    "Run details to remove": "Удаляемые записи забегов",
+    "Cumulative statistics and favorites are kept": "Общие показатели и избранное сохраняются",
+    "All changes": "Все изменения",
+    "Observed build checkpoints": "Наблюдаемые этапы сборки",
+    "All results": "Все результаты"
   },
   "tr": {
     "API": "API",
@@ -2229,7 +2339,17 @@
     "Width": "Genişlik",
     "Window scale": "Pencere ölçeği",
     "Wins": "Zaferler",
-    "Your records": "Rekorların"
+    "Your records": "Rekorların",
+    "Trends": "Eğilimler",
+    "Search runs": "Oyun ara",
+    "Reset filters": "Filtreleri sıfırla",
+    "Retained history only": "Yalnızca saklanan geçmiş",
+    "Confirm history pruning": "Geçmiş temizliğini onayla",
+    "Run details to remove": "Silinecek oyun ayrıntıları",
+    "Cumulative statistics and favorites are kept": "Toplam istatistikler ve favoriler korunur",
+    "All changes": "Tüm değişiklikler",
+    "Observed build checkpoints": "Gözlemlenen yapı kontrol noktaları",
+    "All results": "Tüm sonuçlar"
   },
   "uk": {
     "API": "API",
@@ -2415,7 +2535,17 @@
     "Width": "Ширина",
     "Window scale": "Масштаб вікна",
     "Wins": "Перемоги",
-    "Your records": "Ваші рекорди"
+    "Your records": "Ваші рекорди",
+    "Trends": "Тенденції",
+    "Search runs": "Пошук забігів",
+    "Reset filters": "Скинути фільтри",
+    "Retained history only": "Лише збережена історія",
+    "Confirm history pruning": "Підтвердити очищення історії",
+    "Run details to remove": "Записи забігів для видалення",
+    "Cumulative statistics and favorites are kept": "Сукупна статистика й обране зберігаються",
+    "All changes": "Усі зміни",
+    "Observed build checkpoints": "Спостережені етапи збірки",
+    "All results": "Усі результати"
   },
   "zh": {
     "API": "API",
@@ -2601,6 +2731,16 @@
     "Width": "宽度",
     "Window scale": "窗口缩放",
     "Wins": "胜利次数",
-    "Your records": "个人纪录"
+    "Your records": "个人纪录",
+    "Trends": "趋势",
+    "Search runs": "搜索对局",
+    "Reset filters": "重置筛选",
+    "Retained history only": "仅保留的历史",
+    "Confirm history pruning": "确认清理历史",
+    "Run details to remove": "将删除的对局详情",
+    "Cumulative statistics and favorites are kept": "保留累计统计和收藏",
+    "All changes": "全部变化",
+    "Observed build checkpoints": "已观察到的配置检查点",
+    "All results": "全部结果"
   }
 }

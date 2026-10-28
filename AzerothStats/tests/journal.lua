@@ -126,13 +126,26 @@ check(
     gate.buildJournal.last.stats.area == 1.32,
     "verified AZS stats notification establishes a fresh numeric baseline"
 )
+local beforeNoise = table.getn(run.buildJournal.entries)
+run.phase = "playing"
+A.ObserveJournal(run) -- one checkpoint when leaving the choice screen
+local beforeIdle = table.getn(run.buildJournal.entries)
 for i = 1, 200 do
     AZS_STATS.area = 1 + i / 1000
     A.ObserveJournal(run)
 end
 check(
-    table.getn(run.buildJournal.entries) == 128 and run.buildJournal.truncated,
-    "journal stops at its bounded limit"
+    table.getn(run.buildJournal.entries) == beforeIdle,
+    "stat-only fluctuations never flood the journal"
+)
+for i = 1, 200 do
+    AZS_SPELLS[1].rank = 100 + i
+    AZS_STATS.area = 1 + i / 1000
+    A.ObserveJournal(run)
+end
+check(
+    table.getn(run.buildJournal.entries) <= 128 and run.buildJournal.truncated,
+    "build observations obey both entry and field budgets"
 )
 check(A.ValidateJournal(run.buildJournal), "full journal remains valid saved data")
 local bad = A.Copy(run.buildJournal)
