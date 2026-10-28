@@ -1,3 +1,17 @@
+## 1.6.1-beta.1 - Co-op reports, build journal and clearer navigation
+
+Consolidates the dev.1-dev.3 previews after the maintainer's in-game validation and release authorization on 28 October 2026. The project has permission to be posted as a verified addon; no separate game-team review of this update is claimed.
+
+- Identify observed co-op runs in History, recent-run context, selectors and report banners. Group reports show available player damage/DPS, sample size, supported ranks/contributions and top-spell/source tooltips. Missing/incomplete data stays explicit.
+- Add a persistent bounded Build journal with timestamped observed rank/equipment changes and global-stat checkpoints. Filter by category and inspect before/after values. Initial state is a baseline; no exact card identity, rarity or causal rolled bonus is inferred.
+- Keep global-stat logging selective at build/choice checkpoints, including a short fresh-packet grace window. Preserve limits and partial/truncated markers instead of flooding history with ordinary fluctuations.
+- Add bounded literal History search and result/co-op/favorite filters, composed with class/difficulty. Scope labels distinguish filtered retained history from cumulative statistics; unknown party evidence never means solo.
+- Centralize co-op commands and companion-run links in the run report. Rename Usage to Trends, unify run selector context and provide links to detailed Combat/Character views while retaining the selected run.
+- Correct metric provenance: a matching official summary field is required before a value is labeled official.
+- Ask for explicit confirmation before a retention reduction removes details. Show the current removal count; cancel preserves history/settings and changed impact requires reconfirmation. Protect favorites/live run and preserve cumulative totals.
+- Improve partial-coop headings, compact large DPS with exact hover values, body-text sizing and fourteen-language/CJK support.
+- Keep existing schema-1 history/settings. No new game-data API, outbound message, gameplay automation or RSE1 import.
+
 ## 1.6.1-dev.3 - UX coherence review (unmerged test branch)
 
 - Attribute each report metric to its own matching official summary field, last sample or unavailable state. Never label an entire report official just because a summary exists.
@@ -25,6 +39,11 @@
 - Recognize the audited native AZS stats notification as freshness only; no payload evaluation, gameplay write, UI interception or outbound message is added.
 - Keep exact card identity, rarity, offered/rejected options, rerolls and causal per-card effects unavailable: the audited public surface does not provide that contract. Historical runs are not reconstructed.
 - Localize journal UI in all fourteen languages and add regression/native persistence coverage. This preview is not the published 1.6.0-beta.1 or game-team approval.
+
+## 1.6.0-beta.2 - Verified addon distribution
+
+- Record game-team permission to post Azeroth Stats as a verified addon, reported by the maintainer on 28 October 2026.
+- Update version and approval/distribution documentation; runtime behavior unchanged from 1.6.0-beta.1.
 
 ## 1.6.0-beta.1 - Chroniques, Heroic, run reports and comparison
 

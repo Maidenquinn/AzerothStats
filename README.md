@@ -4,9 +4,9 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.6.0-beta.2.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
+**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.6.1-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
 
-[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.0-beta.2) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/chroniques-validation/RESULTS.md)
+[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.1-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.6.1-beta.1.md)
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -22,7 +22,7 @@ Azeroth Stats observes native counters during play and keeps local history after
 - **Character:** recorded spells/ranks, collection equipment, temporary accessories, attributes and progression snapshots. Hover for captured native descriptions or clearly labeled collection references.
 - **Records:** personal maxima, including peak observed run-average DPS.
 - **Diagnostics / Settings:** availability and provenance, retention, language, scale, text size, opacity, positions and visibility.
-- **Usage:** observed spell builds/rank gains, accessory families and cooperative runs/companions.
+- **Trends:** observed spell builds/rank gains, accessory families and cooperative companions. Per-run co-op details open in the run report.
 - **Favorites:** History, Combat, Spells, Equipment, Jewelry and Co-op categories with heart controls. Bookmarked runs survive ordinary history pruning.
 - **Nemesis:** observed deaths and available attacker evidence, with probable and confirmed attribution kept separate.
 
@@ -34,7 +34,7 @@ Missing values stay unavailable. They are not silently converted into zero. Tota
 
 **Chests:** opened-chest counts use the official terminal summary. The live `Chest` display is a price and is never treated as the number opened. Old incorrect chest data is corrected by a one-time migration where supporting data exists.
 
-**Usage:** counts observed builds, rank increases and accessory changes. It does not measure exact card clicks or spell casts. The first observed rank establishes a baseline. Accessory tiers II/III/IV are grouped into a family, with class-aware spell aliases where possible.
+**Trends:** counts observed builds, rank increases and accessory changes. It does not measure exact card clicks or spell casts. The first observed rank establishes a baseline. Accessory tiers II/III/IV are grouped into a family, with class-aware spell aliases where possible.
 
 **DPS records:** maximum observed `AZS_RUN.dealt / AZS_RUN.t` after ten server seconds in valid playing/endless samples. This is run-average DPS, not instantaneous burst DPS. The first class record seeds silently; an optional native sound can announce a later record once per run.
 
@@ -71,6 +71,7 @@ If a saved tree is malformed or from an unsupported schema, collection is disabl
 - `/azstats class all` or `/azstats class rogue`: class filter.
 - `/azstats sound`, `/azstats sound test`: toggle or preview the record sound.
 - `/azstats lang auto` or `/azstats lang en`: automatic or manual language.
+- `/azstats journal`: open the selected/current/latest run’s observed build journal.
 - `/azstats help`: command summary.
 
 Minimap left-click toggles the window; right-click opens Settings. Scale/text sliders apply on release. The window/bar can be moved when unlocked. Hover rows for details and use the heart to bookmark supported entries.
@@ -121,6 +122,10 @@ History now contains History, Run report and Compare runs. Click a retained run,
 
 Reports include native/observed totals, damage sources, recorded build/equipment, available group snapshots and class records identified at the native summary. Those class records combine difficulties and require a baseline captured before that run; older reports do not reconstruct milestones. A dismissible notice appears once for 30 seconds after an accepted native summary. It never forces the window open.
 
-## Development: sampled build journal
+## Build journal and clearer run navigation
 
-The `codex/build-change-journal` branch adds an optional run-report journal and `/azstats journal`. It records observed rank/global-stat/inventory changes, not exact selected cards or their causal bonuses. Initial/missing/batched/partial data and percentage-point changes are explicit; published 1.6.0-beta.1 does not include this preview. See [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md).
+`/azstats journal` opens timestamped observed ranks, equipment and global-stat checkpoints. Filter by category and hover for before/after values. Initial state is a baseline; the journal does not identify exact chosen cards, rarity or causal card bonuses. Global statistics are sampled at build/choice checkpoints rather than every fluctuation. Existing runs are not reconstructed. See [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md).
+
+History offers bounded literal search plus result, observed co-op and favorite filters alongside class/difficulty. Its cards describe the filtered retained list. Reset clears these filters. Missing party evidence does not mean solo. Run selectors share identity/context; `/azstats coop` and companion-history links open the selected/current/latest run report.
+
+Official/sample provenance is assigned per metric. Retention reductions that would remove detailed runs require explicit confirmation showing the current removal count. Cancel preserves data/settings; cumulative statistics, protected favorites and the live run remain protected. Search/result/kind/journal filters are session-only. See [UX behavior and test recipe](docs/UX-COHERENCE.md).
