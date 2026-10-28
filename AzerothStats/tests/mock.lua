@@ -70,7 +70,13 @@ function methods:SetAlpha(v)
     self.alpha = v
 end
 function methods:GetFrameLevel()
-    return 1
+    return self.frameLevel or (self.parent and self.parent:GetFrameLevel() + 1) or 1
+end
+function methods:SetFrameLevel(value)
+    self.frameLevel = value
+end
+function methods:SetToplevel(value)
+    self.toplevel = value
 end
 function methods:GetCenter()
     return 500, 400
@@ -123,7 +129,6 @@ for _, k in ipairs({
     "SetJustifyH",
     "SetTexCoord",
     "SetFrameStrata",
-    "SetFrameLevel",
     "SetStatusBarTexture",
     "SetStatusBarColor",
     "SetMinMaxValues",
@@ -144,7 +149,6 @@ for _, k in ipairs({
     "SetID",
     "SetOwner",
     "AddLine",
-    "SetToplevel",
     "StartMoving",
     "StopMovingOrSizing",
     "SetAlphaGradient",

@@ -346,6 +346,26 @@ function A.ShowMenu(anchor, options, offset)
         UI.menu.items = {}
     end
     local menu = UI.menu
+    -- Menus belong to the window that owns their anchor. A main-window-owned
+    -- menu can promote that root over an independent editor when clicked.
+    local owner, node = A.window, anchor
+    for depth = 1, 32 do
+        if not node then
+            break
+        end
+        if node == A.barEditor then
+            owner = node
+            break
+        end
+        node = node:GetParent()
+    end
+    menu:SetParent(owner)
+    menu.owner = owner
+    menu:SetFrameStrata("FULLSCREEN_DIALOG")
+    menu:SetFrameLevel(owner:GetFrameLevel() + 30)
+    if owner == A.barEditor and A.FocusBarEditor then
+        A.FocusBarEditor()
+    end
     if menu.SetClampedToScreen then
         menu:SetClampedToScreen(true)
     end

@@ -1,6 +1,8 @@
-# Azeroth Stats - 1.6.1-beta.1
+# Azeroth Stats - 1.6.2-dev.1
 
-Beta release of the Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The maintainer validated the dev.3 candidate in game and authorized this release. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
+Local hotfix candidate (1.6.2-dev.1), not a public release. Tests do not replace native validation.
+
+Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The earlier 1.6.1-beta.1 release was validated by the maintainer; this HUD-layering hotfix still needs its own native test. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
 ## Install an approved build
 

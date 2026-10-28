@@ -271,6 +271,7 @@ function A.RefreshBar()
         editor and editor:IsShown() and A.window:IsShown() and editor.draft or A.db.settings.hud
     )
     if editor and editor:IsShown() then
+        A.FocusBarEditor()
         editor.base:SetAlpha(1)
         editor.grain:SetAlpha(0.16)
         paintBar(editor.preview, editor.draft)
@@ -418,6 +419,10 @@ local function buildEditor()
     editor:SetHeight(770)
     editor:SetFrameStrata("FULLSCREEN_DIALOG")
     editor:SetFrameLevel(A.window:GetFrameLevel() + 10)
+    editor:SetToplevel(true)
+    editor:SetScript("OnShow", function()
+        A.FocusBarEditor()
+    end)
     editor:SetScale(A.window:GetScale())
     W.place(editor, "barEditorPos", "CENTER", 0, 0, true)
     editor:EnableMouse(true)
@@ -437,6 +442,7 @@ local function buildEditor()
         editor:Hide()
     end)
     editor:SetScript("OnHide", function()
+        A.window:SetToplevel(true)
         if A.ui.menu then
             A.ui.menu:Hide()
         end
@@ -587,6 +593,23 @@ local function buildEditor()
     end
 end
 
+--- Keep independent editor/menu above our main window without moving either.
+--- SetToplevel(false) prevents menu/main clicks from automatically promoting the
+--- main root above this sibling. Restore ordinary behavior in the editor's OnHide.
+function A.FocusBarEditor()
+    if not editor or not editor:IsShown() then
+        return
+    end
+    A.window:SetToplevel(false)
+    editor:SetToplevel(true)
+    editor:SetFrameStrata("FULLSCREEN_DIALOG")
+    editor:SetFrameLevel(A.window:GetFrameLevel() + 10)
+    local menu = A.ui.menu
+    if menu and menu.owner == editor then
+        menu:SetFrameLevel(editor:GetFrameLevel() + 30)
+    end
+end
+
 --- Open a fresh editing transaction; close/cancel never mutates persisted HUD preferences.
 function A.OpenBarEditor()
     A.ToggleUI(true)
@@ -598,11 +621,14 @@ function A.OpenBarEditor()
     if not editor then
         buildEditor()
     end
-    editor.draft = A.NormalizeBar(A.db.settings.hud)
+    if not alreadyOpen or not editor.draft then
+        editor.draft = A.NormalizeBar(A.db.settings.hud)
+    end
     if not alreadyOpen then
         editor.liveBarWasShown = barWasShown
     end
     editor:Show()
+    A.FocusBarEditor()
     A.bar:Show()
     refreshEditor()
 end

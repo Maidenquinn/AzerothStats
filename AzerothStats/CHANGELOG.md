@@ -1,3 +1,10 @@
+## 1.6.2-dev.1 - HUD editor layering fix (test candidate)
+
+- Parent the reusable dropdown to the window owning its anchor; metric/scope menus now belong to the independent HUD editor instead of promoting the main window.
+- Recompute editor/menu frame levels relative to the main window when opening and refreshing. Disable automatic main-window promotion while editing and restore it on close.
+- Refocusing an already open editor preserves its unsaved draft and independent position. Apply/Cancel and stored HUD preferences retain their existing behavior.
+- Add frame-level/toplevel state to the widget mock and regressions covering actual dropdown callbacks, recovery, owner switching and restoration. Native validation is still required; public beta unchanged.
+
 ## 1.6.1-beta.1 - Co-op reports, build journal and clearer navigation
 
 Consolidates the dev.1-dev.3 previews after the maintainer's in-game validation and release authorization on 28 October 2026. The project has permission to be posted as a verified addon; no separate game-team review of this update is claimed.
