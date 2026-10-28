@@ -188,6 +188,112 @@ for _, lang in ipairs(A.languages) do
         end
     end
 end
+-- Multiplayer context comes only from saved observations, never absence-as-solo.
+check(A.CoopLabel(a) == nil, "legacy run without group evidence has unknown mode")
+a.coop = {
+    peers = {},
+    latest = {},
+    accounted = {},
+    comparison = {
+        rows = {
+            { name = "Fixture", class = "warrior", damage = 100, dps = 10, isSelf = true },
+            {
+                name = "Peer",
+                class = "mage",
+                damage = 300,
+                dps = 30,
+                top = "Fireball",
+                topdps = 20,
+            },
+        },
+        selfIncluded = true,
+        observedTime = 100,
+    },
+}
+local savedCoop = A.Sign(a.coop)
+for _, language in ipairs({
+    "en",
+    "fr",
+    "pl",
+    "cs",
+    "de",
+    "pt",
+    "es",
+    "ro",
+    "tr",
+    "ru",
+    "uk",
+    "zh",
+    "ja",
+    "ko",
+}) do
+    A.db.settings.language = language
+    A.DetectLocale()
+    check(
+        string.find(A.CoopLabel(a), A.T("Co-op"), 1, true),
+        "localized multiplayer evidence badge"
+    )
+    A.OpenReport(a.id)
+    A.view.reportSection = "Co-op"
+    A.RefreshUI()
+    local m = A.ui.model
+    check(
+        table.getn(m.cards) == 3 and m.cards[1].value == A.Short(400),
+        "common group snapshot supplies total cards"
+    )
+    check(
+        m.rows[1].label == "1. Peer" and m.rows[1].fraction == 0.75,
+        "rank and contribution use common packet"
+    )
+    check(
+        string.find(m.rows[1].exact, A.SourceName("Fireball"), 1, true),
+        "top spell exposed in peer tooltip"
+    )
+    check(
+        string.find(
+            m.rows[1].exact,
+            A.T("Other players' healing and kills are unavailable"),
+            1,
+            true
+        ),
+        "unsupported peer metrics explicit"
+    )
+    check(
+        string.find(m.banner.detail, A.T("Co-op"), 1, true),
+        "report banner identifies multiplayer"
+    )
+    A.view.historySection = "History"
+    A.view.difficulty = nil
+    A.view.class = nil
+    A.RefreshUI()
+    local found
+    for _, item in ipairs(A.ui.model.rows) do
+        if item.exact and string.find(item.exact, a.id, 1, true) then
+            found = string.find(item.label, A.T("Co-op"), 1, true)
+        end
+    end
+    check(found, "history marks co-op runs")
+end
+check(A.Sign(a.coop) == savedCoop, "presentations never mutate persisted samples")
+a.coop.comparison.selfIncluded = false
+local partial = { rows = {}, cards = {} }
+A.CoopReport(partial, a)
+check(
+    partial.cards[1].value == A.T("Unavailable") and not partial.rows[1].fraction,
+    "independent personal sample suppresses totals and shares"
+)
+a.coop = { peers = { peer = { name = "Peer", class = "mage" } }, latest = {}, accounted = {} }
+check(
+    A.CoopLabel(a) == A.T("Co-op") .. " · " .. A.T("Partial"),
+    "legacy companion evidence gives partial co-op without invented count"
+)
+a.coop = nil
+local empty = { rows = {}, cards = {} }
+A.CoopReport(empty, a)
+check(
+    table.getn(empty.rows) == 0 and empty.emptyText == A.T("No group snapshot recorded"),
+    "missing peers produce explicit empty state"
+)
 local count = table.getn(objects)
 for i = 1, 20 do
     A.RefreshUI()

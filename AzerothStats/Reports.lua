@@ -271,6 +271,10 @@ function A.ReportModel(model, run)
         zone = run.zone,
         photo = true,
     }
+    local coop = A.CoopLabel(run)
+    if coop then
+        model.banner.detail = model.banner.detail .. " · " .. coop
+    end
     local section = A.view.reportSection or "Overview"
     if section == "Overview" then
         model.cardsTop = 318
@@ -326,22 +330,7 @@ function A.ReportModel(model, run)
             end
         end
     elseif section == "Co-op" then
-        local comparison = A.CoopComparison(run)
-        model.note = A.T("Last group snapshot") .. " · " .. A.Duration(comparison.observedTime)
-        if comparison.partial or not comparison.synchronized then
-            model.note = model.note .. " · " .. A.T("Partial")
-        end
-        for _, peer in ipairs(comparison.rows) do
-            table.insert(model.rows, {
-                label = peer.name .. (peer.isSelf and (" · " .. A.T("You")) or ""),
-                value = A.Short(peer.damage),
-                exact = A.Format(peer.damage),
-                detail = A.ClassName(peer.class) .. " · " .. A.T("Per second") .. " " .. A.Rate(
-                    peer.dps
-                ),
-                class = peer.class,
-            })
-        end
+        A.CoopReport(model, run)
     elseif section == "Records" then
         model.note = A.T("Records at summary") .. " · " .. A.T("All difficulties")
         for _, key in ipairs(A.metrics) do

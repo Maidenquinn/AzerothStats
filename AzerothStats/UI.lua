@@ -474,9 +474,12 @@ function A.ComparisonRunMenu(anchor, side)
         local run = A.db.runs[i]
         local id = run.id
         table.insert(choices, {
-            label = A.Date(run.startedAt) .. " · " .. A.ZoneName(run) .. " · " .. A.HeroicLabel(
-                run
-            ),
+            label = A.Date(run.startedAt)
+                .. " · "
+                .. A.ZoneName(run)
+                .. (A.CoopLabel(run) and (" · " .. A.T("Co-op")) or "")
+                .. " · "
+                .. A.HeroicLabel(run),
             detail = A.ClassName(run.class)
                 .. " · "
                 .. A.Status(run.status == "active" and "active" or run.result or run.status)
@@ -823,7 +826,9 @@ function A.RefreshUI()
                 )))
             or r and ((r.hero or "?") .. " · " .. A.ClassName(r.class) .. " · " .. A.ZoneName(r) .. " · " .. A.HeroicLabel(
                 r
-            ) .. " · " .. A.Status(r.result or r.status))
+            ) .. " · " .. A.Status(r.result or r.status) .. (A.CoopLabel(r) and (" · " .. A.T(
+                "Co-op"
+            )) or ""))
             or A.T("Start a run to begin")
     )
     put(UI.sectionTitle, model.title)

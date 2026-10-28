@@ -1,3 +1,10 @@
+## 1.6.1-dev.2 - Visible co-op run context
+
+- Mark observed co-op runs in History, recent-run details, selectors and report banners, including last-snapshot player count where known. Missing group evidence never means solo.
+- Upgrade the report Co-op section with group damage/DPS/sample-size cards, supported ranking/share, player DPS and detailed top-spell/source tooltips.
+- Reuse the existing bounded native party snapshots; independent/incomplete samples remain partial. Other-player healing, kills and full spell breakdowns remain unavailable.
+- Keep the experimental sampled journal. Development preview only; public verified release unchanged.
+
 ## 1.6.1-dev.1 - Sampled build-change journal (development preview)
 
 - Add Build journal to run reports and /azstats journal: timestamped initial states, observed spell-rank changes, global stat before/after values and periodic inventory-link changes, with detailed hover text.

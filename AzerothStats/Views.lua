@@ -213,6 +213,10 @@ local function dashboard(model, group)
                     A.OpenReport(id)
                 end
             )
+            local coop = A.CoopLabel(run)
+            if coop then
+                entry.detail = entry.detail .. " · " .. coop
+            end
             entry.class = run.class
             entry.zone = run.zone
             entry.result = run.result or run.status
@@ -322,6 +326,11 @@ local function history(model)
                 .. " "
                 .. A.Short(run.values.gold)
             item.extra = item.extra .. " · " .. A.HeroicLabel(run)
+            local coop = A.CoopLabel(run)
+            if coop then
+                item.label = item.label .. " · " .. A.T("Co-op")
+                item.extra = item.extra .. " · " .. coop
+            end
             item.exact = run.id
                 .. " · "
                 .. A.Metric("kills")
