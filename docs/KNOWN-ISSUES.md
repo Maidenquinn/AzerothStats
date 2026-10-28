@@ -1,6 +1,6 @@
 # Known limitations
 
-1.6.0-beta.1 is a beta prerelease; new report/comparison native interaction checks and game-team approval remain pending. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
+1.6.0-beta.2 is a beta prerelease. Game-team permission to post as a verified addon was reported by the maintainer on 28 October 2026; native report/comparison interaction checks remain part of beta testing. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
 
 - No authenticated run UUID/account ID: resume/freshness is heuristic; same-name companions can merge.
 - Missing/late native data stays unavailable/partial. Starting mid-run cannot reconstruct earlier builds. Oversized meters are rejected, not silently shown as exact partial totals.

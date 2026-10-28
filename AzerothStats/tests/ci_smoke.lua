@@ -118,6 +118,9 @@ for _, lg in ipairs(A.languages) do
         A.SetLanguage(lg[1])
         for tab = 1, table.getn(A.tabs) do
             A.view.tab = tab
+            if tab == 3 then
+                A.view.historySection = "History"
+            end
             A.view.selected = r.id
             A.ToggleUI(true)
             A.RefreshUI()

@@ -359,3 +359,101 @@ function A.CoopComparison(run)
     end
     return out
 end
+
+--- Evidence-only mode badge. No saved roster means unknown, never proof of solo play.
+--- Count describes the last shared snapshot, not everyone who joined throughout the run.
+function A.CoopLabel(run)
+    if not run or not run.coop then
+        return nil
+    end
+    local sample = run.coop.comparison
+    if sample and sample.rows and table.getn(sample.rows) > 1 then
+        return A.T("Co-op") .. " · " .. A.T("Players in sample") .. " " .. table.getn(sample.rows)
+    end
+    if run.coop.peers and next(run.coop.peers) then
+        return A.T("Co-op") .. " · " .. A.T("Partial")
+    end
+end
+
+--- One presentation model shared by the report's group view; no native calls or saved writes.
+function A.CoopReport(model, run)
+    local comparison = A.CoopComparison(run)
+    model.cardsTop, model.rowY, model.rowHeight, model.capacity = 318, 455, 48, 5
+    model.columnLabel, model.columnValue =
+        A.T(comparison.ranked and "Party damage ranking" or "Co-op"), A.T("Damage")
+    model.note = A.T(
+        comparison.synchronized and "Last group snapshot"
+            or "Partial comparison: independent samples"
+    ) .. " · " .. A.Duration(comparison.observedTime)
+    if comparison.partial then
+        model.note = model.note .. " · " .. A.T("Partial")
+    end
+    model.emptyText = A.T("No group snapshot recorded")
+    for _, data in ipairs({
+        { "Group damage", A.Short(comparison.total), "Ability_Warrior_SavageBlow" },
+        { "Group DPS", A.CompactRate(comparison.rate), "Spell_Nature_Lightning" },
+        {
+            "Players in sample",
+            table.getn(comparison.rows) > 0 and A.Format(table.getn(comparison.rows))
+                or A.T("Unavailable"),
+            "INV_Misc_Book_09",
+        },
+    }) do
+        table.insert(model.cards, {
+            label = A.T(data[1]),
+            value = data[2],
+            detail = A.T("Last group snapshot"),
+            icon = data[3],
+            exact = data[1] == "Group DPS" and A.Rate(comparison.rate)
+                or data[1] == "Group damage" and A.Format(comparison.total)
+                or data[2],
+        })
+    end
+    for index, peer in ipairs(comparison.rows) do
+        local detail = A.ClassName(peer.class)
+            .. " · "
+            .. A.T("Per second")
+            .. " "
+            .. A.CompactRate(peer.dps)
+        if peer.fraction then
+            detail = detail
+                .. " · "
+                .. A.T("Share")
+                .. " "
+                .. A.Decimal(peer.fraction * 100, 1)
+                .. "%"
+        end
+        local exact = A.T("Damage")
+            .. " "
+            .. A.Format(peer.damage)
+            .. "\n"
+            .. A.T("Per second")
+            .. " "
+            .. A.Rate(peer.dps)
+            .. "\n"
+            .. detail
+            .. "\n"
+            .. A.T("Top spell")
+            .. ": "
+            .. (peer.top and A.SourceName(peer.top) or A.T("Unavailable"))
+        if peer.topdps then
+            exact = exact .. " · " .. A.Rate(peer.topdps) .. " DPS"
+        end
+        exact = exact
+            .. "\n"
+            .. A.T(peer.source or "Last group snapshot")
+            .. " · "
+            .. A.Duration(peer.observedTime)
+        exact = exact .. "\n" .. A.T("Other players' healing and kills are unavailable")
+        table.insert(model.rows, {
+            label = (comparison.ranked and (index .. ". ") or "")
+                .. peer.name
+                .. (peer.isSelf and (" · " .. A.T("You")) or ""),
+            value = A.Short(peer.damage),
+            detail = detail,
+            exact = exact,
+            class = peer.class,
+            fraction = peer.fraction,
+        })
+    end
+end

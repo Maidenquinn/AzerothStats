@@ -1,3 +1,5 @@
+> Current public distribution status: see APPROVAL-STATUS.md. This branch contains development changes awaiting native validation.
+
 # Development addendum — 1.6.1-dev.1
 
 BuildJournal.lua is a twenty-fifth module for sampled build observations. See BUILD-JOURNAL.md for read-only client evidence and the explicit distinction from exact native card selection. Review fixed-field validation/caps, Tracker ordering/freshness, the bounded AZS notification, optional SavedVariables validation and tests/journal.lua. No new native call/event, UI interception or outgoing command is introduced. The published 1.6.0-beta.1 dossier below is historical evidence for this development branch, not certification of the new module.

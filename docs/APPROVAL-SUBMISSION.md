@@ -1,3 +1,5 @@
+> Historical review dossier. Current distribution status: see [APPROVAL-STATUS.md](APPROVAL-STATUS.md). Earlier pending statements describe the original submission.
+
 # Suggested game-team submission
 
 Hello,

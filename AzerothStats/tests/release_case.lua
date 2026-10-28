@@ -99,6 +99,9 @@ end
 local function refreshAll()
     for tab = 1, table.getn(A.tabs) do
         A.view.tab = tab
+        if tab == 3 then
+            A.view.historySection = "History"
+        end
         A.ToggleUI(true)
         A.RefreshUI()
         check(A.ui.model.title == A.T(A.tabs[tab]), "class page " .. tab)

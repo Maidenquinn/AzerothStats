@@ -251,6 +251,32 @@ function A.ComparisonModel(model)
     end
 end
 
+--- Summary provenance requires the corresponding finite native field to equal the displayed value.
+function A.RunValueSource(run, key)
+    local fields = {
+        duration = "t",
+        level = "lvl",
+        kills = "kills",
+        gold = "gold",
+        damage = "dmg",
+        taken = "taken",
+        bosses = "bosses",
+        elites = "elites",
+        guardians = "guardians",
+        chests = "chests",
+        magnets = "magnets",
+    }
+    local number = A.Number(run.values[key])
+    if number == nil then
+        return A.T("Unavailable")
+    end
+    local field = fields[key]
+    if field and run.summary and A.Number(run.summary[field]) == number then
+        return A.T("Official summary")
+    end
+    return A.T("Last sample")
+end
+
 function A.ReportModel(model, run)
     model.title, model.layout, model.report = A.T("Run report"), "report", true
     model.rowY, model.rowHeight, model.capacity = 350, 58, 6
@@ -271,14 +297,21 @@ function A.ReportModel(model, run)
         zone = run.zone,
         photo = true,
     }
+    local coop = A.CoopLabel(run)
+    if coop then
+        model.banner.detail = model.banner.detail .. " · " .. coop
+    end
     local section = A.view.reportSection or "Overview"
+    if section == "Combat" or section == "Character" then
+        model.rowY = 390
+    end
     if section == "Overview" then
         model.cardsTop = 318
         for _, key in ipairs({ "duration", "kills", "damage" }) do
             table.insert(model.cards, {
                 label = A.Metric(key),
                 value = value(key, run.values[key]),
-                detail = run.summary and A.T("Official summary") or A.T("Last sample"),
+                detail = A.RunValueSource(run, key),
                 icon = A.metricIcons[key],
                 exact = A.Format(run.values[key]),
             })
@@ -300,7 +333,7 @@ function A.ReportModel(model, run)
                 label = A.Metric(key),
                 value = value(key, run.values[key]),
                 exact = A.Format(run.values[key]),
-                detail = "",
+                detail = A.RunValueSource(run, key),
                 icon = A.metricIcons[key],
             })
         end
@@ -326,22 +359,7 @@ function A.ReportModel(model, run)
             end
         end
     elseif section == "Co-op" then
-        local comparison = A.CoopComparison(run)
-        model.note = A.T("Last group snapshot") .. " · " .. A.Duration(comparison.observedTime)
-        if comparison.partial or not comparison.synchronized then
-            model.note = model.note .. " · " .. A.T("Partial")
-        end
-        for _, peer in ipairs(comparison.rows) do
-            table.insert(model.rows, {
-                label = peer.name .. (peer.isSelf and (" · " .. A.T("You")) or ""),
-                value = A.Short(peer.damage),
-                exact = A.Format(peer.damage),
-                detail = A.ClassName(peer.class) .. " · " .. A.T("Per second") .. " " .. A.Rate(
-                    peer.dps
-                ),
-                class = peer.class,
-            })
-        end
+        A.CoopReport(model, run)
     elseif section == "Records" then
         model.note = A.T("Records at summary") .. " · " .. A.T("All difficulties")
         for _, key in ipairs(A.metrics) do
@@ -371,8 +389,10 @@ function A.ReportModel(model, run)
             table.insert(model.rows, {
                 label = name,
                 value = A.Short(entry.dmg),
-                exact = A.Format(entry.dmg),
-                detail = A.T("Per second") .. " " .. A.Rate(entry.dps),
+                exact = A.Format(entry.dmg) .. "\n" .. A.T("Per second") .. " " .. A.Rate(
+                    entry.dps
+                ),
+                detail = A.T("Per second") .. " " .. A.CompactRate(entry.dps),
                 icon = A.SpellIcon(name),
             })
         end
