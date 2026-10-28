@@ -194,6 +194,7 @@ check(
 A.ToggleFavorite(combat)
 check(not A.IsRunProtected(ref.id), "removing last combat reference releases retention protection")
 A.view.tab = 3
+A.view.historySection = "History"
 A.RefreshUI()
 check(
     string.find(A.uiRows[1].favorite.heart.texture, "FavoriteHeartEmpty.tga", 1, true),
@@ -216,6 +217,7 @@ end
 check(count == 300, "favorite storage has a hard bound")
 A.db.favorites.entries = {}
 A.view.tab = 3
+A.view.historySection = "History"
 A.RefreshUI()
 check(A.ui.model.rows[1].favorite.kind == "run", "history exposes a real run bookmark control")
 local r = run(99)

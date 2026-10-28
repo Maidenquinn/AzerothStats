@@ -88,6 +88,9 @@ local function initialize()
                 A.view.characterTab = viewSettings.characterTab
             end
         end
+        if A.view.tab == 9 and A.view.usageTab == "Co-op" then
+            A.view.cumulative = true
+        end
         A.BuildUI()
         A.Say(A.T("Loaded") .. " · " .. A.version .. " · /azstats")
     end
@@ -172,8 +175,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         settings.scale = math.max(0.65, math.min(1.5, tonumber(value)))
         A.ApplyUI()
     elseif command == "retention" and A.Number(value) then
-        settings.maxRuns = math.max(10, math.min(1000, math.floor(tonumber(value))))
-        A.Trim()
+        A.RequestRetention(tonumber(value))
         A.RefreshUI()
     elseif command == "opacity" and A.Number(value) then
         settings.opacity = math.max(0.45, math.min(1, tonumber(value)))
@@ -213,7 +215,8 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         A.view.page = 1
         A.ToggleUI(true)
     elseif command == "coop" then
-        A.SelectCoopRun(nil)
+        A.OpenReport(A.Selected() and A.Selected().id)
+        A.view.reportSection = "Co-op"
         A.ToggleUI(true)
     elseif command == "journal" then
         A.OpenReport(A.Selected() and A.Selected().id)

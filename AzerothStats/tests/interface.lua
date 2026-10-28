@@ -20,6 +20,9 @@ for _, language in ipairs(A.languages) do
         check(A.SetLanguage(lg) and A.Locale() == lg, "manual locale " .. lg)
         for tab = 1, table.getn(A.tabs) do
             A.view.tab = tab
+            if tab == 3 then
+                A.view.historySection = "History"
+            end
             A.view.historySection = "History"
             A.view.page = 1
             A.ToggleUI(true)
@@ -267,6 +270,9 @@ for _, size in ipairs({ 11, 12, 16 }) do
     A.ApplyUI()
     for _, tab in ipairs({ 3, 4, 6, 7 }) do
         A.view.tab = tab
+        if tab == 3 then
+            A.view.historySection = "History"
+        end
         A.RefreshUI()
         check(
             A.ui.model.rowY + A.ui.model.capacity * A.ui.model.rowHeight <= 700,

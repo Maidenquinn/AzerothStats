@@ -1,7 +1,7 @@
 -- Shared primitives and formatting. Copies/signatures have explicit work budgets.
 -- Native calls are protected by pcall; chat output is local to DEFAULT_CHAT_FRAME.
 
-AzerothStats = { version = "1.6.1-dev.2", schema = 1 }
+AzerothStats = { version = "1.6.1-dev.3", schema = 1 }
 local A = AzerothStats
 
 --- Accept finite non-negative counters; return nil for absent, negative or non-finite input.
@@ -325,4 +325,13 @@ function A.Event(r, kind, text)
         table.remove(r.events, 1)
         r.eventsTruncated = true
     end
+end
+
+--- Compact presentation only; callers retain exact native values in their tooltip.
+function A.CompactRate(number)
+    local value = A.Number(number)
+    if value and value >= 10000 then
+        return A.Short(value)
+    end
+    return A.Rate(value)
 end

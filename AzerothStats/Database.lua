@@ -198,3 +198,38 @@ function A.Trim()
         end
     end
 end
+
+--- Mirror Trim's protection/live-run rules without mutating history.
+function A.RetentionImpact(limit)
+    local protected, ordinary, removable = A.ProtectedRunIds(), 0, 0
+    for _, run in ipairs(A.db.runs) do
+        if not protected[run.id] then
+            ordinary = ordinary + 1
+            if run ~= A.run then
+                removable = removable + 1
+            end
+        end
+    end
+    return math.min(removable, math.max(0, ordinary - limit))
+end
+
+--- Confirm destructive reductions using current impact; a changed count needs a new confirmation.
+function A.RequestRetention(value, confirmed)
+    local limit = math.max(10, math.min(1000, math.floor(A.Number(value) or A.db.settings.maxRuns)))
+    local count = A.RetentionImpact(limit)
+    local pending = A.pendingRetention
+    if
+        count > 0
+        and (not confirmed or not pending or pending.limit ~= limit or pending.count ~= count)
+    then
+        A.pendingRetention = { limit = limit, count = count }
+        if A.ShowRetentionConfirmation then
+            A.ShowRetentionConfirmation()
+        end
+        return false
+    end
+    A.pendingRetention = nil
+    A.db.settings.maxRuns = limit
+    A.Trim()
+    return true
+end

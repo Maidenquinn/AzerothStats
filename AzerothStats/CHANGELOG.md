@@ -1,3 +1,15 @@
+## 1.6.1-dev.3 - UX coherence review (unmerged test branch)
+
+- Attribute each report metric to its own matching official summary field, last sample or unavailable state. Never label an entire report official just because a summary exists.
+- Require explicit confirmation before a retention reduction removes details. Display the current removal count; changed counts require reconfirmation. Cancel preserves settings/history; favorites, live run and cumulative ledgers stay protected.
+- Add bounded literal search and result/co-op/favorite filters to retained History, with one reset action and an explicit retained-history scope.
+- Unify run-menu identity (zone/result/duration plus date/class/difficulty/co-op context). Route co-op commands and companion-history drilldowns to the run report; rename Usage to Trends and default companion trends to cumulative data.
+- Add report links to detailed Combat/Character views without changing the selected run. Keep complete combat and character tools available.
+- Limit global-stat journal entries to observed build/choice checkpoints, including a short fresh-packet grace window. Preserve rank/gear changes and resource bounds; add journal category filters. These are not exact card effects.
+- Use neutral co-op headings for independent samples, compact large DPS presentation with exact hover values, and a clearer current data scope.
+- Respect requested body-text size when fitting row labels. Add fourteen-language labels and extend CJK derivatives from pinned originals.
+- Add isolated UX regressions for provenance, pruning/cancel/reconfirmation, search/filter semantics, navigation, unknown zones, all locales and text sizes. Native playthrough approval remains pending; public 1.6.0-beta.2 is unchanged.
+
 ## 1.6.1-dev.2 - Visible co-op run context
 
 - Mark observed co-op runs in History, recent-run details, selectors and report banners, including last-snapshot player count where known. Missing group evidence never means solo.

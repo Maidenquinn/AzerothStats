@@ -379,7 +379,8 @@ end
 function A.CoopReport(model, run)
     local comparison = A.CoopComparison(run)
     model.cardsTop, model.rowY, model.rowHeight, model.capacity = 318, 455, 48, 5
-    model.columnLabel, model.columnValue = A.T("Party damage ranking"), A.T("Damage")
+    model.columnLabel, model.columnValue =
+        A.T(comparison.ranked and "Party damage ranking" or "Co-op"), A.T("Damage")
     model.note = A.T(
         comparison.synchronized and "Last group snapshot"
             or "Partial comparison: independent samples"
@@ -390,7 +391,7 @@ function A.CoopReport(model, run)
     model.emptyText = A.T("No group snapshot recorded")
     for _, data in ipairs({
         { "Group damage", A.Short(comparison.total), "Ability_Warrior_SavageBlow" },
-        { "Group DPS", A.Rate(comparison.rate), "Spell_Nature_Lightning" },
+        { "Group DPS", A.CompactRate(comparison.rate), "Spell_Nature_Lightning" },
         {
             "Players in sample",
             table.getn(comparison.rows) > 0 and A.Format(table.getn(comparison.rows))
@@ -403,6 +404,9 @@ function A.CoopReport(model, run)
             value = data[2],
             detail = A.T("Last group snapshot"),
             icon = data[3],
+            exact = data[1] == "Group DPS" and A.Rate(comparison.rate)
+                or data[1] == "Group damage" and A.Format(comparison.total)
+                or data[2],
         })
     end
     for index, peer in ipairs(comparison.rows) do
@@ -410,7 +414,7 @@ function A.CoopReport(model, run)
             .. " · "
             .. A.T("Per second")
             .. " "
-            .. A.Rate(peer.dps)
+            .. A.CompactRate(peer.dps)
         if peer.fraction then
             detail = detail
                 .. " · "
@@ -422,6 +426,10 @@ function A.CoopReport(model, run)
         local exact = A.T("Damage")
             .. " "
             .. A.Format(peer.damage)
+            .. "\n"
+            .. A.T("Per second")
+            .. " "
+            .. A.Rate(peer.dps)
             .. "\n"
             .. detail
             .. "\n"
