@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.6.1-dev.1
+# Azeroth Stats - 1.6.1-dev.2
 
-Development preview of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Manual game-team approval is pending. Automated tests do not authorize distribution or guarantee safety.
+Development preview of the Chroniques native UI, run reports/comparisons and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. Public 1.6.0-beta.2 has verified-distribution permission; these development changes are not covered by a separate approval claim. Automated tests do not authorize distribution or guarantee safety.
 
 ## Install an approved build
 
