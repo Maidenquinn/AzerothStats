@@ -1,3 +1,12 @@
+## 1.6.1-dev.1 - Sampled build-change journal (development preview)
+
+- Add Build journal to run reports and /azstats journal: timestamped initial states, observed spell-rank changes, global stat before/after values and periodic inventory-link changes, with detailed hover text.
+- Preserve raw numeric observations and show global stat differences in percentage points, never as an exact rolled card bonus. Missing data is not zero; initial observations are baselines and multiple gains between polls stay one batch.
+- Exclude changing cooldown timers, preserve last-state baselines across reloads, mark late/invalid observations partial and bound each journal to 128 observations / 256 changes. Captured inventory uses the existing 15-second snapshot, without additional native tooltip scans.
+- Recognize the audited native AZS stats notification as freshness only; no payload evaluation, gameplay write, UI interception or outbound message is added.
+- Keep exact card identity, rarity, offered/rejected options, rerolls and causal per-card effects unavailable: the audited public surface does not provide that contract. Historical runs are not reconstructed.
+- Localize journal UI in all fourteen languages and add regression/native persistence coverage. This preview is not the published 1.6.0-beta.1 or game-team approval.
+
 ## 1.6.0-beta.1 - Chroniques, Heroic, run reports and comparison
 
 Beta prerelease for manual review; game-team approval remains pending. Consolidates the dev.1-dev.9 changes below.

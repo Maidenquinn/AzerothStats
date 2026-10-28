@@ -303,6 +303,16 @@ function A.DiagnosticRows()
         A.T("Unavailable"),
         "No verified public structured fields; native gear tooltip text only",
     })
+    if A.run and A.run.buildJournal then
+        local journal = A.run.buildJournal
+        table.insert(out, {
+            "buildJournal.entries",
+            A.Format(table.getn(journal.entries)),
+            A.T("Observed changes, not card effects") .. (journal.partial and (" · " .. A.T(
+                "Partial"
+            )) or "") .. (journal.truncated and (" · " .. A.T("Journal limit reached")) or ""),
+        })
+    end
     local _, _, _, id, label, source = A.Identity()
     table.insert(out, {
         "AZS_ZONE.zone",

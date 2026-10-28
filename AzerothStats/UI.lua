@@ -1515,9 +1515,9 @@ function A.BuildUI()
         end)
         table.insert(UI.historySections, b)
     end
-    for i, key in ipairs({ "Overview", "Combat", "Character", "Co-op", "Records" }) do
+    for i, key in ipairs({ "Overview", "Combat", "Character", "Co-op", "Records", "Build journal" }) do
         local section = key
-        local b = button(frame, 218 + (i - 1) * 144, 274, 136, 26, key, function()
+        local b = button(frame, 218 + (i - 1) * 120, 274, 112, 26, key, function()
             A.view.reportSection, A.view.page = section, 1
             A.RefreshUI()
         end)

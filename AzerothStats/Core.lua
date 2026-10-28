@@ -53,7 +53,14 @@ local function initialize()
             end
             local sections = {
                 historySection = { "History", "Run report", "Compare runs" },
-                reportSection = { "Overview", "Combat", "Character", "Co-op", "Records" },
+                reportSection = {
+                    "Overview",
+                    "Combat",
+                    "Character",
+                    "Co-op",
+                    "Records",
+                    "Build journal",
+                },
                 compareSection = { "Overview", "Combat", "Spells", "Equipment" },
             }
             for key, choices in pairs(sections) do
@@ -208,6 +215,10 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
     elseif command == "coop" then
         A.SelectCoopRun(nil)
         A.ToggleUI(true)
+    elseif command == "journal" then
+        A.OpenReport(A.Selected() and A.Selected().id)
+        A.view.reportSection = "Build journal"
+        A.ToggleUI(true)
     elseif command == "report" then
         A.OpenReport(A.Selected() and A.Selected().id)
         A.ToggleUI(true)
@@ -233,7 +244,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, report, compare, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
+            "/azstats show, hide, history, report, compare, journal, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")

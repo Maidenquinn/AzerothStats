@@ -2,7 +2,7 @@
 
 ## Catalogs
 
-Twenty-four Lua modules load from the TOC. Five are checked as literal-only: Strings, GameText, Icons, Collection and InsightsStrings. They assign primitive table constructors to fixed addon fields, without callbacks or executable expressions.
+Twenty-five Lua modules load from the TOC. Five are checked as literal-only: Strings, GameText, Icons, Collection and InsightsStrings. They assign primitive table constructors to fixed addon fields, without callbacks or executable expressions.
 
 `data/catalogs/*.json` supplies Strings/GameText/Icons/Collection. `python tools/build_catalogs.py --check` verifies committed output; omit `--check` only for intentional regeneration. `locales-insights.txt` and `tools/build_insights_strings.py` supply InsightsStrings. Generation needs no network, game executable or Lua evaluation.
 

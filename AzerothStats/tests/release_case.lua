@@ -136,6 +136,10 @@ if RELEASE_STAGE == 1 then
     packet("AZSSPELLS", spell .. ",53,3,0,3")
     packet("AZSMETER", "Fixture attack,200,12,100,0")
     check(A.db.totals.runs == 1 and A.db.classes[cls].runs == 1, "one observed game per class")
+    check(
+        A.run.buildJournal and table.getn(A.run.buildJournal.entries) > 0,
+        "native parser rank changes enter the sampled build journal"
+    )
     check(A.run.values.chests == nil, "chest price never becomes an opening count")
     check(A.db.totals.usage.spells[spell].gains == 2, "observed rank growth")
     check(A.db.totals.usage.jewelry["jewel.chosen"].runs == 1, "jewelry present in one game")
@@ -188,6 +192,10 @@ elseif RELEASE_STAGE == 2 then
             and A.db.settings.opacity == 0.9
             and A.db.settings.textSize == 14,
         "appearance persists across a fresh VM"
+    )
+    check(
+        A.db.runs[1].buildJournal and A.ValidateJournal(A.db.runs[1].buildJournal),
+        "journal and last-state baselines survive a fresh VM"
     )
     equipped()
     packet("AZSZONE", "zone=feralas;class=" .. cls .. ";heroic=" .. heroic)

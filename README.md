@@ -120,3 +120,7 @@ Observed Normal/Heroic I-V is retained per run and filterable in History. Older/
 History now contains History, Run report and Compare runs. Click a retained run, recent run or run Favorite to inspect its report. Use `/azstats report` for the selected/current/latest run and `/azstats compare` to select two retained runs. The comparison initially prefers the same class, zone and known difficulty; either selector can choose a different retained run, and Swap runs reverses B minus A. Missing data stays unavailable, and no percentage is inferred from a zero baseline.
 
 Reports include native/observed totals, damage sources, recorded build/equipment, available group snapshots and class records identified at the native summary. Those class records combine difficulties and require a baseline captured before that run; older reports do not reconstruct milestones. A dismissible notice appears once for 30 seconds after an accepted native summary. It never forces the window open.
+
+## Development: sampled build journal
+
+The `codex/build-change-journal` branch adds an optional run-report journal and `/azstats journal`. It records observed rank/global-stat/inventory changes, not exact selected cards or their causal bonuses. Initial/missing/batched/partial data and percentage-point changes are explicit; published 1.6.0-beta.1 does not include this preview. See [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md).

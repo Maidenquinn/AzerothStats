@@ -123,6 +123,7 @@ local function start(phase, serverTime)
             inventoryBaseline = A.inventoryBaseline,
             bootTerminal = not A.newBoundary and (phase == "dead" or phase == "victory"),
         }
+        A.BeginJournal(run)
         A.BeginReport(run)
         A.run = run
         table.insert(database.runs, run)
@@ -260,6 +261,7 @@ function A.Sample()
         A.buildBaseline = { spells = A.Sign(A.Copy(AZS_SPELLS)), stats = A.Sign(A.Copy(AZS_STATS)) }
     end
     if phase == "ready" then
+        A.statsPacket = nil
         if not A.inReady then
             close("retour en preparation")
             A.boundaryGate = A.Gate()
@@ -373,10 +375,12 @@ function A.Sample()
             run.lastLevel = level
         end
         A.ObserveInsights(run, raw, phase)
+        snapshot(run, raw, terminalSnapshot)
+        A.ObserveJournal(run)
+        A.statsPacket = nil
         if run.status == "active" then
             A.ObserveBuild(run)
         end
-        snapshot(run, raw, terminalSnapshot)
         if (phase == "dead" or phase == "victory") and run.status == "active" then
             run.status = "terminal"
             run.endedAt = A.Wall()
@@ -431,6 +435,7 @@ function A.Packet(prefix, message)
         AZSPARTY = true,
         AZSZONE = true,
         AZSSTATS = true,
+        AZS = true,
     }
     if not allowed[prefix] then
         return false
@@ -444,6 +449,9 @@ function A.Packet(prefix, message)
         if string.find(";" .. message .. ";", ";ph=ready;", 1, true) then
             A.packetReady = true
         end
+    end
+    if prefix == "AZS" then
+        A.statsPacket = true
     end
     if prefix == "AZSSPELLS" then
         A.spellPacket = true

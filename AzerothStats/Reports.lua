@@ -304,6 +304,8 @@ function A.ReportModel(model, run)
                 icon = A.metricIcons[key],
             })
         end
+    elseif section == "Build journal" then
+        A.JournalModel(model, run)
     elseif section == "Character" then
         for i = 1, math.min(256, table.getn(run.spells or {})) do
             local spell = run.spells[i]
