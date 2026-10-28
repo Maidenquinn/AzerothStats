@@ -295,6 +295,60 @@ check(
     "Apply commits a validated independent configuration"
 )
 A.OpenBarEditor()
+-- Regression: native menu interaction must promote the editor root, never the main root.
+local mainLevel = A.window:GetFrameLevel()
+A.window:SetFrameLevel(mainLevel + 200)
+editor.draft.width = 947
+local draftIdentity = editor.draft
+A.OpenBarEditor()
+check(
+    editor.draft == draftIdentity and editor.draft.width == 947,
+    "gear refocus preserves an open unsaved draft"
+)
+check(
+    editor:GetFrameLevel() > A.window:GetFrameLevel(),
+    "reopening recalculates level above a promoted main window"
+)
+check(
+    editor.toplevel and not A.window.toplevel,
+    "native automatic main promotion is disabled only during editing"
+)
+editor.rows[1].metric.callback(editor.rows[1].metric)
+local menu = A.ui.menu
+check(
+    menu:GetParent() == editor and menu.owner == editor,
+    "HUD metric menu belongs to independent editor"
+)
+check(menu:GetFrameLevel() > editor:GetFrameLevel(), "dropdown renders above the editor")
+local root = menu
+while root:GetParent() and root:GetParent() ~= UIParent do
+    root = root:GetParent()
+end
+check(root == editor, "native menu click root is editor rather than main")
+local selectedMetric = menu.items[2].option
+menu.items[2].callback(menu.items[2])
+check(
+    editor:IsShown() and editor.draft == draftIdentity,
+    "real dropdown callback keeps editor and draft alive"
+)
+check(not menu:IsShown(), "choosing a metric closes only the popup")
+A.OpenBarEditor()
+check(editor.draft == draftIdentity, "gear remains a usable recovery path after metric selection")
+editor.rows[1].scope.callback(editor.rows[1].scope)
+check(menu:GetParent() == editor, "scope dropdown also belongs to editor")
+menu.items[1].callback(menu.items[1])
+check(editor:IsShown(), "scope selection does not hide the editor")
+A.ShowMenu(A.ui.classButton, { { label = "Fixture", action = function() end } })
+check(
+    menu:GetParent() == A.window and menu:GetFrameLevel() > A.window:GetFrameLevel(),
+    "reused popup restores its main-window owner for ordinary menus"
+)
+menu:Hide()
+editor.cancel.callback(editor.cancel)
+editor:GetScript("OnHide")()
+check(A.window.toplevel, "closing editor restores ordinary main-window promotion")
+A.window:SetFrameLevel(mainLevel)
+A.OpenBarEditor()
 local first = editor.draft.blocks[1].metric
 -- Scope menus are populated by native button callbacks, not by a second model-only implementation.
 editor.rows[1].scope.callback(editor.rows[1].scope)
