@@ -42,7 +42,7 @@ Open a run report's Build journal section or type `/azstats journal`. The new jo
 
 This release adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. Reducing retention asks for confirmation before removing detailed runs; cancel keeps the previous settings and history.
 
-## Manage local data 
+## Manage local data
 
 Open Settings > Manage local data or `/azstats data`. Deleting one run or clearing retained history (all classes or one class) keeps lifetime statistics/records unchanged and protects active/bookmarked sources. A separate full reset deletes all statistics, history and favorites while preserving settings; it requires the native ready phase and typing RESET. Cancel keeps data. There is no undo: back up the addon's own SavedVariables first if you intend to erase data. The `reset` slash alias only opens the dialog and never performs an immediate reset.
 
@@ -53,7 +53,7 @@ but clears the selected category and its historical death/milestone/usage detail
 Cleared categories collect again from new runs; older retained runs cannot restore them.
 Favorites cleanup unpins retained sources without deleting those runs.
 
-## Edit individual entries 
+## Edit individual entries
 
 Use Edit page on a data page, then the small menu on the row/card. Hide/Show is
 reversible and preserves totals; Restore hidden rows reveals the current page again.

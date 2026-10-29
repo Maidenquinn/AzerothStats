@@ -10,6 +10,6 @@ The maintainer reported 1.7.0-dev.5 working in game and authorized publication o
 - Development erasure tests use synthetic in-memory databases only. Installation preserves the player's actual SavedVariables and creates a private local backup.
 - Client SHA-256 for exact-package acceptance: 8fef622677e7eb510b7693fb20831d919b679cb99a2edd36c584ae55a3f8d007
 - Extracted helper SHA-256: bf481c785f2f161f56e151f5fd85da986c60299efba8f07cd2508ae79532eda7
-- Player ZIP SHA-256: 8353d46bf481ffd66ef824b89947b57d3accaa4df38ebd64102fadc008b0effa
+- Player ZIP SHA-256: 6e1a89587b4270ed4ce3aceb94f93283cd27b4adacd63a6dbcf60a9b12da4ca6
 
 Read [data-management scopes](DATA-MANAGEMENT.md) before destructive native testing. Prefer a disposable backed-up profile for further reset tests. No player save, private screenshot, extracted executable/helper or personal test input is packaged or committed. Existing distribution permission is documented separately in [APPROVAL-STATUS.md](APPROVAL-STATUS.md).
