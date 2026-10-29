@@ -1,8 +1,9 @@
-## 1.7.0-dev.1 - Local data management (unmerged preview)
+## 1.7.0-dev.2 - Local data management (unmerged preview)
 
 - Add Settings > Manage local data and `/azstats data` (`reset` alias only opens the same dialog).
 - Delete one run's retained details, or clear ordinary retained history globally/by class. Lifetime totals/records/trends remain unchanged, including contributions from already-pruned runs. Current/active and bookmarked run sources are protected.
 - Offer a separate full reset of statistics, retained history and favorites, preserving UI/HUD settings, migration markers and monotonic local IDs. Require an explicit native ready phase and the exact typed token RESET; never reset during play or when phase is unavailable.
+- Replace the action dropdown with three visible choices, a paginated list of affected runs and a separate review stage. Show explicit deleted/kept summaries, protected-run counts and action-specific confirmation.
 - Preview affected retained details, warn that deletion has no undo, and require explicit confirmation. Recompute impact before applying; changed plans require another review. Cancel/Escape does not erase anything.
 - Detach old tracking/notice state and establish freshness baselines on a full reset. New runs start once with fresh local IDs; do not reconstruct or subtract guessed totals from retained history.
 - Keep management dropdowns parented above their owning dialog. Add fourteen-language labels, CJK glyph coverage and isolated synthetic erasure/persistence regressions.

@@ -481,7 +481,7 @@ function A.RunMenu(anchor)
         local id = run.id
         if run ~= newest then
             table.insert(options, {
-                label = A.RunLabel(run),
+                label = A.RunContext(run) .. " · " .. A.RunLabel(run),
                 detail = A.RunContext(run),
                 value = id,
                 action = function()
@@ -500,7 +500,7 @@ function A.ComparisonRunMenu(anchor, side)
         local run = A.db.runs[i]
         local id = run.id
         table.insert(choices, {
-            label = A.RunLabel(run),
+            label = A.RunContext(run) .. " · " .. A.RunLabel(run),
             detail = A.RunContext(run),
             value = run.id,
             action = function()
@@ -2037,91 +2037,66 @@ function A.BuildUI()
     UI.dataDialog = CreateFrame("Frame", "AzerothStatsDataManagement", frame)
     local data = UI.dataDialog
     data:SetPoint("CENTER", frame, "CENTER", 0, 0)
-    data:SetWidth(620)
-    data:SetHeight(510)
+    data:SetWidth(660)
+    data:SetHeight(620)
     data:SetFrameStrata("FULLSCREEN_DIALOG")
     data:SetFrameLevel(frame:GetFrameLevel() + 60)
     data:EnableMouse(true)
     surface(data, "main")
     data.title = font(data, 22, 18, 576, 40, 22, COLORS.gold, true)
-    data.actionButton = button(data, 22, 72, 576, 32, "", function(self)
+    -- Selection and review are separate stages. Only the review stage can mutate data.
+    data.actions = {}
+    for index, kind in ipairs({ "run", "history", "reset" }) do
+        local choice = kind
+        data.actions[index] = button(data, 22 + (index - 1) * 208, 66, 200, 36, "", function()
+            data.kind, data.stage, data.previewPage = choice, "select", 1
+            data.status = nil
+            data.token:SetText("")
+            A.PrepareDataAction(choice, choice == "history" and data.class or nil, data.id)
+            A.RefreshDataDialog()
+        end)
+    end
+    data.scopeButton = button(data, 22, 116, 616, 32, "", function(self)
         local choices = {}
-        for _, pair in ipairs({
-            { "run", "Delete run details" },
-            { "history", "Clear retained history" },
-            { "reset", "Reset all statistics" },
-        }) do
-            local kind = pair[1]
-            table.insert(choices, {
-                label = A.T(pair[2]),
-                action = function()
-                    data.kind = kind
-                    data.token:SetText("")
-                    data.status = nil
-                    A.PrepareDataAction(kind, kind == "history" and data.class or nil, data.id)
-                    A.RefreshDataDialog()
-                end,
-            })
+        table.insert(choices, {
+            label = A.T("All classes"),
+            action = function()
+                data.class, data.status, data.previewPage = nil, nil, 1
+                A.PrepareDataAction("history", nil)
+                A.RefreshDataDialog()
+            end,
+        })
+        local keys, seen = {}, {}
+        for _, run in ipairs(A.db.runs) do
+            if A.knownClasses[run.class] and not seen[run.class] then
+                seen[run.class] = true
+                table.insert(keys, run.class)
+            end
         end
-        A.ShowMenu(self, choices)
-    end)
-    data.scopeButton = button(data, 22, 120, 576, 32, "", function(self)
-        local choices = {}
-        if data.kind == "run" then
-            for i = table.getn(A.db.runs), 1, -1 do
-                local run = A.db.runs[i]
-                local id = run.id
-                table.insert(choices, {
-                    label = A.RunLabel(run),
-                    detail = A.RunContext(run),
-                    action = function()
-                        data.id = id
-                        data.status = nil
-                        A.PrepareDataAction("run", nil, id)
-                        A.RefreshDataDialog()
-                    end,
-                })
-            end
-        else
+        table.sort(keys)
+        for _, value in ipairs(keys) do
+            local class = value
+            local plan = A.DataPlan("history", class)
             table.insert(choices, {
-                label = A.T("All classes"),
+                label = A.ClassName(class) .. " (" .. (plan and plan.count or 0) .. ")",
                 action = function()
-                    data.class = nil
-                    data.status = nil
-                    A.PrepareDataAction("history", nil)
+                    data.class, data.status, data.previewPage = class, nil, 1
+                    A.PrepareDataAction("history", class)
                     A.RefreshDataDialog()
                 end,
             })
-            local keys = {}
-            for class in pairs(A.knownClasses) do
-                table.insert(keys, class)
-            end
-            table.sort(keys)
-            for _, value in ipairs(keys) do
-                local class = value
-                table.insert(choices, {
-                    label = A.ClassName(class),
-                    action = function()
-                        data.class = class
-                        data.status = nil
-                        A.PrepareDataAction("history", class)
-                        A.RefreshDataDialog()
-                    end,
-                })
-            end
         end
         if table.getn(choices) > 0 then
             A.ShowMenu(self, choices)
         end
     end)
-    dropdown(data.actionButton)
     dropdown(data.scopeButton)
-    data.context = font(data, 22, 162, 576, 45, 12, COLORS.muted)
-    data.message = font(data, 22, 218, 576, 108, 14, COLORS.text)
-    data.warning = font(data, 22, 336, 576, 48, 12, COLORS.gold)
-    data.tokenCaption = font(data, 22, 390, 360, 24, 12, COLORS.text)
+    data.context = font(data, 22, 158, 616, 42, 12, COLORS.muted)
+    data.message = font(data, 22, 424, 616, 76, 14, COLORS.text)
+    data.warning = font(data, 22, 504, 616, 40, 12, COLORS.gold)
+    data.tokenCaption = font(data, 22, 544, 360, 24, 12, COLORS.text)
     data.token = CreateFrame("EditBox", nil, data)
-    data.token:SetPoint("TOPLEFT", data, "TOPLEFT", 390, -390)
+    data.token:SetPoint("TOPLEFT", data, "TOPLEFT", 442, -544)
     data.token:SetWidth(196)
     data.token:SetHeight(26)
     if data.token.SetAutoFocus then
@@ -2143,12 +2118,26 @@ function A.BuildUI()
             this:ClearFocus()
         end
     end)
-    data.cancel = button(data, 22, 450, 276, 32, "Cancel", function()
+    data.cancel = button(data, 22, 578, 196, 28, "Cancel", function()
         A.pendingDataPlan = nil
         UI.dataBlocker:Hide()
         data:Hide()
     end)
-    data.confirm = button(data, 322, 450, 276, 32, "Delete data", function()
+    data.confirm = button(data, 442, 578, 196, 28, "", function()
+        if data.stage ~= "review" then
+            local plan = A.PrepareDataAction(
+                data.kind,
+                data.kind == "history" and data.class or nil,
+                data.id
+            )
+            if not plan or not plan.allowed then
+                A.RefreshDataDialog()
+                return
+            end
+            data.stage, data.previewPage = "review", 1
+            A.RefreshDataDialog()
+            return
+        end
         local ok, message = A.ConfirmDataAction(data.token:GetText() or "")
         if ok then
             UI.dataBlocker:Hide()
@@ -2158,6 +2147,8 @@ function A.BuildUI()
             A.Say(A.T(message))
         else
             data.status = message
+            data.stage = "select"
+            data.token:SetText("")
             A.RefreshDataDialog()
         end
     end)
@@ -2172,39 +2163,157 @@ function A.BuildUI()
         end
     end)
     data:Hide()
+    data.back = button(data, 230, 578, 196, 28, "Back", function()
+        data.stage, data.status = "select", nil
+        data.token:SetText("")
+        A.RefreshDataDialog()
+    end)
+    data.rows = {}
+    for index = 1, 4 do
+        local row = CreateFrame("Button", nil, data)
+        row:SetPoint("TOPLEFT", data, "TOPLEFT", 22, -204 - (index - 1) * 44)
+        row:SetWidth(616)
+        row:SetHeight(42)
+        row.base = solid(row, 0.12, 0.16, 0.17, 0.7)
+        row.callback = function()
+            if data.stage ~= "select" or data.kind ~= "run" or not row.runId then
+                return
+            end
+            data.id, data.status = row.runId, nil
+            A.PrepareDataAction("run", nil, data.id)
+            A.RefreshDataDialog()
+        end
+        row:SetScript("OnClick", row.callback)
+        row.name = font(row, 8, 3, 600, 19, 12, COLORS.text)
+        row.detail = font(row, 8, 23, 600, 17, 11, COLORS.muted)
+        data.rows[index] = row
+    end
+    data.previous = button(data, 22, 388, 40, 26, "<", function()
+        data.previewPage = math.max(1, (data.previewPage or 1) - 1)
+        A.RefreshDataDialog()
+    end)
+    data.next = button(data, 70, 388, 40, 26, ">", function()
+        data.previewPage = (data.previewPage or 1) + 1
+        A.RefreshDataDialog()
+    end)
+    data.page = font(data, 122, 392, 516, 22, 12, COLORS.muted)
     function A.RefreshDataDialog()
         local plan = A.pendingDataPlan
-        local labels = {
-            run = "Delete run details",
-            history = "Clear retained history",
-            reset = "Reset all statistics",
-        }
-        put(data.title, A.T("Manage local data"))
-        put(data.actionButton.label, A.T(labels[data.kind] or "Clear retained history"))
-        show(data.scopeButton, data.kind ~= "reset")
+        local review = data.stage == "review"
+        local labels = { "One run", "History cleanup", "Full reset" }
+        local kinds = { "run", "history", "reset" }
+        put(data.title, A.T("Manage local data") .. " · " .. (review and "2/2" or "1/2"))
+        for index, control in ipairs(data.actions) do
+            put(control.label, A.T(labels[index]))
+            selected(control, data.kind == kinds[index])
+            show(control, not review)
+        end
+        show(data.scopeButton, not review and data.kind == "history")
         local run = data.id and A.FindRun(data.id)
         put(
             data.scopeButton.label,
-            data.kind == "run" and (run and A.RunLabel(run) or A.T("Unavailable"))
+            data.kind == "run" and (run and A.RunContext(run) or A.T("Unavailable"))
                 or (data.class and A.ClassName(data.class) or A.T("All classes"))
         )
         put(
             data.context,
-            data.kind == "run" and run and A.RunContext(run)
-                or data.kind == "reset" and (A.T("All classes") .. " · " .. A.T("Favorites") .. " " .. (plan and plan.favorites or 0))
-                or A.T("Favorite runs are protected from history pruning")
-        )
-        put(
-            data.message,
-            A.T("Run details to remove")
-                .. ": "
-                .. (plan and plan.count or 0)
-                .. "\n\n"
+            A.T(review and "Review before deleting" or "Choose what to remove")
+                .. "\n"
                 .. A.T(
-                    data.kind == "reset"
-                            and "Statistics, history and favorites will be deleted. Settings are kept."
+                    data.kind == "reset" and "Reset all statistics"
                         or "History only; totals stay unchanged"
                 )
+        )
+        local count = plan and plan.count or 0
+        local choosingRun = not review and data.kind == "run"
+        local candidates = {}
+        if choosingRun then
+            for _, item in ipairs(A.db.runs) do
+                table.insert(candidates, item.id)
+            end
+        else
+            candidates = plan and plan.ids or {}
+        end
+        local listed = table.getn(candidates)
+        local pages = math.max(1, math.ceil(listed / 4))
+        data.previewPage = math.max(1, math.min(data.previewPage or 1, pages))
+        for index, row in ipairs(data.rows) do
+            local id = candidates[listed - (data.previewPage - 1) * 4 - index + 1]
+            local item = id and A.FindRun(id)
+            if not choosingRun and data.kind == "run" and index == 1 then
+                item = run
+            end
+            row.runId = item and item.id
+            local active = choosingRun and item and item.id == data.id
+            row.base:SetTexture(
+                active and 0.26 or 0.12,
+                active and 0.21 or 0.16,
+                active and 0.12 or 0.17
+            )
+            show(row, item ~= nil)
+            if item then
+                put(row.name, A.RunLabel(item))
+                put(row.detail, A.RunContext(item) .. " · " .. item.id)
+            end
+        end
+        show(data.previous, pages > 1)
+        show(data.next, pages > 1)
+        put(
+            data.page,
+            A.T("Run details to remove")
+                .. ": "
+                .. count
+                .. " · "
+                .. A.T("Page")
+                .. " "
+                .. data.previewPage
+                .. "/"
+                .. pages
+        )
+        local removed = A.T("History")
+            .. " ("
+            .. count
+            .. ") · "
+            .. A.T("Combat")
+            .. ", "
+            .. A.T("Character")
+            .. ", "
+            .. A.T("Coop")
+            .. ", "
+            .. A.T("Build journal")
+        local kept = A.T("All statistics")
+            .. ", "
+            .. A.T("Records")
+            .. ", "
+            .. A.T("Trends")
+            .. ", "
+            .. A.T("Favorites")
+            .. ", "
+            .. A.T("Settings")
+        if data.kind == "reset" then
+            removed = A.T("All statistics")
+                .. ", "
+                .. A.T("History")
+                .. " ("
+                .. count
+                .. "), "
+                .. A.T("Favorites")
+                .. " ("
+                .. (plan and plan.favorites or 0)
+                .. ")"
+            kept = A.T("Settings")
+        else
+            kept = kept .. " · " .. A.T("Protected runs") .. ": " .. (plan and plan.protected or 0)
+        end
+        put(
+            data.message,
+            A.T("Will be deleted")
+                .. ": "
+                .. removed
+                .. "\n\n"
+                .. A.T("Will be kept")
+                .. ": "
+                .. kept
         )
         put(
             data.warning,
@@ -2214,13 +2323,20 @@ function A.BuildUI()
         )
         put(data.tokenCaption, A.T("Type RESET to confirm"))
         data.token:SetFont(A.Font(false), 14, "")
-        show(data.token, data.kind == "reset")
-        show(data.tokenCaption, data.kind == "reset")
+        show(data.token, review and data.kind == "reset")
+        show(data.tokenCaption, review and data.kind == "reset")
+        show(data.back, review)
+        put(data.back.label, A.T("Back"))
         put(data.cancel.label, A.T("Cancel"))
-        put(data.confirm.label, A.T("Delete data"))
+        put(
+            data.confirm.label,
+            review
+                    and (data.kind == "reset" and A.T("Full reset") or (A.T("Delete data") .. " (" .. count .. ")"))
+                or A.T("Next")
+        )
         local enabled = plan
             and plan.allowed
-            and (data.kind ~= "reset" or data.token:GetText() == "RESET")
+            and (not review or data.kind ~= "reset" or data.token:GetText() == "RESET")
         data.confirm:SetAlpha(enabled and 1 or 0.45)
     end
     function A.OpenDataManagement()
@@ -2236,6 +2352,7 @@ function A.BuildUI()
             UI.menu:Hide()
         end
         data.kind, data.class = "history", A.view.class
+        data.stage, data.previewPage = "select", 1
         local run = A.Selected()
         data.id = run and run.id
         data.status = nil

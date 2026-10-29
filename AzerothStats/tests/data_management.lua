@@ -123,9 +123,36 @@ check(
     "class-history clear preserves favorites and other classes"
 )
 check(A.Sign(A.db.totals) == totals, "class-history clear never subtracts guessed lifetime totals")
+-- The visible list selects a run without changing any saved data.
+A.OpenDataManagement()
+A.ui.dataDialog.actions[1].callback()
+check(
+    not A.ui.dataDialog.scopeButton:IsShown(),
+    "single-run choice uses a visible list, not a long dropdown"
+)
+A.ui.dataDialog.rows[1].callback()
+check(
+    A.pendingDataPlan.id == c.id and A.FindRun(c.id) and A.Sign(A.db.totals) == totals,
+    "clicking a dated row only selects its exact run"
+)
+A.ui.dataDialog.confirm.callback()
+check(
+    A.ui.dataDialog.stage == "review" and A.FindRun(c.id),
+    "single-run review does not erase the selected run"
+)
+A.RefreshUI()
+check(
+    A.ui.dataDialog.confirm.label.fullText == A.T("Delete data") .. " (1)",
+    "global refresh preserves the explicit confirmation label"
+)
+A.ui.dataDialog.back.callback()
+check(A.ui.dataDialog.id == c.id, "back keeps the chosen run")
+A.ui.dataDialog.next.callback()
+check(A.ui.dataDialog.previewPage == 1, "pagination clamps to available candidates")
+A.ui.dataDialog.cancel.callback()
 -- Native-owner regression: menus inside this new dialog must not disappear behind it.
 A.OpenDataManagement()
-A.ui.dataDialog.actionButton.callback(A.ui.dataDialog.actionButton)
+A.ui.dataDialog.scopeButton.callback(A.ui.dataDialog.scopeButton)
 check(
     A.ui.menu:GetParent() == A.ui.dataDialog
         and A.ui.menu:GetFrameLevel() > A.ui.dataDialog:GetFrameLevel(),
@@ -144,14 +171,28 @@ check(
 )
 A.ui.dataDialog.cancel.callback()
 A.OpenDataManagement()
-A.ui.dataDialog.actionButton.callback(A.ui.dataDialog.actionButton)
-A.ui.menu.items[3].callback(A.ui.menu.items[3])
+A.ui.dataDialog.actions[3].callback()
 check(
     A.ui.dataDialog.kind == "reset"
         and A.pendingDataPlan.kind == "reset"
         and A.Sign(A.db.totals) == totals,
     "choosing full reset previews it without deleting data"
 )
+A.ui.dataDialog.confirm.callback()
+check(
+    A.ui.dataDialog.stage == "review" and A.Sign(A.db.totals) == totals,
+    "first continue only enters review; no persisted mutation"
+)
+check(
+    string.find(A.ui.dataDialog.message.fullText, A.T("Will be kept"), 1, true),
+    "review explicitly states what is kept"
+)
+A.ui.dataDialog.back.callback()
+check(
+    A.ui.dataDialog.stage == "select" and A.Sign(A.db.totals) == totals,
+    "back returns to selection without deleting data"
+)
+A.ui.dataDialog.confirm.callback()
 A.ui.dataDialog.token:SetText("WRONG")
 A.ui.dataDialog.confirm.callback()
 check(A.Sign(A.db.totals) == totals, "actual confirm callback rejects the wrong reset token")
@@ -252,7 +293,7 @@ for _, lang in ipairs(A.languages) do
         A.SetLanguage(lang[1])
         A.OpenDataManagement()
         check(
-            A.ui.dataDialog.title.fullText == A.T("Manage local data"),
+            A.ui.dataDialog.title.fullText == A.T("Manage local data") .. " · 1/2",
             "localized data management title"
         )
         A.ui.dataDialog.cancel.callback()

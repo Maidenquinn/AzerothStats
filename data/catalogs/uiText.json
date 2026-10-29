@@ -209,7 +209,16 @@
     "No matching run details": "Žádné odpovídající podrobnosti her",
     "Review data removal first": "Nejprve zkontrolujte mazaná data",
     "Local data cleared": "Místní data vymazána",
-    "Delete data": "Smazat data"
+    "Delete data": "Smazat data",
+    "Choose what to remove": "Vyberte data ke smazání",
+    "Review before deleting": "Zkontrolovat před smazáním",
+    "Will be deleted": "Bude smazáno",
+    "Will be kept": "Bude zachováno",
+    "Protected runs": "Chráněné hry",
+    "Back": "Zpět",
+    "One run": "Jedna hra",
+    "History cleanup": "Vyčistit historii",
+    "Full reset": "Úplný reset"
   },
   "de": {
     "API": "API",
@@ -421,7 +430,16 @@
     "No matching run details": "Keine passenden Partiedetails",
     "Review data removal first": "Zuerst die zu löschenden Daten prüfen",
     "Local data cleared": "Lokale Daten gelöscht",
-    "Delete data": "Daten löschen"
+    "Delete data": "Daten löschen",
+    "Choose what to remove": "Zu löschende Daten wählen",
+    "Review before deleting": "Vor dem Löschen prüfen",
+    "Will be deleted": "Wird gelöscht",
+    "Will be kept": "Bleibt erhalten",
+    "Protected runs": "Geschützte Spiele",
+    "Back": "Zurück",
+    "One run": "Ein Spiel",
+    "History cleanup": "Verlauf bereinigen",
+    "Full reset": "Alles zurücksetzen"
   },
   "en": {
     "API": "API",
@@ -633,7 +651,16 @@
     "No matching run details": "No matching run details",
     "Review data removal first": "Review data removal first",
     "Local data cleared": "Local data cleared",
-    "Delete data": "Delete data"
+    "Delete data": "Delete data",
+    "Choose what to remove": "Choose what to remove",
+    "Review before deleting": "Review before deleting",
+    "Will be deleted": "Will be deleted",
+    "Will be kept": "Will be kept",
+    "Protected runs": "Protected runs",
+    "Back": "Back",
+    "One run": "One run",
+    "History cleanup": "History cleanup",
+    "Full reset": "Full reset"
   },
   "es": {
     "API": "API",
@@ -845,7 +872,16 @@
     "No matching run details": "No hay detalles de partidas coincidentes",
     "Review data removal first": "Primero revisa los datos que eliminar",
     "Local data cleared": "Datos locales borrados",
-    "Delete data": "Eliminar datos"
+    "Delete data": "Eliminar datos",
+    "Choose what to remove": "Elige qué eliminar",
+    "Review before deleting": "Revisar antes de eliminar",
+    "Will be deleted": "Se eliminará",
+    "Will be kept": "Se conservará",
+    "Protected runs": "Partidas protegidas",
+    "Back": "Atrás",
+    "One run": "Una partida",
+    "History cleanup": "Limpiar historial",
+    "Full reset": "Restablecer todo"
   },
   "fr": {
     "API": "API",
@@ -1057,7 +1093,16 @@
     "No matching run details": "Aucun détail de partie correspondant",
     "Review data removal first": "Vérifier d’abord les données à supprimer",
     "Local data cleared": "Données locales effacées",
-    "Delete data": "Effacer les données"
+    "Delete data": "Effacer les données",
+    "Choose what to remove": "Choisir les données à effacer",
+    "Review before deleting": "Vérifier avant de supprimer",
+    "Will be deleted": "Sera supprimé",
+    "Will be kept": "Sera conservé",
+    "Protected runs": "Parties protégées",
+    "Back": "Retour",
+    "One run": "Une partie",
+    "History cleanup": "Nettoyer l’historique",
+    "Full reset": "Tout réinitialiser"
   },
   "ja": {
     "API": "API",
@@ -1269,7 +1314,16 @@
     "No matching run details": "一致するプレイ詳細がありません",
     "Review data removal first": "先に削除するデータを確認",
     "Local data cleared": "ローカルデータを消去しました",
-    "Delete data": "データを削除"
+    "Delete data": "データを削除",
+    "Choose what to remove": "削除するデータを選択",
+    "Review before deleting": "削除前に確認",
+    "Will be deleted": "削除されるデータ",
+    "Will be kept": "保持されるデータ",
+    "Protected runs": "保護されたプレイ",
+    "Back": "戻る",
+    "One run": "1回のプレイ",
+    "History cleanup": "履歴の整理",
+    "Full reset": "すべてリセット"
   },
   "ko": {
     "API": "API",
@@ -1481,7 +1535,16 @@
     "No matching run details": "일치하는 플레이 상세 기록이 없습니다",
     "Review data removal first": "먼저 삭제할 데이터를 확인하세요",
     "Local data cleared": "로컬 데이터가 삭제되었습니다",
-    "Delete data": "데이터 삭제"
+    "Delete data": "데이터 삭제",
+    "Choose what to remove": "삭제할 데이터 선택",
+    "Review before deleting": "삭제 전 확인",
+    "Will be deleted": "삭제되는 데이터",
+    "Will be kept": "유지되는 데이터",
+    "Protected runs": "보호된 게임",
+    "Back": "뒤로",
+    "One run": "게임 한 개",
+    "History cleanup": "기록 정리",
+    "Full reset": "전체 초기화"
   },
   "pl": {
     "API": "API",
@@ -1693,7 +1756,16 @@
     "No matching run details": "Brak pasujących szczegółów rozgrywek",
     "Review data removal first": "Najpierw sprawdź usuwane dane",
     "Local data cleared": "Dane lokalne wyczyszczone",
-    "Delete data": "Usuń dane"
+    "Delete data": "Usuń dane",
+    "Choose what to remove": "Wybierz dane do usunięcia",
+    "Review before deleting": "Sprawdź przed usunięciem",
+    "Will be deleted": "Zostanie usunięte",
+    "Will be kept": "Zostanie zachowane",
+    "Protected runs": "Chronione rozgrywki",
+    "Back": "Wstecz",
+    "One run": "Jedna rozgrywka",
+    "History cleanup": "Wyczyść historię",
+    "Full reset": "Resetuj wszystko"
   },
   "pt": {
     "API": "API",
@@ -1905,7 +1977,16 @@
     "No matching run details": "Nenhum detalhe de partida correspondente",
     "Review data removal first": "Confira primeiro os dados a excluir",
     "Local data cleared": "Dados locais apagados",
-    "Delete data": "Excluir dados"
+    "Delete data": "Excluir dados",
+    "Choose what to remove": "Escolha o que remover",
+    "Review before deleting": "Revisar antes de excluir",
+    "Will be deleted": "Será excluído",
+    "Will be kept": "Será mantido",
+    "Protected runs": "Partidas protegidas",
+    "Back": "Voltar",
+    "One run": "Uma partida",
+    "History cleanup": "Limpar histórico",
+    "Full reset": "Redefinir tudo"
   },
   "ro": {
     "API": "API",
@@ -2117,7 +2198,16 @@
     "No matching run details": "Nu există detalii de partide potrivite",
     "Review data removal first": "Verifică mai întâi datele de șters",
     "Local data cleared": "Date locale șterse",
-    "Delete data": "Șterge datele"
+    "Delete data": "Șterge datele",
+    "Choose what to remove": "Alege ce să ștergi",
+    "Review before deleting": "Verifică înainte de ștergere",
+    "Will be deleted": "Se va șterge",
+    "Will be kept": "Se va păstra",
+    "Protected runs": "Partide protejate",
+    "Back": "Înapoi",
+    "One run": "O partidă",
+    "History cleanup": "Curăță istoricul",
+    "Full reset": "Resetare completă"
   },
   "ru": {
     "API": "API",
@@ -2329,7 +2419,16 @@
     "No matching run details": "Нет подходящих записей забегов",
     "Review data removal first": "Сначала проверьте удаляемые данные",
     "Local data cleared": "Локальные данные очищены",
-    "Delete data": "Удалить данные"
+    "Delete data": "Удалить данные",
+    "Choose what to remove": "Выберите данные для удаления",
+    "Review before deleting": "Проверить перед удалением",
+    "Will be deleted": "Будет удалено",
+    "Will be kept": "Будет сохранено",
+    "Protected runs": "Защищённые игры",
+    "Back": "Назад",
+    "One run": "Одна игра",
+    "History cleanup": "Очистка истории",
+    "Full reset": "Полный сброс"
   },
   "tr": {
     "API": "API",
@@ -2541,7 +2640,16 @@
     "No matching run details": "Eşleşen oyun ayrıntısı yok",
     "Review data removal first": "Önce silinecek verileri incele",
     "Local data cleared": "Yerel veriler temizlendi",
-    "Delete data": "Verileri sil"
+    "Delete data": "Verileri sil",
+    "Choose what to remove": "Silinecek verileri seç",
+    "Review before deleting": "Silmeden önce incele",
+    "Will be deleted": "Silinecek",
+    "Will be kept": "Korunacak",
+    "Protected runs": "Korunan oyunlar",
+    "Back": "Geri",
+    "One run": "Bir oyun",
+    "History cleanup": "Geçmişi temizle",
+    "Full reset": "Tam sıfırlama"
   },
   "uk": {
     "API": "API",
@@ -2753,7 +2861,16 @@
     "No matching run details": "Немає відповідних записів забігів",
     "Review data removal first": "Спочатку перевірте дані для видалення",
     "Local data cleared": "Локальні дані очищено",
-    "Delete data": "Видалити дані"
+    "Delete data": "Видалити дані",
+    "Choose what to remove": "Виберіть дані для видалення",
+    "Review before deleting": "Перевірити перед видаленням",
+    "Will be deleted": "Буде видалено",
+    "Will be kept": "Буде збережено",
+    "Protected runs": "Захищені ігри",
+    "Back": "Назад",
+    "One run": "Одна гра",
+    "History cleanup": "Очистити історію",
+    "Full reset": "Повне скидання"
   },
   "zh": {
     "API": "API",
@@ -2965,6 +3082,15 @@
     "No matching run details": "没有匹配的对局详情",
     "Review data removal first": "请先检查要删除的数据",
     "Local data cleared": "本地数据已清除",
-    "Delete data": "删除数据"
+    "Delete data": "删除数据",
+    "Choose what to remove": "选择要删除的数据",
+    "Review before deleting": "删除前检查",
+    "Will be deleted": "将被删除",
+    "Will be kept": "将被保留",
+    "Protected runs": "受保护的对局",
+    "Back": "返回",
+    "One run": "一场对局",
+    "History cleanup": "清理历史",
+    "Full reset": "全部重置"
   }
 }

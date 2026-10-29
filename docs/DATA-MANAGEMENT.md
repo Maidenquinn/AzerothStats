@@ -1,4 +1,4 @@
-# Local data management — 1.7.0-dev.1 preview
+# Local data management — 1.7.0-dev.2 preview
 
 This unmerged candidate adds explicit user-controlled removal of addon-owned local data. No file I/O, native game write, outgoing message or save import is added. The client serializes the resulting own SavedVariables normally.
 
@@ -34,3 +34,19 @@ Automated deletion tests use only synthetic in-memory databases and serializatio
 ## Offline validation
 
 4,554 independent assertions passed, including 47 isolated data-management assertions. Full Lua 5.0.3 behavior/syntax/persistence checks passed. The exact 76-file player ZIP passed 27 class/outcome cases in 81 fresh processes (1,764 assertions). Fifteen Python tests and fourteen-language font coverage passed. Synthetic French/Japanese dialog previews were inspected; these are not native screenshots. No player save was erased during testing.
+
+## Selection and review
+
+The dialog opens in selection mode. Three visible actions replace the action menu.
+The affected history entries are listed four at a time with zone, outcome, duration,
+date, class, difficulty and local ID. Protected/active runs are excluded from ordinary
+cleanup. The summary explicitly separates deleted and preserved data.
+
+Continue opens a separate review stage without changing saved data. Back returns to
+selection, Cancel closes without changes. Full reset shows the exact RESET field only
+at review. A changed deletion plan returns the user to selection before any mutation.
+Settings remain preserved; history cleanup never subtracts from cumulative statistics.
+
+Native validation: check each action, change class/run, page through the preview,
+review, go back and cancel. Verify long labels in French and CJK. On a disposable test
+profile only, confirm a deletion and compare its effect against the displayed summary.
