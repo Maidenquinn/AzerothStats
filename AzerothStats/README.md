@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.7.0-dev.2
+# Azeroth Stats - 1.7.0-dev.3
 
 Unmerged local-data-management preview. Public 1.6.2-beta.1 is unchanged. Native testing of this feature remains pending. No data is erased merely by installation or by opening the management dialog.
 
@@ -45,3 +45,10 @@ This release adds per-metric source labels, confirmed history pruning, literal H
 ## Manage local data (preview)
 
 Open Settings > Manage local data or `/azstats data`. Deleting one run or clearing retained history (all classes or one class) keeps lifetime statistics/records unchanged and protects active/bookmarked sources. A separate full reset deletes all statistics, history and favorites while preserving settings; it requires the native ready phase and typing RESET. Cancel keeps data. There is no undo: back up the addon's own SavedVariables first if you intend to erase data. The `reset` slash alias only opens the dialog and never performs an immediate reset.
+
+The preview also offers independent Nemesis, Records, Trends and Favorites cleanup
+for all classes, between runs. Its right-hand recap identifies the run being inspected.
+Category cleanup keeps numeric combat results, build snapshots and co-op comparisons,
+but clears the selected category and its historical death/milestone/usage details.
+Cleared categories collect again from new runs; older retained runs cannot restore them.
+Favorites cleanup unpins retained sources without deleting those runs.

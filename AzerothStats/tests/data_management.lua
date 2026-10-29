@@ -288,6 +288,147 @@ check(
     A.db.totals.runs == 1 and A.db.totals.sum.damage == damage,
     "post-reset polling never reimports old ledgers"
 )
+-- Category cleanup uses synthetic data and leaves unrelated history/statistics intact.
+A.run = nil
+AZS_RUN.ph = "ready"
+AZS_GetPhase = function()
+    return "ready"
+end
+local old = fixture("category-old")
+old.spells = { { key = "test", spell = 1, rank = 2 } }
+old.usage = { spells = { test = { maxRank = 2, gains = 1 } }, jewelry = {} }
+old.coop = { peers = { peer = { name = "Peer", class = "mage" } }, latest = {}, accounted = {} }
+old.deaths = { { confidence = "unknown", t = 100, at = 10, hits = {} } }
+old.reportRecords = { damage = 1000 }
+old.recordBaseline = { values = {} }
+local other = fixture("category-other", "mage")
+A.db.runs = { old, other }
+A.db.totals.records = { damage = { value = 1000, id = old.id, at = 10 } }
+A.db.classes.warrior = { sum = { damage = 1000 }, records = A.Copy(A.db.totals.records) }
+A.db.classes.mage = { records = { damage = { value = 500, id = other.id, at = 10 } } }
+A.db.totals.deathEvidence = { deaths = 1, sources = { Kobold = { confirmed = 0, probable = 1 } } }
+A.db.classes.warrior.deathEvidence = A.Copy(A.db.totals.deathEvidence)
+A.db.totals.usage =
+    { spells = { test = { runs = 1, gains = 1, changes = 0, maxRank = 2 } }, jewelry = {} }
+A.db.classes.warrior.usage = A.Copy(A.db.totals.usage)
+A.db.totals.companions = { peer = { name = "Peer", class = "mage", runs = 1, wins = 1 } }
+A.db.classes.warrior.companions = A.Copy(A.db.totals.companions)
+A.ToggleFavorite(A.RunFavorite(old))
+local historyValues = A.Sign(old.values)
+local oldSums = A.Sign(A.db.totals.sum)
+local oldSpells, oldCoop = A.Sign(old.spells), A.Sign(old.coop)
+check(
+    A.DataPlan("records", "warrior") == nil,
+    "category cleanup rejects an unsupported class scope"
+)
+A.OpenDataManagement()
+A.ui.dataDialog.actions[1].callback()
+A.ui.dataDialog.rows[2].callback()
+check(
+    string.find(A.ui.dataDialog.preview.identity.fullText, A.ZoneName(old), 1, true)
+        and string.find(A.ui.dataDialog.preview.values.fullText, A.Metric("damage"), 1, true),
+    "right preview follows the selected run and shows actual metrics"
+)
+A.ui.dataDialog.actions[4].callback()
+check(
+    A.pendingDataPlan.kind == "nemesis"
+        and A.pendingDataPlan.count == 1
+        and A.pendingDataPlan.details == 1,
+    "category preview counts aggregate sources and historical evidence separately"
+)
+A.ui.dataDialog.cancel.callback()
+check(A.db.totals.deathEvidence.deaths == 1, "cancel category cleanup keeps evidence")
+AZS_RUN.ph = "playing"
+AZS_GetPhase = function()
+    return AZS_RUN.ph
+end
+A.PrepareDataAction("nemesis")
+check(not A.ConfirmDataAction(), "category cleanup cannot run during play")
+AZS_RUN.ph = "ready"
+A.PrepareDataAction("nemesis")
+check(
+    A.ConfirmDataAction() and not A.db.totals.deathEvidence and not old.deaths,
+    "nemesis cleanup removes aggregate and historical death log"
+)
+check(
+    A.db.totals.records.damage and A.db.totals.usage.spells.test and A.IsRunProtected(old.id),
+    "nemesis cleanup preserves records trends favorites and history"
+)
+A.PrepareDataAction("records")
+A.db.classes.mage.records.gold = { value = 4, id = other.id, at = 10 }
+check(not A.ConfirmDataAction(), "new class category entries invalidate a reviewed plan")
+check(
+    A.ConfirmDataAction()
+        and not next(A.db.totals.records)
+        and not next(A.db.classes.mage.records)
+        and not old.reportRecords
+        and not old.recordBaseline,
+    "records cleanup clears all class records and historical milestones"
+)
+A.PrepareDataAction("trends")
+check(
+    A.ConfirmDataAction() and not A.db.totals.usage and not A.db.totals.companions and not old.usage,
+    "trends cleanup clears builds popularity and companion totals"
+)
+check(
+    A.Sign(old.values) == historyValues
+        and A.Sign(old.spells) == oldSpells
+        and A.Sign(old.coop) == oldCoop
+        and A.Sign(A.db.totals.sum) == oldSums,
+    "category cleanup preserves combat results build snapshots coop comparisons and lifetime totals"
+)
+A.Account(old)
+A.ObserveBuild(old)
+A.ObserveNemesis(old, { t = 100 }, "playing")
+A.FinishReport(old)
+check(
+    not next(A.db.totals.records)
+        and not A.db.totals.usage
+        and not A.db.totals.companions
+        and not old.usage
+        and not old.reportRecords
+        and not old.deaths,
+    "old retained run callbacks cannot recreate cleared categories"
+)
+local reloaded = assert(loadstring("return " .. SNAPSHOT(A.db)))()
+check(
+    A.ValidateDatabase(reloaded)
+        and reloaded.runs[1].recordsReset
+        and reloaded.runs[1].trendsReset
+        and reloaded.runs[1].nemesisReset,
+    "category reset barriers survive serialization and database validation"
+)
+local categoryDb = A.db
+AzerothStatsDB, A.db = reloaded, nil
+check(A.InitDB(), "cleaned categories initialize through normal migrations")
+A.Account(A.db.runs[1])
+check(
+    not next(A.db.totals.records)
+        and not A.db.totals.usage
+        and not A.db.totals.companions
+        and not A.db.totals.deathEvidence,
+    "normal reload cannot resurrect erased categories"
+)
+AzerothStatsDB, A.db = categoryDb, categoryDb
+local flags = A.Copy(reloaded)
+flags.runs[1].recordsReset = "bad"
+check(not A.ValidateDatabase(flags), "saved reset barriers must be booleans")
+A.PrepareDataAction("favorites")
+check(
+    A.ConfirmDataAction() and not next(A.db.favorites.entries) and A.FindRun(old.id),
+    "favorites cleanup removes bookmarks without deleting retained runs"
+)
+local fresh = fixture("category-new")
+fresh.counted, fresh.winCounted = false, false
+fresh.accounted = {}
+A.db.runs[3] = fresh
+A.Account(fresh)
+fresh.usage = { spells = {}, jewelry = {} }
+A.AccountUsage(fresh, "spells", "test", { maxRank = 1, gains = 0 })
+check(
+    A.db.totals.records.damage and A.db.totals.usage.spells.test.runs == 1,
+    "new runs collect fresh records and trends after category cleanup"
+)
 for _, lang in ipairs(A.languages) do
     if lang[1] ~= "auto" then
         A.SetLanguage(lang[1])

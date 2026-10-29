@@ -1369,10 +1369,10 @@ local function buildSettings(frame)
     button(p, 370, 506, 330, 32, "Customize bar", function()
         A.OpenBarEditor()
     end)
-    button(p, 370, 344, 330, 28, "Reset position", function()
+    button(p, 370, 326, 330, 28, "Reset position", function()
         A.ResetPosition()
     end)
-    button(p, 370, 382, 330, 28, "Manage local data", function()
+    button(p, 370, 364, 330, 28, "Manage local data", function()
         A.OpenDataManagement()
     end)
 end
@@ -2037,18 +2037,28 @@ function A.BuildUI()
     UI.dataDialog = CreateFrame("Frame", "AzerothStatsDataManagement", frame)
     local data = UI.dataDialog
     data:SetPoint("CENTER", frame, "CENTER", 0, 0)
-    data:SetWidth(660)
-    data:SetHeight(620)
+    data:SetWidth(920)
+    data:SetHeight(660)
     data:SetFrameStrata("FULLSCREEN_DIALOG")
     data:SetFrameLevel(frame:GetFrameLevel() + 60)
     data:EnableMouse(true)
     surface(data, "main")
-    data.title = font(data, 22, 18, 576, 40, 22, COLORS.gold, true)
+    data.title = font(data, 22, 18, 876, 40, 22, COLORS.gold, true)
     -- Selection and review are separate stages. Only the review stage can mutate data.
     data.actions = {}
-    for index, kind in ipairs({ "run", "history", "reset" }) do
+    for index, kind in ipairs({
+        "run",
+        "history",
+        "reset",
+        "nemesis",
+        "records",
+        "trends",
+        "favorites",
+    }) do
         local choice = kind
-        data.actions[index] = button(data, 22 + (index - 1) * 208, 66, 200, 36, "", function()
+        local x = index <= 3 and (22 + (index - 1) * 208) or (22 + (index - 4) * 156)
+        local y = index <= 3 and 66 or 108
+        data.actions[index] = button(data, x, y, index <= 3 and 200 or 148, 34, "", function()
             data.kind, data.stage, data.previewPage = choice, "select", 1
             data.status = nil
             data.token:SetText("")
@@ -2056,7 +2066,7 @@ function A.BuildUI()
             A.RefreshDataDialog()
         end)
     end
-    data.scopeButton = button(data, 22, 116, 616, 32, "", function(self)
+    data.scopeButton = button(data, 22, 156, 616, 32, "", function(self)
         local choices = {}
         table.insert(choices, {
             label = A.T("All classes"),
@@ -2091,12 +2101,12 @@ function A.BuildUI()
         end
     end)
     dropdown(data.scopeButton)
-    data.context = font(data, 22, 158, 616, 42, 12, COLORS.muted)
-    data.message = font(data, 22, 424, 616, 76, 14, COLORS.text)
-    data.warning = font(data, 22, 504, 616, 40, 12, COLORS.gold)
-    data.tokenCaption = font(data, 22, 544, 360, 24, 12, COLORS.text)
+    data.context = font(data, 22, 198, 616, 42, 12, COLORS.muted)
+    data.message = font(data, 22, 464, 616, 76, 14, COLORS.text)
+    data.warning = font(data, 22, 544, 616, 40, 12, COLORS.gold)
+    data.tokenCaption = font(data, 22, 584, 360, 24, 12, COLORS.text)
     data.token = CreateFrame("EditBox", nil, data)
-    data.token:SetPoint("TOPLEFT", data, "TOPLEFT", 442, -544)
+    data.token:SetPoint("TOPLEFT", data, "TOPLEFT", 442, -584)
     data.token:SetWidth(196)
     data.token:SetHeight(26)
     if data.token.SetAutoFocus then
@@ -2118,12 +2128,12 @@ function A.BuildUI()
             this:ClearFocus()
         end
     end)
-    data.cancel = button(data, 22, 578, 196, 28, "Cancel", function()
+    data.cancel = button(data, 22, 618, 196, 28, "Cancel", function()
         A.pendingDataPlan = nil
         UI.dataBlocker:Hide()
         data:Hide()
     end)
-    data.confirm = button(data, 442, 578, 196, 28, "", function()
+    data.confirm = button(data, 442, 618, 196, 28, "", function()
         if data.stage ~= "review" then
             local plan = A.PrepareDataAction(
                 data.kind,
@@ -2163,7 +2173,7 @@ function A.BuildUI()
         end
     end)
     data:Hide()
-    data.back = button(data, 230, 578, 196, 28, "Back", function()
+    data.back = button(data, 230, 618, 196, 28, "Back", function()
         data.stage, data.status = "select", nil
         data.token:SetText("")
         A.RefreshDataDialog()
@@ -2171,16 +2181,19 @@ function A.BuildUI()
     data.rows = {}
     for index = 1, 4 do
         local row = CreateFrame("Button", nil, data)
-        row:SetPoint("TOPLEFT", data, "TOPLEFT", 22, -204 - (index - 1) * 44)
+        row:SetPoint("TOPLEFT", data, "TOPLEFT", 22, -244 - (index - 1) * 44)
         row:SetWidth(616)
         row:SetHeight(42)
         row.base = solid(row, 0.12, 0.16, 0.17, 0.7)
         row.callback = function()
-            if data.stage ~= "select" or data.kind ~= "run" or not row.runId then
+            if not row.runId then
                 return
             end
-            data.id, data.status = row.runId, nil
-            A.PrepareDataAction("run", nil, data.id)
+            data.previewId = row.runId
+            if data.stage == "select" and data.kind == "run" then
+                data.id, data.status = row.runId, nil
+                A.PrepareDataAction("run", nil, data.id)
+            end
             A.RefreshDataDialog()
         end
         row:SetScript("OnClick", row.callback)
@@ -2188,20 +2201,121 @@ function A.BuildUI()
         row.detail = font(row, 8, 23, 600, 17, 11, COLORS.muted)
         data.rows[index] = row
     end
-    data.previous = button(data, 22, 388, 40, 26, "<", function()
+    data.previous = button(data, 22, 428, 40, 26, "<", function()
         data.previewPage = math.max(1, (data.previewPage or 1) - 1)
         A.RefreshDataDialog()
     end)
-    data.next = button(data, 70, 388, 40, 26, ">", function()
+    data.next = button(data, 70, 428, 40, 26, ">", function()
         data.previewPage = (data.previewPage or 1) + 1
         A.RefreshDataDialog()
     end)
-    data.page = font(data, 122, 392, 516, 22, 12, COLORS.muted)
+    data.page = font(data, 122, 432, 516, 22, 12, COLORS.muted)
+    data.preview = CreateFrame("Frame", nil, data)
+    local preview = data.preview
+    preview:SetPoint("TOPLEFT", data, "TOPLEFT", 658, -66)
+    preview:SetWidth(240)
+    preview:SetHeight(540)
+    surface(preview, "card")
+    preview.title = font(preview, 12, 10, 216, 30, 16, COLORS.gold, true)
+    preview.image = preview:CreateTexture(nil, "ARTWORK")
+    preview.image:SetPoint("TOPLEFT", preview, "TOPLEFT", 12, -48)
+    preview.image:SetWidth(216)
+    preview.image:SetHeight(88)
+    preview.identity = font(preview, 12, 144, 216, 88, 12, COLORS.text)
+    preview.values = font(preview, 12, 240, 216, 170, 12, COLORS.text)
+    preview.note = font(preview, 12, 418, 216, 110, 11, COLORS.muted)
+    function A.RefreshDataPreview(run, category, plan)
+        preview.identity:ClearAllPoints()
+        preview.identity:SetPoint("TOPLEFT", preview, "TOPLEFT", 12, category and -52 or -144)
+        preview.values:ClearAllPoints()
+        preview.values:SetPoint("TOPLEFT", preview, "TOPLEFT", 12, category and -140 or -240)
+        preview.note:ClearAllPoints()
+        preview.note:SetPoint("TOPLEFT", preview, "TOPLEFT", 12, category and -330 or -418)
+        put(preview.title, A.T(category or "Run report"))
+        show(preview.image, run ~= nil and not category)
+        if category then
+            put(preview.identity, A.T("All classes"))
+            put(
+                preview.values,
+                A.T("Global")
+                    .. " · "
+                    .. A.T("Details")
+                    .. ": "
+                    .. (plan and plan.count or 0)
+                    .. "\n\n"
+                    .. A.T("Classes")
+                    .. " · "
+                    .. A.T("Details")
+                    .. ": "
+                    .. (plan and plan.classEntries or 0)
+                    .. "\n\n"
+                    .. A.T("History")
+                    .. " · "
+                    .. A.T("Details")
+                    .. ": "
+                    .. (plan and plan.details or 0)
+            )
+            put(
+                preview.note,
+                A.T("History")
+                    .. " · "
+                    .. A.T("Combat")
+                    .. "\n"
+                    .. A.T("Character")
+                    .. " · "
+                    .. A.T("Coop")
+                    .. "\n\n"
+                    .. A.T("Other categories")
+                    .. " · "
+                    .. A.T("Settings")
+            )
+        elseif run then
+            A.ZoneIllustration(preview.image, run.zone)
+            put(
+                preview.identity,
+                A.ZoneName(run)
+                    .. "\n"
+                    .. A.RunContext(run)
+                    .. "\n"
+                    .. (run.hero or "?")
+                    .. " · "
+                    .. A.Status(run.result or run.status)
+            )
+            local lines = {}
+            for _, key in ipairs({ "duration", "level", "kills", "gold", "damage", "bosses" }) do
+                local value = run.values[key]
+                local display = key == "duration" and A.Duration(value) or A.Short(value)
+                table.insert(lines, A.Metric(key) .. ": " .. display)
+            end
+            put(preview.values, table.concat(lines, "\n\n"))
+            put(
+                preview.note,
+                (A.CoopLabel(run) or A.T("Unavailable"))
+                    .. "\n"
+                    .. run.id
+                    .. "\n"
+                    .. A.T("Values from available samples")
+            )
+        else
+            put(preview.identity, A.T("Select a run to preview"))
+            put(preview.values, "")
+            put(preview.note, "")
+        end
+    end
     function A.RefreshDataDialog()
         local plan = A.pendingDataPlan
         local review = data.stage == "review"
-        local labels = { "One run", "History cleanup", "Full reset" }
-        local kinds = { "run", "history", "reset" }
+        local category = A.dataCategories[data.kind]
+        local labels = {
+            "One run",
+            "History cleanup",
+            "Full reset",
+            "Nemesis",
+            "Records",
+            "Trends",
+            "Favorites",
+        }
+        local kinds = { "run", "history", "reset", "nemesis", "records", "trends", "favorites" }
         put(data.title, A.T("Manage local data") .. " · " .. (review and "2/2" or "1/2"))
         for index, control in ipairs(data.actions) do
             put(control.label, A.T(labels[index]))
@@ -2220,7 +2334,8 @@ function A.BuildUI()
             A.T(review and "Review before deleting" or "Choose what to remove")
                 .. "\n"
                 .. A.T(
-                    data.kind == "reset" and "Reset all statistics"
+                    category and "Category cleanup applies to all classes"
+                        or data.kind == "reset" and "Reset all statistics"
                         or "History only; totals stay unchanged"
                 )
         )
@@ -2256,13 +2371,19 @@ function A.BuildUI()
                 put(row.detail, A.RunContext(item) .. " · " .. item.id)
             end
         end
+        local previewRun = data.kind == "run" and run
+            or (data.previewId and A.FindRun(data.previewId))
+        if not previewRun and listed > 0 then
+            previewRun = A.FindRun(candidates[listed])
+        end
+        A.RefreshDataPreview(previewRun, category, plan)
         show(data.previous, pages > 1)
         show(data.next, pages > 1)
         put(
             data.page,
-            A.T("Run details to remove")
+            A.T(category and "Historical entries" or "Run details to remove")
                 .. ": "
-                .. count
+                .. (category and (plan and plan.details or 0) or count)
                 .. " · "
                 .. A.T("Page")
                 .. " "
@@ -2290,7 +2411,29 @@ function A.BuildUI()
             .. A.T("Favorites")
             .. ", "
             .. A.T("Settings")
-        if data.kind == "reset" then
+        if category then
+            removed = A.T(category)
+                .. " · "
+                .. A.T("Details")
+                .. ": "
+                .. count
+                .. " · "
+                .. A.T("Historical entries")
+                .. ": "
+                .. (plan and plan.details or 0)
+            if data.kind == "nemesis" then
+                removed = removed
+                    .. " · "
+                    .. A.T("Observed deaths")
+                    .. ": "
+                    .. (plan and plan.observed or 0)
+            end
+            kept = A.T("Historical combat and builds are kept")
+                .. " · "
+                .. A.T("Settings")
+                .. ", "
+                .. A.T("Other categories")
+        elseif data.kind == "reset" then
             removed = A.T("All statistics")
                 .. ", "
                 .. A.T("History")
@@ -2319,7 +2462,11 @@ function A.BuildUI()
             data.warning,
             data.status and A.T(data.status)
                 or plan and plan.reason and A.T(plan.reason)
-                or A.T("This cannot be undone")
+                or A.T(
+                    data.kind == "favorites"
+                            and "Removing favorites unprotects runs from future history cleanup"
+                        or "This cannot be undone"
+                )
         )
         put(data.tokenCaption, A.T("Type RESET to confirm"))
         data.token:SetFont(A.Font(false), 14, "")
@@ -2352,7 +2499,7 @@ function A.BuildUI()
             UI.menu:Hide()
         end
         data.kind, data.class = "history", A.view.class
-        data.stage, data.previewPage = "select", 1
+        data.stage, data.previewPage, data.previewId = "select", 1, nil
         local run = A.Selected()
         data.id = run and run.id
         data.status = nil

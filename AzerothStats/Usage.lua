@@ -102,6 +102,9 @@ end
 
 --- Apply one entry delta globally and per class, then save the run ledger; cap new aggregate keys.
 function A.AccountUsage(run, kind, key, entry)
+    if run.trendsReset then
+        return
+    end
     local usage = run.usage
     usage.accounted = usage.accounted or {}
     usage.accounted[kind] = usage.accounted[kind] or {}
@@ -131,6 +134,9 @@ end
 
 --- Observe bounded spell ranks/accessory descriptions and update their ledgers without inferring clicks.
 function A.ObserveBuild(run)
+    if run.trendsReset then
+        return
+    end
     if not A.db.classes[run.class] then
         A.db.classes[run.class] = {}
     end

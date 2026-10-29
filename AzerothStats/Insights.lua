@@ -31,7 +31,11 @@ end
 
 --- Observe server damage/time pairs after ten seconds; notify once against a frozen prior class baseline.
 local function dps(run, progress, phase)
-    if run.status ~= "active" or (phase ~= "playing" and phase ~= "endless") then
+    if
+        run.recordsReset
+        or run.status ~= "active"
+        or (phase ~= "playing" and phase ~= "endless")
+    then
         return
     end
     local elapsed, damage = A.Number(progress.t), A.Number(progress.dealt)
@@ -198,6 +202,9 @@ end
 
 --- Count each observed companion once per run; associate only the local run outcome with that presence.
 function A.AccountInsights(run)
+    if run.trendsReset then
+        return
+    end
     local coop = run.coop
     if not coop then
         return

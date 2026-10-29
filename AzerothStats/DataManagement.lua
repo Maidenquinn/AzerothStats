@@ -1,10 +1,107 @@
 -- Explicit local data removal. No native writes, file I/O, arithmetic subtraction
 -- from cumulative ledgers, or implicit reset from slash-command arguments.
 local A = AzerothStats
+-- Category resets are global and require an explicit between-run boundary.
+A.dataCategories =
+    { nemesis = "Nemesis", records = "Records", trends = "Trends", favorites = "Favorites" }
+local function size(value)
+    local count = 0
+    for _ in pairs(value or {}) do
+        count = count + 1
+    end
+    return count
+end
+
+--- Count visible aggregate entries and historical category details, never guess lost totals.
+local function categoryImpact(kind, plan)
+    local total = A.db.totals
+    if kind == "nemesis" then
+        plan.count = size(total.deathEvidence and total.deathEvidence.sources)
+        plan.observed = total.deathEvidence and total.deathEvidence.deaths or 0
+    elseif kind == "records" then
+        plan.count = size(total.records)
+    elseif kind == "trends" then
+        plan.count = size(total.usage and total.usage.spells)
+            + size(total.usage and total.usage.jewelry)
+            + size(total.companions)
+    else
+        plan.count = size(A.db.favorites.entries)
+    end
+    plan.details = 0
+    for _, run in ipairs(A.db.runs) do
+        local count = kind == "nemesis" and table.getn(run.deaths or {})
+            or kind == "records" and size(run.reportRecords)
+            or kind == "trends" and (size(run.usage and run.usage.spells) + size(
+                run.usage and run.usage.jewelry
+            ))
+            or 0
+        if count > 0 then
+            table.insert(plan.ids, run.id)
+            plan.details = plan.details + count
+        end
+    end
+    -- Class-only entries may outlive a global admission limit.
+    plan.classEntries = 0
+    for _, group in pairs(A.db.classes) do
+        if kind == "nemesis" then
+            plan.classEntries = plan.classEntries
+                + size(group.deathEvidence and group.deathEvidence.sources)
+        elseif kind == "records" then
+            plan.classEntries = plan.classEntries + size(group.records)
+        elseif kind == "trends" then
+            plan.classEntries = plan.classEntries
+                + size(group.usage and group.usage.spells)
+                + size(group.usage and group.usage.jewelry)
+                + size(group.companions)
+        end
+    end
+end
+
+--- Clear only the named category; historical numeric combat results remain intact.
+local function clearCategory(kind)
+    local groups = { A.db.totals }
+    for _, group in pairs(A.db.classes) do
+        table.insert(groups, group)
+    end
+    for _, group in ipairs(groups) do
+        if kind == "nemesis" then
+            group.deathEvidence = nil
+        elseif kind == "records" then
+            group.records = {}
+        elseif kind == "trends" then
+            group.usage, group.companions = nil, nil
+            group.usageTruncated, group.companionsTruncated = nil, nil
+            group.legacyJewelry14 = nil
+        end
+    end
+    for _, run in ipairs(A.db.runs) do
+        if kind == "nemesis" then
+            run.deaths, run.deathsTruncated, run.nemesisReset = nil, nil, true
+        elseif kind == "records" then
+            run.reportRecords, run.recordBaseline, run.recordsReset = nil, nil, true
+        elseif kind == "trends" then
+            run.usage, run.usageTruncated, run.trendsReset = nil, nil, true
+        end
+    end
+    if kind == "nemesis" then
+        A.deathWatch = nil
+    elseif kind == "trends" then
+        A.view.coopPartner = nil
+    elseif kind == "favorites" then
+        A.db.favorites = { version = 1, entries = {} }
+    end
+    A.view.page = 1
+end
 
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.
 function A.DataPlan(kind, class, id)
-    if not A.db or (kind ~= "run" and kind ~= "history" and kind ~= "reset") then
+    if
+        not A.db
+        or (kind ~= "run" and kind ~= "history" and kind ~= "reset" and not A.dataCategories[kind])
+    then
+        return nil
+    end
+    if A.dataCategories[kind] and class ~= nil then
         return nil
     end
     if class ~= nil and (type(class) ~= "string" or not A.knownClasses[class]) then
@@ -36,10 +133,21 @@ function A.DataPlan(kind, class, id)
         plan.favorites = plan.favorites + 1
     end
     plan.count = table.getn(plan.ids)
-    if kind == "reset" then
+    if A.dataCategories[kind] then
+        categoryImpact(kind, plan)
+    end
+    if kind == "reset" or A.dataCategories[kind] then
         -- An explicit ready phase is required: absence of the API is not a safe boundary.
         if A.ReadProgress().ph ~= "ready" or (A.run and A.run.status == "active") then
             plan.reason = "Reset is available between runs only"
+        elseif
+            A.dataCategories[kind]
+            and plan.count == 0
+            and plan.details == 0
+            and plan.classEntries == 0
+            and (plan.observed or 0) == 0
+        then
+            plan.reason = "No data yet"
         end
     elseif plan.count == 0 then
         plan.reason = plan.reason or "No matching run details"
@@ -55,6 +163,10 @@ function A.DataPlan(kind, class, id)
         sequence = A.db.sequence,
         allowed = plan.allowed,
         reason = plan.reason,
+        count = plan.count,
+        details = plan.details,
+        observed = plan.observed,
+        classEntries = plan.classEntries,
     })
     return plan
 end
@@ -86,7 +198,9 @@ function A.ConfirmDataAction(token)
     if fresh.kind == "reset" and token ~= "RESET" then
         return false, "Type RESET to confirm"
     end
-    if fresh.kind == "reset" then
+    if A.dataCategories[fresh.kind] then
+        clearCategory(fresh.kind)
+    elseif fresh.kind == "reset" then
         -- Keep schema/version, migrations, monotonic IDs and the exact settings object.
         -- Do not rebuild totals from retained runs: their older history may be pruned.
         A.db.runs, A.db.totals, A.db.classes = {}, {}, {}

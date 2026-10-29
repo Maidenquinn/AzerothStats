@@ -372,6 +372,11 @@ function A.ValidateDatabase(database)
         then
             return false
         end
+        for _, key in ipairs({ "recordsReset", "trendsReset", "nemesisReset" }) do
+            if run[key] ~= nil and type(run[key]) ~= "boolean" then
+                return false
+            end
+        end
         if run.buildJournal ~= nil and not A.ValidateJournal(run.buildJournal) then
             return false
         end

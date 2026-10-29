@@ -218,7 +218,13 @@
     "Back": "Zpět",
     "One run": "Jedna hra",
     "History cleanup": "Vyčistit historii",
-    "Full reset": "Úplný reset"
+    "Full reset": "Úplný reset",
+    "Category cleanup applies to all classes": "Vyčištění platí pro všechna povolání",
+    "Historical combat and builds are kept": "Historické boje a sestavy zůstanou zachovány",
+    "Other categories": "Ostatní kategorie",
+    "Historical entries": "Historické záznamy",
+    "Select a run to preview": "Vyberte hru pro zobrazení přehledu",
+    "Removing favorites unprotects runs from future history cleanup": "Odebrání oblíbených zruší ochranu při dalším čištění historie"
   },
   "de": {
     "API": "API",
@@ -439,7 +445,13 @@
     "Back": "Zurück",
     "One run": "Ein Spiel",
     "History cleanup": "Verlauf bereinigen",
-    "Full reset": "Alles zurücksetzen"
+    "Full reset": "Alles zurücksetzen",
+    "Category cleanup applies to all classes": "Diese Bereinigung gilt für alle Klassen",
+    "Historical combat and builds are kept": "Historische Kämpfe und Builds bleiben erhalten",
+    "Other categories": "Andere Kategorien",
+    "Historical entries": "Verlaufseinträge",
+    "Select a run to preview": "Ein Spiel für die Vorschau auswählen",
+    "Removing favorites unprotects runs from future history cleanup": "Ohne Favoriten sind Spiele bei künftigen Verlaufsbereinigungen nicht mehr geschützt"
   },
   "en": {
     "API": "API",
@@ -660,7 +672,13 @@
     "Back": "Back",
     "One run": "One run",
     "History cleanup": "History cleanup",
-    "Full reset": "Full reset"
+    "Full reset": "Full reset",
+    "Category cleanup applies to all classes": "Category cleanup applies to all classes",
+    "Historical combat and builds are kept": "Historical combat and builds are kept",
+    "Other categories": "Other categories",
+    "Historical entries": "Historical entries",
+    "Select a run to preview": "Select a run to preview",
+    "Removing favorites unprotects runs from future history cleanup": "Removing favorites unprotects runs from future history cleanup"
   },
   "es": {
     "API": "API",
@@ -881,7 +899,13 @@
     "Back": "Atrás",
     "One run": "Una partida",
     "History cleanup": "Limpiar historial",
-    "Full reset": "Restablecer todo"
+    "Full reset": "Restablecer todo",
+    "Category cleanup applies to all classes": "Esta limpieza afecta a todas las clases",
+    "Historical combat and builds are kept": "Se conservan los combates y configuraciones anteriores",
+    "Other categories": "Otras categorías",
+    "Historical entries": "Entradas históricas",
+    "Select a run to preview": "Selecciona una partida para ver el resumen",
+    "Removing favorites unprotects runs from future history cleanup": "Quitar favoritos elimina la protección en futuras limpiezas del historial"
   },
   "fr": {
     "API": "API",
@@ -1102,7 +1126,13 @@
     "Back": "Retour",
     "One run": "Une partie",
     "History cleanup": "Nettoyer l’historique",
-    "Full reset": "Tout réinitialiser"
+    "Full reset": "Tout réinitialiser",
+    "Category cleanup applies to all classes": "Ce nettoyage concerne toutes les classes",
+    "Historical combat and builds are kept": "Les combats et builds historiques sont conservés",
+    "Other categories": "Autres catégories",
+    "Historical entries": "Entrées historiques",
+    "Select a run to preview": "Sélectionnez une partie pour voir son résumé",
+    "Removing favorites unprotects runs from future history cleanup": "Supprimer les favoris retire leur protection lors des prochains nettoyages de l’historique"
   },
   "ja": {
     "API": "API",
@@ -1323,7 +1353,13 @@
     "Back": "戻る",
     "One run": "1回のプレイ",
     "History cleanup": "履歴の整理",
-    "Full reset": "すべてリセット"
+    "Full reset": "すべてリセット",
+    "Category cleanup applies to all classes": "この整理は全クラスに適用されます",
+    "Historical combat and builds are kept": "過去の戦闘とビルドは保持されます",
+    "Other categories": "その他のカテゴリ",
+    "Historical entries": "履歴の項目",
+    "Select a run to preview": "プレイを選択して概要を表示",
+    "Removing favorites unprotects runs from future history cleanup": "お気に入りを削除すると今後の履歴整理からプレイが保護されなくなります"
   },
   "ko": {
     "API": "API",
@@ -1544,7 +1580,13 @@
     "Back": "뒤로",
     "One run": "게임 한 개",
     "History cleanup": "기록 정리",
-    "Full reset": "전체 초기화"
+    "Full reset": "전체 초기화",
+    "Category cleanup applies to all classes": "모든 직업에 적용되는 정리입니다",
+    "Historical combat and builds are kept": "지난 전투 및 빌드 기록은 유지됩니다",
+    "Other categories": "다른 범주",
+    "Historical entries": "이전 기록",
+    "Select a run to preview": "요약을 보려면 게임을 선택하세요",
+    "Removing favorites unprotects runs from future history cleanup": "즐겨찾기를 삭제하면 이후 기록 정리에서 게임이 보호되지 않습니다"
   },
   "pl": {
     "API": "API",
@@ -1765,7 +1807,13 @@
     "Back": "Wstecz",
     "One run": "Jedna rozgrywka",
     "History cleanup": "Wyczyść historię",
-    "Full reset": "Resetuj wszystko"
+    "Full reset": "Resetuj wszystko",
+    "Category cleanup applies to all classes": "Czyszczenie obejmuje wszystkie klasy",
+    "Historical combat and builds are kept": "Historia walk i zestawów zostaje zachowana",
+    "Other categories": "Pozostałe kategorie",
+    "Historical entries": "Wpisy historyczne",
+    "Select a run to preview": "Wybierz rozgrywkę, aby zobaczyć podsumowanie",
+    "Removing favorites unprotects runs from future history cleanup": "Usunięcie ulubionych wyłącza ochronę przed kolejnym czyszczeniem historii"
   },
   "pt": {
     "API": "API",
@@ -1986,7 +2034,13 @@
     "Back": "Voltar",
     "One run": "Uma partida",
     "History cleanup": "Limpar histórico",
-    "Full reset": "Redefinir tudo"
+    "Full reset": "Redefinir tudo",
+    "Category cleanup applies to all classes": "Esta limpeza afeta todas as classes",
+    "Historical combat and builds are kept": "Combates e builds anteriores são mantidos",
+    "Other categories": "Outras categorias",
+    "Historical entries": "Entradas históricas",
+    "Select a run to preview": "Selecione uma partida para ver o resumo",
+    "Removing favorites unprotects runs from future history cleanup": "Remover favoritos retira a proteção em futuras limpezas do histórico"
   },
   "ro": {
     "API": "API",
@@ -2207,7 +2261,13 @@
     "Back": "Înapoi",
     "One run": "O partidă",
     "History cleanup": "Curăță istoricul",
-    "Full reset": "Resetare completă"
+    "Full reset": "Resetare completă",
+    "Category cleanup applies to all classes": "Curățarea se aplică tuturor claselor",
+    "Historical combat and builds are kept": "Luptele și configurațiile istorice sunt păstrate",
+    "Other categories": "Alte categorii",
+    "Historical entries": "Înregistrări istorice",
+    "Select a run to preview": "Selectează o partidă pentru rezumat",
+    "Removing favorites unprotects runs from future history cleanup": "Eliminarea favoritelor anulează protecția la curățările viitoare ale istoricului"
   },
   "ru": {
     "API": "API",
@@ -2428,7 +2488,13 @@
     "Back": "Назад",
     "One run": "Одна игра",
     "History cleanup": "Очистка истории",
-    "Full reset": "Полный сброс"
+    "Full reset": "Полный сброс",
+    "Category cleanup applies to all classes": "Очистка применяется ко всем классам",
+    "Historical combat and builds are kept": "История боёв и сборок сохраняется",
+    "Other categories": "Другие категории",
+    "Historical entries": "Записи истории",
+    "Select a run to preview": "Выберите игру для просмотра сводки",
+    "Removing favorites unprotects runs from future history cleanup": "Удаление избранного снимает защиту при будущей очистке истории"
   },
   "tr": {
     "API": "API",
@@ -2649,7 +2715,13 @@
     "Back": "Geri",
     "One run": "Bir oyun",
     "History cleanup": "Geçmişi temizle",
-    "Full reset": "Tam sıfırlama"
+    "Full reset": "Tam sıfırlama",
+    "Category cleanup applies to all classes": "Bu temizlik tüm sınıflara uygulanır",
+    "Historical combat and builds are kept": "Geçmiş savaşlar ve dizilimler korunur",
+    "Other categories": "Diğer kategoriler",
+    "Historical entries": "Geçmiş kayıtları",
+    "Select a run to preview": "Özetini görmek için bir oyun seç",
+    "Removing favorites unprotects runs from future history cleanup": "Favorileri kaldırmak oyunların sonraki geçmiş temizliğindeki korumasını kaldırır"
   },
   "uk": {
     "API": "API",
@@ -2870,7 +2942,13 @@
     "Back": "Назад",
     "One run": "Одна гра",
     "History cleanup": "Очистити історію",
-    "Full reset": "Повне скидання"
+    "Full reset": "Повне скидання",
+    "Category cleanup applies to all classes": "Очищення стосується всіх класів",
+    "Historical combat and builds are kept": "Історія боїв і збірок зберігається",
+    "Other categories": "Інші категорії",
+    "Historical entries": "Записи історії",
+    "Select a run to preview": "Виберіть гру для перегляду підсумків",
+    "Removing favorites unprotects runs from future history cleanup": "Видалення обраного знімає захист під час майбутнього очищення історії"
   },
   "zh": {
     "API": "API",
@@ -3091,6 +3169,12 @@
     "Back": "返回",
     "One run": "一场对局",
     "History cleanup": "清理历史",
-    "Full reset": "全部重置"
+    "Full reset": "全部重置",
+    "Category cleanup applies to all classes": "此清理适用于所有职业",
+    "Historical combat and builds are kept": "保留历史战斗数据和配装",
+    "Other categories": "其他类别",
+    "Historical entries": "历史条目",
+    "Select a run to preview": "选择一场对局查看摘要",
+    "Removing favorites unprotects runs from future history cleanup": "删除收藏后，对局将不再受到后续历史清理的保护"
   }
 }

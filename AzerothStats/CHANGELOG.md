@@ -1,5 +1,8 @@
-## 1.7.0-dev.2 - Local data management (unmerged preview)
+## 1.7.0-dev.3 - Local data management (unmerged preview)
 
+- Add a right-hand illustrated run recap with identity, difficulty, result and available survival/level/kills/gold/damage/boss metrics. Previewing a historical row never changes the deletion scope.
+- Keep the Settings data-management button inset from the Storage border.
+- Add independent, global Nemesis, Records, Trends and Favorites cleanup. Require an explicit ready phase; preserve historical numeric combat results, recorded builds, co-op comparison snapshots and unrelated categories. Nemesis clears its death log; Records clears historical milestones; Trends clears per-run popularity observations. Retained runs carry validated barriers against reimporting erased categories; new runs collect fresh entries.
 - Add Settings > Manage local data and `/azstats data` (`reset` alias only opens the same dialog).
 - Delete one run's retained details, or clear ordinary retained history globally/by class. Lifetime totals/records/trends remain unchanged, including contributions from already-pruned runs. Current/active and bookmarked run sources are protected.
 - Offer a separate full reset of statistics, retained history and favorites, preserving UI/HUD settings, migration markers and monotonic local IDs. Require an explicit native ready phase and the exact typed token RESET; never reset during play or when phase is unavailable.
