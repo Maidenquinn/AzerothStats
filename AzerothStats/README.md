@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.7.0-dev.3
+# Azeroth Stats - 1.7.0-dev.4
 
 Unmerged local-data-management preview. Public 1.6.2-beta.1 is unchanged. Native testing of this feature remains pending. No data is erased merely by installation or by opening the management dialog.
 

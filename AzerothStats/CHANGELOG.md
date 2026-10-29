@@ -1,5 +1,6 @@
-## 1.7.0-dev.3 - Local data management (unmerged preview)
+## 1.7.0-dev.4 - Local data management (unmerged preview)
 
+- Replace the ambiguous Next button with Review deletion and an explicit no-deletion hint. Give the final screen a distinct Confirm deletion title, a warning explaining the destructive click, and a wider red action button naming the selected operation.
 - Add a right-hand illustrated run recap with identity, difficulty, result and available survival/level/kills/gold/damage/boss metrics. Previewing a historical row never changes the deletion scope.
 - Keep the Settings data-management button inset from the Storage border.
 - Add independent, global Nemesis, Records, Trends and Favorites cleanup. Require an explicit ready phase; preserve historical numeric combat results, recorded builds, co-op comparison snapshots and unrelated categories. Nemesis clears its death log; Records clears historical milestones; Trends clears per-run popularity observations. Retained runs carry validated barriers against reimporting erased categories; new runs collect fresh entries.

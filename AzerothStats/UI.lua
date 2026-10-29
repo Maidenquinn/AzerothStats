@@ -2044,6 +2044,9 @@ function A.BuildUI()
     data:EnableMouse(true)
     surface(data, "main")
     data.title = font(data, 22, 18, 876, 40, 22, COLORS.gold, true)
+    data.reviewHeading = font(data, 22, 66, 616, 42, 18, COLORS.gold, true)
+    data.reviewHint = font(data, 22, 112, 616, 68, 13, COLORS.text)
+    data.selectionHint = font(data, 22, 584, 616, 24, 11, COLORS.muted)
     -- Selection and review are separate stages. Only the review stage can mutate data.
     data.actions = {}
     for index, kind in ipairs({
@@ -2128,12 +2131,12 @@ function A.BuildUI()
             this:ClearFocus()
         end
     end)
-    data.cancel = button(data, 22, 618, 196, 28, "Cancel", function()
+    data.cancel = button(data, 22, 618, 140, 28, "Cancel", function()
         A.pendingDataPlan = nil
         UI.dataBlocker:Hide()
         data:Hide()
     end)
-    data.confirm = button(data, 442, 618, 196, 28, "", function()
+    data.confirm = button(data, 338, 618, 300, 28, "", function()
         if data.stage ~= "review" then
             local plan = A.PrepareDataAction(
                 data.kind,
@@ -2173,7 +2176,7 @@ function A.BuildUI()
         end
     end)
     data:Hide()
-    data.back = button(data, 230, 618, 196, 28, "Back", function()
+    data.back = button(data, 174, 618, 152, 28, "Back", function()
         data.stage, data.status = "select", nil
         data.token:SetText("")
         A.RefreshDataDialog()
@@ -2316,7 +2319,28 @@ function A.BuildUI()
             "Favorites",
         }
         local kinds = { "run", "history", "reset", "nemesis", "records", "trends", "favorites" }
-        put(data.title, A.T("Manage local data") .. " · " .. (review and "2/2" or "1/2"))
+        put(
+            data.title,
+            A.T(review and "Confirm deletion" or "Manage local data")
+                .. " · "
+                .. (review and "2/2" or "1/2")
+        )
+        local actions = {
+            run = "Delete run details",
+            history = "Clear retained history",
+            reset = "Reset all statistics",
+            records = "Clear records",
+            nemesis = "Clear nemesis",
+            trends = "Clear trends",
+            favorites = "Clear favorites",
+        }
+        local action = A.T(actions[data.kind] or "Delete data")
+        put(data.reviewHeading, action)
+        put(data.reviewHint, A.T("This click permanently deletes the selected data"))
+        put(data.selectionHint, A.T("Nothing is deleted at this step"))
+        show(data.reviewHeading, review)
+        show(data.reviewHint, review)
+        show(data.selectionHint, not review)
         for index, control in ipairs(data.actions) do
             put(control.label, A.T(labels[index]))
             selected(control, data.kind == kinds[index])
@@ -2475,12 +2499,9 @@ function A.BuildUI()
         show(data.back, review)
         put(data.back.label, A.T("Back"))
         put(data.cancel.label, A.T("Cancel"))
-        put(
-            data.confirm.label,
-            review
-                    and (data.kind == "reset" and A.T("Full reset") or (A.T("Delete data") .. " (" .. count .. ")"))
-                or A.T("Next")
-        )
+        put(data.confirm.label, review and action or A.T("Review deletion"))
+        local color = review and { 1, 0.4, 0.32 } or COLORS.gold
+        data.confirm.label:SetTextColor(color[1], color[2], color[3])
         local enabled = plan
             and plan.allowed
             and (not review or data.kind ~= "reset" or data.token:GetText() == "RESET")

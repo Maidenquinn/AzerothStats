@@ -1,4 +1,4 @@
-# Local data management — 1.7.0-dev.3 preview
+# Local data management — 1.7.0-dev.4 preview
 
 This unmerged candidate adds explicit user-controlled removal of addon-owned local data. No file I/O, native game write, outgoing message or save import is added. The client serializes the resulting own SavedVariables normally.
 
@@ -64,3 +64,8 @@ Verify unrelated reports/builds/co-op snapshots and settings remain available.
 Start a new run and verify that category begins collecting again. Category cleanup
 affects its fields even on bookmarked historical runs; it does not delete those runs.
 Favorites cleanup unpins them, so a later retention pass may prune them normally.
+
+The selection CTA is **Review deletion** with a no-deletion hint. The review screen
+uses a distinct **Confirm deletion** title, an irreversible-click explanation and a
+wider red action label naming the actual category/operation. Redundant generic entry
+counts are kept in the recap rather than the destructive button.

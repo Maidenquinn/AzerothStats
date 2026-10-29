@@ -224,7 +224,15 @@
     "Other categories": "Ostatní kategorie",
     "Historical entries": "Historické záznamy",
     "Select a run to preview": "Vyberte hru pro zobrazení přehledu",
-    "Removing favorites unprotects runs from future history cleanup": "Odebrání oblíbených zruší ochranu při dalším čištění historie"
+    "Removing favorites unprotects runs from future history cleanup": "Odebrání oblíbených zruší ochranu při dalším čištění historie",
+    "Review deletion": "Zkontrolovat smazání",
+    "Confirm deletion": "Potvrdit smazání",
+    "Nothing is deleted at this step": "V tomto kroku se nic nemaže",
+    "This click permanently deletes the selected data": "Toto kliknutí trvale smaže vybraná data",
+    "Clear records": "Smazat rekordy",
+    "Clear nemesis": "Smazat nemesis",
+    "Clear trends": "Smazat trendy",
+    "Clear favorites": "Smazat oblíbené"
   },
   "de": {
     "API": "API",
@@ -451,7 +459,15 @@
     "Other categories": "Andere Kategorien",
     "Historical entries": "Verlaufseinträge",
     "Select a run to preview": "Ein Spiel für die Vorschau auswählen",
-    "Removing favorites unprotects runs from future history cleanup": "Ohne Favoriten sind Spiele bei künftigen Verlaufsbereinigungen nicht mehr geschützt"
+    "Removing favorites unprotects runs from future history cleanup": "Ohne Favoriten sind Spiele bei künftigen Verlaufsbereinigungen nicht mehr geschützt",
+    "Review deletion": "Löschung prüfen",
+    "Confirm deletion": "Löschung bestätigen",
+    "Nothing is deleted at this step": "In diesem Schritt wird nichts gelöscht",
+    "This click permanently deletes the selected data": "Dieser Klick löscht die ausgewählten Daten endgültig",
+    "Clear records": "Rekorde löschen",
+    "Clear nemesis": "Nemesis löschen",
+    "Clear trends": "Trends löschen",
+    "Clear favorites": "Favoriten löschen"
   },
   "en": {
     "API": "API",
@@ -678,7 +694,15 @@
     "Other categories": "Other categories",
     "Historical entries": "Historical entries",
     "Select a run to preview": "Select a run to preview",
-    "Removing favorites unprotects runs from future history cleanup": "Removing favorites unprotects runs from future history cleanup"
+    "Removing favorites unprotects runs from future history cleanup": "Removing favorites unprotects runs from future history cleanup",
+    "Review deletion": "Review deletion",
+    "Confirm deletion": "Confirm deletion",
+    "Nothing is deleted at this step": "Nothing is deleted at this step",
+    "This click permanently deletes the selected data": "This click permanently deletes the selected data",
+    "Clear records": "Clear records",
+    "Clear nemesis": "Clear nemesis",
+    "Clear trends": "Clear trends",
+    "Clear favorites": "Clear favorites"
   },
   "es": {
     "API": "API",
@@ -905,7 +929,15 @@
     "Other categories": "Otras categorías",
     "Historical entries": "Entradas históricas",
     "Select a run to preview": "Selecciona una partida para ver el resumen",
-    "Removing favorites unprotects runs from future history cleanup": "Quitar favoritos elimina la protección en futuras limpiezas del historial"
+    "Removing favorites unprotects runs from future history cleanup": "Quitar favoritos elimina la protección en futuras limpiezas del historial",
+    "Review deletion": "Revisar eliminación",
+    "Confirm deletion": "Confirmar eliminación",
+    "Nothing is deleted at this step": "En este paso no se elimina nada",
+    "This click permanently deletes the selected data": "Este clic elimina definitivamente los datos seleccionados",
+    "Clear records": "Borrar récords",
+    "Clear nemesis": "Borrar némesis",
+    "Clear trends": "Borrar tendencias",
+    "Clear favorites": "Borrar favoritos"
   },
   "fr": {
     "API": "API",
@@ -1132,7 +1164,15 @@
     "Other categories": "Autres catégories",
     "Historical entries": "Entrées historiques",
     "Select a run to preview": "Sélectionnez une partie pour voir son résumé",
-    "Removing favorites unprotects runs from future history cleanup": "Supprimer les favoris retire leur protection lors des prochains nettoyages de l’historique"
+    "Removing favorites unprotects runs from future history cleanup": "Supprimer les favoris retire leur protection lors des prochains nettoyages de l’historique",
+    "Review deletion": "Vérifier la suppression",
+    "Confirm deletion": "Confirmer la suppression",
+    "Nothing is deleted at this step": "Aucune donnée n’est supprimée à cette étape",
+    "This click permanently deletes the selected data": "Ce clic supprime définitivement les données sélectionnées",
+    "Clear records": "Effacer les records",
+    "Clear nemesis": "Effacer les némésis",
+    "Clear trends": "Effacer les tendances",
+    "Clear favorites": "Effacer les favoris"
   },
   "ja": {
     "API": "API",
@@ -1359,7 +1399,15 @@
     "Other categories": "その他のカテゴリ",
     "Historical entries": "履歴の項目",
     "Select a run to preview": "プレイを選択して概要を表示",
-    "Removing favorites unprotects runs from future history cleanup": "お気に入りを削除すると今後の履歴整理からプレイが保護されなくなります"
+    "Removing favorites unprotects runs from future history cleanup": "お気に入りを削除すると今後の履歴整理からプレイが保護されなくなります",
+    "Review deletion": "削除内容を確認",
+    "Confirm deletion": "削除を確定",
+    "Nothing is deleted at this step": "この段階では何も削除されません",
+    "This click permanently deletes the selected data": "このクリックで選択したデータが完全に削除されます",
+    "Clear records": "記録を削除",
+    "Clear nemesis": "宿敵を削除",
+    "Clear trends": "傾向を削除",
+    "Clear favorites": "お気に入りを削除"
   },
   "ko": {
     "API": "API",
@@ -1586,7 +1634,15 @@
     "Other categories": "다른 범주",
     "Historical entries": "이전 기록",
     "Select a run to preview": "요약을 보려면 게임을 선택하세요",
-    "Removing favorites unprotects runs from future history cleanup": "즐겨찾기를 삭제하면 이후 기록 정리에서 게임이 보호되지 않습니다"
+    "Removing favorites unprotects runs from future history cleanup": "즐겨찾기를 삭제하면 이후 기록 정리에서 게임이 보호되지 않습니다",
+    "Review deletion": "삭제 내용 검토",
+    "Confirm deletion": "삭제 확인",
+    "Nothing is deleted at this step": "이 단계에서는 데이터가 삭제되지 않습니다",
+    "This click permanently deletes the selected data": "이 버튼을 누르면 선택한 데이터가 영구 삭제됩니다",
+    "Clear records": "최고 기록 삭제",
+    "Clear nemesis": "천적 기록 삭제",
+    "Clear trends": "추세 삭제",
+    "Clear favorites": "즐겨찾기 삭제"
   },
   "pl": {
     "API": "API",
@@ -1813,7 +1869,15 @@
     "Other categories": "Pozostałe kategorie",
     "Historical entries": "Wpisy historyczne",
     "Select a run to preview": "Wybierz rozgrywkę, aby zobaczyć podsumowanie",
-    "Removing favorites unprotects runs from future history cleanup": "Usunięcie ulubionych wyłącza ochronę przed kolejnym czyszczeniem historii"
+    "Removing favorites unprotects runs from future history cleanup": "Usunięcie ulubionych wyłącza ochronę przed kolejnym czyszczeniem historii",
+    "Review deletion": "Sprawdź usuwanie",
+    "Confirm deletion": "Potwierdź usuwanie",
+    "Nothing is deleted at this step": "Na tym etapie nic nie jest usuwane",
+    "This click permanently deletes the selected data": "To kliknięcie trwale usuwa wybrane dane",
+    "Clear records": "Usuń rekordy",
+    "Clear nemesis": "Usuń nemezis",
+    "Clear trends": "Usuń trendy",
+    "Clear favorites": "Usuń ulubione"
   },
   "pt": {
     "API": "API",
@@ -2040,7 +2104,15 @@
     "Other categories": "Outras categorias",
     "Historical entries": "Entradas históricas",
     "Select a run to preview": "Selecione uma partida para ver o resumo",
-    "Removing favorites unprotects runs from future history cleanup": "Remover favoritos retira a proteção em futuras limpezas do histórico"
+    "Removing favorites unprotects runs from future history cleanup": "Remover favoritos retira a proteção em futuras limpezas do histórico",
+    "Review deletion": "Revisar exclusão",
+    "Confirm deletion": "Confirmar exclusão",
+    "Nothing is deleted at this step": "Nenhum dado é excluído nesta etapa",
+    "This click permanently deletes the selected data": "Este clique exclui permanentemente os dados selecionados",
+    "Clear records": "Apagar recordes",
+    "Clear nemesis": "Apagar nêmesis",
+    "Clear trends": "Apagar tendências",
+    "Clear favorites": "Apagar favoritos"
   },
   "ro": {
     "API": "API",
@@ -2267,7 +2339,15 @@
     "Other categories": "Alte categorii",
     "Historical entries": "Înregistrări istorice",
     "Select a run to preview": "Selectează o partidă pentru rezumat",
-    "Removing favorites unprotects runs from future history cleanup": "Eliminarea favoritelor anulează protecția la curățările viitoare ale istoricului"
+    "Removing favorites unprotects runs from future history cleanup": "Eliminarea favoritelor anulează protecția la curățările viitoare ale istoricului",
+    "Review deletion": "Verifică ștergerea",
+    "Confirm deletion": "Confirmă ștergerea",
+    "Nothing is deleted at this step": "Nu se șterge nimic la acest pas",
+    "This click permanently deletes the selected data": "Acest clic șterge definitiv datele selectate",
+    "Clear records": "Șterge recordurile",
+    "Clear nemesis": "Șterge nemezis",
+    "Clear trends": "Șterge tendințele",
+    "Clear favorites": "Șterge favoritele"
   },
   "ru": {
     "API": "API",
@@ -2494,7 +2574,15 @@
     "Other categories": "Другие категории",
     "Historical entries": "Записи истории",
     "Select a run to preview": "Выберите игру для просмотра сводки",
-    "Removing favorites unprotects runs from future history cleanup": "Удаление избранного снимает защиту при будущей очистке истории"
+    "Removing favorites unprotects runs from future history cleanup": "Удаление избранного снимает защиту при будущей очистке истории",
+    "Review deletion": "Проверить удаление",
+    "Confirm deletion": "Подтвердить удаление",
+    "Nothing is deleted at this step": "На этом шаге данные не удаляются",
+    "This click permanently deletes the selected data": "Это нажатие безвозвратно удалит выбранные данные",
+    "Clear records": "Удалить рекорды",
+    "Clear nemesis": "Очистить Немезиду",
+    "Clear trends": "Удалить тенденции",
+    "Clear favorites": "Удалить избранное"
   },
   "tr": {
     "API": "API",
@@ -2721,7 +2809,15 @@
     "Other categories": "Diğer kategoriler",
     "Historical entries": "Geçmiş kayıtları",
     "Select a run to preview": "Özetini görmek için bir oyun seç",
-    "Removing favorites unprotects runs from future history cleanup": "Favorileri kaldırmak oyunların sonraki geçmiş temizliğindeki korumasını kaldırır"
+    "Removing favorites unprotects runs from future history cleanup": "Favorileri kaldırmak oyunların sonraki geçmiş temizliğindeki korumasını kaldırır",
+    "Review deletion": "Silmeyi incele",
+    "Confirm deletion": "Silmeyi onayla",
+    "Nothing is deleted at this step": "Bu adımda hiçbir veri silinmez",
+    "This click permanently deletes the selected data": "Bu tıklama seçilen verileri kalıcı olarak siler",
+    "Clear records": "Rekorları sil",
+    "Clear nemesis": "Nemesis kayıtlarını sil",
+    "Clear trends": "Eğilimleri sil",
+    "Clear favorites": "Favorileri sil"
   },
   "uk": {
     "API": "API",
@@ -2948,7 +3044,15 @@
     "Other categories": "Інші категорії",
     "Historical entries": "Записи історії",
     "Select a run to preview": "Виберіть гру для перегляду підсумків",
-    "Removing favorites unprotects runs from future history cleanup": "Видалення обраного знімає захист під час майбутнього очищення історії"
+    "Removing favorites unprotects runs from future history cleanup": "Видалення обраного знімає захист під час майбутнього очищення історії",
+    "Review deletion": "Перевірити видалення",
+    "Confirm deletion": "Підтвердити видалення",
+    "Nothing is deleted at this step": "На цьому кроці дані не видаляються",
+    "This click permanently deletes the selected data": "Це натискання назавжди видалить вибрані дані",
+    "Clear records": "Видалити рекорди",
+    "Clear nemesis": "Очистити Немезиду",
+    "Clear trends": "Видалити тенденції",
+    "Clear favorites": "Видалити обране"
   },
   "zh": {
     "API": "API",
@@ -3175,6 +3279,14 @@
     "Other categories": "其他类别",
     "Historical entries": "历史条目",
     "Select a run to preview": "选择一场对局查看摘要",
-    "Removing favorites unprotects runs from future history cleanup": "删除收藏后，对局将不再受到后续历史清理的保护"
+    "Removing favorites unprotects runs from future history cleanup": "删除收藏后，对局将不再受到后续历史清理的保护",
+    "Review deletion": "检查删除内容",
+    "Confirm deletion": "确认删除",
+    "Nothing is deleted at this step": "此步骤不会删除任何数据",
+    "This click permanently deletes the selected data": "点击此按钮将永久删除所选数据",
+    "Clear records": "清除纪录",
+    "Clear nemesis": "清除宿敌",
+    "Clear trends": "清除趋势",
+    "Clear favorites": "清除收藏"
   }
 }

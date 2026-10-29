@@ -130,6 +130,11 @@ check(
     not A.ui.dataDialog.scopeButton:IsShown(),
     "single-run choice uses a visible list, not a long dropdown"
 )
+check(
+    A.ui.dataDialog.confirm.label.fullText == A.T("Review deletion")
+        and A.ui.dataDialog.selectionHint:IsShown(),
+    "selection CTA explicitly opens review without deleting"
+)
 A.ui.dataDialog.rows[1].callback()
 check(
     A.pendingDataPlan.id == c.id and A.FindRun(c.id) and A.Sign(A.db.totals) == totals,
@@ -142,7 +147,13 @@ check(
 )
 A.RefreshUI()
 check(
-    A.ui.dataDialog.confirm.label.fullText == A.T("Delete data") .. " (1)",
+    A.ui.dataDialog.reviewHeading:IsShown()
+        and not A.ui.dataDialog.selectionHint:IsShown()
+        and A.ui.dataDialog.title.fullText == A.T("Confirm deletion") .. " · 2/2",
+    "review has a distinct confirmation title and irreversible-action explanation"
+)
+check(
+    A.ui.dataDialog.confirm.label.fullText == A.T("Delete run details"),
     "global refresh preserves the explicit confirmation label"
 )
 A.ui.dataDialog.back.callback()
