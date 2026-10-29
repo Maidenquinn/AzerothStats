@@ -1,7 +1,7 @@
 -- Shared primitives and formatting. Copies/signatures have explicit work budgets.
 -- Native calls are protected by pcall; chat output is local to DEFAULT_CHAT_FRAME.
 
-AzerothStats = { version = "1.7.0-dev.4", schema = 1 }
+AzerothStats = { version = "1.7.0-dev.5", schema = 1 }
 local A = AzerothStats
 
 --- Accept finite non-negative counters; return nil for absent, negative or non-finite input.

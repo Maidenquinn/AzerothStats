@@ -232,7 +232,16 @@
     "Clear records": "Smazat rekordy",
     "Clear nemesis": "Smazat nemesis",
     "Clear trends": "Smazat trendy",
-    "Clear favorites": "Smazat oblíbené"
+    "Clear favorites": "Smazat oblíbené",
+    "Edit page": "Upravit",
+    "Done editing": "Hotovo",
+    "Restore hidden rows": "Zobrazit skryté řádky",
+    "Hide this row": "Skrýt tento řádek",
+    "Show this row": "Zobrazit tento řádek",
+    "Reset this record": "Resetovat tento rekord",
+    "Reset this entry": "Resetovat tento záznam",
+    "Remove favorite": "Odebrat z oblíbených",
+    "Only this entry is reset; other entries are kept": "Resetuje se jen tento záznam; ostatní zůstanou"
   },
   "de": {
     "API": "API",
@@ -467,7 +476,16 @@
     "Clear records": "Rekorde löschen",
     "Clear nemesis": "Nemesis löschen",
     "Clear trends": "Trends löschen",
-    "Clear favorites": "Favoriten löschen"
+    "Clear favorites": "Favoriten löschen",
+    "Edit page": "Bearbeiten",
+    "Done editing": "Fertig",
+    "Restore hidden rows": "Zeilen wiederherstellen",
+    "Hide this row": "Diese Zeile ausblenden",
+    "Show this row": "Diese Zeile anzeigen",
+    "Reset this record": "Diesen Rekord zurücksetzen",
+    "Reset this entry": "Diesen Eintrag zurücksetzen",
+    "Remove favorite": "Favorit entfernen",
+    "Only this entry is reset; other entries are kept": "Nur dieser Eintrag wird zurückgesetzt; andere bleiben erhalten"
   },
   "en": {
     "API": "API",
@@ -702,7 +720,16 @@
     "Clear records": "Clear records",
     "Clear nemesis": "Clear nemesis",
     "Clear trends": "Clear trends",
-    "Clear favorites": "Clear favorites"
+    "Clear favorites": "Clear favorites",
+    "Edit page": "Edit page",
+    "Done editing": "Done editing",
+    "Restore hidden rows": "Restore hidden rows",
+    "Hide this row": "Hide this row",
+    "Show this row": "Show this row",
+    "Reset this record": "Reset this record",
+    "Reset this entry": "Reset this entry",
+    "Remove favorite": "Remove favorite",
+    "Only this entry is reset; other entries are kept": "Only this entry is reset; other entries are kept"
   },
   "es": {
     "API": "API",
@@ -937,7 +964,16 @@
     "Clear records": "Borrar récords",
     "Clear nemesis": "Borrar némesis",
     "Clear trends": "Borrar tendencias",
-    "Clear favorites": "Borrar favoritos"
+    "Clear favorites": "Borrar favoritos",
+    "Edit page": "Editar",
+    "Done editing": "Terminar",
+    "Restore hidden rows": "Mostrar filas ocultas",
+    "Hide this row": "Ocultar esta fila",
+    "Show this row": "Mostrar esta fila",
+    "Reset this record": "Restablecer este récord",
+    "Reset this entry": "Restablecer esta entrada",
+    "Remove favorite": "Quitar favorito",
+    "Only this entry is reset; other entries are kept": "Solo se restablece esta entrada; las demás se conservan"
   },
   "fr": {
     "API": "API",
@@ -1172,7 +1208,16 @@
     "Clear records": "Effacer les records",
     "Clear nemesis": "Effacer les némésis",
     "Clear trends": "Effacer les tendances",
-    "Clear favorites": "Effacer les favoris"
+    "Clear favorites": "Effacer les favoris",
+    "Edit page": "Éditer",
+    "Done editing": "Terminer",
+    "Restore hidden rows": "Réafficher les lignes",
+    "Hide this row": "Masquer cette ligne",
+    "Show this row": "Afficher cette ligne",
+    "Reset this record": "Réinitialiser ce record",
+    "Reset this entry": "Réinitialiser cette entrée",
+    "Remove favorite": "Retirer le favori",
+    "Only this entry is reset; other entries are kept": "Seule cette entrée est réinitialisée ; les autres sont conservées"
   },
   "ja": {
     "API": "API",
@@ -1407,7 +1452,16 @@
     "Clear records": "記録を削除",
     "Clear nemesis": "宿敵を削除",
     "Clear trends": "傾向を削除",
-    "Clear favorites": "お気に入りを削除"
+    "Clear favorites": "お気に入りを削除",
+    "Edit page": "編集",
+    "Done editing": "完了",
+    "Restore hidden rows": "非表示の行を復元",
+    "Hide this row": "この行を非表示",
+    "Show this row": "この行を表示",
+    "Reset this record": "この記録をリセット",
+    "Reset this entry": "この項目をリセット",
+    "Remove favorite": "お気に入りを解除",
+    "Only this entry is reset; other entries are kept": "この項目のみリセットし、他の項目は保持します"
   },
   "ko": {
     "API": "API",
@@ -1642,7 +1696,16 @@
     "Clear records": "최고 기록 삭제",
     "Clear nemesis": "천적 기록 삭제",
     "Clear trends": "추세 삭제",
-    "Clear favorites": "즐겨찾기 삭제"
+    "Clear favorites": "즐겨찾기 삭제",
+    "Edit page": "편집",
+    "Done editing": "완료",
+    "Restore hidden rows": "숨긴 행 복원",
+    "Hide this row": "이 행 숨기기",
+    "Show this row": "이 행 표시",
+    "Reset this record": "이 최고 기록 초기화",
+    "Reset this entry": "이 항목 초기화",
+    "Remove favorite": "즐겨찾기 해제",
+    "Only this entry is reset; other entries are kept": "이 항목만 초기화하고 다른 항목은 유지합니다"
   },
   "pl": {
     "API": "API",
@@ -1877,7 +1940,16 @@
     "Clear records": "Usuń rekordy",
     "Clear nemesis": "Usuń nemezis",
     "Clear trends": "Usuń trendy",
-    "Clear favorites": "Usuń ulubione"
+    "Clear favorites": "Usuń ulubione",
+    "Edit page": "Edytuj",
+    "Done editing": "Gotowe",
+    "Restore hidden rows": "Przywróć ukryte wiersze",
+    "Hide this row": "Ukryj ten wiersz",
+    "Show this row": "Pokaż ten wiersz",
+    "Reset this record": "Resetuj ten rekord",
+    "Reset this entry": "Resetuj ten wpis",
+    "Remove favorite": "Usuń z ulubionych",
+    "Only this entry is reset; other entries are kept": "Resetowany jest tylko ten wpis; pozostałe zostają"
   },
   "pt": {
     "API": "API",
@@ -2112,7 +2184,16 @@
     "Clear records": "Apagar recordes",
     "Clear nemesis": "Apagar nêmesis",
     "Clear trends": "Apagar tendências",
-    "Clear favorites": "Apagar favoritos"
+    "Clear favorites": "Apagar favoritos",
+    "Edit page": "Editar",
+    "Done editing": "Concluir",
+    "Restore hidden rows": "Mostrar linhas ocultas",
+    "Hide this row": "Ocultar esta linha",
+    "Show this row": "Mostrar esta linha",
+    "Reset this record": "Redefinir este recorde",
+    "Reset this entry": "Redefinir esta entrada",
+    "Remove favorite": "Remover favorito",
+    "Only this entry is reset; other entries are kept": "Somente esta entrada é redefinida; as outras são mantidas"
   },
   "ro": {
     "API": "API",
@@ -2347,7 +2428,16 @@
     "Clear records": "Șterge recordurile",
     "Clear nemesis": "Șterge nemezis",
     "Clear trends": "Șterge tendințele",
-    "Clear favorites": "Șterge favoritele"
+    "Clear favorites": "Șterge favoritele",
+    "Edit page": "Editează",
+    "Done editing": "Gata",
+    "Restore hidden rows": "Arată rândurile ascunse",
+    "Hide this row": "Ascunde acest rând",
+    "Show this row": "Arată acest rând",
+    "Reset this record": "Resetează acest record",
+    "Reset this entry": "Resetează această intrare",
+    "Remove favorite": "Elimină favoritul",
+    "Only this entry is reset; other entries are kept": "Doar această intrare este resetată; celelalte sunt păstrate"
   },
   "ru": {
     "API": "API",
@@ -2582,7 +2672,16 @@
     "Clear records": "Удалить рекорды",
     "Clear nemesis": "Очистить Немезиду",
     "Clear trends": "Удалить тенденции",
-    "Clear favorites": "Удалить избранное"
+    "Clear favorites": "Удалить избранное",
+    "Edit page": "Изменить",
+    "Done editing": "Готово",
+    "Restore hidden rows": "Показать скрытые строки",
+    "Hide this row": "Скрыть эту строку",
+    "Show this row": "Показать эту строку",
+    "Reset this record": "Сбросить этот рекорд",
+    "Reset this entry": "Сбросить эту запись",
+    "Remove favorite": "Убрать из избранного",
+    "Only this entry is reset; other entries are kept": "Сбрасывается только эта запись; остальные сохраняются"
   },
   "tr": {
     "API": "API",
@@ -2817,7 +2916,16 @@
     "Clear records": "Rekorları sil",
     "Clear nemesis": "Nemesis kayıtlarını sil",
     "Clear trends": "Eğilimleri sil",
-    "Clear favorites": "Favorileri sil"
+    "Clear favorites": "Favorileri sil",
+    "Edit page": "Düzenle",
+    "Done editing": "Tamam",
+    "Restore hidden rows": "Gizli satırları göster",
+    "Hide this row": "Bu satırı gizle",
+    "Show this row": "Bu satırı göster",
+    "Reset this record": "Bu rekoru sıfırla",
+    "Reset this entry": "Bu kaydı sıfırla",
+    "Remove favorite": "Favoriyi kaldır",
+    "Only this entry is reset; other entries are kept": "Yalnızca bu kayıt sıfırlanır; diğerleri korunur"
   },
   "uk": {
     "API": "API",
@@ -3052,7 +3160,16 @@
     "Clear records": "Видалити рекорди",
     "Clear nemesis": "Очистити Немезиду",
     "Clear trends": "Видалити тенденції",
-    "Clear favorites": "Видалити обране"
+    "Clear favorites": "Видалити обране",
+    "Edit page": "Редагувати",
+    "Done editing": "Готово",
+    "Restore hidden rows": "Показати приховані рядки",
+    "Hide this row": "Приховати цей рядок",
+    "Show this row": "Показати цей рядок",
+    "Reset this record": "Скинути цей рекорд",
+    "Reset this entry": "Скинути цей запис",
+    "Remove favorite": "Прибрати з обраного",
+    "Only this entry is reset; other entries are kept": "Скидається лише цей запис; решта зберігаються"
   },
   "zh": {
     "API": "API",
@@ -3287,6 +3404,15 @@
     "Clear records": "清除纪录",
     "Clear nemesis": "清除宿敌",
     "Clear trends": "清除趋势",
-    "Clear favorites": "清除收藏"
+    "Clear favorites": "清除收藏",
+    "Edit page": "编辑",
+    "Done editing": "完成",
+    "Restore hidden rows": "恢复隐藏行",
+    "Hide this row": "隐藏此行",
+    "Show this row": "显示此行",
+    "Reset this record": "重置此纪录",
+    "Reset this entry": "重置此条目",
+    "Remove favorite": "移除收藏",
+    "Only this entry is reset; other entries are kept": "仅重置此条目；保留其他条目"
   }
 }

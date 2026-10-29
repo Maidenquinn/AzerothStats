@@ -75,7 +75,11 @@ function A.FinishReport(run)
         for _, key in ipairs(A.metrics) do
             local value = A.Number(run.values[key])
             local before = run.recordBaseline.values[key]
-            if value and (before == nil or value > before) then
+            if
+                value
+                and not (run.recordResets and run.recordResets[key])
+                and (before == nil or value > before)
+            then
                 run.reportRecords[key] = value
             end
         end

@@ -203,6 +203,9 @@ function A.MarkDeath()
         evidence.source = hit.source
         evidence.confidence = "probable"
     end
+    if evidence.source and run.nemesisResets and run.nemesisResets[evidence.source] then
+        return
+    end
     evidence.unparsed = A.Copy(watch.unparsed)
     run.deaths = run.deaths or {}
     table.insert(run.deaths, evidence)
@@ -272,6 +275,7 @@ function A.NemesisModel(m, group)
     for _, v in ipairs(sorted) do
         table.insert(m.rows, {
             label = v.name,
+            entryAction = { kind = "nemesis", key = v.name, label = v.name },
             value = A.Format(v.s.confirmed) .. " · " .. A.T("Confirmed") .. " / " .. A.Format(
                 v.s.probable
             ) .. " · " .. A.T("Probable"),

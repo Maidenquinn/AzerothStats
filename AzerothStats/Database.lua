@@ -113,7 +113,11 @@ function A.Account(run)
                     group.sum[key] = (group.sum[key] or 0) + value - (old or 0)
                 end
                 local rec = group.records[key]
-                if not run.recordsReset and (not rec or value > rec.value) then
+                if
+                    not run.recordsReset
+                    and not (run.recordResets and run.recordResets[key])
+                    and (not rec or value > rec.value)
+                then
                     group.records[key] = { value = value, id = run.id, at = run.startedAt }
                 end
             end

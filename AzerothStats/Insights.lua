@@ -210,32 +210,34 @@ function A.AccountInsights(run)
         return
     end
     for key, entry in pairs(coop.peers) do
-        local old = coop.accounted[key] or {}
-        for _, group in ipairs({ A.db.totals, A.db.classes[run.class] }) do
-            group.companions = group.companions or {}
-            local rec = group.companions[key]
-            if not rec then
-                local count = 0
-                for _ in pairs(group.companions) do
-                    count = count + 1
+        if not A.TrendKeyReset(run, "companions", key) then
+            local old = coop.accounted[key] or {}
+            for _, group in ipairs({ A.db.totals, A.db.classes[run.class] }) do
+                group.companions = group.companions or {}
+                local rec = group.companions[key]
+                if not rec then
+                    local count = 0
+                    for _ in pairs(group.companions) do
+                        count = count + 1
+                    end
+                    if count < 1024 then
+                        rec = { name = entry.name, class = entry.class, runs = 0, wins = 0 }
+                        group.companions[key] = rec
+                    else
+                        group.companionsTruncated = true
+                    end
                 end
-                if count < 1024 then
-                    rec = { name = entry.name, class = entry.class, runs = 0, wins = 0 }
-                    group.companions[key] = rec
-                else
-                    group.companionsTruncated = true
+                if rec then
+                    if not old.seen then
+                        rec.runs = rec.runs + 1
+                    end
+                    if run.winCounted and not old.win then
+                        rec.wins = rec.wins + 1
+                    end
                 end
             end
-            if rec then
-                if not old.seen then
-                    rec.runs = rec.runs + 1
-                end
-                if run.winCounted and not old.win then
-                    rec.wins = rec.wins + 1
-                end
-            end
+            coop.accounted[key] = { seen = true, win = run.winCounted or old.win }
         end
-        coop.accounted[key] = { seen = true, win = run.winCounted or old.win }
     end
 end
 

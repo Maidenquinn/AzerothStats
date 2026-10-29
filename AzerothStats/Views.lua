@@ -226,6 +226,7 @@ local function dashboard(model, group)
     for _, key in ipairs({ "duration", "kills", "damage" }) do
         local record = group.records and group.records[key]
         table.insert(model.records, {
+            metric = key,
             label = A.Metric(key),
             value = key == "duration" and A.Duration(record and record.value)
                 or A.Short(record and record.value),
@@ -730,8 +731,9 @@ local function stylePage(model, run, group)
         for _, key in ipairs({ "duration", "peakDps", "kills" }) do
             local item = featured[key]
             if item then
-                card(model, item.label, item.value, item.date or "", item.icon, item.action).exact = item.exact
-                    or item.detail
+                local featuredCard =
+                    card(model, item.label, item.value, item.date or "", item.icon, item.action)
+                featuredCard.exact, featuredCard.metric = item.exact or item.detail, item.metric
             end
         end
         model.rowY, model.rowHeight = 330, 60
@@ -988,6 +990,12 @@ function A.PageModel()
                                 A.view.page = 1
                             end
                         )
+                        item.entryAction = {
+                            kind = "trend",
+                            section = "companions",
+                            key = key,
+                            label = entry.name,
+                        }
                         item.class = entry.class
                         item.favorite = { kind = "companion", key = key, label = entry.name }
                     end
@@ -1125,6 +1133,7 @@ function A.PageModel()
                     nil,
                     kind == "spells" and A.SpellIcon(label) or entry.icon
                 )
+                item.entryAction = { kind = "trend", section = kind, key = key, label = label }
                 item.favorite = {
                     kind = kind == "spells" and "spell" or "jewelry",
                     key = key,
@@ -1174,6 +1183,7 @@ function A.PageModel()
     end
     A.DecorateFavorites(model, tab, run)
     stylePage(model, run, group)
+    A.DecorateEditing(model, run)
     if table.getn(model.rows) == 0 and table.getn(model.cards) == 0 and tab ~= 8 then
         model.empty = true
     end

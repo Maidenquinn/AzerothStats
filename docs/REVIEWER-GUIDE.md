@@ -57,3 +57,10 @@ Read [SECURITY-REVIEW](SECURITY-REVIEW.md) for findings and [TESTING](TESTING.md
 The candidate's recorded results and machine-readable evidence are in [review/RESULTS.md](review/RESULTS.md).
 
 The game team should confirm: permitted event/counter/tooltip use; approval rules for local co-op/death history; whether game-derived names/catalogs may be bundled; whether the package/font assets are acceptable; and the approval process for later changes. A trusted fixture supplied by the team is preferable to the optional read-only local executable compatibility check.
+
+### Per-entry editing preview
+
+The unmerged 1.7.0-dev.5 candidate has 27 runtime modules and 77 player files,
+including the manifest. Editing.lua owns reversible visibility preferences and validated
+key-level reset plans; it never evaluates saved callbacks. See DATA-MANAGEMENT.md
+for exact scopes, persisted reimport barriers, limits and disposable-profile acceptance.

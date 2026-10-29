@@ -1,5 +1,8 @@
-## 1.7.0-dev.4 - Local data management (unmerged preview)
+## 1.7.0-dev.5 - Local data management (unmerged preview)
 
+- Add Edit page to data pages, with row/card action menus. Hide/show rows reversibly without modifying combat values or ranking totals; restore page visibility from one button.
+- Reset one record metric (including featured survival/DPS/kills cards), one nemesis source, one spell/accessory/companion trend; remove one favorite or unprotected historical run. Confirm the exact entry and explicit all-class scope. Preserve unrelated entries, lifetime sums, raw combat/build snapshots and retained co-op comparisons.
+- Validate bounded hidden-row and per-entry reset masks. Fence historical metric/usage/source observers against reimporting erased entries; new runs collect those entries normally.
 - Replace the ambiguous Next button with Review deletion and an explicit no-deletion hint. Give the final screen a distinct Confirm deletion title, a warning explaining the destructive click, and a wider red action button naming the selected operation.
 - Add a right-hand illustrated run recap with identity, difficulty, result and available survival/level/kills/gold/damage/boss metrics. Previewing a historical row never changes the deletion scope.
 - Keep the Settings data-management button inset from the Storage border.

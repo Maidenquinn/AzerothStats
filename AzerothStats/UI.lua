@@ -196,6 +196,23 @@ local function button(parent, x, y, w, h, label, fn)
     return b
 end
 
+--- Row actions stay separate from navigation and favorites; visible only in edit mode.
+local function editButton(parent)
+    local control = button(parent, 0, 0, 28, 22, "...", function(self)
+        if parent.item then
+            A.ShowEditMenu(self, parent.item)
+        end
+    end)
+    control.label:ClearAllPoints()
+    control.label:SetPoint("TOPLEFT", control, "TOPLEFT", 3, 0)
+    control.label:SetWidth(22)
+    control.label.fontWidth = 22
+    control.label:SetJustifyH("CENTER")
+    control:ClearAllPoints()
+    control:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -2, -2)
+    return control
+end
+
 --- Create an owned heart control; only user clicks change local bookmark data.
 local function favoriteButton(parent, x, y)
     local b = CreateFrame("Button", nil, parent)
@@ -249,6 +266,7 @@ end
 
 --- Change local page state and close the owned popup menu.
 local function selectTab(i)
+    A.editMode = false
     A.view.tab = i
     A.view.page = 1
     if i == 3 then
@@ -831,6 +849,13 @@ function A.RefreshUI()
     end
     local model = A.PageModel()
     UI.model = model
+    show(UI.editToggle, model.editable == true)
+    show(UI.restoreRows, model.editable == true and A.editMode)
+    put(UI.editToggle.label, A.T(A.editMode and "Done editing" or "Edit page"))
+    put(UI.restoreRows.label, A.T("Restore hidden rows"))
+    if UI.entryDialog and UI.entryDialog:IsShown() then
+        A.RefreshEntryReview()
+    end
     put(UI.title, "AZEROTH STATS")
     put(UI.version, A.version)
     local _, heroClass = A.Identity()
@@ -844,6 +869,8 @@ function A.RefreshUI()
         A.ShowRetentionConfirmation()
     end
     put(UI.sectionTitle, model.title)
+    UI.subtitle.fontWidth = A.editMode and 408 or 600
+    UI.subtitle:SetWidth(UI.subtitle.fontWidth)
     put(UI.subtitle, model.subtitle)
     put(UI.sidebarNote, A.T("Collected since installation"))
     put(UI.explore, A.T("Explore"))
@@ -1054,11 +1081,18 @@ function A.RefreshUI()
     show(UI.recordPanel, dashboard)
     put(UI.recentTitle, A.T("Recent runs"))
     put(UI.recordsTitle, A.T("Your records"))
-    for index, record in ipairs(model.records or {}) do
-        local widget = UI.recordItems[index]
-        put(widget.label, record.label)
-        put(widget.value, record.value)
-        widget.item = { label = record.label, value = record.value, exact = record.exact }
+    for index, widget in ipairs(UI.recordItems) do
+        local record = model.records and model.records[index]
+        show(widget, record ~= nil)
+        if record then
+            put(widget.label, record.label)
+            put(widget.value, record.value)
+            widget.item = record
+            widget:SetAlpha(record.hidden and 0.45 or 1)
+            show(widget.edit, A.editMode == true)
+        else
+            widget.item = nil
+        end
     end
     show(UI.settings, tab == 8)
     if tab == 8 then
@@ -1158,6 +1192,9 @@ function A.RefreshUI()
             put(c.label, d.label)
             put(c.value, d.value)
             put(c.detail, model.layout == "dashboard" and "" or d.detail)
+            show(c.edit, A.editMode == true)
+            show(c.icon, not A.editMode)
+            c:SetAlpha(d.hidden and 0.45 or 1)
             c:Show()
         else
             c:Hide()
@@ -1168,7 +1205,9 @@ function A.RefreshUI()
         local d = i <= per and model.rows[(A.view.page - 1) * per + i] or nil
         if d then
             frame.favorite.favorite = d.favorite
-            show(frame.favorite, d.favorite ~= nil)
+            show(frame.favorite, d.favorite ~= nil and not A.editMode)
+            show(frame.edit, A.editMode == true)
+            frame:SetAlpha(d.hidden and 0.45 or 1)
             if d.favorite then
                 paintFavorite(frame.favorite)
             end
@@ -1404,6 +1443,13 @@ function A.BuildUI()
             UI.dataBlocker:Hide()
         end
         A.pendingDataPlan = nil
+        A.pendingEntryPlan = nil
+        if UI.entryDialog then
+            UI.entryDialog:Hide()
+        end
+        if UI.entryBlocker then
+            UI.entryBlocker:Hide()
+        end
         if A.barEditor then
             A.barEditor:Hide()
         end
@@ -1837,11 +1883,14 @@ function A.BuildUI()
             GameTooltip:Hide()
         end)
         c:SetScript("OnClick", function()
-            if this.item and this.item.action then
+            if A.editMode and this.item then
+                A.ShowEditMenu(this.edit, this.item)
+            elseif this.item and this.item.action then
                 this.item.action()
                 A.RefreshUI()
             end
         end)
+        c.edit = editButton(c)
         UI.cards[i] = c
     end
     for i = 1, 12 do
@@ -1893,13 +1942,26 @@ function A.BuildUI()
             GameTooltip:Hide()
         end)
         r:SetScript("OnClick", function()
-            if this.item and this.item.action then
+            if A.editMode and this.item then
+                A.ShowEditMenu(this.edit, this.item)
+            elseif this.item and this.item.action then
                 this.item.action()
                 A.RefreshUI()
             end
         end)
+        r.edit = editButton(r)
         UI.rows[i] = r
     end
+    UI.editToggle = button(frame, 834, 138, 98, 24, "", function()
+        A.editMode = not A.editMode
+        A.RefreshUI()
+    end)
+    UI.restoreRows = button(frame, 642, 138, 182, 24, "", function()
+        if UI.model then
+            A.RestorePageRows(UI.model.editContext)
+        end
+        A.RefreshUI()
+    end)
     UI.statsLink = button(frame, 518, 100, 186, 26, "", function()
         A.view.overviewStats = not A.view.overviewStats
         A.view.page = 1
@@ -1939,8 +2001,13 @@ function A.BuildUI()
             GameTooltip:Hide()
         end)
         record:SetScript("OnClick", function()
-            selectTab(6)
+            if A.editMode and this.item then
+                A.ShowEditMenu(this.edit, this.item)
+            else
+                selectTab(6)
+            end
         end)
+        record.edit = editButton(record)
         UI.recordItems[index] = record
     end
     UI.empty = font(frame, 268, 293, 608, 80, 16, COLORS.muted, true)
@@ -2508,6 +2575,9 @@ function A.BuildUI()
         data.confirm:SetAlpha(enabled and 1 or 0.45)
     end
     function A.OpenDataManagement()
+        if UI.entryDialog then
+            UI.entryDialog:Hide()
+        end
         A.ToggleUI(true)
         if A.barEditor then
             A.barEditor:Hide()
@@ -2532,6 +2602,125 @@ function A.BuildUI()
     end
     if UISpecialFrames then
         table.insert(UISpecialFrames, "AzerothStatsDataManagement")
+    end
+    UI.entryBlocker = CreateFrame("Frame", nil, frame)
+    UI.entryBlocker:SetAllPoints(frame)
+    UI.entryBlocker:SetFrameLevel(frame:GetFrameLevel() + 79)
+    UI.entryBlocker:EnableMouse(true)
+    solid(UI.entryBlocker, 0, 0, 0, 0.65)
+    UI.entryBlocker:Hide()
+    UI.entryDialog = CreateFrame("Frame", "AzerothStatsEntryReview", frame)
+    local entry = UI.entryDialog
+    entry:SetPoint("CENTER", frame, "CENTER", 0, 0)
+    entry:SetWidth(620)
+    entry:SetHeight(360)
+    entry:SetFrameStrata("FULLSCREEN_DIALOG")
+    entry:SetFrameLevel(frame:GetFrameLevel() + 80)
+    entry:EnableMouse(true)
+    surface(entry, "main")
+    entry.title = font(entry, 22, 18, 576, 38, 22, COLORS.gold, true)
+    entry.subject = font(entry, 22, 66, 576, 58, 17, COLORS.text, true)
+    entry.message = font(entry, 22, 130, 576, 96, 13, COLORS.text)
+    entry.warning = font(entry, 22, 230, 576, 60, 12, COLORS.gold)
+    entry.cancel = button(entry, 22, 310, 170, 30, "Cancel", function()
+        A.pendingEntryPlan = nil
+        UI.entryBlocker:Hide()
+        entry:Hide()
+    end)
+    entry.confirm = button(entry, 212, 310, 386, 30, "", function()
+        local ok, message = A.ConfirmEntryAction()
+        if ok then
+            entry:Hide()
+            A.RefreshUI()
+            A.Say(A.T(message))
+        else
+            entry.status = message
+            A.RefreshEntryReview()
+        end
+    end)
+    entry:SetScript("OnHide", function()
+        A.pendingEntryPlan = nil
+        UI.entryBlocker:Hide()
+    end)
+    entry:Hide()
+    function A.RefreshEntryReview()
+        local plan = A.pendingEntryPlan
+        if not plan then
+            return
+        end
+        local verbs = {
+            record = "Reset this record",
+            trend = "Reset this entry",
+            nemesis = "Reset this entry",
+            bookmark = "Remove favorite",
+            run = "Delete run details",
+        }
+        put(entry.title, A.T("Confirm deletion"))
+        put(
+            entry.subject,
+            (plan.kind == "record" and A.Metric(plan.key) or plan.label)
+                .. "\n"
+                .. A.T(
+                    plan.kind == "run" and "History"
+                        or plan.kind == "bookmark" and "Favorites"
+                        or "All classes"
+                )
+        )
+        put(
+            entry.message,
+            A.T(verbs[plan.kind])
+                .. "\n\n"
+                .. A.T(
+                    plan.kind == "run" and "History only; totals stay unchanged"
+                        or "Only this entry is reset; other entries are kept"
+                )
+        )
+        put(entry.warning, A.T(entry.status or plan.reason or "This cannot be undone"))
+        put(entry.confirm.label, A.T(verbs[plan.kind]))
+        entry.confirm.label:SetTextColor(1, 0.4, 0.32)
+        entry.confirm:SetAlpha(plan.allowed and 1 or 0.45)
+    end
+    function A.OpenEntryReview(action)
+        A.pendingEntryPlan = A.EntryPlan(action)
+        if not A.pendingEntryPlan then
+            return
+        end
+        entry.status = nil
+        if UI.menu then
+            UI.menu:Hide()
+        end
+        A.RefreshEntryReview()
+        UI.entryBlocker:Show()
+        entry:Show()
+    end
+    function A.ShowEditMenu(anchor, item)
+        local choices = {
+            {
+                label = A.T(item.hidden and "Show this row" or "Hide this row"),
+                detail = A.T("Hidden rows do not change totals"),
+                action = function()
+                    A.ToggleHiddenRow(item)
+                    A.RefreshUI()
+                end,
+            },
+        }
+        if item.entryAction then
+            table.insert(choices, {
+                label = A.T(
+                    item.entryAction.kind == "record" and "Reset this record"
+                        or item.entryAction.kind == "bookmark" and "Remove favorite"
+                        or item.entryAction.kind == "run" and "Delete run details"
+                        or "Reset this entry"
+                ),
+                action = function()
+                    A.OpenEntryReview(item.entryAction)
+                end,
+            })
+        end
+        A.ShowMenu(anchor, choices)
+    end
+    if UISpecialFrames then
+        table.insert(UISpecialFrames, "AzerothStatsEntryReview")
     end
     buildSettings(frame)
     if UISpecialFrames then

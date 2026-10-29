@@ -102,7 +102,7 @@ end
 
 --- Apply one entry delta globally and per class, then save the run ledger; cap new aggregate keys.
 function A.AccountUsage(run, kind, key, entry)
-    if run.trendsReset then
+    if A.TrendKeyReset(run, kind, key) then
         return
     end
     local usage = run.usage
@@ -142,6 +142,8 @@ function A.ObserveBuild(run)
     end
     run.usage = run.usage or { spells = {}, jewelry = {}, slots = {} }
     local usage = run.usage
+    usage.spells, usage.jewelry, usage.slots =
+        usage.spells or {}, usage.jewelry or {}, usage.slots or {}
     local fresh = not run.spellsBaseline
         or A.Sign(A.Copy(AZS_SPELLS)) ~= run.spellsBaseline
         or A.spellPacket
@@ -157,6 +159,7 @@ function A.ObserveBuild(run)
                 and rank
                 and rank > 0
                 and rank == math.floor(rank)
+                and not A.TrendKeyReset(run, "spells", spell.key)
                 and A.Admit(usage.spells, spell.key, A.limits.usageKeys, run, "usageTruncated")
             then
                 local entry = usage.spells[spell.key]
@@ -193,7 +196,9 @@ function A.ObserveBuild(run)
             if ok and type(link) == "string" then
                 local key, name = A.JewelKey(link, run.class)
                 if
-                    key and A.Admit(usage.jewelry, key, A.limits.usageKeys, run, "usageTruncated")
+                    key
+                    and not A.TrendKeyReset(run, "jewelry", key)
+                    and A.Admit(usage.jewelry, key, A.limits.usageKeys, run, "usageTruncated")
                 then
                     local lines = A.CaptureItem(slot)
                     local sig = A.Sign(lines or link)

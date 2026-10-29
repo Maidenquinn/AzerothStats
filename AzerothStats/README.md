@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.7.0-dev.4
+# Azeroth Stats - 1.7.0-dev.5
 
 Unmerged local-data-management preview. Public 1.6.2-beta.1 is unchanged. Native testing of this feature remains pending. No data is erased merely by installation or by opening the management dialog.
 
@@ -52,3 +52,13 @@ Category cleanup keeps numeric combat results, build snapshots and co-op compari
 but clears the selected category and its historical death/milestone/usage details.
 Cleared categories collect again from new runs; older retained runs cannot restore them.
 Favorites cleanup unpins retained sources without deleting those runs.
+
+## Edit individual entries (preview)
+
+Use Edit page on a data page, then the small menu on the row/card. Hide/Show is
+reversible and preserves totals; Restore hidden rows reveals the current page again.
+Records (including the top cards), Nemesis and Trends also offer a targeted reset
+with explicit confirmation. These resets affect that entry across all classes, between
+runs, preserving other entries and raw historical results. Favorites can be removed
+individually; retained runs can be deleted under the existing protection rules.
+Combat/character/calculated rows offer hiding rather than silently rewriting statistics.

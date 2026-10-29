@@ -1,4 +1,4 @@
-# Local data management — 1.7.0-dev.4 preview
+# Local data management — 1.7.0-dev.5 preview
 
 This unmerged candidate adds explicit user-controlled removal of addon-owned local data. No file I/O, native game write, outgoing message or save import is added. The client serializes the resulting own SavedVariables normally.
 
@@ -69,3 +69,42 @@ The selection CTA is **Review deletion** with a no-deletion hint. The review scr
 uses a distinct **Confirm deletion** title, an irreversible-click explanation and a
 wider red action label naming the actual category/operation. Redundant generic entry
 counts are kept in the recap rather than the destructive button.
+
+## Per-page editing
+
+Data pages expose **Edit page**; Settings retains its normal form controls. The mode
+reveals a small action menu on rows and cards, including featured record cards.
+Normal navigation and hearts are separate from editing. Selecting another sidebar
+page leaves edit mode. Empty views still expose editing so hidden rows can be restored.
+
+- **Hide/Show this row** only changes bounded `settings.hiddenRows` visibility metadata.
+  The menu says explicitly that totals do not change. Edit mode reveals dimmed hidden
+  entries; Restore hidden rows clears the current page/context preference. The scope
+  includes subpage, class and actual retained run where relevant. Raw combat sources,
+  character snapshots, diagnostics and calculated summary values use this reversible
+  option rather than rewriting their inputs or producing inconsistent percentages.
+- **Reset this record** clears the named metric only, globally and in all class record
+  buckets, plus that metric's historical record milestones. Stored duration/damage/gold
+  etc. and lifetime sums are retained. This is not subtraction from incomplete history.
+- **Reset this entry** on Nemesis removes the named source and matching retained death
+  evidence; aggregate death counts decrease by that source's exact recorded confidence
+  counts, preserving other and unknown sources. On Trends it clears the chosen canonical
+  spell/accessory/companion key. Historical builds/combat/co-op snapshots remain.
+- Targeted resets apply to **all classes**, even from a class-filtered view. Their
+  confirmation explicitly shows that scope and is blocked outside a native ready phase.
+- Favorites offer **Remove favorite**, preserving the source run and releasing retention
+  protection. History/recent-run entries offer deletion under the existing active/favorite
+  protection rules. No direct slash command bypasses review.
+
+Per-entry review has an explicit red operation button, Cancel and native Escape handling.
+It recomputes a bounded signature before mutation. Changed data requires fresh review.
+`recordResets`, `trendResets` and `nemesisResets` on older retained runs prevent late
+packets, report recomputation and reloads from restoring cleared keys. New runs have
+no masks. Caps are checked before extending masks; the validator rejects malformed
+keys/flags. No schema bump, file I/O, native writes or outgoing messaging is added.
+
+Tests use isolated synthetic databases: subset preservation, exact source-count removal,
+old callback/reload barriers, new collection, visibility restoration, card controls,
+normal icons/hearts, confirmation cancellation, stale review, protection and malformed
+saved masks. Native rendering and destructive acceptance still require a disposable
+backed-up player profile; development installation never executes erasure on player data.
