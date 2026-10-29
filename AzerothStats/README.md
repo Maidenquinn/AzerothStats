@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.6.2-beta.1
+# Azeroth Stats - 1.7.0-dev.1
 
-Beta hotfix 1.6.2-beta.1. The maintainer confirmed the HUD editor fix in game and authorized publication; confirmation from the originally affected player remains pending.
+Unmerged local-data-management preview. Public 1.6.2-beta.1 is unchanged. Native testing of this feature remains pending. No data is erased merely by installation or by opening the management dialog.
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
@@ -41,3 +41,7 @@ Open a run report's Build journal section or type `/azstats journal`. The new jo
 ## History and navigation
 
 This release adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. Reducing retention asks for confirmation before removing detailed runs; cancel keeps the previous settings and history.
+
+## Manage local data (preview)
+
+Open Settings > Manage local data or `/azstats data`. Deleting one run or clearing retained history (all classes or one class) keeps lifetime statistics/records unchanged and protects active/bookmarked sources. A separate full reset deletes all statistics, history and favorites while preserving settings; it requires the native ready phase and typing RESET. Cancel keeps data. There is no undo: back up the addon's own SavedVariables first if you intend to erase data. The `reset` slash alias only opens the dialog and never performs an immediate reset.

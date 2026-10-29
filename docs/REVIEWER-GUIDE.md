@@ -1,3 +1,7 @@
+# Development addendum — 1.7.0-dev.1 local data management
+
+26 runtime modules / 76 player-package files including the manifest. DataManagement.lua provides preview/confirmation-only removal of own data. UI commands only open the dialog. Read DATA-MANAGEMENT.md and tests/data_management.lua for scopes, active/favorite protections, changed-impact handling, RESET/ready-phase requirements, post-reset freshness and synthetic persistence tests. No game data write, file I/O or outgoing message is added. This candidate is unmerged and requires native validation; release records below remain historical.
+
 # Current release — 1.6.1-beta.1
 
 25 runtime modules and a 75-file player ZIP including its manifest. New sampled BuildJournal.lua and co-op/UX changes are documented in BUILD-JOURNAL.md, COOP-RUNS.md and UX-COHERENCE.md. The maintainer validated dev.3 in game and authorized this release; separate game-team re-review is not asserted. See APPROVAL-STATUS.md and RELEASE-VALIDATION-1.6.1-beta.1.md. Older dossiers below describe their original revisions.

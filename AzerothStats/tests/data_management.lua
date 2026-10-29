@@ -1,0 +1,270 @@
+-- Data erasure is tested on isolated synthetic databases only, never a player's file.
+local A = AzerothStats
+local function check(ok, message)
+    assert(ok, message)
+    TEST_COUNT = TEST_COUNT + 1
+end
+local db, live, view, phaseFn, plan, retention =
+    A.db, A.run, A.view, AZS_GetPhase, A.pendingDataPlan, A.pendingRetention
+local keys = {
+    "pendingReport",
+    "partySession",
+    "deathWatch",
+    "journalPhaseRun",
+    "journalPhase",
+    "journalStatsWindow",
+    "boundaryGate",
+    "newBoundary",
+    "inventoryBaseline",
+    "buildBaseline",
+    "spellPacket",
+    "statsPacket",
+    "inReady",
+    "packetSummary",
+    "packetReady",
+    "meterPackets",
+}
+local transient = {}
+for _, key in ipairs(keys) do
+    transient[key] = A[key]
+end
+local nativeRun = AZS_RUN
+AZS_RUN = A.Copy(nativeRun) or {}
+AzerothStatsDB, A.db, A.run = nil, nil, nil
+A.view = { tab = 8, page = 1, mode = "damage", characterTab = "Spells" }
+AZS_GetPhase = function()
+    return "ready"
+end
+check(A.InitDB(), "data fixture initializes")
+A.SetLanguage("en")
+local function fixture(id, class)
+    return {
+        id = id,
+        class = class or "warrior",
+        hero = "Fixture",
+        zone = "feralas",
+        heroic = 0,
+        startedAt = 10,
+        status = "ended",
+        result = "victory",
+        values = { duration = 100, damage = 1000 },
+        events = {},
+        meters = {},
+        accounted = { duration = 100, damage = 1000 },
+        counted = true,
+        winCounted = true,
+    }
+end
+local a, b, c = fixture("delete-a"), fixture("keep-fav"), fixture("keep-mage", "mage")
+A.db.runs = { a, b, c }
+A.db.sequence = 42
+A.db.pruned = 100
+A.db.totals = {
+    runs = 103,
+    wins = 40,
+    sum = { damage = 123456 },
+    coverage = { damage = 103 },
+    records = { damage = { value = 90000, id = "old-pruned" } },
+}
+A.db.classes = {
+    warrior = { runs = 70, sum = { damage = 100000 } },
+    mage = {
+        runs = 33,
+        sum = { damage = 23456 },
+    },
+}
+A.ToggleFavorite(A.RunFavorite(b))
+local totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
+check(
+    A.DataPlan("bad") == nil and A.DataPlan("history", "bad-class") == nil,
+    "invalid scope cannot select a destructive action"
+)
+A.PrepareDataAction("run", nil, b.id)
+check(
+    not A.ConfirmDataAction() and A.FindRun(b.id),
+    "favorite source cannot be removed as ordinary history"
+)
+a.status = "active"
+A.run = a
+A.PrepareDataAction("run", nil, a.id)
+check(not A.ConfirmDataAction() and A.FindRun(a.id), "tracked active run cannot be removed")
+a.status = "ended"
+A.run = nil
+A.view.selected = a.id
+A.view.compareA = a.id
+A.PrepareDataAction("run", nil, a.id)
+check(A.FindRun(a.id) ~= nil, "previewing removal never deletes a run")
+check(A.ConfirmDataAction(), "confirmed unprotected run details can be deleted")
+check(
+    not A.FindRun(a.id) and not A.view.selected and not A.view.compareA,
+    "removed source clears stale selectors"
+)
+check(
+    A.view.tab == 3 and A.view.historySection == "History",
+    "deleting selected details returns to History instead of silently switching reports"
+)
+check(
+    A.Sign(A.db.totals) == totals and A.Sign(A.db.classes) == classes,
+    "detail deletion keeps totals and records including pruned history exactly"
+)
+local d = fixture("other-warrior")
+table.insert(A.db.runs, d)
+A.PrepareDataAction("history", "warrior")
+local e = fixture("arrived-later")
+table.insert(A.db.runs, e)
+local ok, reason = A.ConfirmDataAction()
+check(
+    not ok and reason == "Data changed; review again" and A.FindRun(d.id),
+    "changed deletion impact requires review before any mutation"
+)
+check(A.ConfirmDataAction(), "reconfirmed current class history plan applies")
+check(
+    A.FindRun(b.id) and A.FindRun(c.id) and not A.FindRun(d.id) and not A.FindRun(e.id),
+    "class-history clear preserves favorites and other classes"
+)
+check(A.Sign(A.db.totals) == totals, "class-history clear never subtracts guessed lifetime totals")
+-- Native-owner regression: menus inside this new dialog must not disappear behind it.
+A.OpenDataManagement()
+A.ui.dataDialog.actionButton.callback(A.ui.dataDialog.actionButton)
+check(
+    A.ui.menu:GetParent() == A.ui.dataDialog
+        and A.ui.menu:GetFrameLevel() > A.ui.dataDialog:GetFrameLevel(),
+    "management popup has the correct dialog owner and level"
+)
+A.ui.menu:Hide()
+A.ui.dataDialog.cancel.callback()
+check(
+    not A.pendingDataPlan and A.Sign(A.db.totals) == totals,
+    "UI cancel changes no persisted statistics"
+)
+SlashCmdList.AZEROTHSTATS("reset")
+check(
+    A.ui.dataDialog:IsShown() and A.Sign(A.db.totals) == totals,
+    "reset command only opens management; never erases immediately"
+)
+A.ui.dataDialog.cancel.callback()
+A.OpenDataManagement()
+A.ui.dataDialog.actionButton.callback(A.ui.dataDialog.actionButton)
+A.ui.menu.items[3].callback(A.ui.menu.items[3])
+check(
+    A.ui.dataDialog.kind == "reset"
+        and A.pendingDataPlan.kind == "reset"
+        and A.Sign(A.db.totals) == totals,
+    "choosing full reset previews it without deleting data"
+)
+A.ui.dataDialog.token:SetText("WRONG")
+A.ui.dataDialog.confirm.callback()
+check(A.Sign(A.db.totals) == totals, "actual confirm callback rejects the wrong reset token")
+A.ui.dataDialog.cancel.callback()
+-- Full reset is separate from history removal and requires an explicit ready boundary/token.
+AZS_GetPhase = function()
+    return "playing"
+end
+A.PrepareDataAction("reset")
+check(
+    not A.ConfirmDataAction("RESET") and A.Sign(A.db.totals) == totals,
+    "in-run reset is rejected even with the token"
+)
+AZS_GetPhase = function()
+    return nil
+end
+AZS_RUN.ph = nil
+A.PrepareDataAction("reset")
+check(not A.ConfirmDataAction("RESET"), "missing native phase cannot authorize reset")
+AZS_GetPhase = function()
+    return "ready"
+end
+local phaseAccepted, phaseMessage = A.ConfirmDataAction("RESET")
+check(
+    not phaseAccepted and phaseMessage == "Data changed; review again",
+    "newly available ready phase requires a fresh review"
+)
+A.PrepareDataAction("reset")
+check(
+    not A.ConfirmDataAction("reset") and A.Sign(A.db.totals) == totals,
+    "token is exact and case sensitive"
+)
+check(not A.ConfirmDataAction("RESET "), "extra token characters cannot confirm")
+local settings = A.db.settings
+local hud, scale, language = A.Sign(settings.hud), settings.scale, settings.language
+local migrations = A.Sign(A.db.migrations)
+A.pendingReport = { id = b.id }
+A.partySession = { run = b }
+A.deathWatch = { run = b }
+A.journalPhaseRun = b
+check(A.ConfirmDataAction("RESET"), "explicit ready-phase full reset succeeds")
+check(
+    A.db.settings == settings
+        and A.Sign(settings.hud) == hud
+        and settings.scale == scale
+        and settings.language == language,
+    "full reset retains exact settings/HUD object"
+)
+check(
+    A.db.sequence == 42 and A.Sign(A.db.migrations) == migrations,
+    "IDs remain monotonic and migration markers remain"
+)
+check(
+    table.getn(A.db.runs) == 0
+        and not next(A.db.totals)
+        and not next(A.db.classes)
+        and not next(A.db.favorites.entries),
+    "full reset clears all statistics/history/favorites"
+)
+check(
+    not A.run
+        and not A.pendingReport
+        and not A.partySession
+        and not A.deathWatch
+        and not A.journalPhaseRun,
+    "reset detaches old observer state and pending notices"
+)
+check(A.ValidateDatabase(A.db), "reset database still satisfies the saved-data contract")
+local restored = assert(loadstring("return " .. SNAPSHOT(A.db)))()
+check(
+    A.ValidateDatabase(restored) and restored.sequence == 42,
+    "reset database survives serialization without old totals"
+)
+AzerothStatsDB = restored
+A.db = nil
+check(
+    A.InitDB() and not next(A.db.totals) and not next(A.db.classes),
+    "normal initialization/migrations do not resurrect cleared totals"
+)
+-- New post-reset observations are counted once, using a new local run ID.
+AZS_RUN = { ph = "playing", t = 1, kills = 2, gold = 1, lvl = 1, dealt = 10 }
+AZS_GetPhase = function()
+    return AZS_RUN.ph
+end
+A.Sample()
+check(
+    A.run and A.run.id == "azstats-43" and A.db.totals.runs == 1,
+    "post-reset run starts clean with a unique ID"
+)
+local damage = A.db.totals.sum.damage
+A.Sample()
+check(
+    A.db.totals.runs == 1 and A.db.totals.sum.damage == damage,
+    "post-reset polling never reimports old ledgers"
+)
+for _, lang in ipairs(A.languages) do
+    if lang[1] ~= "auto" then
+        A.SetLanguage(lang[1])
+        A.OpenDataManagement()
+        check(
+            A.ui.dataDialog.title.fullText == A.T("Manage local data"),
+            "localized data management title"
+        )
+        A.ui.dataDialog.cancel.callback()
+    end
+end
+AzerothStatsDB, A.db, A.run, A.view, AZS_GetPhase, A.pendingDataPlan, A.pendingRetention =
+    db, db, live, view, phaseFn, plan, retention
+for _, key in ipairs(keys) do
+    A[key] = transient[key]
+end
+AZS_RUN = nativeRun
+A.DetectLocale()
+A.ApplyUI()
+A.RefreshUI()
+print("LOCAL DATA MANAGEMENT REGRESSIONS PASSED", TEST_COUNT)

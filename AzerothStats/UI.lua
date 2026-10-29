@@ -353,7 +353,7 @@ function A.ShowMenu(anchor, options, offset)
         if not node then
             break
         end
-        if node == A.barEditor then
+        if node == A.barEditor or node == UI.dataDialog then
             owner = node
             break
         end
@@ -837,6 +837,9 @@ function A.RefreshUI()
     put(UI.profileName, A.Text(A.Call(UnitName, "player"), 80) or "?")
     put(UI.profileClass, A.ClassName(heroClass))
     put(UI.breadcrumb, A.ViewScope(model, r))
+    if UI.dataDialog and UI.dataDialog:IsShown() then
+        A.RefreshDataDialog()
+    end
     if UI.retentionDialog and UI.retentionDialog:IsShown() and A.pendingRetention then
         A.ShowRetentionConfirmation()
     end
@@ -1369,6 +1372,9 @@ local function buildSettings(frame)
     button(p, 370, 344, 330, 28, "Reset position", function()
         A.ResetPosition()
     end)
+    button(p, 370, 382, 330, 28, "Manage local data", function()
+        A.OpenDataManagement()
+    end)
 end
 
 --- Create all addon-owned frames once, then initialize local positioning and presentation.
@@ -1391,6 +1397,13 @@ function A.BuildUI()
             UI.retentionBlocker:Hide()
         end
         A.pendingRetention = nil
+        if UI.dataDialog then
+            UI.dataDialog:Hide()
+        end
+        if UI.dataBlocker then
+            UI.dataBlocker:Hide()
+        end
+        A.pendingDataPlan = nil
         if A.barEditor then
             A.barEditor:Hide()
         end
@@ -2011,6 +2024,229 @@ function A.BuildUI()
     end
     if UISpecialFrames then
         table.insert(UISpecialFrames, "AzerothStatsRetentionConfirmation")
+    end
+
+    UI.dataBlocker = CreateFrame("Frame", nil, frame)
+    UI.dataBlocker:SetAllPoints(frame)
+    UI.dataBlocker:SetFrameStrata("FULLSCREEN_DIALOG")
+    UI.dataBlocker:SetFrameLevel(frame:GetFrameLevel() + 59)
+    UI.dataBlocker:EnableMouse(true)
+    UI.dataBlocker:SetScript("OnMouseDown", function() end)
+    solid(UI.dataBlocker, 0, 0, 0, 0.65)
+    UI.dataBlocker:Hide()
+    UI.dataDialog = CreateFrame("Frame", "AzerothStatsDataManagement", frame)
+    local data = UI.dataDialog
+    data:SetPoint("CENTER", frame, "CENTER", 0, 0)
+    data:SetWidth(620)
+    data:SetHeight(510)
+    data:SetFrameStrata("FULLSCREEN_DIALOG")
+    data:SetFrameLevel(frame:GetFrameLevel() + 60)
+    data:EnableMouse(true)
+    surface(data, "main")
+    data.title = font(data, 22, 18, 576, 40, 22, COLORS.gold, true)
+    data.actionButton = button(data, 22, 72, 576, 32, "", function(self)
+        local choices = {}
+        for _, pair in ipairs({
+            { "run", "Delete run details" },
+            { "history", "Clear retained history" },
+            { "reset", "Reset all statistics" },
+        }) do
+            local kind = pair[1]
+            table.insert(choices, {
+                label = A.T(pair[2]),
+                action = function()
+                    data.kind = kind
+                    data.token:SetText("")
+                    data.status = nil
+                    A.PrepareDataAction(kind, kind == "history" and data.class or nil, data.id)
+                    A.RefreshDataDialog()
+                end,
+            })
+        end
+        A.ShowMenu(self, choices)
+    end)
+    data.scopeButton = button(data, 22, 120, 576, 32, "", function(self)
+        local choices = {}
+        if data.kind == "run" then
+            for i = table.getn(A.db.runs), 1, -1 do
+                local run = A.db.runs[i]
+                local id = run.id
+                table.insert(choices, {
+                    label = A.RunLabel(run),
+                    detail = A.RunContext(run),
+                    action = function()
+                        data.id = id
+                        data.status = nil
+                        A.PrepareDataAction("run", nil, id)
+                        A.RefreshDataDialog()
+                    end,
+                })
+            end
+        else
+            table.insert(choices, {
+                label = A.T("All classes"),
+                action = function()
+                    data.class = nil
+                    data.status = nil
+                    A.PrepareDataAction("history", nil)
+                    A.RefreshDataDialog()
+                end,
+            })
+            local keys = {}
+            for class in pairs(A.knownClasses) do
+                table.insert(keys, class)
+            end
+            table.sort(keys)
+            for _, value in ipairs(keys) do
+                local class = value
+                table.insert(choices, {
+                    label = A.ClassName(class),
+                    action = function()
+                        data.class = class
+                        data.status = nil
+                        A.PrepareDataAction("history", class)
+                        A.RefreshDataDialog()
+                    end,
+                })
+            end
+        end
+        if table.getn(choices) > 0 then
+            A.ShowMenu(self, choices)
+        end
+    end)
+    dropdown(data.actionButton)
+    dropdown(data.scopeButton)
+    data.context = font(data, 22, 162, 576, 45, 12, COLORS.muted)
+    data.message = font(data, 22, 218, 576, 108, 14, COLORS.text)
+    data.warning = font(data, 22, 336, 576, 48, 12, COLORS.gold)
+    data.tokenCaption = font(data, 22, 390, 360, 24, 12, COLORS.text)
+    data.token = CreateFrame("EditBox", nil, data)
+    data.token:SetPoint("TOPLEFT", data, "TOPLEFT", 390, -390)
+    data.token:SetWidth(196)
+    data.token:SetHeight(26)
+    if data.token.SetAutoFocus then
+        data.token:SetAutoFocus(false)
+    end
+    if data.token.SetMaxLetters then
+        data.token:SetMaxLetters(5)
+    end
+    data.token:SetFont(A.Font(false), 14, "")
+    data.token:SetTextColor(1, 1, 1)
+    surface(data.token, "card")
+    data.token:SetScript("OnTextChanged", function()
+        if A.RefreshDataDialog and data:IsShown() then
+            A.RefreshDataDialog()
+        end
+    end)
+    data.token:SetScript("OnEscapePressed", function()
+        if this.ClearFocus then
+            this:ClearFocus()
+        end
+    end)
+    data.cancel = button(data, 22, 450, 276, 32, "Cancel", function()
+        A.pendingDataPlan = nil
+        UI.dataBlocker:Hide()
+        data:Hide()
+    end)
+    data.confirm = button(data, 322, 450, 276, 32, "Delete data", function()
+        local ok, message = A.ConfirmDataAction(data.token:GetText() or "")
+        if ok then
+            UI.dataBlocker:Hide()
+            data:Hide()
+            A.ApplyUI()
+            A.RefreshUI()
+            A.Say(A.T(message))
+        else
+            data.status = message
+            A.RefreshDataDialog()
+        end
+    end)
+    data:SetScript("OnHide", function()
+        A.pendingDataPlan = nil
+        UI.dataBlocker:Hide()
+        if UI.menu and UI.menu.owner == data then
+            UI.menu:Hide()
+        end
+        if data.token.ClearFocus then
+            data.token:ClearFocus()
+        end
+    end)
+    data:Hide()
+    function A.RefreshDataDialog()
+        local plan = A.pendingDataPlan
+        local labels = {
+            run = "Delete run details",
+            history = "Clear retained history",
+            reset = "Reset all statistics",
+        }
+        put(data.title, A.T("Manage local data"))
+        put(data.actionButton.label, A.T(labels[data.kind] or "Clear retained history"))
+        show(data.scopeButton, data.kind ~= "reset")
+        local run = data.id and A.FindRun(data.id)
+        put(
+            data.scopeButton.label,
+            data.kind == "run" and (run and A.RunLabel(run) or A.T("Unavailable"))
+                or (data.class and A.ClassName(data.class) or A.T("All classes"))
+        )
+        put(
+            data.context,
+            data.kind == "run" and run and A.RunContext(run)
+                or data.kind == "reset" and (A.T("All classes") .. " · " .. A.T("Favorites") .. " " .. (plan and plan.favorites or 0))
+                or A.T("Favorite runs are protected from history pruning")
+        )
+        put(
+            data.message,
+            A.T("Run details to remove")
+                .. ": "
+                .. (plan and plan.count or 0)
+                .. "\n\n"
+                .. A.T(
+                    data.kind == "reset"
+                            and "Statistics, history and favorites will be deleted. Settings are kept."
+                        or "History only; totals stay unchanged"
+                )
+        )
+        put(
+            data.warning,
+            data.status and A.T(data.status)
+                or plan and plan.reason and A.T(plan.reason)
+                or A.T("This cannot be undone")
+        )
+        put(data.tokenCaption, A.T("Type RESET to confirm"))
+        data.token:SetFont(A.Font(false), 14, "")
+        show(data.token, data.kind == "reset")
+        show(data.tokenCaption, data.kind == "reset")
+        put(data.cancel.label, A.T("Cancel"))
+        put(data.confirm.label, A.T("Delete data"))
+        local enabled = plan
+            and plan.allowed
+            and (data.kind ~= "reset" or data.token:GetText() == "RESET")
+        data.confirm:SetAlpha(enabled and 1 or 0.45)
+    end
+    function A.OpenDataManagement()
+        A.ToggleUI(true)
+        if A.barEditor then
+            A.barEditor:Hide()
+        end
+        if UI.retentionDialog then
+            UI.retentionDialog:Hide()
+        end
+        A.pendingRetention = nil
+        if UI.menu then
+            UI.menu:Hide()
+        end
+        data.kind, data.class = "history", A.view.class
+        local run = A.Selected()
+        data.id = run and run.id
+        data.status = nil
+        data.token:SetText("")
+        A.PrepareDataAction(data.kind, data.class, data.id)
+        A.RefreshDataDialog()
+        UI.dataBlocker:Show()
+        data:Show()
+    end
+    if UISpecialFrames then
+        table.insert(UISpecialFrames, "AzerothStatsDataManagement")
     end
     buildSettings(frame)
     if UISpecialFrames then

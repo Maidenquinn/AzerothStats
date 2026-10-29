@@ -133,3 +133,7 @@ Official/sample provenance is assigned per metric. Retention reductions that wou
 ## HUD editor hotfix
 
 1.6.2-beta.1 fixes My bar becoming hidden behind the main window after dropdown interaction. Editor menus now belong to the editor, ordering is refreshed and refocusing preserves an open draft. The maintainer confirmed the fix locally; feedback from the original reporter is still requested. See [hotfix details](docs/HUD-EDITOR-LAYERING.md).
+
+## Development: explicit local data management
+
+The `codex/manage-local-data` branch adds Settings > Manage local data and `/azstats data`. It separates retained-history cleanup (one run or a class/global scope, lifetime ledgers kept) from a global statistics/history/favorites reset (settings kept, typed RESET and native ready phase required). No data is deleted by installation or by opening the dialog. See [scope and validation recipe](docs/DATA-MANAGEMENT.md). Public 1.6.2-beta.1 is unchanged.
