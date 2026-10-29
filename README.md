@@ -4,9 +4,9 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Review status
 
-**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.6.2-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
+**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.7.0-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
 
-[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.6.2-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.6.2-beta.1.md)
+[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.7.0-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.7.0-beta.1.md)
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 
@@ -133,3 +133,13 @@ Official/sample provenance is assigned per metric. Retention reductions that wou
 ## HUD editor hotfix
 
 1.6.2-beta.1 fixes My bar becoming hidden behind the main window after dropdown interaction. Editor menus now belong to the editor, ordering is refreshed and refocusing preserves an open draft. The maintainer confirmed the fix locally; feedback from the original reporter is still requested. See [hotfix details](docs/HUD-EDITOR-LAYERING.md).
+
+## Edit pages and manage local data
+
+Use **Edit page** on a data page, then the **...** menu on a row or card. Hide/Show is reversible and does not change totals. Restore hidden rows restores the current page/context.
+
+Records (including featured survival/DPS/kills cards), Nemesis and Trends offer targeted entry resets with explicit confirmation. These apply to the selected entry across **all classes**, between runs. Other entries, lifetime sums and historical combat/build snapshots remain. Favorites and retained history offer individual removal under the existing protection rules. Combat, character and calculated rows offer hiding instead of silently rewriting their inputs.
+
+Settings > Manage local data or `/azstats data` opens the bulk manager: one run, class/global retained history, individual categories or full reset. Its illustrated run recap and separate deleted/kept summary explain the scope before confirmation. Full reset retains settings and requires the exact RESET token plus an explicit ready phase. No data is deleted by installation or simply opening a page.
+
+See [exact cleanup scopes and acceptance recipe](docs/DATA-MANAGEMENT.md). The maintainer reported the development candidate working in game and authorized this beta; broader testing is welcome.

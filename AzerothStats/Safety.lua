@@ -208,6 +208,54 @@ function A.ValidateDatabase(database)
         return false
     end
 
+    --- Persistent visibility/reset masks accept only bounded true-valued string keys.
+    local function mask(value, limit, width)
+        if value == nil then
+            return true
+        end
+        if type(value) ~= "table" then
+            return false
+        end
+        local count = 0
+        for key, flag in pairs(value) do
+            count = count + 1
+            if
+                count > limit
+                or type(key) ~= "string"
+                or string.len(key) > width
+                or flag ~= true
+            then
+                return false
+            end
+        end
+        return true
+    end
+    local hidden = database.settings.hiddenRows
+    if hidden ~= nil then
+        if type(hidden) ~= "table" then
+            return false
+        end
+        local count, contexts = 0, 0
+        for context, rows in pairs(hidden) do
+            contexts = contexts + 1
+            if contexts > 2048 then
+                return false
+            end
+            if
+                type(context) ~= "string"
+                or string.len(context) > 1600
+                or not mask(rows, 2048, 1000)
+            then
+                return false
+            end
+            for _ in pairs(rows) do
+                count = count + 1
+            end
+            if count > 2048 then
+                return false
+            end
+        end
+    end
     --- Require present optional container fields to be tables while keeping old missing fields valid.
     local function optional(record, names)
         for _, name in ipairs(names) do
@@ -371,6 +419,38 @@ function A.ValidateDatabase(database)
             run.heroic ~= nil and (type(run.heroic) ~= "number" or not A.HeroicLevel(run.heroic))
         then
             return false
+        end
+        if not mask(run.recordResets, 13, 80) or not mask(run.nemesisResets, 512, 600) then
+            return false
+        end
+        for key in pairs(run.recordResets or {}) do
+            local valid = false
+            for _, name in ipairs(A.metrics) do
+                if key == name then
+                    valid = true
+                end
+            end
+            if not valid then
+                return false
+            end
+        end
+        if run.trendResets ~= nil then
+            if type(run.trendResets) ~= "table" then
+                return false
+            end
+            for section, entries in pairs(run.trendResets) do
+                if section ~= "spells" and section ~= "jewelry" and section ~= "companions" then
+                    return false
+                end
+                if not mask(entries, section == "companions" and 1024 or 512, 600) then
+                    return false
+                end
+            end
+        end
+        for _, key in ipairs({ "recordsReset", "trendsReset", "nemesisReset" }) do
+            if run[key] ~= nil and type(run[key]) ~= "boolean" then
+                return false
+            end
         end
         if run.buildJournal ~= nil and not A.ValidateJournal(run.buildJournal) then
             return false

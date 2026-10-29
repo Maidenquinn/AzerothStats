@@ -12,4 +12,6 @@ For 1.6.1-beta.1, the maintainer reported validating dev.3 in game and explicitl
 
 For 1.6.2-beta.1, the maintainer confirmed the HUD-editor hotfix locally and authorized publication for the original reporter to retest. This is maintainer acceptance, not a separate game-team review claim.
 
+For 1.7.0-beta.1, the maintainer reported that the per-page editing candidate worked in game and explicitly authorized release on 29 October 2026. This is maintainer acceptance; no separate game-team re-review or independent certification is asserted.
+
 Future revisions must follow any review requirements set by the game team; this status is not blanket approval for later changes.

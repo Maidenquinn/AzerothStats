@@ -70,12 +70,16 @@ end
 
 --- Recompute summary milestones from that baseline; first accepted summary offers one local notice.
 function A.FinishReport(run)
-    if run.recordBaseline then
+    if run.recordBaseline and not run.recordsReset then
         run.reportRecords = {}
         for _, key in ipairs(A.metrics) do
             local value = A.Number(run.values[key])
             local before = run.recordBaseline.values[key]
-            if value and (before == nil or value > before) then
+            if
+                value
+                and not (run.recordResets and run.recordResets[key])
+                and (before == nil or value > before)
+            then
                 run.reportRecords[key] = value
             end
         end

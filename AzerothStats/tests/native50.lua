@@ -25,6 +25,8 @@ for _, name in ipairs({
     "tests/reports.lua",
     "tests/journal.lua",
     "tests/ux_review.lua",
+    "tests/data_management.lua",
+    "tests/editing.lua",
 }) do
     table.insert(files, name)
 end
@@ -56,6 +58,8 @@ dofile("tests/heroic.lua")
 dofile("tests/reports.lua")
 dofile("tests/journal.lua")
 dofile("tests/ux_review.lua")
+dofile("tests/data_management.lua")
+dofile("tests/editing.lua")
 dofile("tests/serialize.lua")
 local source = "AzerothStatsDB=" .. SNAPSHOT(AzerothStatsDB)
 local expected = AzerothStatsDB.totals.sum.damage

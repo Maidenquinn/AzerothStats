@@ -163,7 +163,7 @@ end
 --- Replace a probable/unknown attribution with late explicit proof without incrementing deaths again.
 function A.UpgradeDeath(watch)
     local run, evidence = watch.run, watch.last
-    if not evidence or evidence.confidence == "confirmed" then
+    if run.nemesisReset or not evidence or evidence.confidence == "confirmed" then
         return
     end
     account(run, evidence, -1)
@@ -180,6 +180,9 @@ function A.MarkDeath()
         return
     end
     local run = watch.run
+    if run.nemesisReset then
+        return
+    end
     local now = GetTime()
     watch.closed = true
     watch.lastClock = now
@@ -199,6 +202,9 @@ function A.MarkDeath()
     elseif hit and now - hit.at <= 2 then
         evidence.source = hit.source
         evidence.confidence = "probable"
+    end
+    if evidence.source and run.nemesisResets and run.nemesisResets[evidence.source] then
+        return
     end
     evidence.unparsed = A.Copy(watch.unparsed)
     run.deaths = run.deaths or {}
@@ -220,6 +226,9 @@ end
 
 --- Arm after observed play and re-arm only after positive health beyond the late-event grace period.
 function A.ObserveNemesis(run, progress, phase)
+    if run.nemesisReset then
+        return
+    end
     local watch = A.deathWatch
     if not watch or watch.run ~= run then
         A.BeginDeathWatch(run)
@@ -266,6 +275,7 @@ function A.NemesisModel(m, group)
     for _, v in ipairs(sorted) do
         table.insert(m.rows, {
             label = v.name,
+            entryAction = { kind = "nemesis", key = v.name, label = v.name },
             value = A.Format(v.s.confirmed) .. " · " .. A.T("Confirmed") .. " / " .. A.Format(
                 v.s.probable
             ) .. " · " .. A.T("Probable"),

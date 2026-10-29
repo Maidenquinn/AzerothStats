@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.6.2-beta.1
+# Azeroth Stats - 1.7.0-beta.1
 
-Beta hotfix 1.6.2-beta.1. The maintainer confirmed the HUD editor fix in game and authorized publication; confirmation from the originally affected player remains pending.
+Public beta. The maintainer reported successful in-game testing of the development candidate and authorized this release. No data is erased merely by installation or by opening the management dialog.
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
@@ -41,3 +41,24 @@ Open a run report's Build journal section or type `/azstats journal`. The new jo
 ## History and navigation
 
 This release adds per-metric source labels, confirmed history pruning, literal History search and result/co-op/favorite filters, a central co-op report route, Trends, and filtered build checkpoints. `/azstats coop` opens the selected/current/latest run report. Global journal changes remain observations rather than exact card choices. Search and journal-category filters last for this session. Reducing retention asks for confirmation before removing detailed runs; cancel keeps the previous settings and history.
+
+## Manage local data
+
+Open Settings > Manage local data or `/azstats data`. Deleting one run or clearing retained history (all classes or one class) keeps lifetime statistics/records unchanged and protects active/bookmarked sources. A separate full reset deletes all statistics, history and favorites while preserving settings; it requires the native ready phase and typing RESET. Cancel keeps data. There is no undo: back up the addon's own SavedVariables first if you intend to erase data. The `reset` slash alias only opens the dialog and never performs an immediate reset.
+
+The preview also offers independent Nemesis, Records, Trends and Favorites cleanup
+for all classes, between runs. Its right-hand recap identifies the run being inspected.
+Category cleanup keeps numeric combat results, build snapshots and co-op comparisons,
+but clears the selected category and its historical death/milestone/usage details.
+Cleared categories collect again from new runs; older retained runs cannot restore them.
+Favorites cleanup unpins retained sources without deleting those runs.
+
+## Edit individual entries
+
+Use Edit page on a data page, then the small menu on the row/card. Hide/Show is
+reversible and preserves totals; Restore hidden rows reveals the current page again.
+Records (including the top cards), Nemesis and Trends also offer a targeted reset
+with explicit confirmation. These resets affect that entry across all classes, between
+runs, preserving other entries and raw historical results. Favorites can be removed
+individually; retained runs can be deleted under the existing protection rules.
+Combat/character/calculated rows offer hiding rather than silently rewriting statistics.
