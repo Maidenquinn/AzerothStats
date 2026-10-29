@@ -1,6 +1,6 @@
-# Local data management — 1.7.0-dev.5 preview
+# Local data management — 1.7.0-beta.1
 
-This unmerged candidate adds explicit user-controlled removal of addon-owned local data. No file I/O, native game write, outgoing message or save import is added. The client serializes the resulting own SavedVariables normally.
+This release adds explicit user-controlled removal of addon-owned local data. No file I/O, native game write, outgoing message or save import is added. The client serializes the resulting own SavedVariables normally.
 
 ## Exact scopes
 
@@ -16,7 +16,7 @@ Retained runs are not a complete lifetime ledger: older details may already have
 
 ## Confirmation and lifecycle
 
-Opening Settings > Manage local data, `/azstats data` or `/azstats reset` only opens a dialog. Scope selection previews a bounded impact. Destructive application requires clicking Delete data; the current ID/protection/count signature must still match. If it changes, nothing is removed until the user reviews and confirms again. Cancel/Escape keeps data.
+Opening Settings > Manage local data, `/azstats data` or `/azstats reset` only opens a dialog. Scope selection previews a bounded impact. Destructive application requires clicking the explicitly named red operation button; the current ID/protection/count signature must still match. If it changes, nothing is removed until the user reviews and confirms again. Cancel/Escape keeps data.
 
 Full reset additionally requires the exact token RESET. Full and category resets require an explicitly observed native ready phase; unknown/missing/active phase blocks them. Current run/observer references and pending notices are detached, stale native counters are gated, and old run IDs are never reused. Settings remain, including language, HUD layout, scale and retention. There is no automatic-reset command. Category cleanup stores boolean barriers (`recordsReset`, `trendsReset`, `nemesisReset`) on the existing retained runs, so late packets/resumed observers cannot recreate erased categories. The validator checks these flags; new runs have none. They survive normal serialization/reload. Settings and native data are never changed by a barrier.
 
@@ -33,11 +33,11 @@ Use a disposable backed-up own database for destructive native testing. Opening 
 5. Between runs on disposable data, type RESET and confirm. Verify history, records, Trends, companions, Nemesis and favorites clear, but HUD/language/settings remain.
 6. Close normally/restart; verify the reset persists. Start a new run and confirm it is counted once, has a new ID and does not restore old counters. Test Cancel/Escape and one CJK language.
 
-Automated deletion tests use only synthetic in-memory databases and serialization. They never apply data actions to the player's actual save. Native focus/modal/sampling behavior still needs maintainer validation before merging or publishing.
+Automated deletion tests use only synthetic in-memory databases and serialization. They never apply data actions to the player's actual save. The maintainer reported the development candidate working in game and authorized publication; broader native focus/modal/sampling compatibility remains open to feedback.
 
 ## Offline validation
 
-4,554 independent assertions passed, including 47 isolated data-management assertions. Full Lua 5.0.3 behavior/syntax/persistence checks passed. The exact 76-file player ZIP passed 27 class/outcome cases in 81 fresh processes (1,764 assertions). Fifteen Python tests and fourteen-language font coverage passed. Synthetic French/Japanese dialog previews were inspected; these are not native screenshots. No player save was erased during testing.
+5,057 independent offline assertions passed, including isolated data-management and per-entry editing regressions. Full Lua 5.0.3 behavior/syntax/persistence checks passed. The exact 77-file player ZIP passed 27 class/outcome cases in 81 fresh processes (1,764 assertions). Fifteen Python tests and fourteen-language font coverage passed. Synthetic French/Japanese dialog previews were inspected; these are not native screenshots. No player save was erased during testing.
 
 ## Selection and review
 
@@ -106,5 +106,5 @@ keys/flags. No schema bump, file I/O, native writes or outgoing messaging is add
 Tests use isolated synthetic databases: subset preservation, exact source-count removal,
 old callback/reload barriers, new collection, visibility restoration, card controls,
 normal icons/hearts, confirmation cancellation, stale review, protection and malformed
-saved masks. Native rendering and destructive acceptance still require a disposable
+saved masks. Further native rendering and destructive acceptance should use a disposable
 backed-up player profile; development installation never executes erasure on player data.

@@ -1,4 +1,4 @@
-## 1.7.0-dev.5 - Local data management (unmerged preview)
+## 1.7.0-beta.1 - Local data management and per-page editing
 
 - Add Edit page to data pages, with row/card action menus. Hide/show rows reversibly without modifying combat values or ranking totals; restore page visibility from one button.
 - Reset one record metric (including featured survival/DPS/kills cards), one nemesis source, one spell/accessory/companion trend; remove one favorite or unprotected historical run. Confirm the exact entry and explicit all-class scope. Preserve unrelated entries, lifetime sums, raw combat/build snapshots and retained co-op comparisons.
@@ -14,7 +14,7 @@
 - Preview affected retained details, warn that deletion has no undo, and require explicit confirmation. Recompute impact before applying; changed plans require another review. Cancel/Escape does not erase anything.
 - Detach old tracking/notice state and establish freshness baselines on a full reset. New runs start once with fresh local IDs; do not reconstruct or subtract guessed totals from retained history.
 - Keep management dropdowns parented above their owning dialog. Add fourteen-language labels, CJK glyph coverage and isolated synthetic erasure/persistence regressions.
-- Developer tests never erase the player's actual SavedVariables. Public 1.6.2-beta.1 remains unchanged; native candidate validation is pending.
+- Developer tests never erase the player's actual SavedVariables. The maintainer reported successful native testing of 1.7.0-dev.5 and authorized the public beta. Broader compatibility testing remains ongoing.
 
 ## 1.6.2-beta.1 - HUD editor visibility hotfix
 
