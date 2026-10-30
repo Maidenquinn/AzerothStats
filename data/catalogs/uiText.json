@@ -241,7 +241,9 @@
     "Reset this record": "Resetovat tento rekord",
     "Reset this entry": "Resetovat tento záznam",
     "Remove favorite": "Odebrat z oblíbených",
-    "Only this entry is reset; other entries are kept": "Resetuje se jen tento záznam; ostatní zůstanou"
+    "Only this entry is reset; other entries are kept": "Resetuje se jen tento záznam; ostatní zůstanou",
+    "At run end": "Na konci hry",
+    "This count is supplied by the final run summary, not live.": "Tento počet poskytuje závěrečné shrnutí, nikoli živá data."
   },
   "de": {
     "API": "API",
@@ -485,7 +487,9 @@
     "Reset this record": "Diesen Rekord zurücksetzen",
     "Reset this entry": "Diesen Eintrag zurücksetzen",
     "Remove favorite": "Favorit entfernen",
-    "Only this entry is reset; other entries are kept": "Nur dieser Eintrag wird zurückgesetzt; andere bleiben erhalten"
+    "Only this entry is reset; other entries are kept": "Nur dieser Eintrag wird zurückgesetzt; andere bleiben erhalten",
+    "At run end": "Am Spielende",
+    "This count is supplied by the final run summary, not live.": "Dieser Zähler wird erst im abschließenden Spielbericht bereitgestellt."
   },
   "en": {
     "API": "API",
@@ -729,7 +733,9 @@
     "Reset this record": "Reset this record",
     "Reset this entry": "Reset this entry",
     "Remove favorite": "Remove favorite",
-    "Only this entry is reset; other entries are kept": "Only this entry is reset; other entries are kept"
+    "Only this entry is reset; other entries are kept": "Only this entry is reset; other entries are kept",
+    "At run end": "At run end",
+    "This count is supplied by the final run summary, not live.": "This count is supplied by the final run summary, not live."
   },
   "es": {
     "API": "API",
@@ -973,7 +979,9 @@
     "Reset this record": "Restablecer este récord",
     "Reset this entry": "Restablecer esta entrada",
     "Remove favorite": "Quitar favorito",
-    "Only this entry is reset; other entries are kept": "Solo se restablece esta entrada; las demás se conservan"
+    "Only this entry is reset; other entries are kept": "Solo se restablece esta entrada; las demás se conservan",
+    "At run end": "Al finalizar",
+    "This count is supplied by the final run summary, not live.": "Este contador se obtiene del resumen final, no en directo."
   },
   "fr": {
     "API": "API",
@@ -1217,7 +1225,9 @@
     "Reset this record": "Réinitialiser ce record",
     "Reset this entry": "Réinitialiser cette entrée",
     "Remove favorite": "Retirer le favori",
-    "Only this entry is reset; other entries are kept": "Seule cette entrée est réinitialisée ; les autres sont conservées"
+    "Only this entry is reset; other entries are kept": "Seule cette entrée est réinitialisée ; les autres sont conservées",
+    "At run end": "En fin de partie",
+    "This count is supplied by the final run summary, not live.": "Ce compteur est fourni dans le bilan final, pas en direct."
   },
   "ja": {
     "API": "API",
@@ -1461,7 +1471,9 @@
     "Reset this record": "この記録をリセット",
     "Reset this entry": "この項目をリセット",
     "Remove favorite": "お気に入りを解除",
-    "Only this entry is reset; other entries are kept": "この項目のみリセットし、他の項目は保持します"
+    "Only this entry is reset; other entries are kept": "この項目のみリセットし、他の項目は保持します",
+    "At run end": "終了時に表示",
+    "This count is supplied by the final run summary, not live.": "この数値はリアルタイムではなく、最終結果で提供されます。"
   },
   "ko": {
     "API": "API",
@@ -1705,7 +1717,9 @@
     "Reset this record": "이 최고 기록 초기화",
     "Reset this entry": "이 항목 초기화",
     "Remove favorite": "즐겨찾기 해제",
-    "Only this entry is reset; other entries are kept": "이 항목만 초기화하고 다른 항목은 유지합니다"
+    "Only this entry is reset; other entries are kept": "이 항목만 초기화하고 다른 항목은 유지합니다",
+    "At run end": "게임 종료 후",
+    "This count is supplied by the final run summary, not live.": "이 수치는 실시간이 아닌 최종 게임 요약에서 제공됩니다."
   },
   "pl": {
     "API": "API",
@@ -1949,7 +1963,9 @@
     "Reset this record": "Resetuj ten rekord",
     "Reset this entry": "Resetuj ten wpis",
     "Remove favorite": "Usuń z ulubionych",
-    "Only this entry is reset; other entries are kept": "Resetowany jest tylko ten wpis; pozostałe zostają"
+    "Only this entry is reset; other entries are kept": "Resetowany jest tylko ten wpis; pozostałe zostają",
+    "At run end": "Po zakończeniu",
+    "This count is supplied by the final run summary, not live.": "Ten licznik pochodzi z końcowego podsumowania, a nie z danych na żywo."
   },
   "pt": {
     "API": "API",
@@ -2193,7 +2209,9 @@
     "Reset this record": "Redefinir este recorde",
     "Reset this entry": "Redefinir esta entrada",
     "Remove favorite": "Remover favorito",
-    "Only this entry is reset; other entries are kept": "Somente esta entrada é redefinida; as outras são mantidas"
+    "Only this entry is reset; other entries are kept": "Somente esta entrada é redefinida; as outras são mantidas",
+    "At run end": "No fim da partida",
+    "This count is supplied by the final run summary, not live.": "Este contador é fornecido no resumo final, não em tempo real."
   },
   "ro": {
     "API": "API",
@@ -2437,7 +2455,9 @@
     "Reset this record": "Resetează acest record",
     "Reset this entry": "Resetează această intrare",
     "Remove favorite": "Elimină favoritul",
-    "Only this entry is reset; other entries are kept": "Doar această intrare este resetată; celelalte sunt păstrate"
+    "Only this entry is reset; other entries are kept": "Doar această intrare este resetată; celelalte sunt păstrate",
+    "At run end": "La finalul partidei",
+    "This count is supplied by the final run summary, not live.": "Acest contor este furnizat în rezumatul final, nu în timp real."
   },
   "ru": {
     "API": "API",
@@ -2681,7 +2701,9 @@
     "Reset this record": "Сбросить этот рекорд",
     "Reset this entry": "Сбросить эту запись",
     "Remove favorite": "Убрать из избранного",
-    "Only this entry is reset; other entries are kept": "Сбрасывается только эта запись; остальные сохраняются"
+    "Only this entry is reset; other entries are kept": "Сбрасывается только эта запись; остальные сохраняются",
+    "At run end": "В конце забега",
+    "This count is supplied by the final run summary, not live.": "Этот счётчик поступает из итоговой сводки, а не в реальном времени."
   },
   "tr": {
     "API": "API",
@@ -2925,7 +2947,9 @@
     "Reset this record": "Bu rekoru sıfırla",
     "Reset this entry": "Bu kaydı sıfırla",
     "Remove favorite": "Favoriyi kaldır",
-    "Only this entry is reset; other entries are kept": "Yalnızca bu kayıt sıfırlanır; diğerleri korunur"
+    "Only this entry is reset; other entries are kept": "Yalnızca bu kayıt sıfırlanır; diğerleri korunur",
+    "At run end": "Oyun sonunda",
+    "This count is supplied by the final run summary, not live.": "Bu sayaç canlı olarak değil, oyun sonu özetinde sağlanır."
   },
   "uk": {
     "API": "API",
@@ -3169,7 +3193,9 @@
     "Reset this record": "Скинути цей рекорд",
     "Reset this entry": "Скинути цей запис",
     "Remove favorite": "Прибрати з обраного",
-    "Only this entry is reset; other entries are kept": "Скидається лише цей запис; решта зберігаються"
+    "Only this entry is reset; other entries are kept": "Скидається лише цей запис; решта зберігаються",
+    "At run end": "Наприкінці забігу",
+    "This count is supplied by the final run summary, not live.": "Цей лічильник надходить із підсумкового звіту, а не в реальному часі."
   },
   "zh": {
     "API": "API",
@@ -3413,6 +3439,8 @@
     "Reset this record": "重置此纪录",
     "Reset this entry": "重置此条目",
     "Remove favorite": "移除收藏",
-    "Only this entry is reset; other entries are kept": "仅重置此条目；保留其他条目"
+    "Only this entry is reset; other entries are kept": "仅重置此条目；保留其他条目",
+    "At run end": "本局结束后",
+    "This count is supplied by the final run summary, not live.": "此计数由本局最终总结提供，并非实时数据。"
   }
 }

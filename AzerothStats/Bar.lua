@@ -140,7 +140,9 @@ function A.BarValue(block)
     local key, value, coverage, partial = block.metric
     if block.scope == "run" then
         local run = A.run
-        if run and run.status == "active" then
+        -- Keep the just-finished tracked run visible until the tracker detaches it.
+        -- A selected historical run must never populate the "Current run" scope.
+        if run and (run.status == "active" or (run.status == "ended" and run.summary)) then
             value = run.values and run.values[key]
             partial = run.partial or run.spellSourcesTruncated
         end
@@ -173,6 +175,27 @@ function A.BarBlockModel(block)
     local value, partial = A.BarValue(block)
     local label = A.BarLabel(metric)
     local formatted = block.metric == "duration" and A.Duration(value) or A.Short(value)
+    local detail = A.T(
+        block.scope == "run" and "Values from available samples" or "Collected since installation"
+    )
+    -- These counts are confirmed by AZSEND, not by a boss meter or a disappearing
+    -- unit. Explain delayed availability rather than implying a broken live feed.
+    local finalOnly = block.metric == "bosses"
+        or block.metric == "elites"
+        or block.metric == "guardians"
+        or block.metric == "magnets"
+    if
+        block.scope == "run"
+        and finalOnly
+        and value == nil
+        and A.run
+        and A.run.status == "active"
+    then
+        formatted = A.T("At run end")
+        detail = A.T("This count is supplied by the final run summary, not live.")
+    elseif block.scope == "run" and finalOnly and value ~= nil and A.run and A.run.summary then
+        detail = A.T("Official summary")
+    end
     return {
         label = label,
         value = formatted,
@@ -180,10 +203,7 @@ function A.BarBlockModel(block)
         scope = A.BarScope(block),
         icon = metric[3],
         partial = partial,
-        detail = A.T(
-            block.scope == "run" and "Values from available samples"
-                or "Collected since installation"
-        ) .. (block.metric == "peakDps" and (" · " .. A.T(
+        detail = detail .. (block.metric == "peakDps" and (" · " .. A.T(
             "Server-sample run average (10s+)"
         )) or ""),
         block = block,
@@ -235,7 +255,10 @@ function A.OpenBarBlock(block)
     A.view.tab = metric[4]
     A.view.cumulative = block.scope ~= "run"
     if block.scope == "run" then
-        if not A.run or A.run.status ~= "active" then
+        if
+            not A.run
+            or not (A.run.status == "active" or (A.run.status == "ended" and A.run.summary))
+        then
             A.view.tab = 7
         else
             A.view.tab = 4

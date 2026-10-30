@@ -1,6 +1,8 @@
-# Azeroth Stats - 1.7.0-beta.1
+# Azeroth Stats - 1.7.1-beta.1
 
-Public beta. The maintainer reported successful in-game testing of the development candidate and authorized this release. No data is erased merely by installation or by opening the management dialog.
+Public beta hotfix, publication authorized by the maintainer. Automated Lua 5.0.3/5.1 checks passed; this specific HUD change still needs in-game feedback. No data is erased merely by installation or by opening the management dialog.
+
+Current-run bosses, elites, guardians and magnets show "At run end" until the official final count is received. The just-finished tracked run remains visible until the tracker detaches it. This update does not add an exact live boss-kill counter.
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
