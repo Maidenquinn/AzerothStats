@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>Azeroth Stats V2 — maquette interactive</title>
+  <link rel="stylesheet" href="app.css">
+  <script defer src="data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-theme="chroniques">
+  <div class="prototype-notice"><span class="demo-dot"></span><strong>ATELIER V2</strong><span>Maquette navigable · données fictives · aucun lien avec le jeu ou vos sauvegardes</span><button data-action="tour">Le parcours en 30 secondes <span aria-hidden="true">↗</span></button></div>
+  <div id="hud" aria-label="Barre de statistiques personnalisée"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#home"><img src="assets/ChronicleGlyph01.png" alt=""><span>AZEROTH<span>STATS <small>II</small></span></span></a>
+      <div class="profile"><img src="assets/ChronicleGlyph07.png" alt=""><span><strong>Maiden</strong><small>Votre carnet d’aventures</small></span><span class="online" title="Scénario fictif"></span></div>
+      <div class="nav-label">VOTRE AVENTURE</div><nav id="navigation" aria-label="Navigation principale"></nav>
+      <div class="sidebar-bottom"><button data-action="go" data-route="settings" class="utility">⚙ <span>Personnaliser</span></button><button data-action="go" data-route="diagnostics" class="utility">⌁ <span>Données & diagnostic</span></button><button data-action="versions" class="version-link">V1 reste disponible <span>↗</span></button><div class="sidebar-version">V2 · étude produit <span>Local uniquement</span></div></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><div id="breadcrumb"></div><div class="top-actions"><button data-action="quality" class="quality-button"><span class="online"></span>Qualité des données</button><button data-action="search" class="search-button" aria-label="Rechercher une partie">⌕ <span>Rechercher</span><kbd>/</kbd></button></div></header>
+      <main id="content" tabindex="-1"></main>
+      <footer class="app-footer"><span>Votre histoire vous appartient.</span><span>Maquette fonctionnelle · FR · mode démonstration</span></footer>
+    </div>
+  </div>
+  <div id="overlay" class="overlay" hidden></div>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "scope": "format feasibility only; no production V2 exists yet",
+  "results": [
+    {
+      "reader": "v1.6.2-beta.1",
+      "passed": true,
+      "roundTrip": "V1 -> candidate common writer -> frozen V1 -> candidate reader",
+      "runs": 3,
+      "gold": 370,
+      "checks": 12,
+      "ui": "simulated",
+      "realClientPersistenceTested": false
+    },
+    {
+      "reader": "v1.7.0-beta.1",
+      "passed": true,
+      "roundTrip": "V1 -> candidate common writer -> frozen V1 -> candidate reader",
+      "runs": 3,
+      "gold": 370,
+      "checks": 12,
+      "ui": "simulated",
+      "realClientPersistenceTested": false
+    },
+    {
+      "reader": "0a3b414",
+      "passed": true,
+      "roundTrip": "V1 -> candidate common writer -> frozen V1 -> candidate reader",
+      "runs": 3,
+      "gold": 370,
+      "checks": 12,
+      "ui": "simulated",
+      "realClientPersistenceTested": false
+    }
+  ],
+  "native": [
+    {
+      "reader": "v1.6.2-beta.1",
+      "runtime": "Lua 5.0.3 native",
+      "passed": true,
+      "realClientPersistenceTested": false
+    },
+    {
+      "reader": "v1.7.0-beta.1",
+      "runtime": "Lua 5.0.3 native",
+      "passed": true,
+      "realClientPersistenceTested": false
+    },
+    {
+      "reader": "0a3b414",
+      "runtime": "Lua 5.0.3 native",
+      "passed": true,
+      "realClientPersistenceTested": false
+    }
+  ]
+}
