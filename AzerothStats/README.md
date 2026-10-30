@@ -1,4 +1,4 @@
-# Azeroth Stats - 1.8.0-dev.3
+# Azeroth Stats - 2.0.0-dev.1
 
 Development preview: five visual themes, pending native visual acceptance. Use Settings → Appearance → Visual theme; select a theme for a large live preview, Apply to save or Cancel/close/Escape to restore your previous theme. Chroniques remains the default. The public release is still 1.7.0-beta.1. Installation preserves all existing statistics and settings.
 

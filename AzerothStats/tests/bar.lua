@@ -163,6 +163,36 @@ check(
     A.BarValue({ metric = "kills", scope = "run" }) == nil,
     "a finished run cannot masquerade as the current run"
 )
+A.run.status = "active"
+local bossBlock = { metric = "bosses", scope = "run" }
+check(A.BarValue(bossBlock) == nil, "missing live boss count is never invented")
+check(
+    A.BarBlockModel(bossBlock).value == A.T("At run end"),
+    "live summary-only count explains when it becomes available"
+)
+check(
+    A.BarBlockModel(bossBlock).detail
+        == A.T("This count is supplied by the final run summary, not live."),
+    "boss HUD explains final-summary provenance"
+)
+A.run.status = "ended"
+A.run.summary = { result = "victory", bosses = 2 }
+A.run.values.bosses = 2
+check(A.BarValue(bossBlock) == 2, "just-finished current run exposes its official boss count")
+check(A.BarBlockModel(bossBlock).value == A.Short(2), "final boss count replaces pending label")
+A.OpenBarBlock(bossBlock)
+check(
+    A.view.tab == 4 and A.view.combatTab == "Activity",
+    "final HUD count opens the tracked run activity"
+)
+A.run.values.bosses = 0
+check(A.BarBlockModel(bossBlock).value == A.Short(0), "official zero bosses is a real count")
+A.run.status = "closed"
+check(A.BarValue(bossBlock) == nil, "detached/closed count cannot leak into a current run")
+local finishedHudRun = A.run
+A.run = { status = "active", values = {} }
+check(A.BarValue(bossBlock) == nil, "new run does not inherit previous boss count")
+A.run = finishedHudRun
 local currentClass = A.BarClass({ scope = "current" })
 A.view.class = "warrior"
 A.view.selected = "historical"

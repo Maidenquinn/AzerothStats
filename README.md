@@ -11,9 +11,9 @@ See [theme implementation, provenance and native test steps](docs/VISUAL-THEMES.
 
 ## Review status
 
-**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.7.0-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
+**Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.7.1-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
 
-[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.7.0-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.7.0-beta.1.md)
+[Download and release notes](https://github.com/Maidenquinn/AzerothStats/releases/tag/v1.7.1-beta.1) · [Reviewer guide](docs/REVIEWER-GUIDE.md) · [Validation evidence](docs/RELEASE-VALIDATION-1.7.1-beta.1.md)
 
 The new native slate/bronze theme includes original generated artwork, a curated overview, grouped navigation and a configurable HUD. Use **`/azstats hud`** (also `/azstats bar config`) to choose up to eight metrics, per-block scope, order, dimensions, labels, icons, opacity and locking. Apply commits the draft; Cancel discards it. The native game timer is not repeated by default. Full totals remain available through **All statistics**.
 

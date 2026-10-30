@@ -1,3 +1,8 @@
+# 2.0.0-dev.1 — V2 foundations (not released)
+
+- Begin the approved V2 architecture on an isolated branch. No V2 installation or release is claimed.
+- Incorporate the 1.7.1-beta.1 HUD availability hotfix.
+
 # 1.8.0-dev.3 — Theme selection and presentation finishing pass
 
 - Distinguish the saved theme from a temporary preview, with uniform option surfaces, palette chips and a selection check.
@@ -30,6 +35,19 @@
 - Keep independent opacity, scale, text size and all statistics unchanged.
 - Translate picker help into fourteen languages and extend bundled CJK glyph coverage.
 - Add synthetic preview/persistence/reuse/contrast and Lua 5.0 regressions. Native visual acceptance is pending.
+
+## 1.7.1-beta.1 - Current-run HUD availability
+
+- Explain summary-only current-run counts as "At run end" while a run is active,
+  instead of a generic "Unavailable" (bosses, elites, guardians and magnets).
+  The tooltip identifies the final run summary as the source. No kills are inferred
+  from boss-meter resets, missing units, spawns or elapsed time.
+- Retain the just-finished tracked run's official values in the current-run HUD
+  until the tracker detaches that run; clicking opens its activity view.
+- Translate the availability explanation into all fourteen languages. Add tests
+  for pending/final/zero counts, navigation and no leakage to another run.
+- This clarifies availability; it does not introduce an exact live boss counter.
+  In-game validation is still required before a release.
 
 ## 1.7.0-beta.1 - Local data management and per-page editing
 

@@ -252,7 +252,9 @@
     "Visual theme": "Vizuální motiv",
     "Adjusted to fit screen": "Přizpůsobeno obrazovce",
     "Observed players": "Pozorovaní hráči",
-    "Saved theme": "Uložený motiv"
+    "Saved theme": "Uložený motiv",
+    "At run end": "Na konci hry",
+    "This count is supplied by the final run summary, not live.": "Tento počet poskytuje závěrečné shrnutí, nikoli živá data."
   },
   "de": {
     "API": "API",
@@ -507,7 +509,9 @@
     "Visual theme": "Design",
     "Adjusted to fit screen": "An Bildschirm angepasst",
     "Observed players": "Erfasste Spieler",
-    "Saved theme": "Gespeichertes Design"
+    "Saved theme": "Gespeichertes Design",
+    "At run end": "Am Spielende",
+    "This count is supplied by the final run summary, not live.": "Dieser Zähler wird erst im abschließenden Spielbericht bereitgestellt."
   },
   "en": {
     "API": "API",
@@ -762,7 +766,9 @@
     "Visual theme": "Visual theme",
     "Adjusted to fit screen": "Adjusted to fit screen",
     "Observed players": "Observed players",
-    "Saved theme": "Saved theme"
+    "Saved theme": "Saved theme",
+    "At run end": "At run end",
+    "This count is supplied by the final run summary, not live.": "This count is supplied by the final run summary, not live."
   },
   "es": {
     "API": "API",
@@ -1017,7 +1023,9 @@
     "Visual theme": "Tema visual",
     "Adjusted to fit screen": "Ajustado a la pantalla",
     "Observed players": "Jugadores observados",
-    "Saved theme": "Tema guardado"
+    "Saved theme": "Tema guardado",
+    "At run end": "Al finalizar",
+    "This count is supplied by the final run summary, not live.": "Este contador se obtiene del resumen final, no en directo."
   },
   "fr": {
     "API": "API",
@@ -1272,7 +1280,9 @@
     "Visual theme": "Thème visuel",
     "Adjusted to fit screen": "Ajustée à l’écran",
     "Observed players": "Joueurs observés",
-    "Saved theme": "Thème enregistré"
+    "Saved theme": "Thème enregistré",
+    "At run end": "En fin de partie",
+    "This count is supplied by the final run summary, not live.": "Ce compteur est fourni dans le bilan final, pas en direct."
   },
   "ja": {
     "API": "API",
@@ -1527,7 +1537,9 @@
     "Visual theme": "外観テーマ",
     "Adjusted to fit screen": "画面に合わせて調整",
     "Observed players": "観測したプレイヤー",
-    "Saved theme": "保存済みテーマ"
+    "Saved theme": "保存済みテーマ",
+    "At run end": "終了時に表示",
+    "This count is supplied by the final run summary, not live.": "この数値はリアルタイムではなく、最終結果で提供されます。"
   },
   "ko": {
     "API": "API",
@@ -1782,7 +1794,9 @@
     "Visual theme": "화면 테마",
     "Adjusted to fit screen": "화면에 맞게 조정됨",
     "Observed players": "관측된 플레이어",
-    "Saved theme": "저장된 테마"
+    "Saved theme": "저장된 테마",
+    "At run end": "게임 종료 후",
+    "This count is supplied by the final run summary, not live.": "이 수치는 실시간이 아닌 최종 게임 요약에서 제공됩니다."
   },
   "pl": {
     "API": "API",
@@ -2037,7 +2051,9 @@
     "Visual theme": "Motyw wizualny",
     "Adjusted to fit screen": "Dopasowano do ekranu",
     "Observed players": "Zaobserwowani gracze",
-    "Saved theme": "Zapisany motyw"
+    "Saved theme": "Zapisany motyw",
+    "At run end": "Po zakończeniu",
+    "This count is supplied by the final run summary, not live.": "Ten licznik pochodzi z końcowego podsumowania, a nie z danych na żywo."
   },
   "pt": {
     "API": "API",
@@ -2292,7 +2308,9 @@
     "Visual theme": "Tema visual",
     "Adjusted to fit screen": "Ajustado à tela",
     "Observed players": "Jogadores observados",
-    "Saved theme": "Tema salvo"
+    "Saved theme": "Tema salvo",
+    "At run end": "No fim da partida",
+    "This count is supplied by the final run summary, not live.": "Este contador é fornecido no resumo final, não em tempo real."
   },
   "ro": {
     "API": "API",
@@ -2547,7 +2565,9 @@
     "Visual theme": "Temă vizuală",
     "Adjusted to fit screen": "Adaptată la ecran",
     "Observed players": "Jucători observați",
-    "Saved theme": "Temă salvată"
+    "Saved theme": "Temă salvată",
+    "At run end": "La finalul partidei",
+    "This count is supplied by the final run summary, not live.": "Acest contor este furnizat în rezumatul final, nu în timp real."
   },
   "ru": {
     "API": "API",
@@ -2802,7 +2822,9 @@
     "Visual theme": "Оформление",
     "Adjusted to fit screen": "Подогнано под экран",
     "Observed players": "Наблюдаемые игроки",
-    "Saved theme": "Сохранённая тема"
+    "Saved theme": "Сохранённая тема",
+    "At run end": "В конце забега",
+    "This count is supplied by the final run summary, not live.": "Этот счётчик поступает из итоговой сводки, а не в реальном времени."
   },
   "tr": {
     "API": "API",
@@ -3057,7 +3079,9 @@
     "Visual theme": "Görsel tema",
     "Adjusted to fit screen": "Ekrana sığdırıldı",
     "Observed players": "Gözlemlenen oyuncular",
-    "Saved theme": "Kayıtlı tema"
+    "Saved theme": "Kayıtlı tema",
+    "At run end": "Oyun sonunda",
+    "This count is supplied by the final run summary, not live.": "Bu sayaç canlı olarak değil, oyun sonu özetinde sağlanır."
   },
   "uk": {
     "API": "API",
@@ -3312,7 +3336,9 @@
     "Visual theme": "Оформлення",
     "Adjusted to fit screen": "Підігнано до екрана",
     "Observed players": "Спостережені гравці",
-    "Saved theme": "Збережена тема"
+    "Saved theme": "Збережена тема",
+    "At run end": "Наприкінці забігу",
+    "This count is supplied by the final run summary, not live.": "Цей лічильник надходить із підсумкового звіту, а не в реальному часі."
   },
   "zh": {
     "API": "API",
@@ -3567,6 +3593,8 @@
     "Visual theme": "视觉主题",
     "Adjusted to fit screen": "已调整以适应屏幕",
     "Observed players": "已观察的玩家",
-    "Saved theme": "已保存的主题"
+    "Saved theme": "已保存的主题",
+    "At run end": "本局结束后",
+    "This count is supplied by the final run summary, not live.": "此计数由本局最终总结提供，并非实时数据。"
   }
 }

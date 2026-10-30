@@ -2,7 +2,7 @@
 ## Title: Azeroth Stats
 ## Notes: Historique local, statistiques et diagnostics Azeroth Survivors.
 ## Author: Kevin / Codex
-## Version: 1.8.0-dev.3
+## Version: 2.0.0-dev.1
 ## SavedVariables: AzerothStatsDB
 
 Util.lua
