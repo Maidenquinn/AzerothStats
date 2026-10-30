@@ -95,3 +95,32 @@ le panneau Codex ; cela ne signifie pas qu'un addon mobile est prévu.
 7. Publication V2 et dépréciation V1 après validation, avec procédure de retour compatible.
 
 L'accord sur une maquette n'est pas l'accord de publication d'une migration non testée.
+
+## Validation utilisateur et édition transversale
+
+Le parcours de la maquette est validé le 30 octobre 2026. Cette validation conserve
+une exigence bloquante : aucun recul sur l'édition unitaire proposée par V1.
+Chaque onglet contenant des données doit exposer une entrée « Modifier cette vue ».
+
+- Masquer une ligne ou une carte est une préférence d'affichage réversible :
+  les compteurs, données sources et autres vues restent conservés. Proposer
+  « Afficher les éléments masqués » et une restauration unitaire.
+- Supprimer un enregistrement ou réinitialiser un record est une opération
+  distincte : annoncer exactement l'objet, la partie/classe/portée, les données
+  supprimées et celles conservées avant confirmation. Pas de suppression au
+  premier clic et aucune modification des données natives du jeu.
+- Historique : masquage ou suppression d'une partie conservée, hors partie active.
+  Combat : sources sélectionnées, sans recalculer silencieusement les vrais totaux.
+  Records : une mesure à la fois, sans effacer les autres records ni la partie source.
+- Build, rencontres, coop, tendances, favoris et némésis : action unitaire adaptée
+  au type de donnée. Un relevé natif indivisible peut être masqué sans prétendre
+  qu'on peut en supprimer une composante de façon cohérente.
+- Vue d'ensemble et comparaison : masquer/réafficher les composants sans supprimer
+  leurs sources. Réglages/diagnostic : pas de faux bouton de suppression de valeurs
+  natives ou de constantes de diagnostic.
+- Les resets/suppressions communs restent effectifs après retour en V1 ; aucune
+  extension V2 ne doit ressusciter une donnée supprimée. Les nouvelles préférences
+  de masquage V2 peuvent rester propres à son interface.
+
+La maquette illustre déjà une partie de ces actions ; la couverture complète de
+chaque onglet et la restauration unitaire restent à implémenter et à recetter.
