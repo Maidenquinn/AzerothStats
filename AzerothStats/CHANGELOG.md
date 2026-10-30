@@ -1,3 +1,16 @@
+## Unreleased - Current-run HUD availability
+
+- Explain summary-only current-run counts as "At run end" while a run is active,
+  instead of a generic "Unavailable" (bosses, elites, guardians and magnets).
+  The tooltip identifies the final run summary as the source. No kills are inferred
+  from boss-meter resets, missing units, spawns or elapsed time.
+- Retain the just-finished tracked run's official values in the current-run HUD
+  until the tracker detaches that run; clicking opens its activity view.
+- Translate the availability explanation into all fourteen languages. Add tests
+  for pending/final/zero counts, navigation and no leakage to another run.
+- This clarifies availability; it does not introduce an exact live boss counter.
+  In-game validation is still required before a release.
+
 ## 1.7.0-beta.1 - Local data management and per-page editing
 
 - Add Edit page to data pages, with row/card action menus. Hide/show rows reversibly without modifying combat values or ranking totals; restore page visibility from one button.
