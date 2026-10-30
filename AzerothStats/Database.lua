@@ -77,6 +77,9 @@ function A.InitDB()
     A.UseTheme(s.theme)
     s.hud = A.NormalizeBar(s.hud)
     database.version = A.version
+    if A.V2Reconcile then
+        A.V2Reconcile()
+    end
     return true
 end
 
@@ -202,6 +205,9 @@ function A.Trim()
         else
             i = i + 1
         end
+    end
+    if A.V2Reconcile then
+        A.V2Reconcile()
     end
 end
 

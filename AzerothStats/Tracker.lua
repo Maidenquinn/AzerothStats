@@ -377,6 +377,7 @@ function A.Sample()
         A.ObserveInsights(run, raw, phase)
         snapshot(run, raw, terminalSnapshot)
         A.ObserveJournal(run)
+        A.ObserveV2(run)
         A.statsPacket = nil
         if run.status == "active" then
             A.ObserveBuild(run)

@@ -31,4 +31,5 @@ Editing.lua
 Views.lua
 UI.lua
 BarUI.lua
+V2Data.lua
 Core.lua
