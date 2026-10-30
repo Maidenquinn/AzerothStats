@@ -1,40 +1,47 @@
-"""Reproducible original parchment nine-slice plates, without external artwork.
+"""Encode original detailed leather/parchment art into bounded native components.
 
-The runtime uses the same 7% corner cuts as Chroniques. Fixed pixel geometry and
-seed keep packaging reproducible. Pillow is a development dependency only.
+No generation/network access occurs here. Fixed crops of committed source art
+are reproducible. Only the small RGBA TGA components ship to players.
 """
 
 import argparse
+import hashlib
 import io
-import math
-import random
+import json
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-ROOT = Path(__file__).resolve().parent.parent / "AzerothStats/media"
+PROJECT = Path(__file__).resolve().parent.parent
+ROOT = PROJECT / "AzerothStats/media"
 
 
 def build():
-    assets = {}
-    for index, base in enumerate(
-        ((220, 202, 162), (192, 157, 109), (232, 216, 178), (219, 199, 158)), 1
-    ):
-        randomizer = random.Random(419 + index)
-        image = Image.new("RGBA", (256, 256))
-        pixels = image.load()
-        for y in range(256):
-            for x in range(256):
-                edge = min(x, y, 255 - x, 255 - y)
-                shade = -13 * math.exp(-edge / 12)
-                noise = randomizer.uniform(-2.5, 2.5) + math.sin(x / 31 + y / 47) * 1.3
-                pixels[x, y] = tuple(
-                    int(max(0, min(255, channel + shade + noise))) for channel in base
-                ) + (255,)
+    source = PROJECT / "design/themes-v1/artwork/grimoire-frame-source.png"
+    provenance = json.loads((source.parent / "provenance.json").read_text())
+    assert (
+        hashlib.sha256(source.read_bytes()).hexdigest()
+        == provenance[source.name]["sha256"]
+    )
+    frame = (
+        Image.open(source).convert("RGBA").resize((256, 256), Image.Resampling.LANCZOS)
+    )
+    paper = Image.open(source).convert("RGBA")
+    width, height = paper.size
+    paper = paper.crop(
+        (int(width * 0.20), int(height * 0.20), int(width * 0.80), int(height * 0.80))
+    )
+    paper = paper.resize((256, 256), Image.Resampling.LANCZOS)
+    assets = {"GrimoirePlate4.tga": frame, "GrimoirePaper.tga": paper}
+    for index in range(1, 4):
+        image = paper.copy()
+        if index == 2:
+            image = Image.blend(
+                image, Image.new("RGBA", image.size, (184, 139, 83, 255)), 0.25
+            )
         draw = ImageDraw.Draw(image)
-        draw.rectangle((0, 0, 255, 255), outline=(75, 48, 25, 255), width=3)
-        draw.rectangle((4, 4, 251, 251), outline=(158, 115, 57, 255), width=2)
-        draw.rectangle((7, 7, 248, 248), outline=(243, 224, 181, 255), width=1)
+        draw.rectangle((0, 0, 255, 255), outline=(105, 72, 40, 255), width=2)
+        draw.rectangle((3, 3, 252, 252), outline=(232, 209, 165, 255), width=1)
         for x, y, sx, sy in (
             (0, 0, 1, 1),
             (255, 0, -1, 1),
@@ -42,9 +49,9 @@ def build():
             (255, 255, -1, -1),
         ):
             draw.line(
-                ((x + sx * 3, y + sy * 16), (x + sx * 16, y + sy * 3)),
-                fill=(107, 66, 31, 255),
-                width=2,
+                ((x + sx * 4, y + sy * 12), (x + sx * 12, y + sy * 4)),
+                fill=(150, 110, 56, 255),
+                width=1,
             )
         assets[f"GrimoirePlate{index}.tga"] = image
     return assets
@@ -61,4 +68,4 @@ if __name__ == "__main__":
             assert (ROOT / name).read_bytes() == buffer.getvalue(), name
         else:
             (ROOT / name).write_bytes(buffer.getvalue())
-    print("Four original reproducible Grimoire plates verified")
+    print("Five original leather/parchment components verified")

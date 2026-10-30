@@ -4,7 +4,7 @@ Persistent run history and build statistics for **Azeroth Survivors on Windows**
 
 ## Development preview: five visual themes
 
-The `codex/visual-themes` branch contains **1.8.0-dev.1**: Chroniques, Warcraft,
+The `codex/visual-themes` branch contains **1.8.0-dev.2**: Chroniques, Warcraft,
 Atelier, Essentiel and Grimoire. Use **Settings → Appearance → Visual theme** for
 live preview, Apply and Cancel. The public release below remains unchanged.
 See [theme implementation, provenance and native test steps](docs/VISUAL-THEMES.md).

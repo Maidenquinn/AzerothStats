@@ -12,6 +12,7 @@ MEDIA = (
     "AzerothSans-ko.otf",
     "ChronicleEdge.tga",
     "ChronicleGrain.tga",
+    "GrimoirePaper.tga",
     "ChronicleSeal.tga",
     "ChronicleIcons.tga",
     "FavoriteHeartEmpty.tga",

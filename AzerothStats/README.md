@@ -1,6 +1,6 @@
-# Azeroth Stats - 1.8.0-dev.1
+# Azeroth Stats - 1.8.0-dev.2
 
-Development preview: five visual themes, pending native visual acceptance. Use Settings → Appearance → Visual theme; click a miniature to preview, Apply to save or Cancel/close/Escape to restore your previous theme. Chroniques remains the default. The public release is still 1.7.0-beta.1. Installation preserves all existing statistics and settings.
+Development preview: five visual themes, pending native visual acceptance. Use Settings → Appearance → Visual theme; select a theme for a large live preview, Apply to save or Cancel/close/Escape to restore your previous theme. Chroniques remains the default. The public release is still 1.7.0-beta.1. Installation preserves all existing statistics and settings.
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 

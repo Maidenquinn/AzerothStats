@@ -22,7 +22,7 @@ local coords = {
 
 --- Create an owned font string and retain its sizing metadata for accessible repainting.
 local function font(parent, x, y, w, h, size, color, title)
-    local t = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local t = parent:CreateFontString(nil, "OVERLAY")
     t:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -y)
     t:SetWidth(w)
     t:SetHeight(h)
@@ -30,6 +30,9 @@ local function font(parent, x, y, w, h, size, color, title)
     t:SetJustifyV("MIDDLE")
     t.baseSize = size or 12
     t.titleFont = title
+    t:SetFont(A.Font(title), size or 12, "")
+    t:SetShadowColor(0, 0, 0, 0)
+    t:SetShadowOffset(0, 0)
     t.fontWidth = w
     color = color or COLORS.text
     t.themeColor = color
@@ -48,6 +51,8 @@ local function put(t, value)
         )
     size = math.max(11, size)
     local path = A.Font(t.titleFont, t.localeFont)
+    t:SetShadowColor(0, 0, 0, 0)
+    t:SetShadowOffset(0, 0)
     if
         t.fullText == value
         and t.paintFont == path
@@ -149,6 +154,9 @@ end
 --- Paint the active-state background/border of an addon button.
 local function selected(b, active)
     b.selected = active and true or false
+    if b.label and b.navigation and A.theme.material == "flat" then
+        b.label:SetTextColor(unpack(active and COLORS.text or COLORS.muted))
+    end
     b.base:SetTexture(unpack(active and COLORS.active or COLORS.background))
     b.base:SetAlpha(A.db.settings.opacity)
     A.MaterialState(b, active)
@@ -573,6 +581,94 @@ function A.CommitSliders()
     end
 end
 
+--- Own chrome only. Theme geometry changes decoration and reading hierarchy,
+--- never page filters, metric identity or accounting. Reset every anchor on switch.
+function A.ApplyThemeLayout()
+    local function show(frame, yes)
+        if yes then
+            frame:Show()
+        else
+            frame:Hide()
+        end
+    end
+    if not UI.brandGlyph then
+        return
+    end
+    local id = A.activeTheme
+    local modern = id == "atelier" or id == "essentiel"
+    local paper = id == "grimoire"
+    local wow = id == "warcraft"
+    local _, class = A.Identity()
+    UI.nativeHeader:Hide()
+    show(UI.brandDragon, wow)
+    show(UI.brandMark, id == "atelier" or paper)
+    show(UI.brandGlyph, not modern and not paper)
+    show(UI.profileGlyph, id ~= "essentiel")
+    UI.brandGlyph:ClearAllPoints()
+    UI.brandGlyph:SetPoint("TOPLEFT", A.window, "TOPLEFT", wow and 39 or 24, wow and -21 or -6)
+    UI.brandGlyph:SetWidth(wow and 48 or 90)
+    UI.brandGlyph:SetHeight(wow and 48 or 90)
+    if wow then
+        icon(UI.brandGlyph, nil, class)
+    else
+        A.PaintedGlyph(UI.brandGlyph, 1)
+    end
+    UI.profileGlyph:ClearAllPoints()
+    UI.profileGlyph:SetPoint("TOPLEFT", A.window, "TOPLEFT", 34, -135)
+    UI.profileGlyph:SetWidth(modern and 28 or (paper and 26 or (wow and 32 or 48)))
+    UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 32 or 48)))
+    if wow then
+        icon(UI.profileGlyph, nil, class)
+    else
+        A.PaintedGlyph(UI.profileGlyph, 7)
+    end
+    UI.title:ClearAllPoints()
+    UI.title:SetPoint(
+        "TOPLEFT",
+        A.window,
+        "TOPLEFT",
+        id == "essentiel" and 30 or (modern or paper) and 92 or 126,
+        wow and -27 or -17
+    )
+    UI.title.baseSize = modern and 27 or wow and 30 or 32
+    UI.breadcrumb:ClearAllPoints()
+    UI.breadcrumb:SetPoint(
+        "TOPLEFT",
+        A.window,
+        "TOPLEFT",
+        id == "essentiel" and 32 or (modern or paper) and 94 or 130,
+        wow and -74 or -65
+    )
+    UI.profileName:ClearAllPoints()
+    UI.profileName:SetPoint(
+        "TOPLEFT",
+        A.window,
+        "TOPLEFT",
+        id == "essentiel" and 32 or modern and 75 or 82,
+        -129
+    )
+    UI.profileClass:ClearAllPoints()
+    UI.profileClass:SetPoint(
+        "TOPLEFT",
+        A.window,
+        "TOPLEFT",
+        id == "essentiel" and 32 or modern and 75 or 82,
+        -153
+    )
+    for _, nav in ipairs(UI.nav) do
+        nav.icon:SetWidth(modern and 20 or paper and 20 or 25)
+        nav.icon:SetHeight(modern and 20 or paper and 20 or 25)
+        nav.label.baseSize = 13
+    end
+    show(UI.sidebarRule, modern)
+    if modern then
+        UI.title:SetTextColor(unpack(COLORS.text))
+        UI.sectionTitle:SetTextColor(unpack(COLORS.text))
+        UI.recentTitle:SetTextColor(unpack(COLORS.text))
+        UI.recordsTitle:SetTextColor(unpack(COLORS.text))
+    end
+end
+
 --- Clamp scale to the screen and apply own opacity/visibility settings without changing client CVars.
 function A.ApplyUI()
     if not A.window then
@@ -600,28 +696,7 @@ function A.ApplyUI()
             texture:SetTextColor(unpack(texture.themeColor))
         end
     end
-    if UI.nativeHeader then
-        if A.activeTheme == "warcraft" then
-            UI.nativeHeader:Show()
-        else
-            UI.nativeHeader:Hide()
-        end
-        local quiet = A.theme.quiet
-        if quiet then
-            UI.brandGlyph:Hide()
-            UI.profileGlyph:Hide()
-        else
-            UI.brandGlyph:Show()
-            UI.profileGlyph:Show()
-        end
-        UI.title:ClearAllPoints()
-        UI.title:SetPoint("TOPLEFT", A.window, "TOPLEFT", quiet and 29 or 126, -14)
-        UI.title.baseSize = quiet and 28 or 36
-        UI.profileName:ClearAllPoints()
-        UI.profileName:SetPoint("TOPLEFT", A.window, "TOPLEFT", quiet and 32 or 90, -129)
-        UI.profileClass:ClearAllPoints()
-        UI.profileClass:SetPoint("TOPLEFT", A.window, "TOPLEFT", quiet and 32 or 90, -153)
-    end
+    A.ApplyThemeLayout()
     local fit = math.min(
         settings.scale,
         math.max(0.45, (UIParent:GetWidth() - 24) / 960),
@@ -797,16 +872,16 @@ local function paintRow(frame, d, model)
     local left = hero and 198 or (photo and 160 or (ranking and 72 or 56))
     local width = hero and 256 or (photo and 350 or (ranking and 340 or 390))
     frame.label:ClearAllPoints()
-    frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", left, -7)
+    frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", left, hero and -12 or -7)
     frame.label:SetWidth(width)
     frame.label.fontWidth = width
     frame.label:SetHeight(23)
     frame.label.baseSize = photo and 14 or 13
-    frame.label.titleFont = photo
+    frame.label.titleFont = photo and A.theme.serif
     frame.detail:ClearAllPoints()
-    frame.detail:SetPoint("TOPLEFT", frame, "TOPLEFT", left, -31)
-    frame.detail:SetWidth(hero and 256 or (photo and 510 or 615))
-    frame.detail.fontWidth = hero and 256 or (photo and 510 or 615)
+    frame.detail:SetPoint("TOPLEFT", frame, "TOPLEFT", left, hero and -39 or -31)
+    frame.detail:SetWidth(hero and 470 or (photo and 510 or 615))
+    frame.detail.fontWidth = hero and 470 or (photo and 510 or 615)
     frame.detail:SetHeight(20)
     frame.detail.baseSize = 11
     frame.extra:ClearAllPoints()
@@ -1200,17 +1275,23 @@ function A.RefreshUI()
             )
             local dashboard = model.layout == "dashboard"
             if dashboard then
-                c:SetWidth(178.5)
-                c:SetPoint("TOPLEFT", A.window, "TOPLEFT", 218 + (i - 1) * 178.5, -181)
+                c:SetWidth(A.theme.material == "flat" and 168 or 171)
+                c:SetPoint(
+                    "TOPLEFT",
+                    A.window,
+                    "TOPLEFT",
+                    218 + (i - 1) * (A.theme.material == "flat" and 182 or 181),
+                    -181
+                )
                 h = 128
             else
                 c:SetWidth(224)
             end
             c:SetHeight(h)
             A.UpdateThemeFrame(c)
-            c.label.fontWidth = dashboard and 154 or 176
+            c.label.fontWidth = dashboard and 144 or 176
             c.label:SetWidth(c.label.fontWidth)
-            c.value.fontWidth = dashboard and 154 or 199
+            c.value.fontWidth = dashboard and 144 or 199
             c.value:SetWidth(c.value.fontWidth)
             c.detail.fontWidth = dashboard and 144 or 199
             c.detail:SetWidth(c.detail.fontWidth)
@@ -1244,6 +1325,19 @@ function A.RefreshUI()
                 else
                     icon(c.icon, d.icon, d.class)
                 end
+            end
+            if dashboard and A.theme.material == "flat" then
+                c.label:SetJustifyH("LEFT")
+                c.label:SetPoint("TOPLEFT", c, "TOPLEFT", 14, -17)
+                c.label.baseSize = 12
+                c.label.titleFont = false
+                c.value:SetJustifyH("LEFT")
+                c.value:SetPoint("TOPLEFT", c, "TOPLEFT", 14, -49)
+                c.value.baseSize = 29
+                c.icon:ClearAllPoints()
+                c.icon:SetPoint("TOPRIGHT", c, "TOPRIGHT", -13, -16)
+                c.icon:SetWidth(20)
+                c.icon:SetHeight(20)
             end
             put(c.label, d.label)
             put(c.value, d.value)
@@ -1356,20 +1450,41 @@ function A.PreviewTheme(id)
     put(dialog.description, A.T(A.themes[id].description))
     put(dialog.previewHint, A.T("Theme preview hint"))
     for _, option in ipairs(dialog.options) do
-        option.outline:SetAlpha(option.themeId == id and 1 or 0.3)
+        option.outline:SetAlpha(option.themeId == id and 1 or 0.22)
         put(option.chosen, option.themeId == id and A.T("Preview") or "")
-        -- Thumbnail art always describes its own theme, never the active one.
-        local theme = A.themes[option.themeId]
-        option.name:SetTextColor(unpack(theme.gold))
-        option.chosen:SetTextColor(unpack(theme.text))
-        option.miniTitle:SetTextColor(unpack(theme.text))
-        option.miniValue:SetTextColor(unpack(theme.text))
+        option.name:SetTextColor(unpack(A.themes[option.themeId].gold))
+        option.chosen:SetTextColor(unpack(A.themes[option.themeId].text))
     end
+    local group = A.db.totals or {}
+    local values = {
+        A.Format(group.runs or 0),
+        A.Duration(group.sum and group.sum.duration),
+        A.Short(group.sum and group.sum.kills),
+    }
+    for i, card in ipairs(dialog.sampleCards) do
+        put(card.label, A.T(({ "Observed runs", "Play time", "Kills" })[i]))
+        put(card.value, values[i])
+        A.PaintedGlyph(card.icon, ({ 2, 4, 5 })[i])
+    end
+    for i, nav in ipairs(dialog.sampleNav) do
+        put(nav.label, A.T(({ "Overview", "History", "Combat" })[i]))
+        selected(nav, i == 1)
+    end
+    put(dialog.sampleTitle, "AZEROTH STATS")
+    put(dialog.sampleCaption, A.T("Collected since installation"))
+    put(dialog.sampleRowTitle, A.T("Run report"))
+    local run = A.Selected()
+    put(
+        dialog.sampleRowDetail,
+        run and (A.ZoneName(run) .. " · " .. A.Duration(run.values and run.values.duration))
+            or A.T("No data yet")
+    )
+    A.ZoneIllustration(dialog.sampleImage, run and run.zone)
     return true
 end
 
---- Miniatures use fixed local materials and the same rectangular layout as the
---- actual UI, not AI screenshots. No remote image or copied Blizzard file ships.
+--- A single large preview uses the real shared widgets and available local
+--- statistics. No screenshot or invented sample statistic is used as a preview.
 function A.OpenThemePicker()
     if not A.window or not A.db then
         return
@@ -1390,8 +1505,8 @@ function A.OpenThemePicker()
         solid(blocker, 0, 0, 0, 0.55)
         local dialog = CreateFrame("Frame", "AzerothStatsThemePicker", A.window)
         UI.themeDialog = dialog
-        dialog:SetWidth(900)
-        dialog:SetHeight(414)
+        dialog:SetWidth(920)
+        dialog:SetHeight(610)
         dialog:SetPoint("CENTER", A.window, "CENTER", 0, 0)
         dialog:SetFrameStrata("FULLSCREEN_DIALOG")
         dialog:SetFrameLevel(A.window:GetFrameLevel() + 80)
@@ -1400,64 +1515,76 @@ function A.OpenThemePicker()
             dialog:SetClampedToScreen(true)
         end
         surface(dialog, "main")
-        dialog.title = font(dialog, 22, 16, 830, 40, 24, COLORS.gold, true)
-        dialog.previewHint = font(dialog, 22, 57, 856, 37, 12, COLORS.muted)
+        dialog.title = font(dialog, 26, 20, 840, 36, 24, COLORS.gold, true)
+        dialog.previewHint = font(dialog, 26, 61, 860, 37, 12, COLORS.muted)
         dialog.options = {}
         for index, id in ipairs(A.themeOrder) do
             local definition = A.themes[id]
             local option = CreateFrame("Button", nil, dialog)
             option.themeId = id
-            option:SetPoint("TOPLEFT", dialog, "TOPLEFT", 22 + (index - 1) * 173, -105)
-            option:SetWidth(164)
-            option:SetHeight(184)
+            option:SetPoint("TOPLEFT", dialog, "TOPLEFT", 26, -110 - (index - 1) * 82)
+            option:SetWidth(202)
+            option:SetHeight(70)
             local base = solid(option, unpack(definition.background))
             base:SetAlpha(1)
-            if definition.material == "paper" or definition.material == "painted" then
-                local plate = option:CreateTexture(nil, "BORDER")
-                plate:SetAllPoints(option)
-                plate:SetTexture(
-                    A.theme.media
-                        .. (id == "grimoire" and "GrimoirePlate4.tga" or "ChroniclePlate4.tga")
-                )
-            end
-            option:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8 })
-            option:SetBackdropBorderColor(unpack(definition.bronze))
             option.outline = option:CreateTexture(nil, "ARTWORK")
             option.outline:SetPoint("TOPLEFT", option, "TOPLEFT", 0, 0)
-            option.outline:SetWidth(164)
-            option.outline:SetHeight(3)
+            option.outline:SetWidth(3)
+            option.outline:SetHeight(70)
             option.outline:SetTexture(unpack(definition.gold))
-            option.name = font(option, 9, 9, 147, 26, 16, definition.gold, definition.serif)
-            option.miniTitle = font(option, 45, 49, 110, 20, 11, definition.text)
-            option.miniValue = font(option, 45, 71, 110, 27, 18, definition.text)
-            option.chosen = font(option, 9, 151, 145, 23, 11, definition.text)
-            for row = 1, 4 do
-                local line = option:CreateTexture(nil, "ARTWORK")
-                line:SetPoint("TOPLEFT", option, "TOPLEFT", 10, -50 - (row - 1) * 21)
-                line:SetWidth(row == 1 and 26 or 21)
-                line:SetHeight(3)
-                line:SetTexture(unpack(row == 1 and definition.gold or definition.bronze))
-            end
-            for row = 1, 2 do
-                local line = option:CreateTexture(nil, "ARTWORK")
-                line:SetPoint("TOPLEFT", option, "TOPLEFT", 45, -108 - (row - 1) * 17)
-                line:SetWidth(108)
-                line:SetHeight(11)
-                line:SetTexture(unpack(definition.panel))
+            option.name = font(option, 14, 8, 174, 25, 16, definition.gold, definition.serif)
+            option.chosen = font(option, 88, 38, 100, 20, 11, definition.text)
+            for swatch, role in ipairs({ "background", "panel", "gold" }) do
+                local chip = option:CreateTexture(nil, "ARTWORK")
+                chip:SetPoint("TOPLEFT", option, "TOPLEFT", 14 + (swatch - 1) * 18, -42)
+                chip:SetWidth(12)
+                chip:SetHeight(10)
+                chip:SetTexture(unpack(definition[role]))
             end
             option:SetScript("OnClick", function()
                 A.PreviewTheme(this.themeId)
             end)
             put(option.name, definition.name)
-            put(option.miniTitle, A.T("Observed runs"))
-            put(option.miniValue, "128")
             table.insert(dialog.options, option)
         end
-        dialog.description = font(dialog, 22, 299, 856, 48, 13, COLORS.text)
-        dialog.cancel = button(dialog, 22, 363, 170, 30, "Cancel", function()
+        local preview = CreateFrame("Frame", nil, dialog)
+        preview:SetPoint("TOPLEFT", dialog, "TOPLEFT", 250, -110)
+        preview:SetWidth(644)
+        preview:SetHeight(342)
+        surface(preview, "card")
+        dialog.sampleTitle = font(preview, 28, 18, 574, 32, 24, COLORS.gold, true)
+        dialog.sampleCaption = font(preview, 28, 53, 574, 20, 11, COLORS.muted)
+        dialog.sampleNav = {}
+        for i, key in ipairs({ "Overview", "History", "Combat" }) do
+            local control = button(preview, 28 + (i - 1) * 198, 85, 186, 28, "", nil)
+            table.insert(dialog.sampleNav, control)
+        end
+        dialog.sampleCards = {}
+        for i = 1, 3 do
+            local card = CreateFrame("Frame", nil, preview)
+            card:SetPoint("TOPLEFT", preview, "TOPLEFT", 28 + (i - 1) * 198, -128)
+            card:SetWidth(186)
+            card:SetHeight(96)
+            surface(card, "card")
+            card.label = font(card, 13, 11, 132, 20, 12, COLORS.text)
+            card.value = font(card, 13, 37, 154, 39, 26, COLORS.text, true)
+            card.icon = card:CreateTexture(nil, "ARTWORK")
+            card.icon:SetPoint("TOPRIGHT", card, "TOPRIGHT", -9, -9)
+            card.icon:SetWidth(18)
+            card.icon:SetHeight(18)
+            table.insert(dialog.sampleCards, card)
+        end
+        dialog.sampleImage = preview:CreateTexture(nil, "ARTWORK")
+        dialog.sampleImage:SetPoint("TOPLEFT", preview, "TOPLEFT", 28, -247)
+        dialog.sampleImage:SetWidth(130)
+        dialog.sampleImage:SetHeight(65)
+        dialog.sampleRowTitle = font(preview, 176, 249, 420, 24, 15, COLORS.text, true)
+        dialog.sampleRowDetail = font(preview, 176, 278, 420, 23, 12, COLORS.muted)
+        dialog.description = font(dialog, 250, 470, 644, 67, 13, COLORS.text)
+        dialog.cancel = button(dialog, 26, 558, 180, 30, "Cancel", function()
             A.CloseThemePicker(false)
         end)
-        dialog.apply = button(dialog, 708, 363, 170, 30, "Apply", function()
+        dialog.apply = button(dialog, 714, 558, 180, 30, "Apply", function()
             A.CloseThemePicker(true)
         end)
         local close = CreateFrame("Button", nil, dialog, "UIPanelCloseButton")
@@ -1481,9 +1608,6 @@ function A.OpenThemePicker()
     UI.themeBlocker:Show()
     UI.themeDialog:Show()
     put(UI.themeDialog.title, A.T("Visual theme"))
-    for _, option in ipairs(UI.themeDialog.options) do
-        put(option.miniTitle, A.T("Observed runs"))
-    end
     A.PreviewTheme(A.ThemeId(A.db.settings.theme))
 end
 
@@ -1692,6 +1816,21 @@ function A.BuildUI()
     UI.nativeHeader:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up")
     UI.nativeHeader:SetTexCoord(0, 0.625, 0, 0.6875)
     UI.nativeHeader:Hide()
+    UI.brandDragon = frame:CreateTexture(nil, "OVERLAY")
+    UI.brandDragon:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -4)
+    UI.brandDragon:SetWidth(90)
+    UI.brandDragon:SetHeight(90)
+    UI.brandDragon:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Gold-Dragon")
+    UI.brandDragon:Hide()
+    UI.brandMark = font(frame, 29, 28, 52, 48, 25, COLORS.gold, true)
+    UI.brandMark:SetJustifyH("CENTER")
+    put(UI.brandMark, "AS")
+    UI.sidebarRule = frame:CreateTexture(nil, "BACKGROUND")
+    UI.sidebarRule:SetPoint("TOPLEFT", frame, "TOPLEFT", 203, -116)
+    UI.sidebarRule:SetWidth(1)
+    UI.sidebarRule:SetHeight(611)
+    A.ThemeTexture(UI.sidebarRule, "bronze")
+    UI.sidebarRule:SetAlpha(0.36)
     local emblem = frame:CreateTexture(nil, "ARTWORK")
     UI.brandGlyph = emblem
     emblem:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -6)

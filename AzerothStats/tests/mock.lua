@@ -126,6 +126,8 @@ end
 for _, k in ipairs({
     "SetFont",
     "SetTextColor",
+    "SetShadowColor",
+    "SetShadowOffset",
     "SetJustifyH",
     "SetTexCoord",
     "SetFrameStrata",
@@ -160,6 +162,7 @@ function CreateFrame(kind, name, parent, template)
     local o = setmetatable({
         kind = kind,
         name = name,
+        template = template,
         _name = name,
         parent = parent,
         scripts = {},
@@ -179,6 +182,13 @@ function CreateFrame(kind, name, parent, template)
         CreateFrame("FontString", name .. "High")
     end
     return o
+end
+-- Capture inherited-font overrides, so light-theme regressions are observable.
+function methods:SetShadowColor(r, g, b, a)
+    self.shadowColor = { r, g, b, a }
+end
+function methods:SetShadowOffset(x, y)
+    self.shadowOffset = { x, y }
 end
 function methods:CreateTexture(name)
     return CreateFrame("Texture", name, self)

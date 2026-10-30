@@ -100,10 +100,10 @@ A.themes = {
         description = "Theme grimoire description",
         material = "paper",
         serif = true,
-        grainAlpha = 0.12,
-        corner = 12,
-        background = { 0.86, 0.78, 0.61 },
-        panel = { 0.92, 0.85, 0.70 },
+        grainAlpha = 0.52,
+        corner = 30,
+        background = { 0.92, 0.86, 0.73 },
+        panel = { 0.96, 0.91, 0.80 },
         bronze = { 0.40, 0.27, 0.14 },
         gold = { 0.35, 0.16, 0.085 },
         text = { 0.17, 0.12, 0.08 },
@@ -141,7 +141,7 @@ function A.UseTheme(id)
     A.theme.grain = definition.material == "native"
             and "Interface\\DialogFrame\\UI-DialogBox-Background"
         or (
-            definition.material == "paper" and (A.theme.media .. "GrimoirePlate4.tga")
+            definition.material == "paper" and (A.theme.media .. "GrimoirePaper.tga")
             or (A.theme.media .. "ChronicleGrain.tga")
         )
 end
@@ -183,7 +183,7 @@ local function paintGlyph(texture)
     if A.activeTheme == "warcraft" then
         texture:SetTexture("Interface\\Icons\\" .. nativeGlyphs[index])
         texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-    elseif A.theme.material == "flat" then
+    elseif A.theme.material == "flat" or A.activeTheme == "grimoire" then
         texture:SetTexture(A.theme.icons)
         local cell = ({ 6, 3, 5, 2, 10, 2, 4, 5, 8, 9, 6, 11, 0, 8, 5, 4 })[index]
         local x, y = math.mod(cell, 4), math.floor(cell / 4)
@@ -281,18 +281,21 @@ function A.MaterialState(frame, active)
     if material == "paper" then
         path = A.theme.media .. "GrimoirePlate" .. (index + 1) .. ".tga"
     end
-    local cuts = { 0, 0.07, 0.93, 1 }
+    local cuts = material == "paper" and window and { 0, 0.12, 0.88, 1 } or { 0, 0.07, 0.93, 1 }
     -- Native backdrop borders use Blizzard's documented eight-tile format, not
     -- the custom atlas which previously produced repeating gold stripes.
-    frame.themeNative = material == "native"
+    frame.themeNative = material == "native" and kind ~= "button"
     if frame.themeNative and frame.themeBackdrop ~= "native" then
         frame:SetBackdrop({
-            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-            edgeSize = window and 20 or 12,
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            edgeSize = window and 32 or 16,
         })
         frame:SetBackdropBorderColor(1, 1, 1, frame.borderAlpha or 0.8)
     elseif not frame.themeNative and frame.themeBackdrop == "native" then
         frame:SetBackdrop(nil)
+    end
+    if frame.themeBackdrop ~= material then
+        frame.nativeEdge = nil
     end
     frame.themeBackdrop = material
     for _, texture in ipairs(frame.materialParts or {}) do
@@ -368,6 +371,19 @@ function A.UpdateThemeFrame(frame)
         and frame.themeLayout == A.activeTheme
     then
         return
+    end
+    if frame.themeNative then
+        local edge = height < 100 and 8
+            or frame == A.window and 32
+            or (frame.themeKind == "card" and 12 or 20)
+        if frame.nativeEdge ~= edge then
+            frame:SetBackdrop({
+                edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+                edgeSize = edge,
+            })
+            frame:SetBackdropBorderColor(1, 1, 1, frame.borderAlpha or 1)
+            frame.nativeEdge = edge
+        end
     end
     frame.themeLayout = A.activeTheme
     frame.themeWidth = width

@@ -130,6 +130,40 @@ end
 
 -- Theme choice survives ordinary validation/reload; malformed/obsolete values
 -- fall back without rejecting the rest of a valid database.
+-- Font/asset/geometry regressions reported from native dev.1 screenshots.
+A.OpenThemePicker()
+A.PreviewTheme("grimoire")
+for _, text in ipairs(A.ui.fonts) do
+    check(
+        text.shadowOffset[1] == 0 and text.shadowOffset[2] == 0 and text.shadowColor[4] == 0,
+        "light-theme text has no inherited black offset shadow"
+    )
+    check(text.template == nil, "addon text does not inherit GameFontNormal styling")
+end
+check(
+    A.ui.themeDialog.sampleCards[1].value.fullText == A.Format(A.db.totals.runs or 0),
+    "large theme preview reads actual local run count, never a dummy 128"
+)
+A.PreviewTheme("warcraft")
+check(not A.ui.nativeHeader:IsShown(), "no stretched red title button")
+check(
+    A.ui.brandGlyph:GetWidth() == 48 and A.ui.profileGlyph:GetWidth() == 32,
+    "native class art stays at suitable size"
+)
+check(
+    A.ui.brandGlyph:GetTexture() == "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes",
+    "Warcraft profile reflects actual class instead of a fixed item"
+)
+A.PreviewTheme("atelier")
+A.view.tab = 1
+A.view.overviewStats = nil
+A.RefreshUI()
+check(
+    A.ui.cards[1]:GetWidth() == 168 and A.ui.cards[2]:GetPoint() == "TOPLEFT",
+    "architectural dashboard gives cards separate breathing space"
+)
+hidePicker()
+
 local stored = A.Copy(A.db)
 stored.settings.theme = "atelier"
 AzerothStatsDB = stored

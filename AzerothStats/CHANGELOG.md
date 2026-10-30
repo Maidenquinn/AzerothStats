@@ -1,3 +1,13 @@
+# 1.8.0-dev.2 — Material and typography refinement
+
+- Remove inherited GameFontNormal shadows/outline styling from owned text, fixing doubled dark text on Grimoire.
+- Replace the enlarged fixed shield and stretched title button with class-correct native art and a native gold dragon/border treatment.
+- Space overview cards, refine contemporary header/profile typography and reduce repeated accent coloring.
+- Replace plain parchment framing with original detailed leather/bronze binding and quiet paper components.
+- Replace five schematic miniatures with a theme list and a large preview made from real widgets and available local counters.
+- Extend run metadata space; preserve navigation, all recorded data, independent HUD settings and transactional theme preview.
+- Native visual acceptance remains pending. This is a local development candidate, not a published beta.
+
 # 1.8.0-dev.1 — Five visual themes (development preview)
 
 - Add Chroniques, Warcraft, Atelier, Essentiel and Grimoire with shared navigation/data.

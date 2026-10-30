@@ -4,11 +4,11 @@
 maintainer. It is a design reference, not an in-game screenshot or runtime asset.
 
 `previews/` contains offline renders of the real Lua widget tree with synthetic
-data, after implementing 1.8.0-dev.1. These previews help compare materials,
+data, after refining 1.8.0-dev.2. These previews help compare materials,
 typography and page hierarchy. The development renderer approximates native
 backdrop edges/compositing and does not replace testing the actual client.
 
-The picker miniatures are drawn by the addon and do not load these PNG files.
+The large picker preview is drawn using the addon widgets and available local counters; it does not load these PNG files.
 None of this directory is included in the player package.
 
 Read [implementation and native acceptance steps](../../docs/VISUAL-THEMES.md).
@@ -26,3 +26,5 @@ Read [implementation and native acceptance steps](../../docs/VISUAL-THEMES.md).
 
 These rules and token definitions can guide the other addons without adding a
 shared runtime dependency between independently installed addons.
+
+Original dev.2 production texture: [leather/parchment PNG](artwork/grimoire-frame-source.png), [prompt](artwork/PROMPT.md) and [source hash](artwork/provenance.json). Generated with the built-in ImageGen tool, encoded offline into small native components.
