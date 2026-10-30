@@ -377,7 +377,7 @@ function A.CoopLabel(run)
     end
     local sample = run.coop.comparison
     if sample and sample.rows and table.getn(sample.rows) > 1 then
-        return A.T("Co-op") .. " · " .. A.T("Players in sample") .. " " .. table.getn(sample.rows)
+        return A.T("Co-op") .. " · " .. A.T("Observed players") .. " " .. table.getn(sample.rows)
     end
     if run.coop.peers and next(run.coop.peers) then
         return A.T("Co-op") .. " · " .. A.T("Partial")

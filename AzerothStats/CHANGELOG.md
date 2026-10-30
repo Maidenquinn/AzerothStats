@@ -1,3 +1,15 @@
+# 1.8.0-dev.3 — Theme selection and presentation finishing pass
+
+- Distinguish the saved theme from a temporary preview, with uniform option surfaces, palette chips and a selection check.
+- Give Apply a clear primary treatment in the theme picker and HUD editor; keep Cancel secondary.
+- Reserve native Warcraft red leather for selected/primary controls; use native award badges for wins and records.
+- Replace the placeholder AS mark with a semantic compass seal on Atelier and Grimoire.
+- Add Atelier structural card accents and a genuinely compact Essentiel overview, restored safely on theme switching.
+- Fix reused zone photos retaining glyph ink/tint after palette changes.
+- Clarify observed-player and screen-fit/slider labels in all fourteen languages.
+- Keep native move-to-begin text untouched: no supported control was identified in the audited Lua API. Its overlap remains a native visual limitation.
+- Local preview only; no public release, merge or additional game-team approval is claimed.
+
 # 1.8.0-dev.2 — Material and typography refinement
 
 - Remove inherited GameFontNormal shadows/outline styling from owned text, fixing doubled dark text on Grimoire.

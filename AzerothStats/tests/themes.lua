@@ -106,6 +106,15 @@ A.PaintedGlyph(texture, 3)
 A.widgets.icon(texture, "Spell_Holy_Heal")
 A.PaintedGlyph(texture, 4)
 check(table.getn(A.themeGlyphs) == glyphCount, "reused glyph registry stays bounded")
+A.UseTheme("grimoire")
+A.PaintedGlyph(texture, 7)
+A.ZoneIllustration(texture, "elwynn")
+A.RepaintMaterials()
+check(
+    texture:GetTexture() == A.theme.media .. "RunZone-elwynn.tga",
+    "theme repaint preserves zone photo after glyph reuse"
+)
+check(texture.themeGlyph == nil, "zone photo releases prior semantic glyph role")
 
 -- Readability: semantic body and secondary text retain WCAG 4.5 contrast at
 -- full opacity; lower player-selected opacity depends on the game behind it.
@@ -117,6 +126,8 @@ local function light(rgb)
 end
 for _, id in ipairs(A.themeOrder) do
     local definition = A.themes[id]
+    local a, b = light(A.primaryPalette[id][1]), light(A.primaryPalette[id][2])
+    check((math.max(a, b) + 0.05) / (math.min(a, b) + 0.05) >= 4.5, "primary contrast: " .. id)
     for _, role in ipairs({ "text", "muted" }) do
         for _, surface in ipairs({ "background", "panel" }) do
             local a, b = light(definition[role]), light(definition[surface])
@@ -161,6 +172,40 @@ A.RefreshUI()
 check(
     A.ui.cards[1]:GetWidth() == 168 and A.ui.cards[2]:GetPoint() == "TOPLEFT",
     "architectural dashboard gives cards separate breathing space"
+)
+check(A.ui.cards[1].archRule:IsShown(), "Atelier has structural card accent")
+check(
+    A.ui.themeDialog.options[3].chosen.fullText == A.T("Preview"),
+    "preview option has explicit status"
+)
+check(
+    A.ui.themeDialog.options[5].chosen.fullText == A.T("Saved theme"),
+    "saved option stays identified when another is previewed"
+)
+check(A.ui.themeDialog.apply.intent == "primary", "Apply has explicit action hierarchy")
+for _, option in ipairs(A.ui.themeDialog.options) do
+    check(
+        option.base ~= nil and option.check ~= nil,
+        "picker allocates uniform base and selection check once"
+    )
+end
+A.PreviewTheme("essentiel")
+check(A.ui.cards[1]:GetHeight() == 90, "Essentiel has compact summary cards")
+check(
+    A.ui.model.rowHeight == 64 and A.ui.model.rowY == 322,
+    "Essentiel has compact recent-run rows"
+)
+check(not A.ui.cards[1].archRule:IsShown(), "architectural ornament does not leak into Essentiel")
+A.PreviewTheme("chroniques")
+check(
+    A.ui.cards[1]:GetHeight() == 128 and A.ui.model.rowHeight == 78,
+    "full layout restored after compact preview"
+)
+local _, _, _, _, recordY = A.ui.recordPanel:GetPoint()
+check(recordY == -649, "records restore their normal vertical anchor")
+check(
+    string.find(A.ui.themeDialog.previewHint.fullText, "Grimoire", 1, true) ~= nil,
+    "saved theme is identified independently of current preview"
 )
 hidePicker()
 

@@ -583,6 +583,7 @@ local function buildEditor()
         editor:Hide()
         A.RefreshBar()
     end)
+    editor.apply.intent = "primary"
     table.insert(editor.translated, editor.cancel)
     table.insert(editor.translated, editor.apply)
     editor.cancel.editorX = 230

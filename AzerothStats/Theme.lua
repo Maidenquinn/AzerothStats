@@ -147,6 +147,16 @@ function A.UseTheme(id)
 end
 A.UseTheme("chroniques")
 
+-- A small source-defined action palette keeps Apply visually distinct from
+-- navigation. Never infer an action's importance from its translated label.
+A.primaryPalette = {
+    chroniques = { { 0.33, 0.23, 0.10 }, { 1, 0.97, 0.89 } },
+    warcraft = { { 0.34, 0.055, 0.035 }, { 1, 0.94, 0.78 } },
+    atelier = { { 0.80, 0.52, 0.32 }, { 0.075, 0.06, 0.05 } },
+    essentiel = { { 0.83, 0.85, 0.85 }, { 0.047, 0.055, 0.063 } },
+    grimoire = { { 0.35, 0.12, 0.09 }, { 1, 0.94, 0.80 } },
+}
+
 --- Retain a color role for repainting dividers, tracks and alternating rows.
 function A.ThemeTexture(texture, role)
     texture.themeRole = role
@@ -181,8 +191,14 @@ local function paintGlyph(texture)
     end
     texture:SetVertexColor(1, 1, 1)
     if A.activeTheme == "warcraft" then
-        texture:SetTexture("Interface\\Icons\\" .. nativeGlyphs[index])
-        texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        if index == 3 or index == 8 then
+            -- Native award badges convey wins/records instead of unrelated spells/coins.
+            texture:SetTexture("Interface\\PvPRankBadges\\PvPRank" .. (index == 3 and "06" or "14"))
+            texture:SetTexCoord(0, 1, 0, 1)
+        else
+            texture:SetTexture("Interface\\Icons\\" .. nativeGlyphs[index])
+            texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        end
     elseif A.theme.material == "flat" or A.activeTheme == "grimoire" then
         texture:SetTexture(A.theme.icons)
         local cell = ({ 6, 3, 5, 2, 10, 2, 4, 5, 8, 9, 6, 11, 0, 8, 5, 4 })[index]
@@ -231,6 +247,10 @@ local runImages = {
 --- Use the supplied zone photo with aspect-correct native framing. Historical names
 --- and unknown zones never select a different map just to fill the thumbnail.
 function A.ZoneIllustration(texture, zone)
+    -- A banner can previously have held a semantic glyph. Release its glyph
+    -- role and ink tint before assigning a photo, including after theme changes.
+    texture.themeGlyph = nil
+    texture:SetVertexColor(1, 1, 1)
     if zone == "naxxramas" then
         zone = "naxx"
     end
@@ -265,7 +285,9 @@ end
 function A.MaterialState(frame, active)
     local changed = frame.materialTheme ~= A.activeTheme
         or frame.themeActive ~= (active and true or false)
+        or frame.materialIntent ~= frame.intent
     frame.themeActive = active and true or false
+    frame.materialIntent = frame.intent
     if not changed then
         return
     end
@@ -301,7 +323,10 @@ function A.MaterialState(frame, active)
     for _, texture in ipairs(frame.materialParts or {}) do
         local x, y = texture.materialX, texture.materialY
         texture:SetVertexColor(1, 1, 1)
-        if material == "flat" then
+        if frame.intent == "primary" and x == 2 and y == 2 and material ~= "native" then
+            texture:SetTexture(unpack(A.primaryPalette[A.activeTheme][1]))
+            texture:SetTexCoord(0, 1, 0, 1)
+        elseif material == "flat" then
             texture:SetTexture(
                 unpack(
                     x == 2 and y == 2 and (active and A.theme.active or A.theme.panel)
@@ -309,10 +334,15 @@ function A.MaterialState(frame, active)
                 )
             )
             texture:SetTexCoord(0, 1, 0, 1)
-        elseif material == "native" then
+        elseif material == "native" and active then
             texture:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up")
             local xs, ys = { 0, 0.09375, 0.53125, 0.625 }, { 0, 0.1875, 0.5, 0.6875 }
             texture:SetTexCoord(xs[x], xs[x + 1], ys[y], ys[y + 1])
+        elseif material == "native" then
+            -- Neutral navigation/actions use a quiet leather-colored surface;
+            -- native red leather is reserved for selection and primary actions.
+            texture:SetTexture(unpack(x == 2 and y == 2 and A.theme.panel or A.theme.bronze))
+            texture:SetTexCoord(0, 1, 0, 1)
         else
             texture:SetTexture(path)
             texture:SetTexCoord(cuts[x], cuts[x + 1], cuts[y], cuts[y + 1])
@@ -327,6 +357,10 @@ function A.MaterialState(frame, active)
         else
             texture:Show()
         end
+    end
+    if material == "native" and kind == "button" then
+        frame.themeLayout = nil
+        A.UpdateThemeFrame(frame)
     end
     A.PaintBorder(frame, 1, 1, 1, frame.borderAlpha)
 end
@@ -389,7 +423,15 @@ function A.UpdateThemeFrame(frame)
     frame.themeWidth = width
     frame.themeHeight = height
     local corner = math.min(
-        A.theme.material == "flat" and 1
+        (
+            A.theme.material == "flat"
+            or (
+                A.theme.material == "native"
+                and frame.themeKind == "button"
+                and not frame.themeActive
+            )
+        )
+                and 1
             or (
                 frame.themeKind == "window" and A.theme.corner
                 or (frame.themeKind == "main" and 5 or (frame.themeKind == "card" and 10 or 6))

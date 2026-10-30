@@ -8,7 +8,7 @@
     "All runs": "Všechny hry",
     "All statistics": "Všechny statistiky",
     "Appearance": "Vzhled",
-    "Applied on release": "Použije se po uvolnění",
+    "Applied on release": "Použije se po uvolnění posuvníku",
     "Apply": "Použít",
     "Attributes": "Vlastnosti",
     "Automatic": "Automaticky",
@@ -249,7 +249,10 @@
     "Theme grimoire description": "Grimoire — teplý pergamen, tmavý inkoust a bronzové detaily. Světlý deník dobrodruha.",
     "Theme preview hint": "Vyberte styl pro náhled. Použít uloží výběr; Zrušit obnoví předchozí motiv.",
     "Theme warcraft description": "Warcraft — kamenné rámečky, červená kožená tlačítka a ikony WoW z klienta.",
-    "Visual theme": "Vizuální motiv"
+    "Visual theme": "Vizuální motiv",
+    "Adjusted to fit screen": "Přizpůsobeno obrazovce",
+    "Observed players": "Pozorovaní hráči",
+    "Saved theme": "Uložený motiv"
   },
   "de": {
     "API": "API",
@@ -260,7 +263,7 @@
     "All runs": "Alle Läufe",
     "All statistics": "Alle Statistiken",
     "Appearance": "Darstellung",
-    "Applied on release": "Anwenden beim Loslassen",
+    "Applied on release": "Wird beim Loslassen des Reglers angewendet",
     "Apply": "Anwenden",
     "Attributes": "Attribute",
     "Automatic": "Automatisch",
@@ -501,7 +504,10 @@
     "Theme grimoire description": "Grimoire — warmes Pergament, dunkle Tinte und Bronzedetails. Ein helles Abenteuertagebuch.",
     "Theme preview hint": "Wähle einen Stil für die Vorschau. Anwenden speichert die Auswahl; Abbrechen stellt das vorherige Design wieder her.",
     "Theme warcraft description": "Warcraft — native Steinrahmen, rote Lederknöpfe und WoW-Symbole des Clients.",
-    "Visual theme": "Design"
+    "Visual theme": "Design",
+    "Adjusted to fit screen": "An Bildschirm angepasst",
+    "Observed players": "Erfasste Spieler",
+    "Saved theme": "Gespeichertes Design"
   },
   "en": {
     "API": "API",
@@ -512,7 +518,7 @@
     "All runs": "All runs",
     "All statistics": "All statistics",
     "Appearance": "Appearance",
-    "Applied on release": "Applied on release",
+    "Applied on release": "Applied when you release the slider",
     "Apply": "Apply",
     "Attributes": "Attributes",
     "Automatic": "Automatic",
@@ -753,7 +759,10 @@
     "Theme grimoire description": "Grimoire — warm parchment, dark ink and bronze details. A light adventurer’s journal.",
     "Theme preview hint": "Choose a style to preview it. Apply saves your choice; Cancel restores your previous theme.",
     "Theme warcraft description": "Warcraft — native client stone borders, red leather buttons and WoW icons.",
-    "Visual theme": "Visual theme"
+    "Visual theme": "Visual theme",
+    "Adjusted to fit screen": "Adjusted to fit screen",
+    "Observed players": "Observed players",
+    "Saved theme": "Saved theme"
   },
   "es": {
     "API": "API",
@@ -764,7 +773,7 @@
     "All runs": "Todas las partidas",
     "All statistics": "Todas las estadísticas",
     "Appearance": "Apariencia",
-    "Applied on release": "Se aplica al soltar",
+    "Applied on release": "Se aplica al soltar el deslizador",
     "Apply": "Aplicar",
     "Attributes": "Atributos",
     "Automatic": "Automático",
@@ -1005,7 +1014,10 @@
     "Theme grimoire description": "Grimoire: pergamino cálido, tinta oscura y detalles de bronce. Un diario de aventuras claro.",
     "Theme preview hint": "Elige un estilo para verlo. Aplicar guarda tu elección; Cancelar restaura el tema anterior.",
     "Theme warcraft description": "Warcraft: bordes de piedra, botones de cuero rojo e iconos de WoW del cliente.",
-    "Visual theme": "Tema visual"
+    "Visual theme": "Tema visual",
+    "Adjusted to fit screen": "Ajustado a la pantalla",
+    "Observed players": "Jugadores observados",
+    "Saved theme": "Tema guardado"
   },
   "fr": {
     "API": "API",
@@ -1016,7 +1028,7 @@
     "All runs": "Toutes les parties",
     "All statistics": "Toutes les statistiques",
     "Appearance": "Apparence",
-    "Applied on release": "Appliqué au relâchement",
+    "Applied on release": "Appliqué au relâchement du curseur",
     "Apply": "Appliquer",
     "Attributes": "Attributs",
     "Automatic": "Automatique",
@@ -1257,7 +1269,10 @@
     "Theme grimoire description": "Grimoire — parchemin chaleureux, encre sombre et détails de bronze. Un journal d’aventure clair.",
     "Theme preview hint": "Choisissez un style pour le prévisualiser. Appliquer enregistre votre choix ; Annuler restaure le thème précédent.",
     "Theme warcraft description": "Warcraft — cadres de pierre, boutons de cuir rouge et icônes WoW natifs du client.",
-    "Visual theme": "Thème visuel"
+    "Visual theme": "Thème visuel",
+    "Adjusted to fit screen": "Ajustée à l’écran",
+    "Observed players": "Joueurs observés",
+    "Saved theme": "Thème enregistré"
   },
   "ja": {
     "API": "API",
@@ -1268,7 +1283,7 @@
     "All runs": "全プレイ",
     "All statistics": "すべての統計",
     "Appearance": "外観",
-    "Applied on release": "離したときに適用",
+    "Applied on release": "スライダーを離すと適用",
     "Apply": "適用",
     "Attributes": "能力値",
     "Automatic": "自動",
@@ -1509,7 +1524,10 @@
     "Theme grimoire description": "Grimoire：温かな羊皮紙、濃いインク、青銅の装飾。明るい冒険日誌。",
     "Theme preview hint": "スタイルを選ぶとプレビューできます。適用で保存、キャンセルで元のテーマに戻ります。",
     "Theme warcraft description": "Warcraft：クライアント内蔵の石枠、赤い革のボタン、WoWアイコン。",
-    "Visual theme": "外観テーマ"
+    "Visual theme": "外観テーマ",
+    "Adjusted to fit screen": "画面に合わせて調整",
+    "Observed players": "観測したプレイヤー",
+    "Saved theme": "保存済みテーマ"
   },
   "ko": {
     "API": "API",
@@ -1520,7 +1538,7 @@
     "All runs": "모든 플레이",
     "All statistics": "전체 통계",
     "Appearance": "외형",
-    "Applied on release": "놓으면 적용",
+    "Applied on release": "슬라이더를 놓으면 적용",
     "Apply": "적용",
     "Attributes": "능력치",
     "Automatic": "자동",
@@ -1761,7 +1779,10 @@
     "Theme grimoire description": "Grimoire: 따뜻한 양피지, 짙은 잉크, 청동 장식. 밝은 모험 일지.",
     "Theme preview hint": "스타일을 선택하면 미리 볼 수 있습니다. 적용하면 저장되고, 취소하면 이전 테마로 돌아갑니다.",
     "Theme warcraft description": "Warcraft: 클라이언트 기본 돌 테두리, 붉은 가죽 버튼, WoW 아이콘.",
-    "Visual theme": "화면 테마"
+    "Visual theme": "화면 테마",
+    "Adjusted to fit screen": "화면에 맞게 조정됨",
+    "Observed players": "관측된 플레이어",
+    "Saved theme": "저장된 테마"
   },
   "pl": {
     "API": "API",
@@ -1772,7 +1793,7 @@
     "All runs": "Wszystkie rozgrywki",
     "All statistics": "Wszystkie statystyki",
     "Appearance": "Wygląd",
-    "Applied on release": "Zastosowanie po zwolnieniu",
+    "Applied on release": "Stosowane po zwolnieniu suwaka",
     "Apply": "Zastosuj",
     "Attributes": "Atrybuty",
     "Automatic": "Automatycznie",
@@ -2013,7 +2034,10 @@
     "Theme grimoire description": "Grimoire — ciepły pergamin, ciemny atrament i brązowe detale. Jasny dziennik przygód.",
     "Theme preview hint": "Wybierz styl do podglądu. Zastosuj zapisuje wybór; Anuluj przywraca poprzedni motyw.",
     "Theme warcraft description": "Warcraft — kamienne ramki, czerwone skórzane przyciski i ikony WoW z klienta.",
-    "Visual theme": "Motyw wizualny"
+    "Visual theme": "Motyw wizualny",
+    "Adjusted to fit screen": "Dopasowano do ekranu",
+    "Observed players": "Zaobserwowani gracze",
+    "Saved theme": "Zapisany motyw"
   },
   "pt": {
     "API": "API",
@@ -2024,7 +2048,7 @@
     "All runs": "Todas as partidas",
     "All statistics": "Todas as estatísticas",
     "Appearance": "Aparência",
-    "Applied on release": "Aplicado ao soltar",
+    "Applied on release": "Aplicado ao soltar o controle",
     "Apply": "Aplicar",
     "Attributes": "Atributos",
     "Automatic": "Automático",
@@ -2265,7 +2289,10 @@
     "Theme grimoire description": "Grimoire: pergaminho quente, tinta escura e detalhes em bronze. Um diário de aventuras claro.",
     "Theme preview hint": "Escolha um estilo para visualizar. Aplicar salva sua escolha; Cancelar restaura o tema anterior.",
     "Theme warcraft description": "Warcraft: bordas de pedra, botões de couro vermelho e ícones nativos do WoW.",
-    "Visual theme": "Tema visual"
+    "Visual theme": "Tema visual",
+    "Adjusted to fit screen": "Ajustado à tela",
+    "Observed players": "Jogadores observados",
+    "Saved theme": "Tema salvo"
   },
   "ro": {
     "API": "API",
@@ -2276,7 +2303,7 @@
     "All runs": "Toate partidele",
     "All statistics": "Toate statisticile",
     "Appearance": "Aspect",
-    "Applied on release": "Se aplică la eliberare",
+    "Applied on release": "Se aplică la eliberarea glisorului",
     "Apply": "Aplică",
     "Attributes": "Atribute",
     "Automatic": "Automat",
@@ -2517,7 +2544,10 @@
     "Theme grimoire description": "Grimoire — pergament cald, cerneală închisă și detalii de bronz. Un jurnal de aventură luminos.",
     "Theme preview hint": "Alege un stil pentru previzualizare. Aplică salvează alegerea; Anulează restabilește tema anterioară.",
     "Theme warcraft description": "Warcraft — rame de piatră, butoane din piele roșie și pictograme WoW din client.",
-    "Visual theme": "Temă vizuală"
+    "Visual theme": "Temă vizuală",
+    "Adjusted to fit screen": "Adaptată la ecran",
+    "Observed players": "Jucători observați",
+    "Saved theme": "Temă salvată"
   },
   "ru": {
     "API": "API",
@@ -2528,7 +2558,7 @@
     "All runs": "Все забеги",
     "All statistics": "Вся статистика",
     "Appearance": "Оформление",
-    "Applied on release": "Применяется при отпускании",
+    "Applied on release": "Применяется при отпускании ползунка",
     "Apply": "Применить",
     "Attributes": "Характеристики",
     "Automatic": "Автоматически",
@@ -2769,7 +2799,10 @@
     "Theme grimoire description": "Grimoire — тёплый пергамент, тёмные чернила и бронзовые детали. Светлый дневник приключений.",
     "Theme preview hint": "Выберите стиль для просмотра. Применить сохраняет выбор; Отмена возвращает прежнее оформление.",
     "Theme warcraft description": "Warcraft — каменные рамки, красные кожаные кнопки и значки WoW из клиента.",
-    "Visual theme": "Оформление"
+    "Visual theme": "Оформление",
+    "Adjusted to fit screen": "Подогнано под экран",
+    "Observed players": "Наблюдаемые игроки",
+    "Saved theme": "Сохранённая тема"
   },
   "tr": {
     "API": "API",
@@ -2780,7 +2813,7 @@
     "All runs": "Tüm koşular",
     "All statistics": "Tüm istatistikler",
     "Appearance": "Görünüm",
-    "Applied on release": "Bırakıldığında uygulanır",
+    "Applied on release": "Kaydırıcı bırakıldığında uygulanır",
     "Apply": "Uygula",
     "Attributes": "Nitelikler",
     "Automatic": "Otomatik",
@@ -3021,7 +3054,10 @@
     "Theme grimoire description": "Grimoire — sıcak parşömen, koyu mürekkep ve bronz ayrıntılar. Açık renkli bir macera günlüğü.",
     "Theme preview hint": "Önizlemek için bir stil seçin. Uygula seçiminizi kaydeder; İptal önceki temayı geri yükler.",
     "Theme warcraft description": "Warcraft — istemcinin taş çerçeveleri, kırmızı deri düğmeleri ve WoW simgeleri.",
-    "Visual theme": "Görsel tema"
+    "Visual theme": "Görsel tema",
+    "Adjusted to fit screen": "Ekrana sığdırıldı",
+    "Observed players": "Gözlemlenen oyuncular",
+    "Saved theme": "Kayıtlı tema"
   },
   "uk": {
     "API": "API",
@@ -3032,7 +3068,7 @@
     "All runs": "Усі забіги",
     "All statistics": "Уся статистика",
     "Appearance": "Вигляд",
-    "Applied on release": "Застосовується після відпускання",
+    "Applied on release": "Застосовується після відпускання повзунка",
     "Apply": "Застосувати",
     "Attributes": "Характеристики",
     "Automatic": "Автоматично",
@@ -3273,7 +3309,10 @@
     "Theme grimoire description": "Grimoire — теплий пергамент, темне чорнило й бронзові деталі. Світлий щоденник пригод.",
     "Theme preview hint": "Виберіть стиль для перегляду. Застосувати зберігає вибір; Скасувати повертає попереднє оформлення.",
     "Theme warcraft description": "Warcraft — кам’яні рамки, червоні шкіряні кнопки та значки WoW із клієнта.",
-    "Visual theme": "Оформлення"
+    "Visual theme": "Оформлення",
+    "Adjusted to fit screen": "Підігнано до екрана",
+    "Observed players": "Спостережені гравці",
+    "Saved theme": "Збережена тема"
   },
   "zh": {
     "API": "API",
@@ -3284,7 +3323,7 @@
     "All runs": "全部对局",
     "All statistics": "全部统计",
     "Appearance": "外观",
-    "Applied on release": "松开后应用",
+    "Applied on release": "松开滑块时应用",
     "Apply": "应用",
     "Attributes": "属性",
     "Automatic": "自动",
@@ -3525,6 +3564,9 @@
     "Theme grimoire description": "Grimoire：温暖羊皮纸、深色墨迹与铜色细节。明亮的冒险日志。",
     "Theme preview hint": "选择样式进行预览。应用会保存选择，取消会恢复原来的主题。",
     "Theme warcraft description": "Warcraft：客户端原生石质边框、红色皮革按钮和 WoW 图标。",
-    "Visual theme": "视觉主题"
+    "Visual theme": "视觉主题",
+    "Adjusted to fit screen": "已调整以适应屏幕",
+    "Observed players": "已观察的玩家",
+    "Saved theme": "已保存的主题"
   }
 }

@@ -1024,7 +1024,7 @@ function A.PageModel()
                 )
                 card(
                     model,
-                    A.T("Players in sample"),
+                    A.T("Observed players"),
                     A.Format(table.getn(comparison.rows)),
                     A.T("Last sample") .. " · " .. A.Duration(comparison.observedTime),
                     A.metricIcons.duration

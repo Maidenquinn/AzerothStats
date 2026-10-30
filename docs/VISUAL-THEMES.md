@@ -1,4 +1,4 @@
-# Five visual themes — 1.8.0-dev.2
+# Five visual themes — 1.8.0-dev.3
 
 Development candidate on `codex/visual-themes`, based on the approved five-theme
 direction. This build has not been published or accepted in the native client.
@@ -88,7 +88,7 @@ and compositing can differ from that development renderer.
 
 Before merging/releasing, test in the actual client:
 
-1. Completely restart and check `1.8.0-dev.2` in the header.
+1. Completely restart and check `1.8.0-dev.3` in the header.
 2. Preview each theme from Settings. Check the window, HUD, text and selected tab.
 3. Cancel, close and use Escape; confirm the stored theme returns each time.
 4. Apply another theme, close/restart and verify persistence.
@@ -148,3 +148,53 @@ preview directory are offline renders, not native compositor certification.
 - Player archive: 82 manifest-verified files. SavedVariables unchanged during
   installation; prior dev.1 package/settings copied to a private local backup.
 - Native visual acceptance still pending. Public main/release unchanged.
+
+## Dev.3 finishing pass and acceptance limits
+
+The saved style is named separately from the temporary preview. All five option
+containers use the current palette; individual swatches identify their own palette.
+A native check texture and a leading rule identify the preview. Apply has an explicit
+primary intent, declared in code rather than inferred from translated text. Its
+source-defined foreground/background pairs meet a 4.5:1 opaque contrast check.
+Warcraft keeps native red leather for selection/primary actions and neutral surfaces
+for secondary actions. Wins and records use existing native rank/award badges. Native
+art is referenced by a fixed client path, never copied into the player package.
+
+Essentiel uses 90-unit overview cards and 64-unit recent-run rows; ordinary themes
+restore 128/78 units and their original anchors. Atelier retains its more spacious
+layout with separate copper card rules. The old AS placeholder is removed. Reused
+zone-image textures clear their prior glyph role and tint before displaying a photo.
+These changes affect presentation only, never recorded runs or combat accounting.
+
+The local client binary contains `hud.move_to_begin`, but the audited API fixture
+provides no verified Lua control for its visibility or placement. No guessed frame,
+global HUD hiding, CVar change or executable patch is introduced. The native
+"move to begin" message may still overlap the addon. Offline renders do not model
+that compositor and must not be treated as a fix or native acceptance evidence.
+
+Manual checks after a complete restart:
+
+1. Check dev.3 in the header; switch all five themes, including while inspecting
+   a retained run. Zone photos must keep their original colors.
+2. Preview a different theme: the saved name remains visible. Cancel/close/Escape
+   must restore it; Apply must survive a normal game exit and restart.
+3. Switch Essentiel → Chroniques → Atelier → Grimoire. Cards, recent rows, labels,
+   records and section anchors must restore without clipping or hidden buttons.
+4. Inspect Combat, Character, Records, Settings and their tooltips/dropdowns.
+   Open My bar, change metrics, then Apply/Cancel; verify drag, layering and reopening.
+5. Open local-data management and per-entry editing; inspect only, then Cancel.
+   Theme testing does not require deleting real statistics.
+6. Check your normal resolution, language and font/scale settings. Automated checks
+   use synthetic data; final native appearance and input remain a maintainer test.
+
+The 45-page private QA set and committed representative previews were rendered
+from the Lua widget tree with synthetic data. No real SavedVariables are loaded
+by the renderer. Chroniques remains the default; public main/release is unchanged.
+
+Automated dev.3 results: 6,265 independent assertions; full native Lua 5.0.3
+scenario suite exit 0 (6,895 assertions); 15 Python tool tests; generated catalog,
+font coverage, source-asset and formatting checks passed. The exact 82-file ZIP
+passed 27 class/outcome scenarios across 81 fresh native Lua processes (1,764
+assertions). UI and gameplay are simulated in these checks. Installation compared
+every shipped file byte-for-byte against the ZIP and verified an unchanged own
+SavedVariables hash, with a private backup of the prior installation.
