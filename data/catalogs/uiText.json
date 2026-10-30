@@ -241,7 +241,15 @@
     "Reset this record": "Resetovat tento rekord",
     "Reset this entry": "Resetovat tento záznam",
     "Remove favorite": "Odebrat z oblíbených",
-    "Only this entry is reset; other entries are kept": "Resetuje se jen tento záznam; ostatní zůstanou"
+    "Only this entry is reset; other entries are kept": "Resetuje se jen tento záznam; ostatní zůstanou",
+    "Preview": "Náhled",
+    "Theme atelier description": "Atelier — antracit, měděné akcenty a přesné linie. Moderní písmo bez ozdob.",
+    "Theme chroniques description": "Chroniques — modrá břidlice, patinovaný bronz a malované ikony. Původní vzhled Azeroth Stats.",
+    "Theme essentiel description": "Essentiel — ploché tmavé pozadí, jemné oddělovače a jasná čísla. Stejné informace, méně ozdob.",
+    "Theme grimoire description": "Grimoire — teplý pergamen, tmavý inkoust a bronzové detaily. Světlý deník dobrodruha.",
+    "Theme preview hint": "Vyberte styl pro náhled. Použít uloží výběr; Zrušit obnoví předchozí motiv.",
+    "Theme warcraft description": "Warcraft — kamenné rámečky, červená kožená tlačítka a ikony WoW z klienta.",
+    "Visual theme": "Vizuální motiv"
   },
   "de": {
     "API": "API",
@@ -485,7 +493,15 @@
     "Reset this record": "Diesen Rekord zurücksetzen",
     "Reset this entry": "Diesen Eintrag zurücksetzen",
     "Remove favorite": "Favorit entfernen",
-    "Only this entry is reset; other entries are kept": "Nur dieser Eintrag wird zurückgesetzt; andere bleiben erhalten"
+    "Only this entry is reset; other entries are kept": "Nur dieser Eintrag wird zurückgesetzt; andere bleiben erhalten",
+    "Preview": "Vorschau",
+    "Theme atelier description": "Atelier — Anthrazit, Kupferakzente und präzise Linien. Moderne Schrift ohne Verzierungen.",
+    "Theme chroniques description": "Chroniques — blauer Schiefer, gealterte Bronze und gemalte Symbole. Das ursprüngliche Azeroth-Stats-Design.",
+    "Theme essentiel description": "Essentiel — flache dunkle Flächen, dezente Trennlinien und klare Zahlen. Gleiche Informationen, weniger Dekoration.",
+    "Theme grimoire description": "Grimoire — warmes Pergament, dunkle Tinte und Bronzedetails. Ein helles Abenteuertagebuch.",
+    "Theme preview hint": "Wähle einen Stil für die Vorschau. Anwenden speichert die Auswahl; Abbrechen stellt das vorherige Design wieder her.",
+    "Theme warcraft description": "Warcraft — native Steinrahmen, rote Lederknöpfe und WoW-Symbole des Clients.",
+    "Visual theme": "Design"
   },
   "en": {
     "API": "API",
@@ -729,7 +745,15 @@
     "Reset this record": "Reset this record",
     "Reset this entry": "Reset this entry",
     "Remove favorite": "Remove favorite",
-    "Only this entry is reset; other entries are kept": "Only this entry is reset; other entries are kept"
+    "Only this entry is reset; other entries are kept": "Only this entry is reset; other entries are kept",
+    "Preview": "Preview",
+    "Theme atelier description": "Atelier — charcoal, copper accents and precise lines. Contemporary typography without ornaments.",
+    "Theme chroniques description": "Chroniques — blue slate, aged bronze and painted icons. The original Azeroth Stats identity.",
+    "Theme essentiel description": "Essentiel — flat dark surfaces, quiet separators and clear figures. The same information with less decoration.",
+    "Theme grimoire description": "Grimoire — warm parchment, dark ink and bronze details. A light adventurer’s journal.",
+    "Theme preview hint": "Choose a style to preview it. Apply saves your choice; Cancel restores your previous theme.",
+    "Theme warcraft description": "Warcraft — native client stone borders, red leather buttons and WoW icons.",
+    "Visual theme": "Visual theme"
   },
   "es": {
     "API": "API",
@@ -973,7 +997,15 @@
     "Reset this record": "Restablecer este récord",
     "Reset this entry": "Restablecer esta entrada",
     "Remove favorite": "Quitar favorito",
-    "Only this entry is reset; other entries are kept": "Solo se restablece esta entrada; las demás se conservan"
+    "Only this entry is reset; other entries are kept": "Solo se restablece esta entrada; las demás se conservan",
+    "Preview": "Vista previa",
+    "Theme atelier description": "Atelier: antracita, detalles de cobre y líneas precisas. Tipografía moderna sin adornos.",
+    "Theme chroniques description": "Chroniques: pizarra azul, bronce envejecido e iconos pintados. La identidad original de Azeroth Stats.",
+    "Theme essentiel description": "Essentiel: superficies oscuras lisas, separadores discretos y cifras claras. La misma información con menos decoración.",
+    "Theme grimoire description": "Grimoire: pergamino cálido, tinta oscura y detalles de bronce. Un diario de aventuras claro.",
+    "Theme preview hint": "Elige un estilo para verlo. Aplicar guarda tu elección; Cancelar restaura el tema anterior.",
+    "Theme warcraft description": "Warcraft: bordes de piedra, botones de cuero rojo e iconos de WoW del cliente.",
+    "Visual theme": "Tema visual"
   },
   "fr": {
     "API": "API",
@@ -1217,7 +1249,15 @@
     "Reset this record": "Réinitialiser ce record",
     "Reset this entry": "Réinitialiser cette entrée",
     "Remove favorite": "Retirer le favori",
-    "Only this entry is reset; other entries are kept": "Seule cette entrée est réinitialisée ; les autres sont conservées"
+    "Only this entry is reset; other entries are kept": "Seule cette entrée est réinitialisée ; les autres sont conservées",
+    "Preview": "Aperçu",
+    "Theme atelier description": "Atelier — anthracite, accents cuivrés et lignes précises. Typographie contemporaine sans ornements.",
+    "Theme chroniques description": "Chroniques — ardoise bleue, bronze patiné et icônes peintes. L’identité originale d’Azeroth Stats.",
+    "Theme essentiel description": "Essentiel — surfaces sombres unies, séparateurs discrets et chiffres lisibles. Les mêmes informations, moins de décoration.",
+    "Theme grimoire description": "Grimoire — parchemin chaleureux, encre sombre et détails de bronze. Un journal d’aventure clair.",
+    "Theme preview hint": "Choisissez un style pour le prévisualiser. Appliquer enregistre votre choix ; Annuler restaure le thème précédent.",
+    "Theme warcraft description": "Warcraft — cadres de pierre, boutons de cuir rouge et icônes WoW natifs du client.",
+    "Visual theme": "Thème visuel"
   },
   "ja": {
     "API": "API",
@@ -1461,7 +1501,15 @@
     "Reset this record": "この記録をリセット",
     "Reset this entry": "この項目をリセット",
     "Remove favorite": "お気に入りを解除",
-    "Only this entry is reset; other entries are kept": "この項目のみリセットし、他の項目は保持します"
+    "Only this entry is reset; other entries are kept": "この項目のみリセットし、他の項目は保持します",
+    "Preview": "プレビュー",
+    "Theme atelier description": "Atelier：チャコール、銅色のアクセント、整った線。装飾を省いた現代的な書体。",
+    "Theme chroniques description": "Chroniques：青い石板、古い青銅、手描きアイコン。Azeroth Stats 本来のデザイン。",
+    "Theme essentiel description": "Essentiel：単色の暗い背景、控えめな区切り、明瞭な数字。同じ情報をよりシンプルに。",
+    "Theme grimoire description": "Grimoire：温かな羊皮紙、濃いインク、青銅の装飾。明るい冒険日誌。",
+    "Theme preview hint": "スタイルを選ぶとプレビューできます。適用で保存、キャンセルで元のテーマに戻ります。",
+    "Theme warcraft description": "Warcraft：クライアント内蔵の石枠、赤い革のボタン、WoWアイコン。",
+    "Visual theme": "外観テーマ"
   },
   "ko": {
     "API": "API",
@@ -1705,7 +1753,15 @@
     "Reset this record": "이 최고 기록 초기화",
     "Reset this entry": "이 항목 초기화",
     "Remove favorite": "즐겨찾기 해제",
-    "Only this entry is reset; other entries are kept": "이 항목만 초기화하고 다른 항목은 유지합니다"
+    "Only this entry is reset; other entries are kept": "이 항목만 초기화하고 다른 항목은 유지합니다",
+    "Preview": "미리 보기",
+    "Theme atelier description": "Atelier: 차콜, 구리색 강조, 정돈된 선. 장식 없는 현대적 서체.",
+    "Theme chroniques description": "Chroniques: 푸른 석판, 오래된 청동, 그림 아이콘. Azeroth Stats의 기존 디자인입니다.",
+    "Theme essentiel description": "Essentiel: 단색 어두운 배경, 은은한 구분선, 명확한 숫자. 장식은 줄이고 정보는 그대로.",
+    "Theme grimoire description": "Grimoire: 따뜻한 양피지, 짙은 잉크, 청동 장식. 밝은 모험 일지.",
+    "Theme preview hint": "스타일을 선택하면 미리 볼 수 있습니다. 적용하면 저장되고, 취소하면 이전 테마로 돌아갑니다.",
+    "Theme warcraft description": "Warcraft: 클라이언트 기본 돌 테두리, 붉은 가죽 버튼, WoW 아이콘.",
+    "Visual theme": "화면 테마"
   },
   "pl": {
     "API": "API",
@@ -1949,7 +2005,15 @@
     "Reset this record": "Resetuj ten rekord",
     "Reset this entry": "Resetuj ten wpis",
     "Remove favorite": "Usuń z ulubionych",
-    "Only this entry is reset; other entries are kept": "Resetowany jest tylko ten wpis; pozostałe zostają"
+    "Only this entry is reset; other entries are kept": "Resetowany jest tylko ten wpis; pozostałe zostają",
+    "Preview": "Podgląd",
+    "Theme atelier description": "Atelier — antracyt, miedziane akcenty i precyzyjne linie. Nowoczesna typografia bez ozdób.",
+    "Theme chroniques description": "Chroniques — niebieski łupek, stary brąz i malowane ikony. Oryginalny wygląd Azeroth Stats.",
+    "Theme essentiel description": "Essentiel — płaskie ciemne tło, subtelne linie i czytelne liczby. Te same informacje, mniej dekoracji.",
+    "Theme grimoire description": "Grimoire — ciepły pergamin, ciemny atrament i brązowe detale. Jasny dziennik przygód.",
+    "Theme preview hint": "Wybierz styl do podglądu. Zastosuj zapisuje wybór; Anuluj przywraca poprzedni motyw.",
+    "Theme warcraft description": "Warcraft — kamienne ramki, czerwone skórzane przyciski i ikony WoW z klienta.",
+    "Visual theme": "Motyw wizualny"
   },
   "pt": {
     "API": "API",
@@ -2193,7 +2257,15 @@
     "Reset this record": "Redefinir este recorde",
     "Reset this entry": "Redefinir esta entrada",
     "Remove favorite": "Remover favorito",
-    "Only this entry is reset; other entries are kept": "Somente esta entrada é redefinida; as outras são mantidas"
+    "Only this entry is reset; other entries are kept": "Somente esta entrada é redefinida; as outras são mantidas",
+    "Preview": "Prévia",
+    "Theme atelier description": "Atelier: carvão, detalhes em cobre e linhas precisas. Tipografia moderna sem ornamentos.",
+    "Theme chroniques description": "Chroniques: ardósia azul, bronze envelhecido e ícones pintados. A identidade original do Azeroth Stats.",
+    "Theme essentiel description": "Essentiel: superfícies escuras lisas, divisórias discretas e números claros. As mesmas informações com menos decoração.",
+    "Theme grimoire description": "Grimoire: pergaminho quente, tinta escura e detalhes em bronze. Um diário de aventuras claro.",
+    "Theme preview hint": "Escolha um estilo para visualizar. Aplicar salva sua escolha; Cancelar restaura o tema anterior.",
+    "Theme warcraft description": "Warcraft: bordas de pedra, botões de couro vermelho e ícones nativos do WoW.",
+    "Visual theme": "Tema visual"
   },
   "ro": {
     "API": "API",
@@ -2437,7 +2509,15 @@
     "Reset this record": "Resetează acest record",
     "Reset this entry": "Resetează această intrare",
     "Remove favorite": "Elimină favoritul",
-    "Only this entry is reset; other entries are kept": "Doar această intrare este resetată; celelalte sunt păstrate"
+    "Only this entry is reset; other entries are kept": "Doar această intrare este resetată; celelalte sunt păstrate",
+    "Preview": "Previzualizare",
+    "Theme atelier description": "Atelier — antracit, accente de cupru și linii precise. Tipografie modernă fără ornamente.",
+    "Theme chroniques description": "Chroniques — ardezie albastră, bronz patinat și pictograme pictate. Identitatea originală Azeroth Stats.",
+    "Theme essentiel description": "Essentiel — suprafețe întunecate simple, separatoare discrete și cifre clare. Aceleași informații, mai puține decorațiuni.",
+    "Theme grimoire description": "Grimoire — pergament cald, cerneală închisă și detalii de bronz. Un jurnal de aventură luminos.",
+    "Theme preview hint": "Alege un stil pentru previzualizare. Aplică salvează alegerea; Anulează restabilește tema anterioară.",
+    "Theme warcraft description": "Warcraft — rame de piatră, butoane din piele roșie și pictograme WoW din client.",
+    "Visual theme": "Temă vizuală"
   },
   "ru": {
     "API": "API",
@@ -2681,7 +2761,15 @@
     "Reset this record": "Сбросить этот рекорд",
     "Reset this entry": "Сбросить эту запись",
     "Remove favorite": "Убрать из избранного",
-    "Only this entry is reset; other entries are kept": "Сбрасывается только эта запись; остальные сохраняются"
+    "Only this entry is reset; other entries are kept": "Сбрасывается только эта запись; остальные сохраняются",
+    "Preview": "Предпросмотр",
+    "Theme atelier description": "Atelier — антрацит, медные акценты и чёткие линии. Современный шрифт без украшений.",
+    "Theme chroniques description": "Chroniques — синий сланец, состаренная бронза и рисованные значки. Исходный стиль Azeroth Stats.",
+    "Theme essentiel description": "Essentiel — ровные тёмные поверхности, тонкие разделители и чёткие числа. Те же данные, меньше декора.",
+    "Theme grimoire description": "Grimoire — тёплый пергамент, тёмные чернила и бронзовые детали. Светлый дневник приключений.",
+    "Theme preview hint": "Выберите стиль для просмотра. Применить сохраняет выбор; Отмена возвращает прежнее оформление.",
+    "Theme warcraft description": "Warcraft — каменные рамки, красные кожаные кнопки и значки WoW из клиента.",
+    "Visual theme": "Оформление"
   },
   "tr": {
     "API": "API",
@@ -2925,7 +3013,15 @@
     "Reset this record": "Bu rekoru sıfırla",
     "Reset this entry": "Bu kaydı sıfırla",
     "Remove favorite": "Favoriyi kaldır",
-    "Only this entry is reset; other entries are kept": "Yalnızca bu kayıt sıfırlanır; diğerleri korunur"
+    "Only this entry is reset; other entries are kept": "Yalnızca bu kayıt sıfırlanır; diğerleri korunur",
+    "Preview": "Önizleme",
+    "Theme atelier description": "Atelier — antrasit, bakır vurgular ve net çizgiler. Süssüz, çağdaş tipografi.",
+    "Theme chroniques description": "Chroniques — mavi arduvaz, eskitilmiş bronz ve boyalı simgeler. Azeroth Stats’in özgün tasarımı.",
+    "Theme essentiel description": "Essentiel — düz koyu yüzeyler, sade ayırıcılar ve okunaklı sayılar. Aynı bilgi, daha az süs.",
+    "Theme grimoire description": "Grimoire — sıcak parşömen, koyu mürekkep ve bronz ayrıntılar. Açık renkli bir macera günlüğü.",
+    "Theme preview hint": "Önizlemek için bir stil seçin. Uygula seçiminizi kaydeder; İptal önceki temayı geri yükler.",
+    "Theme warcraft description": "Warcraft — istemcinin taş çerçeveleri, kırmızı deri düğmeleri ve WoW simgeleri.",
+    "Visual theme": "Görsel tema"
   },
   "uk": {
     "API": "API",
@@ -3169,7 +3265,15 @@
     "Reset this record": "Скинути цей рекорд",
     "Reset this entry": "Скинути цей запис",
     "Remove favorite": "Прибрати з обраного",
-    "Only this entry is reset; other entries are kept": "Скидається лише цей запис; решта зберігаються"
+    "Only this entry is reset; other entries are kept": "Скидається лише цей запис; решта зберігаються",
+    "Preview": "Перегляд",
+    "Theme atelier description": "Atelier — антрацит, мідні акценти й чіткі лінії. Сучасний шрифт без прикрас.",
+    "Theme chroniques description": "Chroniques — синій сланець, зістарена бронза й мальовані значки. Оригінальний стиль Azeroth Stats.",
+    "Theme essentiel description": "Essentiel — рівні темні поверхні, тонкі роздільники й чіткі числа. Ті самі дані, менше декору.",
+    "Theme grimoire description": "Grimoire — теплий пергамент, темне чорнило й бронзові деталі. Світлий щоденник пригод.",
+    "Theme preview hint": "Виберіть стиль для перегляду. Застосувати зберігає вибір; Скасувати повертає попереднє оформлення.",
+    "Theme warcraft description": "Warcraft — кам’яні рамки, червоні шкіряні кнопки та значки WoW із клієнта.",
+    "Visual theme": "Оформлення"
   },
   "zh": {
     "API": "API",
@@ -3413,6 +3517,14 @@
     "Reset this record": "重置此纪录",
     "Reset this entry": "重置此条目",
     "Remove favorite": "移除收藏",
-    "Only this entry is reset; other entries are kept": "仅重置此条目；保留其他条目"
+    "Only this entry is reset; other entries are kept": "仅重置此条目；保留其他条目",
+    "Preview": "预览",
+    "Theme atelier description": "Atelier：炭灰、铜色点缀与精确线条。无装饰的现代字体。",
+    "Theme chroniques description": "Chroniques：蓝色板岩、古铜与手绘图标。Azeroth Stats 的原始风格。",
+    "Theme essentiel description": "Essentiel：纯色深色界面、低调分隔线与清晰数字。相同信息，更少装饰。",
+    "Theme grimoire description": "Grimoire：温暖羊皮纸、深色墨迹与铜色细节。明亮的冒险日志。",
+    "Theme preview hint": "选择样式进行预览。应用会保存选择，取消会恢复原来的主题。",
+    "Theme warcraft description": "Warcraft：客户端原生石质边框、红色皮革按钮和 WoW 图标。",
+    "Visual theme": "视觉主题"
   }
 }

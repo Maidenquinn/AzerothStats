@@ -99,6 +99,7 @@ local function barFrame(parent, preview)
         cell.caption.fixedSize = true
         cell.value.fixedSize = true
         cell.line = W.solid(cell, 0.54, 0.44, 0.27, 0.5, "ARTWORK")
+        A.ThemeTexture(cell.line, "bronze")
         cell.line:ClearAllPoints()
         cell.line:SetPoint("LEFT", cell, "LEFT", 0, 0)
         cell.line:SetWidth(1)
@@ -163,7 +164,7 @@ local function paintBar(frame, config)
         frame.scopeTitle:Hide()
     end
     if frame.grain then
-        frame.grain:SetAlpha(config.opacity * 0.16)
+        frame.grain:SetAlpha(config.opacity * A.theme.grainAlpha)
     end
     frame.gear:ClearAllPoints()
     frame.gear:SetPoint("RIGHT", frame, "RIGHT", -5, 0)

@@ -22,6 +22,7 @@ jobs:
           /tmp/azerothstats-stylua/stylua --check AzerothStats
       - run: python tools/build_catalogs.py --check
       - run: python tools/build_theme_assets.py --check
+      - run: python tools/build_grimoire_assets.py --check
       - run: python tools/encode_painted_assets.py --check
       - run: python tools/build_run_images.py --check
       - run: python tools/check_fonts.py

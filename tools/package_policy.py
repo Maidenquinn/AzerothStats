@@ -21,6 +21,7 @@ MEDIA = (
 ) + tuple(
     [f"ChronicleGlyph{i:02d}.tga" for i in range(1, 17)]
     + [f"ChroniclePlate{i}.tga" for i in range(1, 5)]
+    + [f"GrimoirePlate{i}.tga" for i in range(1, 5)]
     + [
         "RunZone-" + zone + ".tga"
         for zone in (

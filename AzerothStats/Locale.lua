@@ -240,7 +240,7 @@ function A.Font(title, locale)
     if lg == "zh" or lg == "ja" or lg == "ko" then
         return root .. "AzerothSans-" .. lg .. ".otf"
     end
-    return root .. (title and "AzerothSerif.ttf" or "AzerothSans.ttf")
+    return root .. (title and A.theme.serif and "AzerothSerif.ttf" or "AzerothSans.ttf")
 end
 
 --- Resolve a known spell key, otherwise show the recorded name/ID.

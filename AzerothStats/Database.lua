@@ -73,6 +73,8 @@ function A.InitDB()
     if s.language ~= "auto" and not A.uiText[s.language] then
         s.language = "auto"
     end
+    s.theme = A.ThemeId(s.theme)
+    A.UseTheme(s.theme)
     s.hud = A.NormalizeBar(s.hud)
     database.version = A.version
     return true

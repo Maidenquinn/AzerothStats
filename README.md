@@ -2,6 +2,13 @@
 
 Persistent run history and build statistics for **Azeroth Survivors on Windows**, using the client's Lua addon interface (11200 / Lua 5.0).
 
+## Development preview: five visual themes
+
+The `codex/visual-themes` branch contains **1.8.0-dev.1**: Chroniques, Warcraft,
+Atelier, Essentiel and Grimoire. Use **Settings → Appearance → Visual theme** for
+live preview, Apply and Cancel. The public release below remains unchanged.
+See [theme implementation, provenance and native test steps](docs/VISUAL-THEMES.md).
+
 ## Review status
 
 **Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.7.0-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.

@@ -1,3 +1,14 @@
+# 1.8.0-dev.1 — Five visual themes (development preview)
+
+- Add Chroniques, Warcraft, Atelier, Essentiel and Grimoire with shared navigation/data.
+- Add Settings → Appearance → Visual theme: five miniatures, live preview, Apply/Cancel.
+- Persist a validated theme ID; existing installations retain Chroniques.
+- Repaint owned pages, menus, modal dialogs, the HUD and its editor without reloading.
+- Add native Warcraft stone borders/red buttons, flat contemporary/quiet treatments and original light parchment plates.
+- Keep independent opacity, scale, text size and all statistics unchanged.
+- Translate picker help into fourteen languages and extend bundled CJK glyph coverage.
+- Add synthetic preview/persistence/reuse/contrast and Lua 5.0 regressions. Native visual acceptance is pending.
+
 ## 1.7.0-beta.1 - Local data management and per-page editing
 
 - Add Edit page to data pages, with row/card action menus. Hide/show rows reversibly without modifying combat values or ranking totals; restore page visibility from one button.
