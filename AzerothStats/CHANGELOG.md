@@ -1,4 +1,4 @@
-## Unreleased - Current-run HUD availability
+## 1.7.1-beta.1 - Current-run HUD availability
 
 - Explain summary-only current-run counts as "At run end" while a run is active,
   instead of a generic "Unavailable" (bosses, elites, guardians and magnets).

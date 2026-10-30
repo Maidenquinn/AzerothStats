@@ -171,7 +171,8 @@ check(
     "live summary-only count explains when it becomes available"
 )
 check(
-    A.BarBlockModel(bossBlock).detail == A.T("This count is supplied by the final run summary, not live."),
+    A.BarBlockModel(bossBlock).detail
+        == A.T("This count is supplied by the final run summary, not live."),
     "boss HUD explains final-summary provenance"
 )
 A.run.status = "ended"
@@ -180,7 +181,10 @@ A.run.values.bosses = 2
 check(A.BarValue(bossBlock) == 2, "just-finished current run exposes its official boss count")
 check(A.BarBlockModel(bossBlock).value == A.Short(2), "final boss count replaces pending label")
 A.OpenBarBlock(bossBlock)
-check(A.view.tab == 4 and A.view.combatTab == "Activity", "final HUD count opens the tracked run activity")
+check(
+    A.view.tab == 4 and A.view.combatTab == "Activity",
+    "final HUD count opens the tracked run activity"
+)
 A.run.values.bosses = 0
 check(A.BarBlockModel(bossBlock).value == A.Short(0), "official zero bosses is a real count")
 A.run.status = "closed"

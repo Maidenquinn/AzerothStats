@@ -176,19 +176,24 @@ function A.BarBlockModel(block)
     local label = A.BarLabel(metric)
     local formatted = block.metric == "duration" and A.Duration(value) or A.Short(value)
     local detail = A.T(
-        block.scope == "run" and "Values from available samples"
-            or "Collected since installation"
+        block.scope == "run" and "Values from available samples" or "Collected since installation"
     )
     -- These counts are confirmed by AZSEND, not by a boss meter or a disappearing
     -- unit. Explain delayed availability rather than implying a broken live feed.
-    local finalOnly = block.metric == "bosses" or block.metric == "elites"
-        or block.metric == "guardians" or block.metric == "magnets"
-    if block.scope == "run" and finalOnly and value == nil and A.run
-        and A.run.status == "active" then
+    local finalOnly = block.metric == "bosses"
+        or block.metric == "elites"
+        or block.metric == "guardians"
+        or block.metric == "magnets"
+    if
+        block.scope == "run"
+        and finalOnly
+        and value == nil
+        and A.run
+        and A.run.status == "active"
+    then
         formatted = A.T("At run end")
         detail = A.T("This count is supplied by the final run summary, not live.")
-    elseif block.scope == "run" and finalOnly and value ~= nil and A.run
-        and A.run.summary then
+    elseif block.scope == "run" and finalOnly and value ~= nil and A.run and A.run.summary then
         detail = A.T("Official summary")
     end
     return {
@@ -250,8 +255,10 @@ function A.OpenBarBlock(block)
     A.view.tab = metric[4]
     A.view.cumulative = block.scope ~= "run"
     if block.scope == "run" then
-        if not A.run or not (A.run.status == "active"
-            or (A.run.status == "ended" and A.run.summary)) then
+        if
+            not A.run
+            or not (A.run.status == "active" or (A.run.status == "ended" and A.run.summary))
+        then
             A.view.tab = 7
         else
             A.view.tab = 4
