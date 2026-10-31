@@ -299,9 +299,23 @@ function A.DiagnosticRows()
         "0 = Normal; 1..5 = Heroic; absent = unknown",
     })
     table.insert(out, {
-        "0.121: marks / affixes / stars",
+        "0.121: marks / stars",
         A.T("Unavailable"),
         "No verified public structured fields; native gear tooltip text only",
+    })
+    table.insert(out, {
+        "V2 extension",
+        A.V2Store(false) and "schema 1" or A.T("No data yet"),
+        A.v2Limited and A.T("Partial") or A.v2Unavailable and A.T("Unavailable") or A.T(
+            "Local storage"
+        ),
+    })
+    table.insert(out, { "AZS_ZONE.affixes", A.T("Last sample"), "raw IDs; no guessed parsing" })
+    local enriched, limit = A.V2Retention()
+    table.insert(out, {
+        "V2 retention",
+        enriched .. " / " .. limit,
+        "Advanced observations; protected favorites and local notes are kept",
     })
     if A.run and A.run.buildJournal then
         local journal = A.run.buildJournal

@@ -261,6 +261,16 @@ function A.Sample()
         A.buildBaseline = { spells = A.Sign(A.Copy(AZS_SPELLS)), stats = A.Sign(A.Copy(AZS_STATS)) }
     end
     if phase == "ready" then
+        -- A saved active observation may survive a full client restart without
+        -- being attached to A.run. An explicit ready packet proves it is no
+        -- longer live; retain its unknown historical map rather than guessing
+        -- that it belongs to the zone now displayed by the client.
+        local previous = A.db.runs[table.getn(A.db.runs)]
+        if previous and previous ~= A.run and previous.status == "active" then
+            previous.status = "interrupted"
+            previous.closeReason = "ready after detached observation"
+            A.Account(previous)
+        end
         A.statsPacket = nil
         if not A.inReady then
             close("retour en preparation")
@@ -378,6 +388,7 @@ function A.Sample()
         snapshot(run, raw, terminalSnapshot)
         A.ObserveJournal(run)
         A.ObserveV2(run)
+        A.ObserveV2World(run)
         A.statsPacket = nil
         if run.status == "active" then
             A.ObserveBuild(run)
@@ -425,6 +436,9 @@ end
 
 --- Record recognized bounded packet notifications only; no payload evaluation, command dispatch or reply.
 function A.Packet(prefix, message)
+    if type(message) == "string" and string.len(message) <= A.limits.packetBytes then
+        A.V2Packet(prefix)
+    end
     local allowed = {
         AZSRUN = true,
         AZSEND = true,
@@ -449,6 +463,7 @@ function A.Packet(prefix, message)
         A.runPacketAt = GetTime()
         if string.find(";" .. message .. ";", ";ph=ready;", 1, true) then
             A.packetReady = true
+            A.v2Packets = nil
         end
     end
     if prefix == "AZS" then

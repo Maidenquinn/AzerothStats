@@ -76,6 +76,52 @@ check(
     A.db.extensions.azerothStatsV2 == nil and A.db.extensions.otherAddon.preserved,
     "explicit reset clears only our namespace"
 )
+for i = 1, 34 do
+    local item = {
+        id = "azstats-" .. i,
+        class = "warrior",
+        zone = "elwynn",
+        heroic = 0,
+        startedAt = i,
+        status = "active",
+        values = { duration = 15 },
+        accounted = {},
+        events = {},
+        meters = {},
+    }
+    table.insert(A.db.runs, item)
+    A.run, A.statsPacket = item, true
+    A.ObserveV2(item)
+    check(A.V2RunData(item).latest ~= nil, "new runs continue collecting after the cache fills")
+    item.status = "ended"
+    if i == 1 then
+        A.ToggleFavorite(A.RunFavorite(item))
+    end
+    if i == 2 then
+        check(A.V2SetNote(item.id, "Keep this note"), "note on old run stored")
+    end
+end
+store = A.V2Store(false)
+check(store.runs["azstats-1"].latest ~= nil, "favorite observations protected from expiry")
+check(
+    store.runs["azstats-2"].expired and store.runs["azstats-2"].note == "Keep this note",
+    "expiry preserves local notes"
+)
+check(
+    table.getn(A.db.runs) == 34 and A.V2Retention() == 32,
+    "bounded advanced cache preserves common history"
+)
+local bad = { affixesRaw = {}, reviveState = 4, supportSequence = "bad", maxSummons = {} }
+for key, value in pairs(bad) do
+    local entry = store.runs["azstats-34"]
+    local previous = entry[key]
+    entry[key] = value
+    A.V2Invalidate()
+    check(A.V2Store(false) == nil, "malformed saved field rejected: " .. key)
+    entry[key] = previous
+    A.V2Invalidate()
+end
+check(A.V2Store(false) ~= nil, "invalid input is preserved rather than destructively repaired")
 AzerothStatsDB, A.db, A.run, AZS_STATS = oldDatabase, oldDB, oldRun, oldStats
 A.statsPacket = oldPacket
 print("V2 SHARED DATA FOUNDATION PASSED", TEST_COUNT)

@@ -192,17 +192,17 @@ end
 A.PreviewTheme("essentiel")
 check(A.ui.cards[1]:GetHeight() == 90, "Essentiel has compact summary cards")
 check(
-    A.ui.model.rowHeight == 64 and A.ui.model.rowY == 322,
+    A.ui.model.rowHeight == 50 and A.ui.model.rowY == 382,
     "Essentiel has compact recent-run rows"
 )
 check(not A.ui.cards[1].archRule:IsShown(), "architectural ornament does not leak into Essentiel")
 A.PreviewTheme("chroniques")
 check(
-    A.ui.cards[1]:GetHeight() == 128 and A.ui.model.rowHeight == 78,
+    A.ui.cards[1]:GetHeight() == 94 and A.ui.model.rowHeight == 50,
     "full layout restored after compact preview"
 )
 local _, _, _, _, recordY = A.ui.recordPanel:GetPoint()
-check(recordY == -649, "records restore their normal vertical anchor")
+check(not A.ui.recordPanel:IsShown(), "V2 home keeps the legacy records strip hidden")
 check(
     string.find(A.ui.themeDialog.previewHint.fullText, "Grimoire", 1, true) ~= nil,
     "saved theme is identified independently of current preview"

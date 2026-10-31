@@ -9,7 +9,10 @@ import json
 from compatibility_probe import context, freeze
 
 ROOT = Path(__file__).resolve().parents[3]
-MODULE = (ROOT / "AzerothStats/V2Data.lua").read_text(encoding="utf-8")
+MODULE = "\n".join(
+    (ROOT / "AzerothStats" / name).read_text(encoding="utf-8")
+    for name in ["V2Data.lua", "V2Observe.lua", "V2Views.lua", "V2Personal.lua"]
+)
 results = []
 for ref in ["v1.6.2-beta.1", "v1.7.0-beta.1", "v1.7.1-beta.1"]:
     original = context(ref)
@@ -26,11 +29,27 @@ for ref in ["v1.6.2-beta.1", "v1.7.0-beta.1", "v1.7.1-beta.1"]:
         A.statsPacket = true
         A.ObserveV2(run)
         assert(A.V2Store(false).runs[run.id].latest.echo == 0.12)
+        A.runPacketAt = NOW
+        A.V2Packet('AZSZONE')
+        AZS_ZONE = {zone='elwynn',class='warrior',affixes='sanguine,explosive'}
+        A.ObserveV2World(run)
+        assert(A.V2SetNote(run.id, 'Synthetic local note'))
+        assert(A.V2AddGoal(run, 3))
+        assert(A.V2CreateGoal({class='all',zone='all',heroic='all',metric='kills',title='My custom goal',target=1234}))
+        A.V2Update(run, function(data)
+            data.encounters = {{id=42,name='Synthetic boss',at=15,lastAt=30}}
+            data.support = {{t=30,kind='attempt',name='Synthetic friend',seq=1}}
+            data.summons = {imp={name='Imp',firstAt=15,lastAt=30,maximum=2,sampled=true}}
+            data.buffs = {aura={name='Synthetic aura',firstAt=15,lastAt=30,maximum=1,sampled=true}}
+        end)
         run.status = 'ended'
         assert(A.ValidateDatabase(A.db))
     """
     )
-    saved = freeze(v2.globals().AzerothStats.db)
+    # Exercise executable Lua serialization too, rather than only Python table copies.
+    v2.execute((ROOT / "AzerothStats/tests/serialize.lua").read_text(encoding="utf-8"))
+    serialized = v2.globals().SNAPSHOT(v2.globals().AzerothStats.db)
+    saved = freeze(v2.execute("return " + serialized))
     extra = saved["extensions"]
     v1 = context(ref, saved)
     assert v1.globals().AzerothStats.db.totals.runs == 2

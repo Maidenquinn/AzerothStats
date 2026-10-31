@@ -124,7 +124,16 @@ for _, lg in ipairs(A.languages) do
             A.view.selected = r.id
             A.ToggleUI(true)
             A.RefreshUI()
-            check(A.ui.model.title == A.T(A.tabs[tab]), "page title " .. lg[1] .. tab)
+            local title = ({
+                [2] = "My progress",
+                [3] = "My runs",
+                [4] = not A.view.cumulative and "Analyze run" or "Combat",
+                [5] = "Analyze run",
+                [6] = "My progress",
+                [9] = "My progress",
+                [10] = "My favorites",
+            })[tab] or A.tabs[tab]
+            check(A.ui.model.title == A.T(title), "page title " .. lg[1] .. tab)
         end
         local language = A.gameText[lg[1]]
         local link = "[" .. language["amulet.south_seas_kelp"] .. " IV]"

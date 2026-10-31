@@ -57,6 +57,12 @@ methods.IsVisible = methods.IsShown
 function methods:SetText(v)
     self.text = v
 end
+function methods:SetFocus()
+    self.focused = true
+end
+function methods:ClearFocus()
+    self.focused = false
+end
 function methods:GetText()
     return self.text
 end
@@ -125,6 +131,9 @@ function methods:GetParent()
 end
 for _, k in ipairs({
     "SetFont",
+    "SetMultiLine",
+    "SetAutoFocus",
+    "SetMaxLetters",
     "SetTextColor",
     "SetShadowColor",
     "SetShadowOffset",

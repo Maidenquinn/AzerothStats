@@ -20,6 +20,9 @@ A.metrics = {
 
 --- Initialize a new own database or validate an existing schema-1 tree; migrate only after validation.
 function A.InitDB()
+    if A.V2Invalidate then
+        A.V2Invalidate()
+    end
     if AzerothStatsDB == nil then
         AzerothStatsDB = {
             schema = 1,

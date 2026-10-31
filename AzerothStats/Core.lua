@@ -60,6 +60,12 @@ local function initialize()
                     "Co-op",
                     "Records",
                     "Build journal",
+                    "Attributes",
+                    "Timeline",
+                    "Encounters",
+                    "Summons",
+                    "Effects",
+                    "Observed support",
                 },
                 compareSection = { "Overview", "Combat", "Spells", "Equipment" },
             }
@@ -70,10 +76,27 @@ local function initialize()
                     end
                 end
             end
+            for _, key in ipairs({ "kills", "gold", "level", "damage", "healing", "taken" }) do
+                if viewSettings.v2CurveMetric == key then
+                    A.view.v2CurveMetric = key
+                end
+            end
+            if
+                type(viewSettings.v2CurveCompare) == "string"
+                and A.FindRun(viewSettings.v2CurveCompare)
+            then
+                A.view.v2CurveCompare = viewSettings.v2CurveCompare
+            end
             A.view.compareA, A.view.compareB =
                 A.Text(viewSettings.compareA, 80), A.Text(viewSettings.compareB, 80)
             if A.view.historySection == "Run report" then
                 A.view.selected = A.Text(viewSettings.reportRun, 80)
+            end
+            A.view.v2Goals = viewSettings.v2Goals == true
+            for _, group in ipairs({ "all", "essential", "advanced", "gear" }) do
+                if viewSettings.v2AttributeGroup == group then
+                    A.view.v2AttributeGroup = group
+                end
             end
             A.view.cumulative = viewSettings.cumulative == true
             A.view.overviewStats = viewSettings.overviewStats == true
@@ -139,8 +162,15 @@ driver:SetScript("OnUpdate", function()
                 A.ApplyUI()
             end
         end
+        -- Refit owned panels only when the native viewport actually changes.
+        local width, height = UIParent:GetWidth(), UIParent:GetHeight()
+        if A.ui and (A.ui.viewportWidth ~= width or A.ui.viewportHeight ~= height) then
+            A.ui.viewportWidth, A.ui.viewportHeight = width, height
+            A.ApplyUI()
+        end
         A.Sample()
         A.RefreshUI()
+        A.SyncScreenOverlays()
     end
 end)
 SLASH_AZEROTHSTATS1 = "/azstats"
@@ -163,6 +193,12 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
     elseif command == "bar" then
         settings.bar = not settings.bar
         A.ApplyUI()
+    elseif command == "overlay" then
+        if value ~= "" and not A.SetScreenOverlayMode(value) then
+            A.Say("/azstats overlay on | off | bar | window")
+        else
+            A.Say("Overlay · " .. A.ScreenOverlayStatus())
+        end
     elseif command == "minimap" then
         settings.minimap = not settings.minimap
         A.ApplyUI()

@@ -1,3 +1,98 @@
+# 2.0.0-dev.11 — isolate native foreground artifact
+
+- Add session-only `/azstats overlay off|on|bar|window` controls for live A/B diagnosis.
+- Turning off removes only Stats registrations, without reloading or touching other addons.
+- The gray native action-bar-shaped artifact is still under investigation; no speculative fix is claimed.
+
+# 2.0.0-dev.10 — foreground visibility
+
+- Remove hidden Stats windows/dialogs from native screen-overlay registration.
+- Respect hidden ancestors and synchronize after UI actions; unchanged visibility makes no repeated API writes.
+- A reported gray action-bar-shaped overlay still needs native attribution after this correction; no third-party HUD is modified.
+
+# 2.0.0-dev.9 — native screen overlays
+
+- Keep Stats windows, HUD, selectors and editors above the native level-up and treasure cards using the optional AZS_SetOnTopOfScreens API.
+- Older clients keep normal frame strata. Registration errors remain nonfatal.
+- Only fixed addon-owned roots are registered; native UI and other addons are untouched.
+
+# 2.0.0-dev.8 — native acceptance corrections
+
+- Separate co-op player rankings from group summary cards; missing group samples use one explicit empty state.
+- Keep the custom-objective action labelled Add goal after selecting a dropdown.
+- Use translated progression and kill labels; distinguish historical Trends from the current run.
+- Abbreviate large displayed DPS while retaining full rate values in tooltips.
+- Refit owned windows when the client viewport changes.
+- Native acceptance covered navigation, historical analysis, objectives, notes, themes, HUD preview and non-destructive data management. Live encounter/revive observation still needs a timed multiplayer run.
+
+# 2.0.0-dev.7 — Goal dropdown ownership fix (not released)
+
+- Attach custom-objective dropdowns to their independent editor instead of the lower main window.
+- Explicitly place reused option buttons above the popup after each owner change, for the native 11200 renderer.
+- Close owned dropdowns with the goal editor and discard stale popups before reopening it.
+- Exercise native OnClick callbacks for all four selectors, saving their values, cancellation and reuse of ordinary menus.
+- No database/schema migration or changes to existing objectives, portraits or run accounting.
+- Development candidate; native visual confirmation remains pending.
+
+# 2.0.0-dev.6 — Custom goals, native Nemesis portraits and ready context (not released)
+
+- Replace the four fixed goal targets with an independent editor: optional personal name, numeric target, metric, class, zone and difficulty.
+- Track wins, retained completed runs, kills, gold, damage, playtime (seconds), best level and available boss counters. Missing values are excluded; live runs do not count. Coverage remains visible in the tooltip.
+- Keep existing victory objectives compatible, cap objectives at twelve, and preserve cancel/validation and per-entry deletion.
+- Include 201 static portraits rendered from local native models/textures, with exact localized creature-name lookup. Unknown and ambiguous names retain the neutral icon; no live target dependency or guessed species portrait.
+- Prefer explicit preparation identity over a stale live observation. Mark a detached saved active observation interrupted on an explicit ready boundary; never assign today's zone to unknown historical data.
+- Separate the attribute filter and comparison button; describe single-run Trends with the selected run's class rather than the aggregate filter.
+- Explain unattributed Nemesis deaths alongside probable/confirmed evidence.
+- Candidate only. Screenshot audit and offline regressions do not replace native acceptance.
+
+# 2.0.0-dev.5 — Readable outcomes, charts and run chooser (not released)
+
+- Restore explicit colored outcomes in recent runs, with duration retained on the metadata line.
+- Replace isolated chart squares with subtle filled stair guides and retained-sample markers.
+- Use rounded value axes and a minimum two-minute horizon to stabilize early-run charts.
+- Preserve visible breaks across missing samples; guide geometry never generates observations.
+- Replace the dense run dropdown with a movable illustrated chooser, literal local search and six rows per page.
+- Keep selection tied to exact retained IDs; closing the chooser changes nothing.
+- Bound and reuse chart primitives and selector rows across refreshes.
+- Candidate package only; in-game rendering remains to be confirmed.
+
+# 2.0.0-dev.4 — Direct overview and report summaries (not released)
+
+- Add a visible current/preparation context without inventing or accounting a ready run.
+- Compose the home screen around cumulative-kill samples, recent runs, observed takeaways and the next personal objective.
+- Embed measured curves, recent observed build changes, run context and a note action directly in the run summary.
+- Label the run selector explicitly and make the zone banner open the same selector.
+- Group history filters; separate goal/edit buttons and give favorite categories two readable rows.
+- Give the native note EditBox explicit mouse/focus handling and a separate lower decorative plate.
+- Keep detailed V1 statistics accessible, and retain reversible summary-block hiding through Edit page.
+- Test preparation, chart provenance/scope, summary visibility, banner selection and note input/serialization boundaries.
+- Source/package candidate only; no installation, native visual validation or stable-release claim.
+
+# 2.0.0-dev.3 — Native screenshot layout review (not released)
+
+- Reserve one shared selected-run banner above Build attributes and measured plots.
+- Replace repeated history navigation with a compact cohort summary and five readable run rows.
+- Keep full combat rankings accessible inside Analyze, with one consistent section strip.
+- Expose Records, Classes, Trends and Goals as visible progression tabs.
+- Split observed attributes and equipment contributions into aligned columns with display filters.
+- Separate favorite category counts, simplify diagnostics rows and move optional sampling into Settings.
+- Restore comparison column geometry when reusing attribute widgets.
+- Source/package candidate only; this revision has not been installed or visually validated in-game.
+
+# 2.0.0-dev.2 — Native V2 candidate (not released)
+
+- Port six main routes from the approved V2 prototype while retaining every V1 view.
+- Preserve the shared schema-1 ledger; isolate bounded V2 observations and personal data.
+- Add advanced native attributes with equipment contributions and verified unit conversions.
+- Add measured progression plots, same-time-axis comparisons and explicit context/coverage limits.
+- Capture raw native affix strings, boss sightings and inspectable shared boss meter samples.
+- Observe local downed/returned states and incoming/outgoing support attempts without claiming successful revives.
+- Add optional summons/buff/debuff presence sampling, local run notes and personal objectives.
+- Retain reversible per-view hiding and guarded individual observation/objective removal.
+- Keep collecting recent advanced observations after the cache fills; protect favorite references and preserve notes/common history.
+- Test malformed saved data, long boss-source names, five-theme navigation, live dashboard spacing and frozen V1 roundtrips.
+- Native game rendering, packet order and real SavedVariables roundtrips remain acceptance gates; no stable release or install is claimed.
+
 # 2.0.0-dev.1 — V2 foundations (not released)
 
 - Begin the approved V2 architecture on an isolated branch. No V2 installation or release is claimed.

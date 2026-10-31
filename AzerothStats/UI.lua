@@ -90,8 +90,102 @@ local function solid(parent, r, g, b, alpha, layer)
     return t
 end
 
+-- Native client 0.126+ draws these named roots (and their descendants) over
+-- level-up/treasure screens. Strata alone cannot cross that separate renderer.
+-- Only our fixed window roots are eligible: never UIParent, GameTooltip or a
+-- third-party frame. This changes presentation/click routing, not gameplay.
+local overlayRoots = {
+    AzerothStatsWindow = true,
+    AzerothStatsMenu = true,
+    AzerothStatsThemePicker = true,
+    AzerothStatsRetentionConfirmation = true,
+    AzerothStatsDataManagement = true,
+    AzerothStatsEntryReview = true,
+    AzerothStatsBar = true,
+    AzerothStatsBarEditor = true,
+    AzerothStatsV2Note = true,
+    AzerothStatsV2Goal = true,
+    AzerothStatsV2RunPicker = true,
+}
+
+local overlayFrames, overlayStates = {}, {}
+local overlayAPI
+
+-- Test ancestor visibility too: IsShown on a child is true when its parent is
+-- hidden. Never leave invisible dialogs in the native foreground pass.
+local function overlayVisible(frame)
+    for depth = 1, 32 do
+        if not frame then
+            return true
+        end
+        if not frame:IsShown() then
+            return false
+        end
+        frame = frame:GetParent()
+    end
+    return false
+end
+
+--- Register only a visible owned root; absent/incompatible clients keep normal strata.
+function A.RegisterScreenOverlay(frame)
+    local name = frame and frame.GetName and frame:GetName()
+    if not overlayRoots[name] then
+        return false
+    end
+    overlayFrames[name] = frame
+    if type(AZS_SetOnTopOfScreens) ~= "function" then
+        return false
+    end
+    if overlayAPI ~= AZS_SetOnTopOfScreens then
+        overlayAPI, overlayStates = AZS_SetOnTopOfScreens, {}
+    end
+    local mode = A.screenOverlayMode or "on"
+    local eligible = mode == "on"
+        or (mode == "bar" and name == "AzerothStatsBar")
+        or (mode == "window" and name ~= "AzerothStatsBar")
+    local visible = eligible and overlayVisible(frame) or false
+    if overlayStates[name] == visible then
+        return true
+    end
+    local ok, result = pcall(AZS_SetOnTopOfScreens, name, visible)
+    if ok and result ~= false then
+        overlayStates[name] = visible
+        return true
+    end
+    return false
+end
+
+--- Reconcile only our eleven roots, after UI actions and on the existing one-second tick.
+function A.SyncScreenOverlays()
+    for _, frame in pairs(overlayFrames) do
+        A.RegisterScreenOverlay(frame)
+    end
+end
+
+--- Session-only A/B diagnostic: never touch another addon's native registration.
+function A.SetScreenOverlayMode(mode)
+    if mode ~= "on" and mode ~= "off" and mode ~= "bar" and mode ~= "window" then
+        return false
+    end
+    A.screenOverlayMode = mode
+    A.SyncScreenOverlays()
+    return true
+end
+
+function A.ScreenOverlayStatus()
+    local names = {}
+    for name, enabled in pairs(overlayStates) do
+        if enabled then
+            table.insert(names, name)
+        end
+    end
+    table.sort(names)
+    return (A.screenOverlayMode or "on") .. " : " .. table.concat(names, ", ")
+end
+
 --- Apply an owned frame backdrop and register its base for opacity updates.
 local function surface(frame, kind)
+    A.RegisterScreenOverlay(frame)
     local color = kind == "card" and A.theme.panel or A.theme.background
     local base = solid(frame, color[1], color[2], color[3], 1)
     table.insert(UI.solids, { texture = base, main = kind == "main" })
@@ -201,12 +295,19 @@ local function button(parent, x, y, w, h, label, fn)
     b:SetWidth(w)
     b:SetHeight(h or 27)
     surface(b, "button")
-    b.label = font(b, 10, 0, w - 20, h or 27, 12, COLORS.gold)
+    -- Tiny close/arrow controls need their own text box: the normal ten-pixel
+    -- side insets leave only 2-4 pixels and hide the initial close glyph.
+    b.label = font(b, w < 40 and 2 or 10, 0, w < 40 and w - 4 or w - 20, h or 27, 12, COLORS.gold)
+    if w < 40 then
+        b.label:SetJustifyH("CENTER")
+    end
+    put(b.label, A.T(label))
     b.key = label
     b.callback = fn
     b:SetScript("OnClick", function()
         if this.callback then
             this.callback(this)
+            A.SyncScreenOverlays()
         end
     end)
     b:SetScript("OnEnter", function()
@@ -394,7 +495,12 @@ function A.ShowMenu(anchor, options, offset)
         if not node then
             break
         end
-        if node == A.barEditor or node == UI.dataDialog or node == UI.themeDialog then
+        if
+            node == A.barEditor
+            or node == UI.dataDialog
+            or node == UI.themeDialog
+            or node == A.v2GoalWindow
+        then
             owner = node
             break
         end
@@ -451,6 +557,10 @@ function A.ShowMenu(anchor, options, offset)
             end)
             menu.items[i] = b
         end
+        -- Native 11200 does not reliably propagate new parent frame levels to
+        -- reused children. Refresh each option after every owner transition.
+        b:SetFrameStrata("FULLSCREEN_DIALOG")
+        b:SetFrameLevel(menu:GetFrameLevel() + 1)
         b.item = { label = entry.label, detail = entry.detail or "", value = entry.value }
         b:SetScript("OnEnter", function()
             A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
@@ -840,8 +950,40 @@ end
 local function paintRow(frame, d, model)
     show(frame.leftCell, model.comparison)
     show(frame.rightCell, model.comparison)
-    show(frame.leftValue, model.comparison)
+    show(frame.leftValue, model.comparison or model.attributeTable)
     show(frame.rightValue, model.comparison)
+    if model.attributeTable then
+        for _, widget in ipairs({
+            frame.icon,
+            frame.thumbnail,
+            frame.detail,
+            frame.extra,
+            frame.rank,
+            frame.share,
+            frame.fill,
+        }) do
+            widget:Hide()
+        end
+        frame.label:ClearAllPoints()
+        frame.label:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -8)
+        frame.label:SetWidth(280)
+        frame.label.fontWidth, frame.label.baseSize, frame.label.titleFont = 280, 13, false
+        frame.value:ClearAllPoints()
+        frame.value:SetPoint("TOPLEFT", frame, "TOPLEFT", 310, -8)
+        frame.value:SetWidth(170)
+        frame.value.fontWidth, frame.value.baseSize = 170, 13
+        frame.value:SetTextColor(unpack(COLORS.text))
+        frame.leftValue:ClearAllPoints()
+        frame.leftValue:SetPoint("TOPLEFT", frame, "TOPLEFT", 500, -8)
+        frame.leftValue:SetWidth(180)
+        frame.leftValue:SetHeight(26)
+        frame.leftValue.fontWidth, frame.leftValue.baseSize = 180, 13
+        frame.leftValue:SetJustifyH("RIGHT")
+        put(frame.label, d.label)
+        put(frame.value, d.value)
+        put(frame.leftValue, d.gearValue)
+        return
+    end
     if model.comparison then
         show(frame.icon, false)
         show(frame.thumbnail, false)
@@ -870,6 +1012,11 @@ local function paintRow(frame, d, model)
         put(frame.label, d.label)
         put(frame.detail, d.detail)
         put(frame.value, d.value)
+        frame.leftValue:ClearAllPoints()
+        frame.leftValue:SetPoint("TOPLEFT", frame, "TOPLEFT", 180, -5)
+        frame.leftValue:SetWidth(170)
+        frame.leftValue:SetHeight(38)
+        frame.leftValue.fontWidth, frame.leftValue.baseSize = 170, 12
         frame.leftValue:SetJustifyH(d.leftItem and "LEFT" or "RIGHT")
         frame.rightValue:SetJustifyH(d.rightItem and "LEFT" or "RIGHT")
         put(frame.leftValue, d.left)
@@ -884,7 +1031,8 @@ local function paintRow(frame, d, model)
     local hero = model.layout == "dashboard"
     local ranking = model.ranking
     local compact = model.layout == "overview"
-    local left = hero and (A.theme.quiet and 148 or 198)
+    local left = model.plainRows and 12
+        or hero and (A.theme.quiet and 148 or 198)
         or (photo and 160 or (ranking and 72 or 56))
     local width = hero and 256 or (photo and 350 or (ranking and 340 or 390))
     frame.label:ClearAllPoints()
@@ -936,7 +1084,7 @@ local function paintRow(frame, d, model)
     else
         A.ThemeIcon(frame.icon, A.view.tab)
     end
-    show(frame.icon, not photo)
+    show(frame.icon, not photo and not model.plainRows)
     show(frame.thumbnail, photo)
     if photo then
         frame.thumbnail:ClearAllPoints()
@@ -987,6 +1135,10 @@ function A.RefreshUI()
         compareA = A.view.compareA,
         compareB = A.view.compareB,
         reportRun = A.view.historySection == "Run report" and A.view.selected or nil,
+        v2Goals = A.view.v2Goals == true,
+        v2AttributeGroup = A.view.v2AttributeGroup,
+        v2CurveMetric = A.view.v2CurveMetric,
+        v2CurveCompare = A.view.v2CurveCompare,
     }
     local live = A.run
     local r
@@ -1189,17 +1341,18 @@ function A.RefreshUI()
     local dashboard = model.layout == "dashboard"
     -- Compact presentation is rebuilt from the model each refresh, never saved
     -- into run data. Switching back restores the full-size layout immediately.
-    if dashboard then
+    if dashboard and not model.v2Summary then
         local quiet = A.theme.quiet
-        model.rowY = quiet and 322 or 360
-        model.rowHeight = quiet and 64 or 78
+        local live = model.liveHero ~= nil
+        model.rowY = live and 420 or quiet and 322 or 360
+        model.rowHeight = live and 66 or quiet and 64 or 78
         for _, item in ipairs({
-            { UI.recentTitle, 218, quiet and 284 or 322 },
-            { UI.historyLink, 772, quiet and 284 or 322 },
-            { UI.recordsTitle, 218, quiet and 540 or 612 },
-            { UI.recordsLink, 772, quiet and 540 or 612 },
-            { UI.recordPanel, 218, quiet and 577 or 649 },
-            { UI.recentEmpty, 240, quiet and 332 or 370 },
+            { UI.recentTitle, 218, live and 383 or quiet and 284 or 322 },
+            { UI.historyLink, 772, live and 383 or quiet and 284 or 322 },
+            { UI.recordsTitle, 218, live and 635 or quiet and 540 or 612 },
+            { UI.recordsLink, 772, live and 635 or quiet and 540 or 612 },
+            { UI.recordPanel, 218, live and 670 or quiet and 577 or 649 },
+            { UI.recentEmpty, 240, live and 430 or quiet and 332 or 370 },
         }) do
             item[1]:ClearAllPoints()
             item[1]:SetPoint("TOPLEFT", A.window, "TOPLEFT", item[2], -item[3])
@@ -1209,6 +1362,10 @@ function A.RefreshUI()
     show(UI.subtitle, model.banner == nil)
     if model.banner then
         local band, data = UI.context, model.banner
+        band:ClearAllPoints()
+        band:SetPoint("TOPLEFT", A.window, "TOPLEFT", 218, -(model.bannerTop or 199))
+        band:SetHeight(model.bannerHeight or 62)
+        A.UpdateThemeFrame(band)
         band.item = data
         band.icon:SetWidth(data.photo and 110 or 32)
         band.icon:SetHeight(data.photo and (110 * 66 / 178) or 32)
@@ -1352,6 +1509,7 @@ function A.RefreshUI()
                 unpack(dashboard and (i == 2 and COLORS.green or COLORS.text) or COLORS.text)
             )
             c.value:SetHeight(38)
+            c.detail:Show()
             c.detail:SetHeight(tall and 58 or 22)
             c.detail.baseSize = 11
             c.icon:SetWidth(dashboard and 38 or (tall and 36 or 28))
@@ -1411,6 +1569,13 @@ function A.RefreshUI()
                 218,
                 -model.rowY - (i - 1) * model.rowHeight
             )
+            frame:SetWidth(714)
+            frame.favorite:ClearAllPoints()
+            frame.favorite:SetPoint("TOPLEFT", frame, "TOPLEFT", 687, -1)
+            frame.thumbnail:ClearAllPoints()
+            frame.thumbnail:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -8)
+            frame.thumbnail:SetWidth(178)
+            frame.thumbnail:SetHeight(66)
             frame:SetHeight(model.rowHeight - 1)
             paintRow(frame, d, model)
             frame:Show()
@@ -1460,6 +1625,7 @@ function A.ToggleUI(value)
             UI.menu:Hide()
         end
     end
+    A.SyncScreenOverlays()
     A.db.settings.open = A.window:IsShown() and true or false
 end
 
@@ -1515,7 +1681,7 @@ function A.PreviewTheme(id)
         A.Short(group.sum and group.sum.kills),
     }
     for i, card in ipairs(dialog.sampleCards) do
-        put(card.label, A.T(({ "Observed runs", "Play time", "Kills" })[i]))
+        put(card.label, i == 3 and A.Metric("kills") or A.T(({ "Observed runs", "Play time" })[i]))
         put(card.value, values[i])
         A.PaintedGlyph(card.icon, ({ 2, 4, 5 })[i])
     end
@@ -2829,6 +2995,8 @@ function A.BuildUI()
         )
         local actions = {
             run = "Delete run details",
+            v2 = "Reset this entry",
+            v2Goal = "Reset this entry",
             history = "Clear retained history",
             reset = "Reset all statistics",
             records = "Clear records",
@@ -3085,16 +3253,21 @@ function A.BuildUI()
             nemesis = "Reset this entry",
             bookmark = "Remove favorite",
             run = "Delete run details",
+            v2 = "Reset this entry",
+            v2Goal = "Reset this entry",
         }
         put(entry.title, A.T("Confirm deletion"))
         put(
             entry.subject,
             (plan.kind == "record" and A.Metric(plan.key) or plan.label)
                 .. "\n"
-                .. A.T(
-                    plan.kind == "run" and "History"
-                        or plan.kind == "bookmark" and "Favorites"
-                        or "All classes"
+                .. (
+                    plan.scope
+                    or A.T(
+                        plan.kind == "run" and "History"
+                            or plan.kind == "bookmark" and "Favorites"
+                            or "All classes"
+                    )
                 )
         )
         put(
@@ -3237,6 +3410,7 @@ end
 
 -- Shared trusted widget constructors for the separately owned HUD editor.
 A.widgets = {
+    selected = selected,
     font = font,
     put = put,
     solid = solid,

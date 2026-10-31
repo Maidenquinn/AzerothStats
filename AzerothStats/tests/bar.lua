@@ -64,8 +64,8 @@ for i = 1, 4 do
     end
 end
 check(
-    A.ui.model.rowY + A.ui.model.rowHeight * 3 < -A.ui.recordsTitle.point[5],
-    "recent runs fit above records without overlap"
+    A.ui.model.rowY + A.ui.model.rowHeight * 3 <= A.ui.model.plotTop,
+    "recent runs fit above the home chart without overlap"
 )
 local original = A.Sign(A.db.totals)
 local defaults = A.db.settings.hud

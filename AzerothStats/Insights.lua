@@ -398,6 +398,10 @@ function A.CoopReport(model, run)
         model.note = model.note .. " · " .. A.T("Partial")
     end
     model.emptyText = A.T("No group snapshot recorded")
+    if table.getn(comparison.rows) == 0 then
+        -- An absent group sample is an empty state, never three empty score cards.
+        return
+    end
     for _, data in ipairs({
         { "Group damage", A.Short(comparison.total), "Ability_Warrior_SavageBlow" },
         { "Group DPS", A.CompactRate(comparison.rate), "Spell_Nature_Lightning" },

@@ -1,5 +1,6 @@
 """Single allowlist for the player package: runtime, user docs and fixed assets."""
 
+import json
 from pathlib import Path
 import re
 
@@ -40,6 +41,17 @@ MEDIA = (
             "wsg",
         )
     ]
+)
+# Fixed, hash-reviewed native portrait assets; never discover arbitrary media files.
+MEDIA += tuple(
+    sorted(
+        json.loads(
+            (
+                Path(__file__).resolve().parent.parent
+                / "data/nemesis-portrait-sources.json"
+            ).read_text(encoding="utf-8")
+        )["assets"]
+    )
 )
 
 

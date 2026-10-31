@@ -500,10 +500,11 @@ local function combat(model, run, group)
     card(
         model,
         A.T("Per second"),
-        A.Rate(rate),
+        A.CompactRate(rate),
         A.view.cumulative and A.T("Unavailable") or A.T("Last sample"),
         "Spell_Nature_Lightning"
-    )
+    ).exact =
+        A.Rate(rate)
     card(
         model,
         A.T("Play time"),
@@ -884,7 +885,7 @@ function A.PageModel()
                 model.rows,
                 A.Metric(key),
                 rec
-                        and (key == "duration" and A.Duration(rec.value) or (key == "peakDps" and A.Rate(
+                        and (key == "duration" and A.Duration(rec.value) or (key == "peakDps" and A.CompactRate(
                             rec.value
                         ) or A.Format(rec.value)))
                     or A.T("Unavailable"),
@@ -1153,9 +1154,11 @@ function A.PageModel()
                     item.tooltip = entry.tooltip
                 end
             end
-            model.subtitle = A.T(A.view.cumulative and "All runs" or "Current run")
-                .. " · "
-                .. (A.view.class and A.ClassName(A.view.class) or A.T("All classes"))
+            model.subtitle = A.T(
+                A.view.cumulative and "All runs" or run == A.run and "Current run" or "Run report"
+            ) .. " · " .. (not A.view.cumulative and run and A.ClassName(run.class) or A.view.class and A.ClassName(
+                A.view.class
+            ) or A.T("All classes"))
             model.note = A.T("Build observations since 1.3; not clicks or casts")
         end
     end
@@ -1183,6 +1186,9 @@ function A.PageModel()
     end
     A.DecorateFavorites(model, tab, run)
     stylePage(model, run, group)
+    A.V2EnhanceModel(model, run)
+    A.V2Layout(model, run)
+    A.V2SummaryModel(model, run)
     A.DecorateEditing(model, run)
     if table.getn(model.rows) == 0 and table.getn(model.cards) == 0 and tab ~= 8 then
         model.empty = true

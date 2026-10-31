@@ -1,5 +1,11 @@
 # Known limitations
 
+V2 development candidate: native rendering and actual client save/reload/rollback
+remain unverified. Raw `AZS_ZONE.affixes` is now retained from fresh packets;
+the older V1 conclusion below does not apply to this field in V2. Dedicated
+totem APIs and causal card effects remain unconfirmed. Advanced observations
+use explicit bounded retention; see [V2 acceptance](V2-ACCEPTANCE.md).
+
 1.6.2-beta.1 is a beta prerelease. The HUD editor hotfix was confirmed locally; retesting by the originally affected player is pending. The maintainer validated dev.3 and authorized this update; no exhaustive native test matrix is claimed. Game-team permission to post as a verified addon was reported by the maintainer on 28 October 2026; native report/comparison interaction checks remain part of beta testing. See CHRONIQUES.md for the new HUD recipe. Earlier 1.5.1 audit records describe their original candidate.
 
 - No authenticated run UUID/account ID: resume/freshness is heuristic; same-name companions can merge.

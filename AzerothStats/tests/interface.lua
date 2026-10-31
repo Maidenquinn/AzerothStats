@@ -27,7 +27,16 @@ for _, language in ipairs(A.languages) do
             A.view.page = 1
             A.ToggleUI(true)
             A.RefreshUI()
-            check(A.PageModel().title == A.T(A.tabs[tab]), "localized page " .. lg .. tab)
+            local title = ({
+                [2] = "My progress",
+                [3] = "My runs",
+                [4] = not A.view.cumulative and "Analyze run" or "Combat",
+                [5] = "Analyze run",
+                [6] = "My progress",
+                [9] = "My progress",
+                [10] = "My favorites",
+            })[tab] or A.tabs[tab]
+            check(A.PageModel().title == A.T(title), "localized page " .. lg .. tab)
             local page = A.ui.model
             if tab ~= 1 and tab ~= 2 and tab ~= 8 then
                 check(

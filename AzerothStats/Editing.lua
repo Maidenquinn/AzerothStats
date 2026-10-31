@@ -13,6 +13,9 @@ end
 
 --- Preserve row identity across value changes, ranks and translated UI labels.
 local function identity(item)
+    if type(item.visibilityKey) == "string" then
+        return "v2:" .. string.sub(item.visibilityKey, 1, 200)
+    end
     if item.metric then
         return "metric:" .. item.metric
     end
@@ -56,6 +59,8 @@ function A.EditContext(run)
         usage = v.usageTab,
         combat = v.combatTab,
         category = v.favoriteCategory,
+        v2Goals = v.v2Goals,
+        v2BossSample = v.v2BossSample,
         run = (
             v.tab == 4
             or v.tab == 5
@@ -78,7 +83,7 @@ function A.DecorateEditing(model, run)
     model.editContext, model.editable = context, true
     local hidden = A.db.settings.hiddenRows and A.db.settings.hiddenRows[context] or {}
     model.hiddenCount = 0
-    for _, field in ipairs({ "rows", "cards", "records" }) do
+    for _, field in ipairs({ "rows", "cards", "records", "sections" }) do
         local visible = {}
         for _, item in ipairs(model[field] or {}) do
             local key = identity(item)
@@ -169,6 +174,12 @@ end
 
 --- Return an immutable data-only review plan. Invalid/unsupported descriptors fail closed.
 function A.EntryPlan(action)
+    if type(action) == "table" and action.kind == "v2Goal" then
+        return A.V2GoalPlan(action)
+    end
+    if type(action) == "table" and action.kind == "v2" then
+        return A.V2EntryPlan(action)
+    end
     if
         not A.db
         or type(action) ~= "table"
@@ -288,6 +299,10 @@ function A.ConfirmEntryAction()
         end
     elseif plan.kind == "bookmark" then
         A.db.favorites.entries[plan.key] = nil
+    elseif plan.kind == "v2" then
+        A.V2RemoveEntry(plan)
+    elseif plan.kind == "v2Goal" then
+        A.V2Store(false).preferences.goals[plan.key] = nil
     else
         local groups = { A.db.totals }
         for _, group in pairs(A.db.classes) do

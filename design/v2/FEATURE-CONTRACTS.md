@@ -56,8 +56,11 @@ les tentatives comme observations distinctes. Ne pas prétendre aux soins/reçus
 
 ## Familiers, invocations, totems et effets
 
-AZS_PETS/GetSummons/GetSummonGroups, AZS_TOTEMS/GetTotems : nature, présence et
-maximum simultané observés. Pas de casts/dégâts exacts déduits d'une présence.
+AZS_PETS/GetSummons/GetSummonGroups : nature, présence et
+maximum simultané observés. Pas de casts/dégâts exacts déduits d'une présence. Aucun champ dédié
+AZS_TOTEMS/GetTotems n’a été confirmé dans le helper 0.121 local : le contrat
+antérieur qui les citait était trop affirmatif. Les totems non présents dans
+AZS_PETS restent indisponibles.
 Les tables peuvent manquer avant leur premier paquet. AZS_BUFFS et AZS_DEBUFFS :
 effets documentés et cumuls. Un uptime est échantillonné, pas exact ; le périmètre
 des cibles et les périodes manquantes sont conservés.

@@ -1,0 +1,3129 @@
+{
+  "aliases": 2449,
+  "ambiguousNamesExcluded": [
+    "Flickwerk"
+  ],
+  "assets": {
+    "Nemesis-d10169.tga": "ccd65b04390c865bf2e9fe145015ec7c1aabad6cd8b62673cf3487350d915865",
+    "Nemesis-d10170.tga": "bdc34474c32e98be15c2de7dc4ee4859622c64ae3d144b83d3ea3fb6f8b6bddb",
+    "Nemesis-d10193.tga": "12a3121e012d8e462659ec1a9fb642155478e82c55d184d88a603537efdccc14",
+    "Nemesis-d1052.tga": "d576c3ad140ca303c34ab9d514daa757130079fd9f012ffdc74779c7341d52b7",
+    "Nemesis-d1054.tga": "d576c3ad140ca303c34ab9d514daa757130079fd9f012ffdc74779c7341d52b7",
+    "Nemesis-d1056.tga": "ed9a90c8c9a73433650b211f38f9f66dcd02d605332176f1ebdfcb589d10bdb7",
+    "Nemesis-d1061.tga": "139d44fa8036ef6ad3af17b428aa080d77b8f1f811e532491410830b43559e06",
+    "Nemesis-d1062.tga": "8d0b69d6cd498547ad5f3775030f623ed7d502cc07b7c342a80f49ab83e63124",
+    "Nemesis-d1063.tga": "85ad050822594fe3ceeb8adb10f1500ac49f8a38913949e89b3f6fd67e2636f8",
+    "Nemesis-d1064.tga": "7828c30c334bd0efce3235b79c459ba93d4d623c45ae72a6d6b392a3e4aeaf2f",
+    "Nemesis-d1070.tga": "fd77a07ead48a9b0ba4b833029690a0921ce9e70c2f256d12cb6f4c588f35dd6",
+    "Nemesis-d10707.tga": "abe9c2d9f40d1da5b59590f0cf226978fc3c61a0f9ca1dc09107d1a0af7ad5e4",
+    "Nemesis-d1076.tga": "425b472eaefeb10c91a21299bf4184aa65aad2d79b9c5554d7aece7c6be5c44b",
+    "Nemesis-d1091.tga": "1de41b9866b5cffe75f8fbe5603ef61df28462bf1f48daba34375114f0a3f4d4",
+    "Nemesis-d110.tga": "ba35c0a629a1a4af08cda6b3f616e515277f1d32242e43ccdb6a0c13150becce",
+    "Nemesis-d1103.tga": "d9e27c76bb0c945fc82436666035c3e6f285364bf84069aebdbb4f4379e972c7",
+    "Nemesis-d1105.tga": "8532a857054b9d005f4ff614e121c5e1709d9d7bcc7a819326b55d6f6ee59406",
+    "Nemesis-d11088.tga": "81676b56aa00bb9e355189c2bc88df9668237a8000d0c7e94be09ee4ef6f34c9",
+    "Nemesis-d11097.tga": "b1481c85e4f7aca70fae7573c048a5efeff4c247854252fc794e24e72f371d09",
+    "Nemesis-d11099.tga": "f90f1abb4037555762ad1ff793655439253c4b0618d16c53538f252a12875341",
+    "Nemesis-d11143.tga": "cf0530113cee1a61207eff5107649c8604836d6081e91e23751887b4bc239ab8",
+    "Nemesis-d11288.tga": "57d24462fa038b0e5eb051a799fcb5b5eff5693c4816b12b6ffbbf18000d2294",
+    "Nemesis-d1130.tga": "3846f1d8be0c08474d206a6d5ac256eb30db2d4f6d2ba90b9a92977894e9c1b9",
+    "Nemesis-d11311.tga": "35394992539864bb4b2ec4e09ced81e9037ce734ebb2defaba04d464a0794548",
+    "Nemesis-d11318.tga": "1e6ac57e3725311c8433f27b4ec8dd8d6cc8feeaefbe9b56777b6f84d85c732a",
+    "Nemesis-d11319.tga": "f23847927c149323fb7f0086f9112b4e2b894e882181dc1ebb6cc5671494ee3a",
+    "Nemesis-d11346.tga": "75ac3f22087fb0fa9615eef6d6940990cccf64a2d1545d423f4d71cebf3bb182",
+    "Nemesis-d11380.tga": "62eae9128c3bf8d0faef52b791647b9e0be0b6f156293e82771dcaf52389a0b8",
+    "Nemesis-d11460.tga": "fd381f16343cfa8e908e7a8e1f1377593056f7bce55b85557c2726d406956296",
+    "Nemesis-d11583.tga": "ccd65b04390c865bf2e9fe145015ec7c1aabad6cd8b62673cf3487350d915865",
+    "Nemesis-d11634.tga": "cdedfa5c1e2a1f0a11fa961a19ef9bd4b218898e0a452a378e66e2323226fa56",
+    "Nemesis-d11914.tga": "fcf1d4fbc539a10caa2efd2ba82eeb4698b32af8f7ce4c70c4a6d4d67f381f01",
+    "Nemesis-d1201.tga": "217a2d87c97d074665fdfc1300177e5bac826b35d0f8b04f5a7ea7592b6d9c26",
+    "Nemesis-d12029.tga": "63bbc682b5393af69b5aa853cb4c46614bb4ee8b787c153de021ebee1bf7a97e",
+    "Nemesis-d12162.tga": "18ea3bafd1162787fd037e5951a0ee2ff97bc84ced2379545915ef592cd33d69",
+    "Nemesis-d12190.tga": "f13c0489cf61b8dd7d3c58ce8f5a3a4a086a3c1abb16d8549bc0fbca7f03f26c",
+    "Nemesis-d1236.tga": "c777da71fe632e58274017152228303b3a8ede936c64f54e6954869c6ea33337",
+    "Nemesis-d12449.tga": "f9c168d46857396735e692ffcc7d5c9507f8625bd4cb5505f03cc8b97d4fd836",
+    "Nemesis-d1267.tga": "f1b9be85ac69ba263ba97ec4d14acf9448cbc543a599c45ea1d3fc3c118f5a0b",
+    "Nemesis-d12818.tga": "139d44fa8036ef6ad3af17b428aa080d77b8f1f811e532491410830b43559e06",
+    "Nemesis-d130.tga": "3586b940c679f3031dfdf8b9345fc08f4be5212ea0075a075e26fd367f9dfe86",
+    "Nemesis-d137.tga": "a57fb3564e730b682b02bdae11b4edabd4ae6c25e266288a5b9340aa8d5700b5",
+    "Nemesis-d13989.tga": "5a40e197c2f61e40b36aec97f17194813fd1c849d2125c39605ad0eb70401844",
+    "Nemesis-d14173.tga": "61666ea30aba872a4b663bc586edc0e2bd3ce7b1bd606480a1a2288f5a367267",
+    "Nemesis-d14252.tga": "b39b49e8a5a343a9fdf24737c5eb8f86ffe8dfdbbb9d486c5f86ee07a83c5119",
+    "Nemesis-d14383.tga": "e4b0938e05434082d06bb98cbdd3032f82abc437d9b6fc0bb180398b7c1fe5b3",
+    "Nemesis-d14403.tga": "a449c00426ee9471453432b0c27e627d79473116c9aa5c6852e8c3f9f89eca85",
+    "Nemesis-d14416.tga": "75ac3f22087fb0fa9615eef6d6940990cccf64a2d1545d423f4d71cebf3bb182",
+    "Nemesis-d146.tga": "265a73c9522190c5bfdfc55416dc3bec27f894500515972a6a582f83e22b588f",
+    "Nemesis-d14708.tga": "67945cff88b11414468d522ac62bcf695bb72ff3eb6a03fb6cf1d3a0ff7fa4b7",
+    "Nemesis-d14710.tga": "788b9f8064f93815a0ee9606b6ee189595d0df5369993630a4903b6a40bf5fd3",
+    "Nemesis-d14884.tga": "9bddaba1371a7f6bbe029b226311735f972f9d94e13c4f5c054cc5e64dbf4a70",
+    "Nemesis-d15191.tga": "445413759a72ae86cb12131fb5fde08105dc824f9b0c5ba5c285b93f97ffa697",
+    "Nemesis-d15217.tga": "f15ec52c3b758515120004d255877c862d4ab081c96c715c4a0c09e61dcc21f0",
+    "Nemesis-d15219.tga": "f24bfd88704aeadafbeda97af82ddc1806b030ea56449e869bf91b8addce9b76",
+    "Nemesis-d15295.tga": "d1c6c10750cd558f0860c01b85f4ba15bf54c96a7a19d4fa233f358fb4076319",
+    "Nemesis-d15335.tga": "412c06d85b626ba4968ab84af319284d1df6e03269ed8e91a71c137fb18d6c20",
+    "Nemesis-d15376.tga": "492cccf0612b9194cf8466429ecd8048f09eab5c1972b0a3b0ea097e78b50019",
+    "Nemesis-d15432.tga": "a625566c8ba03ae59fcb3e9f7e46a08230b2e22687e3078f0cedf01b7d1e2222",
+    "Nemesis-d15556.tga": "3c9b331dc62230e8b734c56a59a1d7111e848c21cbec54e43805e99c55b80db9",
+    "Nemesis-d15739.tga": "10b9c185e0555dbee7ae9fcc37312c7c5da0218bfed9a182877408db6b215233",
+    "Nemesis-d15742.tga": "c6a1b2647833d10d0eb523b29a64b6380209a5f92a7a9f0164b0036611c9de0a",
+    "Nemesis-d158.tga": "322e0e5738fe94d968409478748b18a7983468daf6dae6c1fb497a23c4f42d25",
+    "Nemesis-d15931.tga": "f2c01478d265a46e5bdd8e0618490d0a480bd9fcb8762761c3006f7137ec7d21",
+    "Nemesis-d15937.tga": "ef3cfbe19334300946c48ac814b83fe08e98a34af5cf8b2f3a89aff96c10f8bd",
+    "Nemesis-d15938.tga": "c66f1fb09e7de6da073a86c1a90d2bb0d39fdbc5fb8ea6cdfd024ad113fe1bcd",
+    "Nemesis-d15945.tga": "be8ffaacacba17f6ba227c16338394838d9ba7c96107cb892ee1c7f0fc4dbabb",
+    "Nemesis-d15958.tga": "148b938a4ad26c9184cfa34e607113b01cefead3e8ff00582ee4fe8e6fab6dc0",
+    "Nemesis-d15961.tga": "abfb7d933dac63be9b951dfa2b91aa83daab17d87ee5904329fbab6af18aef10",
+    "Nemesis-d160.tga": "d47418edbe28f41627d3232ffa3bf424551d10073c2061ec933a35125cb95b1b",
+    "Nemesis-d16033.tga": "1a77ab14576b0316d380d50efd8ba8cf708f37d73ae6c8f69f39c60e92ae471f",
+    "Nemesis-d16139.tga": "fb7a2514b7dacd0ed3f6d6e3a2e56bd855efceca9b806c1344a9d0ba9392994c",
+    "Nemesis-d16153.tga": "c37d1cd4a6ae8fce10a1d15829463528ca97720f9beecdcf49a57380d2ee35f8",
+    "Nemesis-d16154.tga": "1a8f32be99397738e7b67b9fcfd5ddbc2670ec6ffdb43a479287451481111f12",
+    "Nemesis-d16155.tga": "206ff35035de995204d7271f3faad21bdf3ff6ca5e205e8db2c050dbd500ee6a",
+    "Nemesis-d16174.tga": "abfb7d933dac63be9b951dfa2b91aa83daab17d87ee5904329fbab6af18aef10",
+    "Nemesis-d16175.tga": "2d78f1ca584da622a70127e2a8462f9ab178ba90070baf5f9676516f346d8701",
+    "Nemesis-d16178.tga": "fe37c99671d0704a64f25c7b4a24bdb8514185b1be50c77325acd5b686f5025c",
+    "Nemesis-d163.tga": "791ed0de5ea3ed006a262c463b1e78af05a312d065ac440b2cd095436305cfd0",
+    "Nemesis-d16309.tga": "a84685109e5988b797fd5101d8e68f91683a607339be5eef7ea8a34f5133771e",
+    "Nemesis-d165.tga": "e8248b395a3d424827815c268ee7b755c3a03e1906f6306fff1601b4787a2d6b",
+    "Nemesis-d16586.tga": "f2c01478d265a46e5bdd8e0618490d0a480bd9fcb8762761c3006f7137ec7d21",
+    "Nemesis-d16590.tga": "ca108ac4649d1bf669b047deb70fd8e750c7d23bd8327d308d26a71e1515e450",
+    "Nemesis-d16594.tga": "2dd233b575aa6a4039dad880e429e95cfe2f42fb70c43810c69becdc80bac437",
+    "Nemesis-d16598.tga": "7eb8238acd698e49d7db1ea1ba7bb81dbb3e8117dad20d5870e2bb588a804b0c",
+    "Nemesis-d169.tga": "03e877b0eef148ef7b5fbec6d84efdd579cf545fe7521c0bc333afdee32b1bcf",
+    "Nemesis-d175.tga": "f41b436fb2ac5d3b1a3e12b620e5dde3990d18fee18207669c5f56a44d83efda",
+    "Nemesis-d1918.tga": "01c81e7f42fc91150a329e775b5d832d8d2333448f2e230f631dffbd67ebf4a2",
+    "Nemesis-d1959.tga": "fdaa81188ea6bf5b0d2d0ca7d1383ac3f521d3f02633ea66afa89953f547d243",
+    "Nemesis-d200.tga": "95c0d507834c128c758c9fd09710b8da856838d85b45ad696a871641bc34c6d5",
+    "Nemesis-d2011.tga": "e890862166ace73e6125af9e5cf2692cad06625730eff4b332c03cb58bc6c49f",
+    "Nemesis-d2013.tga": "6f77461f08d6afc8f9a06955b566fd15288cc285493949d2ad72c815095e2c4d",
+    "Nemesis-d202.tga": "de70fba6460755154f11101181f37e6d69b6986bf427ff38f15204603fef50f6",
+    "Nemesis-d2026.tga": "a1f7849b2093b1cefe08a9bf8f66ad756f059a6e2c6f241f01b2d317c7f231cb",
+    "Nemesis-d2029.tga": "41965cee2037885038e7ce325369a7f59f10354293c852fabbf57fbc4aa35292",
+    "Nemesis-d203.tga": "90abd5a684b7d8d7e658a288281f41a0ced22509a7cd9a363f757f568fa4afb4",
+    "Nemesis-d2040.tga": "fe89aa513e9f7afa5a766014b5fdcf26a1bbc791810133fce7294cc0aa2d745a",
+    "Nemesis-d2041.tga": "41fc5c46c144ddb88658932363e383b0c681e072d7e8bea4110ce21517b6597f",
+    "Nemesis-d2042.tga": "98e717b54bca7a2ec56fad59466157f7f4575858e8b61929ae452caab3822789",
+    "Nemesis-d2043.tga": "86cf9ed1c10e882e806456d6a19c0890b0ee2420a0bfda082a5d4a641f807b91",
+    "Nemesis-d2051.tga": "e22adc6b61419a1546283d47d81b70b648adf16a75bed12d109ac21c861ff172",
+    "Nemesis-d2078.tga": "06eceb8884341e23a655430dff5df9d08a4c157556b0e38452bd1440f482732a",
+    "Nemesis-d2315.tga": "2f8240c31bdec9c799151f1998b99d02b4bdab573e0114ed4c5dc372bf601aa6",
+    "Nemesis-d2323.tga": "d57f44cf5df2a5910aeb5fc6baa594eeefc71996d5ecd78051973d62302ee7f3",
+    "Nemesis-d2324.tga": "a9fb03ce07b1f6b1b5ff415ec4a868ab53ee24d45dda121064b62023959aee63",
+    "Nemesis-d246.tga": "0a1e0a218154d73d33cab702f9224499d8167f18ad24a9340b3c1f0d379d8629",
+    "Nemesis-d2460.tga": "b500f6ed7880a88f61547abfcb172e2eeef26ba7737693e272da07b3c558998a",
+    "Nemesis-d2462.tga": "16efdac0e660c78ba82c1176a08f7c5d0d11d52a1281877b1237d418a8b85f3f",
+    "Nemesis-d2463.tga": "f87414b40c2e24d8baa3243d9564d8f44cbc38b01a87823d6b05fd4d449a8fce",
+    "Nemesis-d2476.tga": "e5d3252d9fcdc1b6da646e7e4caefd7b687e120a5838442e09acf94ba943d138",
+    "Nemesis-d2485.tga": "b4edebabc0cf77de6c1c8d30e8fcbd6859a080677ad26028fbcf22d7bfc59420",
+    "Nemesis-d2492.tga": "6078ff78bea56225d3dd9f56adb813570fb981282a56385596d822a5b2c53efc",
+    "Nemesis-d2499.tga": "884fd1e1438888d7b6e921f587b6a0a8f4e98a726375612492dab02dbc1a56ed",
+    "Nemesis-d2514.tga": "c4cc31d1193259d71569425aed6107a8f37ba5b0f0ad0d1ebc0916215cd443b4",
+    "Nemesis-d2516.tga": "66f2b5cfd6059cce84a64c3c2587ef9a7ad1e527da7f4d5bf93970323fb1c670",
+    "Nemesis-d2525.tga": "b7c25bb2eeefd9b14fc37590a141091778b5266c512102113c17d5464076321c",
+    "Nemesis-d26.tga": "6de969cf3656bf97f2837003f0bad8a4d9bff7a4a8ad2acef138bd4a12d230ca",
+    "Nemesis-d2603.tga": "bc0ccd2df486d9119f14bdb833c79ddcdb3ed6e9df34b12259bf026a09d076f2",
+    "Nemesis-d2699.tga": "02bc24cea4652e313f4648e38f376d0655577c2f903ad069c6580d60434e10d3",
+    "Nemesis-d2709.tga": "94006a29b28857529d13ba8ab337e9100a3dae50fa77e27fc3ebf9f42a30e67f",
+    "Nemesis-d2870.tga": "3506fc5c34116e62cf4310323cd317e347c5bf82484e4ea616da88ad331a18c4",
+    "Nemesis-d2879.tga": "75ac3f22087fb0fa9615eef6d6940990cccf64a2d1545d423f4d71cebf3bb182",
+    "Nemesis-d31.tga": "174db649b81b2f0dab3e1e4ecccbd163db752263212fd8f72e6c29a8b67c49ea",
+    "Nemesis-d314.tga": "705da2495eea06b02b103d608ef2c38ff323fb946e45148f96f538aebe85c4ee",
+    "Nemesis-d316.tga": "12142384e96c3c75495fd2b450a7ea4887d394b2773cb36cb247f4968cef22f1",
+    "Nemesis-d317.tga": "8fd14614543bbd0c4fac662059fe53179a58f362942af96c92337c1d2bda3307",
+    "Nemesis-d3193.tga": "d576c3ad140ca303c34ab9d514daa757130079fd9f012ffdc74779c7341d52b7",
+    "Nemesis-d3208.tga": "f4506013215f60a66120b631128c51d92718ecb083de9a9e71aac62a421a2c24",
+    "Nemesis-d3250.tga": "f03131bf1134cafc73cbf9b4d8834a19f39436721eb5db92bb06f08aa352d205",
+    "Nemesis-d33.tga": "81ec6c10f8849aab9d142e5a60a3b69adcff630940b5240e2b50472de3e5b9eb",
+    "Nemesis-d337.tga": "c538abc6083b66d445ed9cbe60b6a68416689fc1d4eb950c4f2c0f54e08e080c",
+    "Nemesis-d355.tga": "23dc493e7a8112f7ac2a8da1545dd92c70e83988d9abec8881e0c289da7f5ee2",
+    "Nemesis-d366.tga": "26e015de6b9b5433d140aacd93743e59fe8f52adbe4295f3e9d842e32c0feb8b",
+    "Nemesis-d377.tga": "383b9c0c91df326a0cc7b22fd2bdbcbf10a92850411e03bfbcb0ae693175bb9b",
+    "Nemesis-d384.tga": "f41b436fb2ac5d3b1a3e12b620e5dde3990d18fee18207669c5f56a44d83efda",
+    "Nemesis-d387.tga": "3a915b3c76317b4a0d12ccfd47af5c4c84722f3f4d09416643b4e31e318d4d96",
+    "Nemesis-d388.tga": "8532a857054b9d005f4ff614e121c5e1709d9d7bcc7a819326b55d6f6ee59406",
+    "Nemesis-d3986.tga": "690246938f80ab6f68c162790aea763e5f71207b2fc1300ae1e6cab17b4e54a8",
+    "Nemesis-d3987.tga": "705a92b87de359f3c2169b4e3116d27ce0c8d06aaeb28c89e52d68ae876b8b68",
+    "Nemesis-d3993.tga": "8d6bb4fe5625409d7fbb593353e114d11316e331ed10608598bfca1a4ea3f3c8",
+    "Nemesis-d3995.tga": "93e2d614769fde3d7b6c20a14dc54168c8a468a97f0adca190cf42d3eade318d",
+    "Nemesis-d4018.tga": "7efad7f78f47cf358908789deacb0657a5b10b66d573600b6814171633ad7717",
+    "Nemesis-d414.tga": "67945cff88b11414468d522ac62bcf695bb72ff3eb6a03fb6cf1d3a0ff7fa4b7",
+    "Nemesis-d415.tga": "4e1a94a0ae9fa0abc3d6147a6d793d5dad204ac1d994e0c8c1f4eef3279ced39",
+    "Nemesis-d4162.tga": "a16a1ab8c6471c95be1f94412964cd64c0c837af8101d6434313c633fbabf0d2",
+    "Nemesis-d4185.tga": "6641fad2e3c3a5b9fd5b47675952e4cbc58711f73163a4b60bcf6d9682c5cd89",
+    "Nemesis-d4312.tga": "bd65080a9d49497a36fa6177f291209f914dff68146270ee690ff53a80b51e08",
+    "Nemesis-d433.tga": "654e5c43a1634e5f07a052a11c177609a43d945ce156ba7550614bf42297fcfe",
+    "Nemesis-d4449.tga": "40ee6357d396d6ad7056741825c44b749cdc2eebf6028cf6d4b155838a7da2b7",
+    "Nemesis-d448.tga": "d576c3ad140ca303c34ab9d514daa757130079fd9f012ffdc74779c7341d52b7",
+    "Nemesis-d467.tga": "36b54b684150c8ea6094e6f1a0dadbccb6dcf2ffabf008cce3280a338eee00a7",
+    "Nemesis-d491.tga": "1b825247ddf6007802dd2733f2fee4bdfe36747576bdf33f15c40807b9878daa",
+    "Nemesis-d5047.tga": "32d6d184291d05f1201adf1136db6284917221a6cf061c714864ef3b862d73cb",
+    "Nemesis-d523.tga": "f4f699e028219e20ffc4d7483c977ac518da147142309bbddf3c35ef270245f4",
+    "Nemesis-d5239.tga": "eaf816d0ae01ceb84f39e2322755ce90383100c0528d5e3551ec7ac26415854d",
+    "Nemesis-d5240.tga": "4ac981e2a57551bd1c2e5959a7127a1defd28673a9c44193d71ce48274452690",
+    "Nemesis-d5242.tga": "57807c4c992c8967384dafb3331bc53b5b7eec0d7b0cdccdab25cfdf1eee344f",
+    "Nemesis-d5266.tga": "01f96b0b7c6a34042be89e53cd9a11e53fc341fe2e86991cab5f61eb1a8e7b35",
+    "Nemesis-d5290.tga": "1e6ac57e3725311c8433f27b4ec8dd8d6cc8feeaefbe9b56777b6f84d85c732a",
+    "Nemesis-d5291.tga": "181fdc9ad46f4fde8471379f76ce95e28c093e01c72d5d40938399bd56097efc",
+    "Nemesis-d5292.tga": "57807c4c992c8967384dafb3331bc53b5b7eec0d7b0cdccdab25cfdf1eee344f",
+    "Nemesis-d5294.tga": "a28f30685416fd39918315406e36f49db09d022df406df1056a90d3849ea82a1",
+    "Nemesis-d5305.tga": "4ac981e2a57551bd1c2e5959a7127a1defd28673a9c44193d71ce48274452690",
+    "Nemesis-d5327.tga": "5d6a8ffc5db30f1a0366e320e7f45425db75093413f9726ff7f3c733997e1754",
+    "Nemesis-d5726.tga": "a38652724a555a687ab12029df2b34d564eb07306b86e3e26f6c1583079470d7",
+    "Nemesis-d591.tga": "21f68487a495835098e8d9efe7a44a96d1d7b678654530170eb5b621db61ae2b",
+    "Nemesis-d593.tga": "10f30b79736add6be0b8028ab59bf241be8be16ef45acdfe319604933f36d404",
+    "Nemesis-d5965.tga": "0aabca4866e1cedc7c4c219075bb9abe362bb50bf426e13681a0743ea2ad0629",
+    "Nemesis-d599.tga": "d3b4622e1df69d986275ffbaf9bc610f3ad29d77619b41d1a41c9f2a7e090eee",
+    "Nemesis-d6170.tga": "f03131bf1134cafc73cbf9b4d8834a19f39436721eb5db92bb06f08aa352d205",
+    "Nemesis-d6209.tga": "909e4cf183cd01c99456622f1282503747761228a15938fdd9f9f0a9d8fa743d",
+    "Nemesis-d6377.tga": "a887c1458ac912ffd1b4e63e6cd427f4587f254494c5c00aae7c0f91243499d5",
+    "Nemesis-d644.tga": "9d3213d1ecd1287360977bd8406f0091fa6ca225d7449ea787f7fdd272da4059",
+    "Nemesis-d6572.tga": "b27afedc7f8d8ad947b00e1cd5a72341daa33252187a057d6c2b807280b2d761",
+    "Nemesis-d661.tga": "9f7bd469620b164e32c0c8b640e7f765660f6d568496e4f25e73eb22d671bb8a",
+    "Nemesis-d665.tga": "3a8f281ca1825e946cd8a7efae6310aac0e60f71084270b884f46a7286018d0e",
+    "Nemesis-d68.tga": "5ab7c4cd30fe6dc579e63f3d5ede4151749c25bb3e9161a525a8ad0258be6c61",
+    "Nemesis-d7536.tga": "2ea8a52fba58af02b8ff6b77d25bfd931c39a2e3f75542cff05ecde3684d6774",
+    "Nemesis-d776.tga": "3caae7dc742c19ecf8cb93304698bde6cb8df32da47b24a39a0e69e79d7d5430",
+    "Nemesis-d7869.tga": "70984418001dab212478dc1da33920b03b727abc8fcfaed6dc4d816a4979d493",
+    "Nemesis-d807.tga": "3f634c3f1df3f9fd5e6032de8a5f97807cb850e41c08d717e941e28287448443",
+    "Nemesis-d8129.tga": "8b2751025ac177ceae16d88f209fb9dbc17f848deb62575ce986692ae969824a",
+    "Nemesis-d820.tga": "7c9c42bf86fbb23a56bd3c0e39fb10f130f93277c753b88d868ddb87c3b75fd5",
+    "Nemesis-d8249.tga": "9159e334d728e7ee72705f5d053c4f6a14d3a8bd4dfb54614546161a22c2ac68",
+    "Nemesis-d8410.tga": "757fcacbdac48f0658104e130be0f6d50659b6a5f92ae89f7b11a904cc2d8ce3",
+    "Nemesis-d8411.tga": "757fcacbdac48f0658104e130be0f6d50659b6a5f92ae89f7b11a904cc2d8ce3",
+    "Nemesis-d850.tga": "cbe7254a50ea75e26a9ba369bfd4da11a04813b6005b00c4a829739b1914392e",
+    "Nemesis-d8512.tga": "dd86a774ad0cbc6ec483573a91ccdf1838c8e4cb001919c3d357b363fb158448",
+    "Nemesis-d860.tga": "d58ddfc3cc6f9c4dbe3a6fc76781f56f8c6fcd13870fb2bedc70874d185f9fb8",
+    "Nemesis-d8609.tga": "78c746b2ca02a01c801cc32a5629984a65140ee691351338d978b9534251e236",
+    "Nemesis-d8673.tga": "544cfc4bf6f23f8aafef622361020145c7732a42817af4cc18aafd6e2acac45e",
+    "Nemesis-d868.tga": "532aac59c6a29d34f82d24d1721383ba77fb37043868f478649a386f130072fc",
+    "Nemesis-d8681.tga": "b23da24af330c915e792b7b5b7b30be808e07e339d40e4c5094fb4ea01ddcb05",
+    "Nemesis-d8686.tga": "254db5a5a2f994a1ac36058c90605a06246d3d61c728ead789871421e0816a1a",
+    "Nemesis-d8699.tga": "265559a6881da915cc5f70b9d3e27a98c4f9316d692d38c469aa39c3af8c1651",
+    "Nemesis-d8756.tga": "dd8581b3c83aeb66908d2b7b7f2aea0728a97820a6c59667acc92ce056e293a0",
+    "Nemesis-d8799.tga": "343e00a6e5dc9f6eac13fefe723f37c2875ef46f9148993d097ee04f6c661f67",
+    "Nemesis-d8807.tga": "05ba9afbd59b7c27c4e666550380fecfbd0126b8165c9d5be7fa04bdc8274118",
+    "Nemesis-d927.tga": "633c3d2017fb03bf18e74b2934910da779183169ea7047df3bc0ec1a45db2916",
+    "Nemesis-d9587.tga": "065f5facbeaa2dca8aa8a30c6a8ab55f40c8a3c5500e48ccc2673f3bbe83e6c0",
+    "Nemesis-d9778.tga": "fe8e23f0a1566db2fa1f811b48561c55ef896b66a742be082c563c131ded7319"
+  },
+  "creatures": 208,
+  "currentLocaleSourceSha256": "5dd6819d836748ccf809ab76fe6509c9ee793e087939b5d036c430d835a14e63",
+  "definitionAudit": "2026-10-22",
+  "definitions": [
+    {
+      "asset": "d26",
+      "baked": null,
+      "display": 26,
+      "entry": 600,
+      "kind": "enemy",
+      "model": "Creature\\Kobold\\Kobold.mdx",
+      "name": "Kobold Vermin",
+      "skins": [
+        "koboldskinNormal",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d165",
+      "baked": null,
+      "display": 165,
+      "entry": 601,
+      "kind": "enemy",
+      "model": "Creature\\Wolf\\Wolf.mdx",
+      "name": "Young Wolf",
+      "skins": [
+        "WolfSkinTimber",
+        "WolfSkinTimberAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d31",
+      "baked": null,
+      "display": 31,
+      "entry": 602,
+      "kind": "enemy",
+      "model": "Creature\\Murloc\\Murloc.mdx",
+      "name": "Murloc Streamrunner",
+      "skins": [
+        "Sahauginskin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d163",
+      "baked": null,
+      "display": 163,
+      "entry": 603,
+      "kind": "enemy",
+      "model": "Creature\\Kobold\\Kobold.mdx",
+      "name": "Kobold Geomancer",
+      "skins": [
+        "koboldskinAlbino",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2323",
+      "baked": "bf07d95d93218db1f9c48a3ec1e8493.blp",
+      "display": 2323,
+      "entry": 604,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Defias Thug",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d175",
+      "baked": null,
+      "display": 175,
+      "entry": 605,
+      "kind": "enemy",
+      "model": "Creature\\GnollMelee\\GnollMelee.mdx",
+      "name": "Riverpaw Brute",
+      "skins": [
+        "RiverPawGnollFighterSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d644",
+      "baked": null,
+      "display": 644,
+      "entry": 606,
+      "kind": "enemy",
+      "model": "Creature\\Wolf\\Wolf.mdx",
+      "name": "Prowler",
+      "skins": [
+        "WolfSkinBlack",
+        "WolfSkinBlackAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d2315",
+      "baked": "92403d7f4c8fbb585edfeb77503d3653.blp",
+      "display": 2315,
+      "entry": 607,
+      "kind": "enemy",
+      "model": "Character\\Human\\Female\\HumanFemale.mdx",
+      "name": "Defias Rogue Wizard",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2324",
+      "baked": "509f894f8cf0b20b2056ea9748eeab3.blp",
+      "display": 2324,
+      "entry": 608,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Defias Enforcer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d163",
+      "baked": null,
+      "display": 163,
+      "entry": 609,
+      "kind": "enemy",
+      "model": "Creature\\Kobold\\Kobold.mdx",
+      "name": "Kobold Taskmaster",
+      "skins": [
+        "koboldskinAlbino",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d246",
+      "baked": null,
+      "display": 246,
+      "entry": 610,
+      "kind": "enemy",
+      "model": "Creature\\DireWolf\\DireWolf.mdx",
+      "name": "Gruff Swiftbite",
+      "skins": [
+        "DireWolfSkinDarkBlack",
+        "DireWolfSkinDarkBlackAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d377",
+      "baked": null,
+      "display": 377,
+      "entry": 611,
+      "kind": "enemy",
+      "model": "Creature\\Boar\\Boar.mdx",
+      "name": "Bellygrub",
+      "skins": [
+        "BoarSkinBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d384",
+      "baked": null,
+      "display": 384,
+      "entry": 690,
+      "kind": "boss",
+      "model": "Creature\\GnollMelee\\GnollMelee.mdx",
+      "name": "Hogger",
+      "skins": [
+        "RiverPawGnollFighterSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d7536",
+      "baked": null,
+      "display": 7536,
+      "entry": 691,
+      "kind": "boss",
+      "model": "Creature\\MineSpider\\MineSpiderBoss.mdx",
+      "name": "Mother Fang",
+      "skins": [
+        "MineSpiderSkinBlood",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d14403",
+      "baked": null,
+      "display": 14403,
+      "entry": 692,
+      "kind": "boss",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Rhahk'Zor",
+      "skins": [
+        "OgreSkinBeige",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2026",
+      "baked": "ef635226123b4241dc33ac0c2cef9cd9.blp",
+      "display": 2026,
+      "entry": 693,
+      "kind": "boss",
+      "model": "Character\\Tauren\\Male\\TaurenMale.mdx",
+      "name": "Mr. Smite",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2029",
+      "baked": "bcbdc39535d9e85fb46c6aed9e152f84.blp",
+      "display": 2029,
+      "entry": 694,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Edwin VanCleef",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d158",
+      "baked": null,
+      "display": 158,
+      "entry": 700,
+      "kind": "enemy",
+      "model": "Creature\\Skeleton\\Skeleton.mdx",
+      "name": "Skeletal Raider",
+      "skins": [
+        "SkeletonSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d137",
+      "baked": null,
+      "display": 137,
+      "entry": 701,
+      "kind": "enemy",
+      "model": "Creature\\Ghoul\\Ghoul.mdx",
+      "name": "Plague Spreader",
+      "skins": [
+        "GhoulSkinGrey",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1091",
+      "baked": null,
+      "display": 1091,
+      "entry": 702,
+      "kind": "enemy",
+      "model": "Creature\\Tarantula\\Tarantula.mdx",
+      "name": "Black Widow Hatchling",
+      "skins": [
+        "TarantulaSkinGrey",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d203",
+      "baked": null,
+      "display": 203,
+      "entry": 703,
+      "kind": "enemy",
+      "model": "Creature\\Worgen\\Worgen.mdx",
+      "name": "Nightbane Shadow Weaver",
+      "skins": [
+        "WargenSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1201",
+      "baked": null,
+      "display": 1201,
+      "entry": 704,
+      "kind": "enemy",
+      "model": "Creature\\Zombie\\Zombie.mdx",
+      "name": "Rotting Horror",
+      "skins": [
+        "ZombieSkinGreen",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d202",
+      "baked": null,
+      "display": 202,
+      "entry": 705,
+      "kind": "enemy",
+      "model": "Creature\\Worgen\\Worgen.mdx",
+      "name": "Nightbane Dark Runner",
+      "skins": [
+        "WargenSkinBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d388",
+      "baked": null,
+      "display": 388,
+      "entry": 706,
+      "kind": "enemy",
+      "model": "Creature\\CarrionBird\\CarrionBird.mdx",
+      "name": "Fleshripper",
+      "skins": [
+        "CarrionBirdSkin",
+        "CarrionBirdWing",
+        ""
+      ]
+    },
+    {
+      "asset": "d146",
+      "baked": null,
+      "display": 146,
+      "entry": 707,
+      "kind": "enemy",
+      "model": "Creature\\Ghost\\Ghost.mdx",
+      "name": "Restless Shade",
+      "skins": [
+        "GhostSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d414",
+      "baked": null,
+      "display": 414,
+      "entry": 708,
+      "kind": "enemy",
+      "model": "Creature\\Ghoul\\Ghoul.mdx",
+      "name": "Bone Chewer",
+      "skins": [
+        "GhoulSkinRed",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d523",
+      "baked": null,
+      "display": 523,
+      "entry": 709,
+      "kind": "enemy",
+      "model": "Creature\\Worgen\\Worgen.mdx",
+      "name": "Nightbane Worgen Alpha",
+      "skins": [
+        "WargenSkinWhite",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d366",
+      "baked": null,
+      "display": 366,
+      "entry": 710,
+      "kind": "enemy",
+      "model": "Creature\\Tarantula\\Tarantula.mdx",
+      "name": "Carrion Recluse",
+      "skins": [
+        "TarantulaSkinOrange",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15961",
+      "baked": null,
+      "display": 15961,
+      "entry": 711,
+      "kind": "enemy",
+      "model": "Creature\\FleshGolem\\FleshGolem.mdx",
+      "name": "Flesh Eating Abomination",
+      "skins": [
+        "FleshGolemSkinGray1",
+        "FleshGolemSkinGray2",
+        ""
+      ]
+    },
+    {
+      "asset": "d1091",
+      "baked": null,
+      "display": 1091,
+      "entry": 790,
+      "kind": "boss",
+      "model": "Creature\\Tarantula\\Tarantula.mdx",
+      "name": "Naraxis",
+      "skins": [
+        "TarantulaSkinGrey",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d200",
+      "baked": null,
+      "display": 200,
+      "entry": 791,
+      "kind": "boss",
+      "model": "Creature\\Skeleton\\Skeleton.mdx",
+      "name": "Mor'Ladim",
+      "skins": [
+        "SkeletonSkinDarkTeal",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1061",
+      "baked": null,
+      "display": 1061,
+      "entry": 792,
+      "kind": "boss",
+      "model": "Creature\\FleshGolem\\FleshGolem.mdx",
+      "name": "Stitches",
+      "skins": [
+        "FleshGolemSkin1",
+        "FleshGolemSkin2",
+        ""
+      ]
+    },
+    {
+      "asset": "d1236",
+      "baked": null,
+      "display": 1236,
+      "entry": 793,
+      "kind": "boss",
+      "model": "Creature\\Wolf\\Wolf_ghost.mdx",
+      "name": "Lupos",
+      "skins": [
+        "WolfSkin_Ghost",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16309",
+      "baked": null,
+      "display": 16309,
+      "entry": 794,
+      "kind": "boss",
+      "model": "Creature\\Necromancer\\Necromancer.mdx",
+      "name": "Morbent Fel",
+      "skins": [
+        "NecromancerPurple",
+        "NecromancerShoulderPurple",
+        "NecromancerHelmPurple"
+      ]
+    },
+    {
+      "asset": "d4449",
+      "baked": null,
+      "display": 4449,
+      "entry": 100,
+      "kind": "enemy",
+      "model": "Creature\\Imp\\Imp.mdx",
+      "name": "Burning Imp",
+      "skins": [
+        "ImpSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d850",
+      "baked": null,
+      "display": 850,
+      "entry": 101,
+      "kind": "enemy",
+      "model": "Creature\\Felhound\\FelHound.mdx",
+      "name": "Felhound",
+      "skins": [
+        "FelHoundSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d4185",
+      "baked": null,
+      "display": 4185,
+      "entry": 108,
+      "kind": "enemy",
+      "model": "Creature\\FelBat\\FelBat.mdx",
+      "name": "Fel Bat",
+      "skins": [
+        "BatSkinViolet01",
+        "BatSkinViolet02",
+        ""
+      ]
+    },
+    {
+      "asset": "d2011",
+      "baked": null,
+      "display": 2011,
+      "entry": 103,
+      "kind": "enemy",
+      "model": "Creature\\Satyr\\Satyr.mdx",
+      "name": "Satyr Shadowcaster",
+      "skins": [
+        "SatyrSkinBlue",
+        "SatyrSkinBlueAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d467",
+      "baked": null,
+      "display": 467,
+      "entry": 102,
+      "kind": "enemy",
+      "model": "Creature\\Satyr\\Satyr.mdx",
+      "name": "Satyr Trickster",
+      "skins": [
+        "SatyrSkinPink",
+        "SatyrSkinPinkAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d1130",
+      "baked": null,
+      "display": 1130,
+      "entry": 104,
+      "kind": "enemy",
+      "model": "Creature\\VoidWalker\\VoidWalker.mdx",
+      "name": "Voidwalker",
+      "skins": [
+        "VoidWalkerSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d4162",
+      "baked": null,
+      "display": 4162,
+      "entry": 105,
+      "kind": "enemy",
+      "model": "Creature\\Succubus\\Succubus.mdx",
+      "name": "Succubus",
+      "skins": [
+        "SuccubusNewSkin",
+        "SuccubusSkinWing",
+        "SuccubusHair"
+      ]
+    },
+    {
+      "asset": "d12190",
+      "baked": null,
+      "display": 12190,
+      "entry": 109,
+      "kind": "enemy",
+      "model": "Creature\\Imp\\FireImp.mdx",
+      "name": "Fire Imp",
+      "skins": [
+        "ImpSkinRed",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d14252",
+      "baked": null,
+      "display": 14252,
+      "entry": 110,
+      "kind": "enemy",
+      "model": "Creature\\Manafiend\\ManaFiend.mdx",
+      "name": "Mana Fiend",
+      "skins": [
+        "ManaFiendSkinBlue",
+        "MANAMISTBASE",
+        ""
+      ]
+    },
+    {
+      "asset": "d5047",
+      "baked": null,
+      "display": 5047,
+      "entry": 106,
+      "kind": "enemy",
+      "model": "Creature\\FelGuard\\FelGuard.mdx",
+      "name": "Felguard Elite",
+      "skins": [
+        "FelGuardSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d169",
+      "baked": null,
+      "display": 169,
+      "entry": 107,
+      "kind": "enemy",
+      "model": "Creature\\Infernal\\Infernal.mdx",
+      "name": "Infernal",
+      "skins": [
+        "InfernalSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d433",
+      "baked": null,
+      "display": 433,
+      "entry": 111,
+      "kind": "enemy",
+      "model": "Creature\\DoomGuard\\DoomGuard.mdx",
+      "name": "Doomguard",
+      "skins": [
+        "BalrogSkinRed",
+        "BalrogWingRed",
+        ""
+      ]
+    },
+    {
+      "asset": "d68",
+      "baked": null,
+      "display": 68,
+      "entry": 190,
+      "kind": "boss",
+      "model": "Creature\\DoomGuard\\DoomGuard.mdx",
+      "name": "Doomguard Commander",
+      "skins": [
+        "BalrogSkinBlue",
+        "BalrogWingBlue",
+        ""
+      ]
+    },
+    {
+      "asset": "d2879",
+      "baked": null,
+      "display": 2879,
+      "entry": 191,
+      "kind": "boss",
+      "model": "Creature\\Satyr\\Satyr.mdx",
+      "name": "Mannoroth's Herald",
+      "skins": [
+        "SatyrSkinGreen",
+        "SatyrSkinGreenAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d130",
+      "baked": null,
+      "display": 130,
+      "entry": 192,
+      "kind": "boss",
+      "model": "Creature\\Dreadlord\\DreadLord.mdx",
+      "name": "Varimathras",
+      "skins": [
+        "DreadLordSkin",
+        "DreadLordWingSkin",
+        ""
+      ]
+    },
+    {
+      "asset": "d8609",
+      "baked": null,
+      "display": 8609,
+      "entry": 194,
+      "kind": "boss",
+      "model": "Creature\\Dreadlord\\DreadLord.mdx",
+      "name": "Lord Hel'nurath",
+      "skins": [
+        "DreadLordSkinGreen",
+        "DreadLordWingSkinGreen",
+        ""
+      ]
+    },
+    {
+      "asset": "d12449",
+      "baked": null,
+      "display": 12449,
+      "entry": 193,
+      "kind": "boss",
+      "model": "Creature\\Lord Kezzak\\LordKezzak.mdx",
+      "name": "Lord Kazzak",
+      "skins": [
+        "LordKezzakSkin",
+        "LordKezzakWingSkin",
+        ""
+      ]
+    },
+    {
+      "asset": "d355",
+      "baked": null,
+      "display": 355,
+      "entry": 800,
+      "kind": "enemy",
+      "model": "Creature\\Gnoll\\gnoll.mdx",
+      "name": "Woodpaw Mongrel",
+      "skins": [
+        "MossHideGnollWhelpSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d165",
+      "baked": null,
+      "display": 165,
+      "entry": 801,
+      "kind": "enemy",
+      "model": "Creature\\Wolf\\Wolf.mdx",
+      "name": "Longtooth Runner",
+      "skins": [
+        "WolfSkinTimber",
+        "WolfSkinTimberAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d1267",
+      "baked": null,
+      "display": 1267,
+      "entry": 802,
+      "kind": "enemy",
+      "model": "Creature\\FaerieDragon\\FaerieDragon.mdx",
+      "name": "Sprite Darter",
+      "skins": [
+        "FaerieDragon",
+        "faeriewing",
+        ""
+      ]
+    },
+    {
+      "asset": "d491",
+      "baked": null,
+      "display": 491,
+      "entry": 803,
+      "kind": "enemy",
+      "model": "Creature\\GnollCaster\\GnollCaster.mdx",
+      "name": "Woodpaw Mystic",
+      "skins": [
+        "ShadowHideGnollCasterSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d415",
+      "baked": null,
+      "display": 415,
+      "entry": 804,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Gordunni Ogre",
+      "skins": [
+        "OgreSkinYellow",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2013",
+      "baked": null,
+      "display": 2013,
+      "entry": 805,
+      "kind": "enemy",
+      "model": "Creature\\Satyr\\Satyr.mdx",
+      "name": "Wildspawn Satyr",
+      "skins": [
+        "SatyrSkinCrimson",
+        "SatyrSkinCrimsonAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d820",
+      "baked": null,
+      "display": 820,
+      "entry": 806,
+      "kind": "enemy",
+      "model": "Creature\\bear\\Bear.mdx",
+      "name": "Ironfur Bear",
+      "skins": [
+        "BearSkinDrkBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d3250",
+      "baked": null,
+      "display": 3250,
+      "entry": 807,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\OgreMage.mdx",
+      "name": "Gordunni Ogre-Mage",
+      "skins": [
+        "OgreSkinYellow",
+        "OgreMageSkin2Copper",
+        ""
+      ]
+    },
+    {
+      "asset": "d1076",
+      "baked": null,
+      "display": 1076,
+      "entry": 808,
+      "kind": "enemy",
+      "model": "Creature\\Wendigo\\Wendigo.mdx",
+      "name": "Feral Scar Yeti",
+      "skins": [
+        "WendigoSkinBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d10170",
+      "baked": null,
+      "display": 10170,
+      "entry": 809,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\OgreWarlord.mdx",
+      "name": "Gordunni Brute",
+      "skins": [
+        "OgreWarlordSkinGray",
+        "OgreWarlordSkinArmorGray",
+        ""
+      ]
+    },
+    {
+      "asset": "d2078",
+      "baked": null,
+      "display": 2078,
+      "entry": 810,
+      "kind": "enemy",
+      "model": "Creature\\Ent\\Ent.mdx",
+      "name": "Warpwood Treant",
+      "skins": [
+        "EntSkinDead",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d860",
+      "baked": null,
+      "display": 860,
+      "entry": 811,
+      "kind": "enemy",
+      "model": "Creature\\AncientProtector\\AncientProtector.mdx",
+      "name": "Ironbark Protector",
+      "skins": [
+        "AncientProtectorGreen",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11346",
+      "baked": null,
+      "display": 11346,
+      "entry": 890,
+      "kind": "boss",
+      "model": "Creature\\Satyr\\Satyr.mdx",
+      "name": "Zevrim Thornhoof",
+      "skins": [
+        "SatyrSkinGreen",
+        "SatyrSkinGreenAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d14416",
+      "baked": null,
+      "display": 14416,
+      "entry": 891,
+      "kind": "boss",
+      "model": "Creature\\Satyr\\Satyr.mdx",
+      "name": "Alzzin the Wildshaper",
+      "skins": [
+        "SatyrSkinGreen",
+        "SatyrSkinGreenAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d14383",
+      "baked": null,
+      "display": 14383,
+      "entry": 892,
+      "kind": "boss",
+      "model": "Creature\\AncientOfWar\\AncientofWar.mdx",
+      "name": "Tendris Warpwood",
+      "skins": [
+        "AncientofWarSkinDiseased",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d14173",
+      "baked": null,
+      "display": 14173,
+      "entry": 893,
+      "kind": "boss",
+      "model": "Creature\\voidterror\\VoidTerror.mdx",
+      "name": "Immol'thar",
+      "skins": [
+        "VoidTerrorSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11583",
+      "baked": null,
+      "display": 11583,
+      "entry": 894,
+      "kind": "boss",
+      "model": "Creature\\Ogre\\OgreWarlord.mdx",
+      "name": "King Gordok",
+      "skins": [
+        "OgreWarlordSkinBlack",
+        "OgreWarlordSkinArmorBlack",
+        ""
+      ]
+    },
+    {
+      "asset": "d337",
+      "baked": null,
+      "display": 337,
+      "entry": 900,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollWhelp.mdx",
+      "name": "Gurubashi Scout",
+      "skins": [
+        "TrollSkinJungleSplitSkullScout",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1959",
+      "baked": null,
+      "display": 1959,
+      "entry": 901,
+      "kind": "enemy",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Razzashi Raptor",
+      "skins": [
+        "RaptorSkinRed",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15191",
+      "baked": null,
+      "display": 15191,
+      "entry": 902,
+      "kind": "enemy",
+      "model": "Creature\\mobat\\Mobat.mdx",
+      "name": "Bloodseeker Bat",
+      "skins": [
+        "MobatSkinBlue01",
+        "MobatSkinBlue02",
+        "MobatSkinBlue03"
+      ]
+    },
+    {
+      "asset": "d314",
+      "baked": null,
+      "display": 314,
+      "entry": 903,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollJungleCaster.mdx",
+      "name": "Hakkari Shadowcaster",
+      "skins": [
+        "TrollSkinJungleBloodScalpCaster",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d316",
+      "baked": null,
+      "display": 316,
+      "entry": 904,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollMelee.mdx",
+      "name": "Gurubashi Axe Thrower",
+      "skins": [
+        "TrollSkinJungleSplitSkullMelee",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d599",
+      "baked": null,
+      "display": 599,
+      "entry": 905,
+      "kind": "enemy",
+      "model": "Creature\\Tiger\\Tiger.mdx",
+      "name": "Zulian Tiger",
+      "skins": [
+        "TigerSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d4312",
+      "baked": null,
+      "display": 4312,
+      "entry": 906,
+      "kind": "enemy",
+      "model": "Creature\\Serpent\\Serpent.mdx",
+      "name": "Razzashi Serpent",
+      "skins": [
+        "SerpantSkinPurple",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d317",
+      "baked": null,
+      "display": 317,
+      "entry": 907,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollJungleCaster.mdx",
+      "name": "Hakkari Witch Doctor",
+      "skins": [
+        "TrollSkinJungleSplitSkullCaster",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2699",
+      "baked": null,
+      "display": 2699,
+      "entry": 908,
+      "kind": "enemy",
+      "model": "Creature\\WindSerpent\\WindSerpent.mdx",
+      "name": "Son of Hakkar",
+      "skins": [
+        "WindSerpentSkinRed",
+        "WindSerpentWingSkinOarnge",
+        ""
+      ]
+    },
+    {
+      "asset": "d591",
+      "baked": null,
+      "display": 591,
+      "entry": 909,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollJungleBoss.mdx",
+      "name": "Gurubashi Berserker",
+      "skins": [
+        "TrollSkinJungleBloodScalpBoss",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d807",
+      "baked": null,
+      "display": 807,
+      "entry": 910,
+      "kind": "enemy",
+      "model": "Creature\\Crocodile\\Crocodile.mdx",
+      "name": "Zulian Crocolisk",
+      "skins": [
+        "CrocodileSkinSwamp",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d593",
+      "baked": null,
+      "display": 593,
+      "entry": 911,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollJungleBoss.mdx",
+      "name": "Gurubashi Champion",
+      "skins": [
+        "TrollSkinJungleSplitSkullBoss",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15219",
+      "baked": "aec35e201baf30187da96b90334418ac.blp",
+      "display": 15219,
+      "entry": 990,
+      "kind": "boss",
+      "model": "Character\\Troll\\Female\\TrollFemale.mdx",
+      "name": "High Priestess Jeklik",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15217",
+      "baked": "a743b545a100d7756aecf839f4d6879.blp",
+      "display": 15217,
+      "entry": 991,
+      "kind": "boss",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "High Priest Venoxis",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11288",
+      "baked": "299f26865c2c231f6f6936d6b3b3af4.blp",
+      "display": 11288,
+      "entry": 992,
+      "kind": "boss",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "Bloodlord Mandokir",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11311",
+      "baked": "340c456322a5cdce2eec2bb832c28765.blp",
+      "display": 11311,
+      "entry": 993,
+      "kind": "boss",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "Jin'do the Hexxer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15295",
+      "baked": null,
+      "display": 15295,
+      "entry": 994,
+      "kind": "boss",
+      "model": "Creature\\Hakkar\\Hakkar.mdx",
+      "name": "Hakkar the Soulflayer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d160",
+      "baked": null,
+      "display": 160,
+      "entry": 300,
+      "kind": "enemy",
+      "model": "Creature\\Troglodyte\\Troglodyte.mdx",
+      "name": "Trogg Tunneler",
+      "skins": [
+        "TroglodyteSkinNormal",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d776",
+      "baked": null,
+      "display": 776,
+      "entry": 301,
+      "kind": "enemy",
+      "model": "Creature\\Wolf\\Wolf.mdx",
+      "name": "Starving Frostwolf",
+      "skins": [
+        "WolfSkinArctic",
+        "WolfSkinArcticAlpha",
+        ""
+      ]
+    },
+    {
+      "asset": "d665",
+      "baked": null,
+      "display": 665,
+      "entry": 308,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollMelee.mdx",
+      "name": "Winterax Axe Thrower",
+      "skins": [
+        "TrollSkinArcticFrostManeMelee",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d33",
+      "baked": null,
+      "display": 33,
+      "entry": 303,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\OgreMage.mdx",
+      "name": "Crushridge Ogre Mage",
+      "skins": [
+        "OgreSkinBeige",
+        "OgreMageSkin2",
+        ""
+      ]
+    },
+    {
+      "asset": "d927",
+      "baked": null,
+      "display": 927,
+      "entry": 302,
+      "kind": "enemy",
+      "model": "Creature\\Wendigo\\Wendigo.mdx",
+      "name": "Snowfall Wendigo",
+      "skins": [
+        "WendigoSkinWhite",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d415",
+      "baked": null,
+      "display": 415,
+      "entry": 304,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Crushridge Brute",
+      "skins": [
+        "OgreSkinYellow",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d110",
+      "baked": null,
+      "display": 110,
+      "entry": 305,
+      "kind": "enemy",
+      "model": "Creature\\WaterElemental\\WaterElemental.mdx",
+      "name": "Ice Revenant",
+      "skins": [
+        "WaterElementalSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d661",
+      "baked": null,
+      "display": 661,
+      "entry": 309,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\Troll.mdx",
+      "name": "Winterax Shadow Hunter",
+      "skins": [
+        "TrollSkinArcticFrostManeCaster",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d868",
+      "baked": null,
+      "display": 868,
+      "entry": 310,
+      "kind": "enemy",
+      "model": "Creature\\Wolf\\Wolf.mdx",
+      "name": "Frostwolf Packleader",
+      "skins": [
+        "WolfSkinArcticAlpha",
+        "WolfSkinArctic",
+        ""
+      ]
+    },
+    {
+      "asset": "d3208",
+      "baked": null,
+      "display": 3208,
+      "entry": 306,
+      "kind": "enemy",
+      "model": "Creature\\Wendigo\\Wendigo.mdx",
+      "name": "Alterac Yeti Lord",
+      "skins": [
+        "WendigoSkinGrey",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1918",
+      "baked": null,
+      "display": 1918,
+      "entry": 307,
+      "kind": "enemy",
+      "model": "Creature\\MountainGiant\\MountainGiant.mdx",
+      "name": "Mountain Giant",
+      "skins": [
+        "MountainGiant",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d13989",
+      "baked": null,
+      "display": 13989,
+      "entry": 311,
+      "kind": "enemy",
+      "model": "Creature\\Troll\\TrollForestBoss.mdx",
+      "name": "Winterax Warlord",
+      "skins": [
+        "TrollSkinArcticFrostManeBoss",
+        "TrollSkinArcticFrostManeBoss",
+        ""
+      ]
+    },
+    {
+      "asset": "d10169",
+      "baked": null,
+      "display": 10169,
+      "entry": 390,
+      "kind": "boss",
+      "model": "Creature\\Ogre\\OgreWarlord.mdx",
+      "name": "Korrak the Bloodrager",
+      "skins": [
+        "OgreWarlordSkinBlack",
+        "OgreWarlordSkinArmorBlack",
+        ""
+      ]
+    },
+    {
+      "asset": "d14884",
+      "baked": null,
+      "display": 14884,
+      "entry": 391,
+      "kind": "boss",
+      "model": "Creature\\AncientOfWar\\AncientofWar.mdx",
+      "name": "Ivus the Forest Lord",
+      "skins": [
+        "AncientofWarSkinSnow",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d110",
+      "baked": null,
+      "display": 110,
+      "entry": 392,
+      "kind": "boss",
+      "model": "Creature\\WaterElemental\\WaterElemental.mdx",
+      "name": "Lokholar the Ice Lord",
+      "skins": [
+        "WaterElementalSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d6209",
+      "baked": null,
+      "display": 6209,
+      "entry": 394,
+      "kind": "boss",
+      "model": "Creature\\MountainGiant\\MountainGiant.mdx",
+      "name": "Glacius the Frozen Titan",
+      "skins": [
+        "TundraGiant",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11460",
+      "baked": null,
+      "display": 11460,
+      "entry": 393,
+      "kind": "boss",
+      "model": "Creature\\Dragon\\DragonAzurgoz.mdx",
+      "name": "Azuregos",
+      "skins": [
+        "DragonSkin1Azuregoz",
+        "DragonSkin2Azuregoz",
+        "DragonSkin3Azuregoz"
+      ]
+    },
+    {
+      "asset": "d8673",
+      "baked": "db24e409b7bc794ff565782c8dd57fcf.blp",
+      "display": 8673,
+      "entry": 1000,
+      "kind": "enemy",
+      "model": "Character\\Dwarf\\Male\\DwarfMale.mdx",
+      "name": "Dark Iron Slaver",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d387",
+      "baked": null,
+      "display": 387,
+      "entry": 1001,
+      "kind": "enemy",
+      "model": "Creature\\DragonWhelp\\DragonWhelp.mdx",
+      "name": "Black Broodling",
+      "skins": [
+        "DragonWhelpSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8699",
+      "baked": "3a3c0de834b7dde64fe0c32b267420f.blp",
+      "display": 8699,
+      "entry": 1002,
+      "kind": "enemy",
+      "model": "Character\\Orc\\Male\\OrcMale.mdx",
+      "name": "Blackrock Grunt",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8799",
+      "baked": "d8bb94fb9b12aa6f65baf1ef2899876.blp",
+      "display": 8799,
+      "entry": 1003,
+      "kind": "enemy",
+      "model": "Character\\Dwarf\\Male\\DwarfMale.mdx",
+      "name": "Dark Iron Geomancer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8681",
+      "baked": "41cd72f768a504827ad4bc13dd9858b6.blp",
+      "display": 8681,
+      "entry": 1004,
+      "kind": "enemy",
+      "model": "Character\\Dwarf\\Male\\DwarfMale.mdx",
+      "name": "Anvilrage Guardsman",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1070",
+      "baked": null,
+      "display": 1070,
+      "entry": 1005,
+      "kind": "enemy",
+      "model": "Creature\\FireElemental\\FireElemental.mdx",
+      "name": "Blazing Elemental",
+      "skins": [
+        "FireElementalSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d10707",
+      "baked": null,
+      "display": 10707,
+      "entry": 1006,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Firegut Ogre",
+      "skins": [
+        "OgreSkinRed",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8249",
+      "baked": null,
+      "display": 8249,
+      "entry": 1007,
+      "kind": "enemy",
+      "model": "Creature\\DragonSpawnCaster\\DragonSpawnCaster.mdx",
+      "name": "Black Wyrmkin",
+      "skins": [
+        "DragonSpawnCasterSkinBlack",
+        "DragonSpawnCasterBodySkinBlack",
+        ""
+      ]
+    },
+    {
+      "asset": "d8686",
+      "baked": "cc0a1a66d30e2c803e9036afd30ea9d7.blp",
+      "display": 8686,
+      "entry": 1008,
+      "kind": "enemy",
+      "model": "Character\\Dwarf\\Male\\DwarfMale.mdx",
+      "name": "Fireguard Destroyer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d10193",
+      "baked": null,
+      "display": 10193,
+      "entry": 1009,
+      "kind": "enemy",
+      "model": "Creature\\FelBeast\\FelBeast.mdx",
+      "name": "Core Hound",
+      "skins": [
+        "FelBeastSkinRedBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d6377",
+      "baked": null,
+      "display": 6377,
+      "entry": 1010,
+      "kind": "enemy",
+      "model": "Creature\\Drake\\Drake.mdx",
+      "name": "Black Drake",
+      "skins": [
+        "DrakeSkinBlack1",
+        "DrakeSkinBlack2",
+        "DrakeSkinBlack3"
+      ]
+    },
+    {
+      "asset": "d12162",
+      "baked": null,
+      "display": 12162,
+      "entry": 1011,
+      "kind": "enemy",
+      "model": "Creature\\MountainGiant\\MountainGiant.mdx",
+      "name": "Molten Giant",
+      "skins": [
+        "MoltenGiant",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8756",
+      "baked": "14e404c1cafa7a8eaa029e0f765b416.blp",
+      "display": 8756,
+      "entry": 1090,
+      "kind": "boss",
+      "model": "Character\\Dwarf\\Male\\DwarfMale.mdx",
+      "name": "General Angerforge",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d9778",
+      "baked": "b47b903a7cb76d7ac405cdf8fac55e82.blp",
+      "display": 9778,
+      "entry": 1091,
+      "kind": "boss",
+      "model": "Character\\Orc\\Male\\OrcMale.mdx",
+      "name": "Warchief Rend Blackhand",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8807",
+      "baked": "94020810493063018a761e662c3cef61.blp",
+      "display": 8807,
+      "entry": 1092,
+      "kind": "boss",
+      "model": "Character\\Dwarf\\Male\\DwarfMale.mdx",
+      "name": "Emperor Dagran Thaurissan",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d12029",
+      "baked": null,
+      "display": 12029,
+      "entry": 1093,
+      "kind": "boss",
+      "model": "Creature\\Salamander\\SalamanderMale.mdx",
+      "name": "Majordomo Executus",
+      "skins": [
+        "SalamanderMaleSkinBlack",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11380",
+      "baked": null,
+      "display": 11380,
+      "entry": 1094,
+      "kind": "boss",
+      "model": "Creature\\Dragon\\DragonNefarian.mdx",
+      "name": "Nefarian",
+      "skins": [
+        "DragonNefarian1",
+        "DragonNefarian2",
+        "DragonNefarian3"
+      ]
+    },
+    {
+      "asset": "d11143",
+      "baked": null,
+      "display": 11143,
+      "entry": 1100,
+      "kind": "enemy",
+      "model": "Creature\\SILITHIDSCARAB\\SilithidScarab.mdx",
+      "name": "Silithid Swarmer",
+      "skins": [
+        "SilithidScarabSkinTan",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11097",
+      "baked": null,
+      "display": 11097,
+      "entry": 1101,
+      "kind": "enemy",
+      "model": "Creature\\SILITHID\\Silithid.mdx",
+      "name": "Silithid Creeper",
+      "skins": [
+        "AurokkSkinTan",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15335",
+      "baked": null,
+      "display": 15335,
+      "entry": 1102,
+      "kind": "enemy",
+      "model": "Creature\\Silithidwasp\\SilithidWasp.mdx",
+      "name": "Hive'Zara Stinger",
+      "skins": [
+        "SilithidFlyerSkinTan",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2870",
+      "baked": "ea7199d431c13ec5616160ee1414eaa6.blp",
+      "display": 2870,
+      "entry": 1103,
+      "kind": "enemy",
+      "model": "Character\\Orc\\Male\\OrcMale.mdx",
+      "name": "Twilight Geolord",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1063",
+      "baked": null,
+      "display": 1063,
+      "entry": 1104,
+      "kind": "enemy",
+      "model": "Creature\\QuirajGladiator\\QuirajGladiator.mdx",
+      "name": "Qiraji Gladiator",
+      "skins": [
+        "QuirajGladiatorSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2485",
+      "baked": null,
+      "display": 2485,
+      "entry": 1105,
+      "kind": "enemy",
+      "model": "Creature\\Scorpion\\Scorpion.mdx",
+      "name": "Stonelash Scorpid",
+      "skins": [
+        "ScorpionskinBeige",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11099",
+      "baked": null,
+      "display": 11099,
+      "entry": 1106,
+      "kind": "enemy",
+      "model": "Creature\\SilithidTank\\SilithidTank.mdx",
+      "name": "Silithid Ravager",
+      "skins": [
+        "SilithidTankSkinTan",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1064",
+      "baked": null,
+      "display": 1064,
+      "entry": 1107,
+      "kind": "enemy",
+      "model": "Creature\\QuirajProphet\\QuirajProphet.mdx",
+      "name": "Qiraji Mindslayer",
+      "skins": [
+        "QuirajProphetSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5327",
+      "baked": null,
+      "display": 5327,
+      "entry": 1108,
+      "kind": "enemy",
+      "model": "Creature\\AirElemental\\AirElemental.mdx",
+      "name": "Dust Stormer",
+      "skins": [
+        "AirElementalSkinBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1062",
+      "baked": null,
+      "display": 1062,
+      "entry": 1109,
+      "kind": "enemy",
+      "model": "Creature\\QuirajBattleguard\\BattleGuard.mdx",
+      "name": "Qiraji Champion",
+      "skins": [
+        "BattleguardSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5965",
+      "baked": null,
+      "display": 5965,
+      "entry": 1110,
+      "kind": "enemy",
+      "model": "Creature\\Anubisath\\Anubisath.mdx",
+      "name": "Anubisath Sentinel",
+      "skins": [
+        "AnubisathSkin01",
+        "AnubisathSkin02",
+        "AnubisathSkin01"
+      ]
+    },
+    {
+      "asset": "d11914",
+      "baked": null,
+      "display": 11914,
+      "entry": 1111,
+      "kind": "enemy",
+      "model": "Creature\\ObsidianDestroyer\\ObsidianDestroyer.mdx",
+      "name": "Obsidian Destroyer",
+      "skins": [
+        "ObsidianDestroyerSkin",
+        "ObsidianDestroyerWingSkin",
+        ""
+      ]
+    },
+    {
+      "asset": "d15742",
+      "baked": null,
+      "display": 15742,
+      "entry": 1190,
+      "kind": "boss",
+      "model": "Creature\\SandReaver\\SandReaver.mdx",
+      "name": "Kurinnaxx",
+      "skins": [
+        "SandReaverSkin_Orange2",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15376",
+      "baked": null,
+      "display": 15376,
+      "entry": 1191,
+      "kind": "boss",
+      "model": "Creature\\QuirajGladiator\\QuirajGladiator.mdx",
+      "name": "General Rajaxx",
+      "skins": [
+        "QuirajGladiator_Blue",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15739",
+      "baked": null,
+      "display": 15739,
+      "entry": 1192,
+      "kind": "boss",
+      "model": "Creature\\SilithidWaspBoss\\SilithidWaspBoss.mdx",
+      "name": "Princess Huhuran",
+      "skins": [
+        "SilithidWaspBossSkin5",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15432",
+      "baked": null,
+      "display": 15432,
+      "entry": 1193,
+      "kind": "boss",
+      "model": "Creature\\Horisath\\Horisath.mdx",
+      "name": "Ossirian the Unscarred",
+      "skins": [
+        "HorisathSkin01",
+        "HorisathSkin02",
+        ""
+      ]
+    },
+    {
+      "asset": "d15556",
+      "baked": null,
+      "display": 15556,
+      "entry": 1194,
+      "kind": "boss",
+      "model": "Creature\\EyeOfKathune\\EyeofKathune.mdx",
+      "name": "C'Thun",
+      "skins": [
+        "EyeofKathunePurple",
+        "eyeReflect",
+        "eyeglowblack"
+      ]
+    },
+    {
+      "asset": "d5290",
+      "baked": null,
+      "display": 5290,
+      "entry": 1200,
+      "kind": "enemy",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Ravasaur Runner",
+      "skins": [
+        "RaptorSkinMottledBlueGreen",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5242",
+      "baked": null,
+      "display": 5242,
+      "entry": 1201,
+      "kind": "enemy",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Young Ravasaur",
+      "skins": [
+        "RaptorSkinViolet",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8410",
+      "baked": null,
+      "display": 8410,
+      "entry": 1202,
+      "kind": "enemy",
+      "model": "Creature\\Pterrordax\\Pterrordax.mdx",
+      "name": "Fledgling Pterrordax",
+      "skins": [
+        "PterrordaxSkinGray",
+        "PterrordaxWingSkinGray",
+        ""
+      ]
+    },
+    {
+      "asset": "d11088",
+      "baked": null,
+      "display": 11088,
+      "entry": 1203,
+      "kind": "enemy",
+      "model": "Creature\\Silithidwasp\\SilithidWasp.mdx",
+      "name": "Gorishi Stinger",
+      "skins": [
+        "SilithidFlyerSkinYellow",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11634",
+      "baked": null,
+      "display": 11634,
+      "entry": 1204,
+      "kind": "enemy",
+      "model": "Creature\\Lasher\\Lasher.mdx",
+      "name": "Bloodpetal Lasher",
+      "skins": [
+        "LasherSkinViolet",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5294",
+      "baked": null,
+      "display": 5294,
+      "entry": 1205,
+      "kind": "enemy",
+      "model": "Creature\\Gorilla\\Gorilla.mdx",
+      "name": "Un'Goro Stomper",
+      "skins": [
+        "GorillaSkinSilver",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5291",
+      "baked": null,
+      "display": 5291,
+      "entry": 1206,
+      "kind": "enemy",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Venomhide Ravasaur",
+      "skins": [
+        "RidingRaptorSkinObsidian",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8411",
+      "baked": null,
+      "display": 8411,
+      "entry": 1207,
+      "kind": "enemy",
+      "model": "Creature\\Pterrordax\\Pterrordax.mdx",
+      "name": "Frenzied Pterrordax",
+      "skins": [
+        "PterrordaxSkinGray",
+        "PterrordaxWingSkinGray",
+        ""
+      ]
+    },
+    {
+      "asset": "d8512",
+      "baked": null,
+      "display": 8512,
+      "entry": 1208,
+      "kind": "enemy",
+      "model": "Creature\\Diemetradon\\Diemetradon.mdx",
+      "name": "Elder Diemetradon",
+      "skins": [
+        "DiemetradonSkinYellow",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5292",
+      "baked": null,
+      "display": 5292,
+      "entry": 1209,
+      "kind": "enemy",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Ravasaur Hunter",
+      "skins": [
+        "RaptorSkinViolet",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8129",
+      "baked": null,
+      "display": 8129,
+      "entry": 1210,
+      "kind": "enemy",
+      "model": "Creature\\Gorilla\\Gorilla.mdx",
+      "name": "Un'Goro Thunderer",
+      "skins": [
+        "GorillaSkinWhite",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5239",
+      "baked": null,
+      "display": 5239,
+      "entry": 1211,
+      "kind": "enemy",
+      "model": "Creature\\TRex\\trex.mdx",
+      "name": "Devilsaur",
+      "skins": [
+        "TrexskinWhite",
+        "TrexskinWhite_Alpha",
+        "TrexskinWhite"
+      ]
+    },
+    {
+      "asset": "d11319",
+      "baked": null,
+      "display": 11319,
+      "entry": 1290,
+      "kind": "boss",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Ravasaur Matriarch",
+      "skins": [
+        "RaptorSkinMottledDarkGreen",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d8129",
+      "baked": null,
+      "display": 8129,
+      "entry": 1291,
+      "kind": "boss",
+      "model": "Creature\\Gorilla\\Gorilla.mdx",
+      "name": "Uhk'loc",
+      "skins": [
+        "GorillaSkinWhite",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d11318",
+      "baked": null,
+      "display": 11318,
+      "entry": 1292,
+      "kind": "boss",
+      "model": "Creature\\Raptor\\Raptor.mdx",
+      "name": "Lar'korwi",
+      "skins": [
+        "RaptorSkinMottledBlueGreen",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5240",
+      "baked": null,
+      "display": 5240,
+      "entry": 1293,
+      "kind": "boss",
+      "model": "Creature\\TRex\\trex.mdx",
+      "name": "Tyrant Devilsaur",
+      "skins": [
+        "TrexskinRed",
+        "TrexskinRed_Alpha",
+        "TrexskinRed"
+      ]
+    },
+    {
+      "asset": "d5305",
+      "baked": null,
+      "display": 5305,
+      "entry": 1294,
+      "kind": "boss",
+      "model": "Creature\\TRex\\trex.mdx",
+      "name": "King Mosh",
+      "skins": [
+        "TrexskinRed",
+        "TrexskinRed_Alpha",
+        "TrexskinRed"
+      ]
+    },
+    {
+      "asset": "d3986",
+      "baked": "59faa6bdd238892fcd4dd4aeb3dc5da.blp",
+      "display": 3986,
+      "entry": 1500,
+      "kind": "enemy",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "Witherbark Troll",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1103",
+      "baked": null,
+      "display": 1103,
+      "entry": 1501,
+      "kind": "enemy",
+      "model": "Creature\\Tarantula\\Tarantula.mdx",
+      "name": "Plains Creeper",
+      "skins": [
+        "TarantulaSkinGrey",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1105",
+      "baked": null,
+      "display": 1105,
+      "entry": 1502,
+      "kind": "enemy",
+      "model": "Creature\\CarrionBird\\CarrionBird.mdx",
+      "name": "Mesa Buzzard",
+      "skins": [
+        "CarrionBirdSkin",
+        "CarrionBirdWing",
+        ""
+      ]
+    },
+    {
+      "asset": "d3993",
+      "baked": "40735a04b87cd6353b13d44abc614e6.blp",
+      "display": 3993,
+      "entry": 1503,
+      "kind": "enemy",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "Witherbark Shadowcaster",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d3987",
+      "baked": "4b8c48ebf45ace8d32b1878f315d4b24.blp",
+      "display": 3987,
+      "entry": 1504,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Syndicate Mercenary",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1052",
+      "baked": null,
+      "display": 1052,
+      "entry": 1505,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Boulderfist Ogre",
+      "skins": [
+        "OgreSkinGray",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1056",
+      "baked": null,
+      "display": 1056,
+      "entry": 1506,
+      "kind": "enemy",
+      "model": "Creature\\Tiger\\Tiger.mdx",
+      "name": "Feral Mountain Lion",
+      "skins": [
+        "TigerSkinBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d6170",
+      "baked": null,
+      "display": 6170,
+      "entry": 1507,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\OgreMage.mdx",
+      "name": "Boulderfist Magus",
+      "skins": [
+        "OgreSkinYellow",
+        "OgreMageSkin2White",
+        ""
+      ]
+    },
+    {
+      "asset": "d3193",
+      "baked": null,
+      "display": 3193,
+      "entry": 1508,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Boulderfist Brute",
+      "skins": [
+        "OgreSkinGray",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d3995",
+      "baked": "c91d78d4da40a060cea5ed59948c3d4c.blp",
+      "display": 3995,
+      "entry": 1509,
+      "kind": "enemy",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "Witherbark Headhunter",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d9587",
+      "baked": null,
+      "display": 9587,
+      "entry": 1510,
+      "kind": "enemy",
+      "model": "Creature\\ElementalEarth\\ElementalEarth.mdx",
+      "name": "Rumbling Exile",
+      "skins": [
+        "RockElementalSkinBrownBrown",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d1054",
+      "baked": null,
+      "display": 1054,
+      "entry": 1511,
+      "kind": "enemy",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Boulderfist Enforcer",
+      "skins": [
+        "OgreSkinGray",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d448",
+      "baked": null,
+      "display": 448,
+      "entry": 1590,
+      "kind": "boss",
+      "model": "Creature\\Ogre\\Ogre.mdx",
+      "name": "Kovork",
+      "skins": [
+        "OgreSkinGray",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d3995",
+      "baked": "c91d78d4da40a060cea5ed59948c3d4c.blp",
+      "display": 3995,
+      "entry": 1591,
+      "kind": "boss",
+      "model": "Character\\Troll\\Male\\TrollMale.mdx",
+      "name": "Nimar the Slayer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d4018",
+      "baked": "aef9e35b15737832feab02ccd9dc1e1.blp",
+      "display": 4018,
+      "entry": 1592,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Marez Cowl",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2051",
+      "baked": "20ebc8cacc7606df74716bd8e0b95088.blp",
+      "display": 2051,
+      "entry": 1593,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Lord Falconcrest",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d6572",
+      "baked": "8255e2991c167456d1a5a4866f06c9d1.blp",
+      "display": 6572,
+      "entry": 1594,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Lord Aliden Perenolde",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2603",
+      "baked": "ce5e299c7e16de3360408bd3db98d87.blp",
+      "display": 2603,
+      "entry": 1300,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Monk",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2709",
+      "baked": null,
+      "display": 2709,
+      "entry": 1301,
+      "kind": "enemy",
+      "model": "Creature\\Hyena\\Hyena.mdx",
+      "name": "Scarlet Tracking Hound",
+      "skins": [
+        "HyenaSkinRed",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2516",
+      "baked": "e7b3cc064849ae046ebc46d2942f6b.blp",
+      "display": 2516,
+      "entry": 1302,
+      "kind": "enemy",
+      "model": "Character\\Human\\Female\\HumanFemale.mdx",
+      "name": "Scarlet Scout",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5726",
+      "baked": "ac101795e366462779869d6def7fc4ca.blp",
+      "display": 5726,
+      "entry": 1303,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Adept",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2499",
+      "baked": "690f5c5e1529c868d075d076cedb2e77.blp",
+      "display": 2499,
+      "entry": 1304,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Centurion",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2462",
+      "baked": "653551aa236c6c2811c3d84f6e50798a.blp",
+      "display": 2462,
+      "entry": 1305,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Defender",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2463",
+      "baked": "b762ed0e73b69159cd5d4d82fb66a06.blp",
+      "display": 2463,
+      "entry": 1306,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Gallant",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2525",
+      "baked": "84df706f70078df67cb8183d6400ba8d.blp",
+      "display": 2525,
+      "entry": 1307,
+      "kind": "enemy",
+      "model": "Character\\Human\\Female\\HumanFemale.mdx",
+      "name": "Scarlet Wizard",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2476",
+      "baked": "f761421490d01d94ab1ebd8ad0a3f4d4.blp",
+      "display": 2476,
+      "entry": 1308,
+      "kind": "enemy",
+      "model": "Character\\Human\\Female\\HumanFemale.mdx",
+      "name": "Scarlet Protector",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2514",
+      "baked": "18cab83339689de28af8c109da7fb6e1.blp",
+      "display": 2514,
+      "entry": 1309,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Myrmidon",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2460",
+      "baked": "442001a21935fc3a6ad3c6807bc7e172.blp",
+      "display": 2460,
+      "entry": 1310,
+      "kind": "enemy",
+      "model": "Character\\Human\\Female\\HumanFemale.mdx",
+      "name": "Scarlet Champion",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2492",
+      "baked": "4ec3da88ea4d836d1cef2e6ec3ad3831.blp",
+      "display": 2492,
+      "entry": 1311,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Abbot",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2040",
+      "baked": "93785ec85f4418a5c8b5d3331dac4235.blp",
+      "display": 2040,
+      "entry": 1390,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Houndmaster Loksey",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d5266",
+      "baked": "e3e2aeb6eb342552d61f2237ce710ddb.blp",
+      "display": 5266,
+      "entry": 1391,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Arcanist Doan",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2041",
+      "baked": "2bf9e49440aea48afa5c2c0f2cfa51e.blp",
+      "display": 2041,
+      "entry": 1392,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Herod",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2042",
+      "baked": "2615ea18ee2e5ce2e1891a02652f2038.blp",
+      "display": 2042,
+      "entry": 1393,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Scarlet Commander Mograine",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d2043",
+      "baked": "94a876a6c4d7110a1ba1193d5bf58b6.blp",
+      "display": 2043,
+      "entry": 1394,
+      "kind": "boss",
+      "model": "Character\\Human\\Female\\HumanFemale.mdx",
+      "name": "High Inquisitor Whitemane",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d14708",
+      "baked": null,
+      "display": 14708,
+      "entry": 1400,
+      "kind": "enemy",
+      "model": "Creature\\Ghoul\\Ghoul.mdx",
+      "name": "Plagued Ghoul",
+      "skins": [
+        "GhoulSkinRed",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15937",
+      "baked": null,
+      "display": 15937,
+      "entry": 1401,
+      "kind": "enemy",
+      "model": "Creature\\MineSpider\\MineSpider.mdx",
+      "name": "Dread Creeper",
+      "skins": [
+        "MineSpiderSkinViolet",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d7869",
+      "baked": null,
+      "display": 7869,
+      "entry": 1402,
+      "kind": "enemy",
+      "model": "Creature\\SkeletonNaked\\SkeletonNaked.mdx",
+      "name": "Soldier of the Frozen Wastes",
+      "skins": [
+        "SkeletonNakedSkin_White",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16594",
+      "baked": "32d6f50614f882282d5fffa2a3f4687c.blp",
+      "display": 16594,
+      "entry": 1403,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Naxxramas Cultist",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15938",
+      "baked": null,
+      "display": 15938,
+      "entry": 1404,
+      "kind": "enemy",
+      "model": "Creature\\MineSpider\\MineSpider.mdx",
+      "name": "Carrion Spinner",
+      "skins": [
+        "MineSpiderSkinOlive",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15958",
+      "baked": null,
+      "display": 15958,
+      "entry": 1405,
+      "kind": "enemy",
+      "model": "Creature\\FleshGolem\\FleshGolem.mdx",
+      "name": "Bile Retcher",
+      "skins": [
+        "FleshGolemSkinBlack1",
+        "FleshGolemSkinPurple2",
+        ""
+      ]
+    },
+    {
+      "asset": "d14710",
+      "baked": null,
+      "display": 14710,
+      "entry": 1406,
+      "kind": "enemy",
+      "model": "Creature\\Gargoyle\\Gargoyle.mdx",
+      "name": "Stoneskin Gargoyle",
+      "skins": [
+        "GargoyleSkinBlue_01",
+        "GargoyleSkinBlue_02",
+        ""
+      ]
+    },
+    {
+      "asset": "d16598",
+      "baked": "ec3aa79660bd52ec9c24af9df2bf9e3.blp",
+      "display": 16598,
+      "entry": 1407,
+      "kind": "enemy",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Naxxramas Acolyte",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16175",
+      "baked": null,
+      "display": 16175,
+      "entry": 1408,
+      "kind": "enemy",
+      "model": "Creature\\Wight\\Wight.mdx",
+      "name": "Living Monstrosity",
+      "skins": [
+        "WightSkinYellow",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16178",
+      "baked": null,
+      "display": 16178,
+      "entry": 1409,
+      "kind": "enemy",
+      "model": "Creature\\Banshee\\Banshee.mdx",
+      "name": "Soul Weaver",
+      "skins": [
+        "BansheeSkinGreen",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d12818",
+      "baked": null,
+      "display": 12818,
+      "entry": 1410,
+      "kind": "enemy",
+      "model": "Creature\\FleshGolem\\FleshGolem.mdx",
+      "name": "Unstoppable Abomination",
+      "skins": [
+        "FleshGolemSkin1",
+        "FleshGolemSkin2",
+        ""
+      ]
+    },
+    {
+      "asset": "d16586",
+      "baked": null,
+      "display": 16586,
+      "entry": 1411,
+      "kind": "enemy",
+      "model": "Creature\\CryptLord\\CryptLord.mdx",
+      "name": "Guardian of Icecrown",
+      "skins": [
+        "CryptLordSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15931",
+      "baked": null,
+      "display": 15931,
+      "entry": 1490,
+      "kind": "boss",
+      "model": "Creature\\CryptLord\\CryptLord.mdx",
+      "name": "Anub'Rekhan",
+      "skins": [
+        "CryptLordSkin",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16590",
+      "baked": "989fe28ee3d4fd27a797b6ff945a2ed3.blp",
+      "display": 16590,
+      "entry": 1491,
+      "kind": "boss",
+      "model": "Character\\Human\\Male\\HumanMale.mdx",
+      "name": "Noth the Plaguebringer",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16174",
+      "baked": null,
+      "display": 16174,
+      "entry": 1492,
+      "kind": "boss",
+      "model": "Creature\\FleshGolem\\FleshGolem.mdx",
+      "name": "Patchwerk",
+      "skins": [
+        "FleshGolemSkinGray1",
+        "FleshGolemSkinGray2",
+        ""
+      ]
+    },
+    {
+      "asset": "d16033",
+      "baked": null,
+      "display": 16033,
+      "entry": 1493,
+      "kind": "boss",
+      "model": "Creature\\FrostWurm\\FrostWurm.mdx",
+      "name": "Sapphiron",
+      "skins": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d15945",
+      "baked": null,
+      "display": 15945,
+      "entry": 1494,
+      "kind": "boss",
+      "model": "Creature\\KelThuzad\\KelThuzad.mdx",
+      "name": "Kel'Thuzad",
+      "skins": [
+        "Kel'Thuzad",
+        "",
+        ""
+      ]
+    },
+    {
+      "asset": "d16139",
+      "baked": null,
+      "display": 16139,
+      "entry": 1412,
+      "kind": "enemy",
+      "model": "Creature\\MOUNTEDDEATHKNIGHT\\MountedDeathKnight_Mograine.mdx",
+      "name": "Highlord Mograine",
+      "skins": [
+        "MountedDeathKnightGoldRed_01",
+        "MountedDeathKnightGoldRed_02",
+        "MountedDeathKnightGoldRed_03"
+      ]
+    },
+    {
+      "asset": "d16155",
+      "baked": null,
+      "display": 16155,
+      "entry": 1413,
+      "kind": "enemy",
+      "model": "Creature\\MOUNTEDDEATHKNIGHT\\MountedDeathKnight_Korthazz.mdx",
+      "name": "Thane Korth'azz",
+      "skins": [
+        "MountedDeathKnightGreenGold_01",
+        "MountedDeathKnightGreenGold_02",
+        "MountedDeathKnightGreenGold_03"
+      ]
+    },
+    {
+      "asset": "d16153",
+      "baked": null,
+      "display": 16153,
+      "entry": 1414,
+      "kind": "enemy",
+      "model": "Creature\\MOUNTEDDEATHKNIGHT\\MountedDeathKnight_Blaumeux.mdx",
+      "name": "Lady Blaumeux",
+      "skins": [
+        "MountedDeathKnightDarkBlueBlack_01",
+        "MountedDeathKnightDarkBlueBlack_02",
+        "MountedDeathKnightDarkBlueBlack_03"
+      ]
+    },
+    {
+      "asset": "d16154",
+      "baked": null,
+      "display": 16154,
+      "entry": 1415,
+      "kind": "enemy",
+      "model": "Creature\\MOUNTEDDEATHKNIGHT\\MountedDeathKnight_Zeliek.mdx",
+      "name": "Sir Zeliek",
+      "skins": [
+        "MountedDeathKnightWhite_01",
+        "MountedDeathKnightWhite_02",
+        "MountedDeathKnightWhite_03"
+      ]
+    }
+  ],
+  "failures": [],
+  "omittedMaterialPasses": [],
+  "source": "Local native creature definitions / CreatureDisplayInfo, CreatureModelData and model textures; static renders"
+}

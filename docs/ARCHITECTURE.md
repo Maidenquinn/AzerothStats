@@ -1,5 +1,15 @@
 # Architecture and junior developer walkthrough
 
+## V2 branch additions
+
+The common schema-1 ledger and all V1 modules remain authoritative. `V2Data`
+validates a separate plain-data namespace and owns transactional writes, bounded
+retention and per-observation removal. `V2Observe` consumes verified native
+packet notifications; `V2Views` builds read-only models and centralizes units;
+`V2Personal` owns local notes/goals; `V2UI` reuses 11200 widgets for navigation,
+point plots and independent dialogs. They load before Core initializes the addon.
+See [V2 status](../design/v2/RUNTIME-STATUS.md) for limits and remaining gates.
+
 ## Load order and responsibilities
 
 The TOC is executable load order. Modules extend one `AzerothStats` table; no loader/download mechanism is used.
@@ -44,3 +54,29 @@ Favorites protect records through a temporary run-ID set. View indexes are tempo
 ## Future changes
 
 Keep collection, definitions, persistence and rendering separate. New counters need availability/provenance and bounds before a UI number. RSE1 import stays excluded: a future parser should produce a versioned plain-data DTO, validate schema, require explicit action and use idempotent import tracking. No unused importer hook remains in this runtime.
+
+The V2 summary composition is separated from collection: `V2Summary.lua` builds
+read-only home/report models and reversible section identities. `V2SummaryUI.lua`
+positions reusable owned panels; the shared bounded graph pool is reused rather
+than allocating frames per refresh. Ready identity is transient, with no run ID,
+ledger write or synthetic chart. Notes are edited in an independent input dialog
+and saved only through the bounded `V2SetNote` transaction.
+
+## Native screen overlay registration (V2 dev.9)
+
+`UI.lua:RegisterScreenOverlay` calls optional `AZS_SetOnTopOfScreens(name, true)`
+for eleven fixed, named Stats roots while effectively visible. Visibility of
+ancestors is checked too; closing a root unregisters it. UI actions and the
+existing one-second sampler reconcile registrations with no repeated writes
+when visibility stays unchanged. The client
+owns the separate level-up/treasure rendering and routes clicks to registered
+roots and descendants. Normal frame strata still order our windows/menus.
+The registration is session-only and does not alter saved statistics. Missing or
+throwing APIs fall back to normal strata. UIParent, shared GameTooltip, minimap
+buttons, preview roots and third-party frames are excluded.
+
+Evidence: local Azerloot/core/Azerloot.lua BuildTracker uses this API for the
+Souhaits/Wishlist panel; extracted client API contract in
+fieldkit-audit/client-20261031/embedded-api.lua, lines 412–446, confirms global
+names and descendant rendering. AZSSpellMeter itself uses conventional HIGH
+strata and is not the panel identified in the supplied screenshot.
