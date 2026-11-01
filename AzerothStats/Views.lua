@@ -135,27 +135,32 @@ end
 --- Build global/class cards and coverage rows from already-accounted data.
 local function overview(model, group)
     for _, entry in ipairs({
-        { "Observed runs", group.runs or 0, "INV_Misc_Book_09" },
-        { "Wins", group.wins or 0, "INV_Misc_Coin_02" },
+        { "Observed runs", "runs", group.runs or 0, "INV_Misc_Book_09" },
+        { "Wins", "wins", group.wins or 0, "INV_Misc_Coin_02" },
     }) do
-        card(
+        local c = card(
             model,
             A.T(entry[1]),
-            A.Format(entry[2]),
+            A.Format(entry[3]),
             A.T("Collected since installation"),
-            entry[3]
+            entry[4]
         )
+        c.metric = entry[2]
+        c.entryAction = { kind = "total", key = entry[2], label = A.T(entry[1]) }
     end
     for _, key in ipairs({ "duration", "kills", "damage", "gold" }) do
         local v = group.sum and group.sum[key]
+        local label = key == "duration" and A.T("Play time") or A.Metric(key)
         local c = card(
             model,
-            key == "duration" and A.T("Play time") or A.Metric(key),
+            label,
             key == "duration" and A.Duration(v) or A.Short(v),
             A.Coverage(group, key),
             A.metricIcons[key]
         )
         c.exact = key == "duration" and A.Duration(v) or A.Format(v)
+        c.metric = key
+        c.entryAction = { kind = "total", key = key, label = label }
     end
     for _, key in ipairs({
         "healing",
@@ -166,7 +171,7 @@ local function overview(model, group)
         "chests",
         "magnets",
     }) do
-        row(
+        local item = row(
             model.rows,
             A.Metric(key),
             A.Format(group.sum and group.sum[key]),
@@ -174,6 +179,8 @@ local function overview(model, group)
             nil,
             A.metricIcons[key]
         )
+        item.metric = key
+        item.entryAction = { kind = "total", key = key, label = A.Metric(key) }
     end
     model.note = A.T("Values from available samples")
 end

@@ -1,3 +1,10 @@
+# 2.0.0-dev.13 — reset lifetime totals and edit chrome spacing
+
+- Add **Reset this total** for Overview lifetime counters (runs, wins, play time, kills, gold, damage and related sums), with `sumResets` fences so old runs cannot repopulate cleared ledgers.
+- Keep the Overview dashboard visible while editing so cumulative kills stay actionable instead of collapsing into a hide-only list.
+- Space Edit page / Restore hidden rows / Done editing and inset `…` controls from card and row edges across routes.
+- Document the edit/hide/reset matrix; offline suite 7,481 assertions.
+
 # 2.0.0-dev.12 — live sampler performance without data loss
 
 - Cut combat freezes from the 1 Hz sampler: staggered equipment tooltip scans, stamp-aware meter/spell/journal freshness, and jewelry baseline caching.

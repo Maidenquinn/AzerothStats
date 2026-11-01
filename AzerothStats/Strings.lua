@@ -189,6 +189,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Oficiální souhrn",
         ["One run"] = "Jedna hra",
         ["Only this entry is reset; other entries are kept"] = "Resetuje se jen tento záznam; ostatní zůstanou",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Otevřít",
         ["Optional analyses"] = "Volitelné analýzy",
         ["Other categories"] = "Ostatní kategorie",
@@ -229,6 +231,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Obnovit polohu",
         ["Reset this entry"] = "Resetovat tento záznam",
         ["Reset this record"] = "Resetovat tento rekord",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Zobrazit skryté řádky",
         ["Retained history only"] = "Pouze uložená historie",
         ["Retained runs"] = "Uchované hry",
@@ -496,6 +500,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Offizielle Zusammenfassung",
         ["One run"] = "Ein Spiel",
         ["Only this entry is reset; other entries are kept"] = "Nur dieser Eintrag wird zurückgesetzt; andere bleiben erhalten",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Öffnen",
         ["Optional analyses"] = "Optionale Analysen",
         ["Other categories"] = "Andere Kategorien",
@@ -536,6 +542,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Position zurücksetzen",
         ["Reset this entry"] = "Diesen Eintrag zurücksetzen",
         ["Reset this record"] = "Diesen Rekord zurücksetzen",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Zeilen wiederherstellen",
         ["Retained history only"] = "Nur gespeicherter Verlauf",
         ["Retained runs"] = "Gespeicherte Läufe",
@@ -803,6 +811,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Official summary",
         ["One run"] = "One run",
         ["Only this entry is reset; other entries are kept"] = "Only this entry is reset; other entries are kept",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Open",
         ["Optional analyses"] = "Optional analyses",
         ["Other categories"] = "Other categories",
@@ -843,6 +853,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Reset position",
         ["Reset this entry"] = "Reset this entry",
         ["Reset this record"] = "Reset this record",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Restore hidden rows",
         ["Retained history only"] = "Retained history only",
         ["Retained runs"] = "Retained runs",
@@ -1110,6 +1122,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Resumen oficial",
         ["One run"] = "Una partida",
         ["Only this entry is reset; other entries are kept"] = "Solo se restablece esta entrada; las demás se conservan",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Abrir",
         ["Optional analyses"] = "Análisis opcionales",
         ["Other categories"] = "Otras categorías",
@@ -1150,6 +1164,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Restablecer posición",
         ["Reset this entry"] = "Restablecer esta entrada",
         ["Reset this record"] = "Restablecer este récord",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Mostrar filas ocultas",
         ["Retained history only"] = "Solo historial conservado",
         ["Retained runs"] = "Partidas guardadas",
@@ -1417,6 +1433,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Résumé officiel",
         ["One run"] = "Une partie",
         ["Only this entry is reset; other entries are kept"] = "Seule cette entrée est réinitialisée ; les autres sont conservées",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Ouvrir",
         ["Optional analyses"] = "Analyses facultatives",
         ["Other categories"] = "Autres catégories",
@@ -1457,6 +1475,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Réinitialiser la position",
         ["Reset this entry"] = "Réinitialiser cette entrée",
         ["Reset this record"] = "Réinitialiser ce record",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Réafficher les lignes",
         ["Retained history only"] = "Historique conservé uniquement",
         ["Retained runs"] = "Parties conservées",
@@ -1724,6 +1744,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "公式結果",
         ["One run"] = "1回のプレイ",
         ["Only this entry is reset; other entries are kept"] = "この項目のみリセットし、他の項目は保持します",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "開く",
         ["Optional analyses"] = "任意の分析",
         ["Other categories"] = "その他のカテゴリ",
@@ -1764,6 +1786,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "位置をリセット",
         ["Reset this entry"] = "この項目をリセット",
         ["Reset this record"] = "この記録をリセット",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "非表示の行を復元",
         ["Retained history only"] = "保存済み履歴のみ",
         ["Retained runs"] = "保存するプレイ数",
@@ -2031,6 +2055,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "공식 결과",
         ["One run"] = "게임 한 개",
         ["Only this entry is reset; other entries are kept"] = "이 항목만 초기화하고 다른 항목은 유지합니다",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "열기",
         ["Optional analyses"] = "선택 분석",
         ["Other categories"] = "다른 범주",
@@ -2071,6 +2097,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "위치 초기화",
         ["Reset this entry"] = "이 항목 초기화",
         ["Reset this record"] = "이 최고 기록 초기화",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "숨긴 행 복원",
         ["Retained history only"] = "보관된 기록만",
         ["Retained runs"] = "보관할 플레이 수",
@@ -2338,6 +2366,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Oficjalne podsumowanie",
         ["One run"] = "Jedna rozgrywka",
         ["Only this entry is reset; other entries are kept"] = "Resetowany jest tylko ten wpis; pozostałe zostają",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Otwórz",
         ["Optional analyses"] = "Analizy opcjonalne",
         ["Other categories"] = "Pozostałe kategorie",
@@ -2378,6 +2408,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Przywróć pozycję",
         ["Reset this entry"] = "Resetuj ten wpis",
         ["Reset this record"] = "Resetuj ten rekord",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Przywróć ukryte wiersze",
         ["Retained history only"] = "Tylko zachowana historia",
         ["Retained runs"] = "Zachowane rozgrywki",
@@ -2645,6 +2677,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Resumo oficial",
         ["One run"] = "Uma partida",
         ["Only this entry is reset; other entries are kept"] = "Somente esta entrada é redefinida; as outras são mantidas",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Abrir",
         ["Optional analyses"] = "Análises opcionais",
         ["Other categories"] = "Outras categorias",
@@ -2685,6 +2719,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Redefinir posição",
         ["Reset this entry"] = "Redefinir esta entrada",
         ["Reset this record"] = "Redefinir este recorde",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Mostrar linhas ocultas",
         ["Retained history only"] = "Apenas histórico mantido",
         ["Retained runs"] = "Partidas mantidas",
@@ -2952,6 +2988,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Rezumat oficial",
         ["One run"] = "O partidă",
         ["Only this entry is reset; other entries are kept"] = "Doar această intrare este resetată; celelalte sunt păstrate",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Deschide",
         ["Optional analyses"] = "Analize opționale",
         ["Other categories"] = "Alte categorii",
@@ -2992,6 +3030,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Resetează poziția",
         ["Reset this entry"] = "Resetează această intrare",
         ["Reset this record"] = "Resetează acest record",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Arată rândurile ascunse",
         ["Retained history only"] = "Doar istoricul păstrat",
         ["Retained runs"] = "Partide păstrate",
@@ -3259,6 +3299,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Официальный итог",
         ["One run"] = "Одна игра",
         ["Only this entry is reset; other entries are kept"] = "Сбрасывается только эта запись; остальные сохраняются",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Открыть",
         ["Optional analyses"] = "Необязательный анализ",
         ["Other categories"] = "Другие категории",
@@ -3299,6 +3341,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Сбросить положение",
         ["Reset this entry"] = "Сбросить эту запись",
         ["Reset this record"] = "Сбросить этот рекорд",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Показать скрытые строки",
         ["Retained history only"] = "Только сохранённая история",
         ["Retained runs"] = "Сохраняемые забеги",
@@ -3566,6 +3610,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Resmî özet",
         ["One run"] = "Bir oyun",
         ["Only this entry is reset; other entries are kept"] = "Yalnızca bu kayıt sıfırlanır; diğerleri korunur",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Aç",
         ["Optional analyses"] = "İsteğe bağlı analizler",
         ["Other categories"] = "Diğer kategoriler",
@@ -3606,6 +3652,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Konumu sıfırla",
         ["Reset this entry"] = "Bu kaydı sıfırla",
         ["Reset this record"] = "Bu rekoru sıfırla",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Gizli satırları göster",
         ["Retained history only"] = "Yalnızca saklanan geçmiş",
         ["Retained runs"] = "Saklanan koşular",
@@ -3873,6 +3921,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "Офіційний підсумок",
         ["One run"] = "Одна гра",
         ["Only this entry is reset; other entries are kept"] = "Скидається лише цей запис; решта зберігаються",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "Відкрити",
         ["Optional analyses"] = "Необов’язковий аналіз",
         ["Other categories"] = "Інші категорії",
@@ -3913,6 +3963,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "Скинути положення",
         ["Reset this entry"] = "Скинути цей запис",
         ["Reset this record"] = "Скинути цей рекорд",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "Показати приховані рядки",
         ["Retained history only"] = "Лише збережена історія",
         ["Retained runs"] = "Збережені забіги",
@@ -4180,6 +4232,8 @@ AzerothStats.uiText = {
         ["Official summary"] = "官方结算",
         ["One run"] = "一场对局",
         ["Only this entry is reset; other entries are kept"] = "仅重置此条目；保留其他条目",
+        ["Lifetime totals are cleared; retained runs stay"] = "Lifetime totals are cleared; retained runs stay",
+
         ["Open"] = "打开",
         ["Optional analyses"] = "可选分析",
         ["Other categories"] = "其他类别",
@@ -4220,6 +4274,8 @@ AzerothStats.uiText = {
         ["Reset position"] = "重置位置",
         ["Reset this entry"] = "重置此条目",
         ["Reset this record"] = "重置此纪录",
+        ["Reset this total"] = "Reset this total",
+
         ["Restore hidden rows"] = "恢复隐藏行",
         ["Retained history only"] = "仅保留的历史",
         ["Retained runs"] = "保留对局数",

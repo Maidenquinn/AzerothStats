@@ -288,10 +288,35 @@ check(
     A.ConfirmEntryAction() and not A.FindRun(second.id) and A.Sign(A.db.totals.sum) == sums,
     "single-row history deletion keeps cumulative totals"
 )
+-- Lifetime totals (e.g. kills) were hide-only; expose an explicit total reset.
+first.values.kills, first.accounted.kills = 30, nil
+A.Account(first)
+check(A.db.totals.sum.kills == 30 and A.db.classes.warrior.sum.kills == 30, "kills enter lifetime sums")
+A.view.tab, A.view.overviewStats, A.editMode = 1, true, true
+local killsCard
+for _, item in ipairs(A.PageModel().cards) do
+    if item.entryAction and item.entryAction.kind == "total" and item.entryAction.key == "kills" then
+        killsCard = item
+    end
+end
+check(killsCard, "overview statistics expose Reset this total for kills")
+A.pendingEntryPlan = A.EntryPlan(killsCard.entryAction)
+check(A.pendingEntryPlan.allowed, "total kills reset is available between runs")
+check(
+    A.ConfirmEntryAction()
+        and not A.db.totals.sum.kills
+        and not A.db.classes.warrior.sum.kills
+        and first.values.kills == 30
+        and first.sumResets.kills,
+    "resetting total kills clears lifetime sums without deleting retained run values"
+)
+A.Account(first)
+check(not A.db.totals.sum.kills, "accounting cannot restore a cleared lifetime total from old runs")
 local restored = assert(loadstring("return " .. SNAPSHOT(A.db)))()
 check(
     A.ValidateDatabase(restored)
         and restored.runs[1].recordResets.duration
+        and restored.runs[1].sumResets.kills
         and restored.runs[1].trendResets.spells.a
         and restored.runs[1].nemesisResets.Kobold,
     "per-entry reset barriers survive persistence and validation"

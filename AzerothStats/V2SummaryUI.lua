@@ -1,5 +1,5 @@
 -- Summary-only composition of existing models. Own reusable frames; no gameplay
--- hooks or data collection. Editing falls back to the full editable data list.
+-- hooks or data collection. Home edit keeps the dashboard; report edit lists parts.
 local A, W = AzerothStats, AzerothStats.widgets
 local function place(frame, parent, x, y, width, height)
     frame:ClearAllPoints()
@@ -18,6 +18,21 @@ local function place(frame, parent, x, y, width, height)
         A.UpdateThemeFrame(frame)
     end
 end
+local function attachEdit(parent)
+    local control = W.button(parent, 0, 0, 28, 22, "...", function(self)
+        if parent.item then
+            A.ShowEditMenu(self, parent.item)
+        end
+    end)
+    control.label:ClearAllPoints()
+    control.label:SetPoint("TOPLEFT", control, "TOPLEFT", 3, 0)
+    control.label:SetWidth(22)
+    control.label.fontWidth = 22
+    control.label:SetJustifyH("CENTER")
+    control:ClearAllPoints()
+    control:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -6)
+    return control
+end
 local function panel(parent)
     local f = CreateFrame("Frame", nil, parent)
     W.surface(f, "card")
@@ -30,6 +45,8 @@ local function panel(parent)
             A.RefreshUI()
         end
     end)
+    f.edit = attachEdit(f)
+    f.edit:Hide()
     return f
 end
 local function setup(ui)
@@ -63,6 +80,7 @@ local function showPanel(ui, model, key, x, y, w, h, target, caption)
     end
     place(f, A.window, x, y, w, h)
     A.UpdateThemeFrame(f)
+    f.item = item
     f.title:SetWidth(w - 24)
     f.title.fontWidth = w - 24
     f.body:SetWidth(w - 24)
@@ -70,7 +88,7 @@ local function showPanel(ui, model, key, x, y, w, h, target, caption)
     f.body:SetHeight(h - (target and 78 or 46))
     W.put(f.title, item.label)
     W.put(f.body, item.detail)
-    if target then
+    if target and not A.editMode then
         place(f.open, f, 12, h - 34, w - 24, 26)
         f.open.action = target
         W.put(f.open.label, A.T(caption))
@@ -78,7 +96,39 @@ local function showPanel(ui, model, key, x, y, w, h, target, caption)
     else
         f.open:Hide()
     end
+    if A.editMode then
+        f.edit:Show()
+    else
+        f.edit:Hide()
+    end
     f:Show()
+end
+--- Keep Edit page / Done editing / Restore hidden rows inset from the pane edge.
+function A.PlaceEditChrome(ui, model)
+    if not ui or not ui.editToggle or not model or model.editable ~= true then
+        return
+    end
+    -- Content pane ends at x=932; keep a real gutter and gap so buttons are not flush.
+    local paneRight, inset, y, gap = 932, 14, 138, 12
+    local right = paneRight - inset
+    local editing = A.editMode == true
+    local tall = model.cohort or model.analysis
+    local h = tall and 26 or 24
+    local editW = editing and 128 or (model.cohort and 198 or 110)
+    local editX = right - editW
+    place(ui.editToggle, A.window, editX, y, editW, h)
+    if editing and ui.restoreRows then
+        local restoreW = 186
+        local restoreX = editX - gap - restoreW
+        if model.cohort and restoreX < 632 then
+            restoreX = 632
+            restoreW = math.max(120, editX - gap - restoreX)
+        end
+        place(ui.restoreRows, A.window, restoreX, y, restoreW, h)
+        if model.analysis and ui.reportCompare then
+            place(ui.reportCompare, A.window, 360, 100, 198, 26)
+        end
+    end
 end
 local function openGoals()
     A.view.tab, A.view.page, A.view.v2Goals = 6, 1, true
@@ -91,6 +141,9 @@ function A.V2SummaryUI(ui, model)
     setup(ui)
     for _, f in pairs(ui.v2SummaryPanels) do
         f:Hide()
+    end
+    if ui.v2GraphEdit then
+        ui.v2GraphEdit:Hide()
     end
     if model.analysis then
         place(ui.latest, A.window, 578, 100, 354, 26)
@@ -113,11 +166,11 @@ function A.V2SummaryUI(ui, model)
         place(ui.reportCompare, A.window, 718, 100, 214, 26)
         place(ui.classButton, A.window, 218, 138, 198, 26)
         place(ui.difficultyButton, A.window, 426, 138, 198, 26)
-        place(ui.editToggle, A.window, 734, 138, 198, 26)
     else
-        place(ui.classButton, A.window, 714, 100, 218, 26)
-        place(ui.editToggle, A.window, 834, 138, 98, 24)
-        place(ui.reportCompare, A.window, 518, 138, 198, 26)
+        place(ui.classButton, A.window, 700, 100, 218, 26)
+        if not A.editMode then
+            place(ui.reportCompare, A.window, 518, 138, 198, 26)
+        end
     end
     if model.attributeTable then
         -- Keep the filter next to its data-column headings, leaving the full
@@ -125,7 +178,7 @@ function A.V2SummaryUI(ui, model)
         place(ui.v2AttributeGroup, A.window, 218, model.rowY - 32, 286, 26)
         ui.columnLabel:Hide()
     end
-    if A.view.tab == 6 and A.view.v2Goals then
+    if A.view.tab == 6 and A.view.v2Goals and not A.editMode then
         place(ui.v2AddGoal, A.window, 518, 138, 198, 26)
     end
     if A.view.tab == 10 then
@@ -145,22 +198,25 @@ function A.V2SummaryUI(ui, model)
             A.UpdateThemeFrame(b)
         end
     end
+    A.PlaceEditChrome(ui, model)
     if not model.v2Summary then
         return
     end
-    if A.editMode then
-        ui.v2Graph:Hide()
-        ui.v2Hero:Hide()
-        return
-    end
+    local curveItem
     local hasCurve = false
     for _, item in ipairs(model.sections or {}) do
         if item.summaryPart == "curve" then
-            hasCurve = true
+            hasCurve, curveItem = true, item
         end
     end
     if not hasCurve then
         ui.v2Graph:Hide()
+    end
+    -- Report Overview still uses the editable list while editing.
+    if A.editMode and model.v2Summary ~= "home" then
+        ui.v2Graph:Hide()
+        ui.v2Hero:Hide()
+        return
     end
     ui.empty:Hide()
     ui.columnLabel:Hide()
@@ -193,7 +249,7 @@ function A.V2SummaryUI(ui, model)
         place(hero.status, hero, 132, 46, 370, 17)
         place(hero.open, hero, 526, 34, 180, 26)
         W.put(hero.open.label, A.T("Analyze run"))
-        if live and live.id then
+        if live and live.id and not A.editMode then
             hero.open:Show()
         else
             hero.open:Hide()
@@ -219,6 +275,13 @@ function A.V2SummaryUI(ui, model)
                 W.put(card.label, card.item.label)
                 W.put(card.value, card.item.value)
                 card.detail:Hide()
+                if card.edit then
+                    if A.editMode then
+                        card.edit:Show()
+                    else
+                        card.edit:Hide()
+                    end
+                end
                 A.UpdateThemeFrame(card)
             end
         end
@@ -258,6 +321,17 @@ function A.V2SummaryUI(ui, model)
             A.view.reportSection = "Overview"
         end, "Analyze run")
         showPanel(ui, model, "goal", 678, 568, 254, 132, openGoals, "Personal objectives")
+        if hasCurve and curveItem and ui.v2Graph and ui.v2Graph:IsShown() then
+            if not ui.v2GraphEdit then
+                ui.v2GraphEdit = attachEdit(ui.v2Graph)
+            end
+            ui.v2Graph.item = curveItem
+            if A.editMode then
+                ui.v2GraphEdit:Show()
+            else
+                ui.v2GraphEdit:Hide()
+            end
+        end
     else
         for i, card in ipairs(ui.cards) do
             if card:IsShown() then

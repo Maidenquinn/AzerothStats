@@ -115,6 +115,14 @@ check(
     curveItem ~= nil and curveItem.editIdentity ~= nil,
     "summary chart can be hidden through edit mode"
 )
+local _, _, _, restoreX = A.ui.restoreRows:GetPoint()
+local _, _, _, doneX = A.ui.editToggle:GetPoint()
+check(
+    A.ui.restoreRows:IsShown()
+        and restoreX + A.ui.restoreRows:GetWidth() + 10 <= doneX
+        and doneX + A.ui.editToggle:GetWidth() <= 920,
+    "report edit chrome keeps Restore and Done inset with a gap"
+)
 A.ToggleHiddenRow(curveItem)
 A.editMode = false
 A.RefreshUI()
@@ -140,6 +148,45 @@ check(
     string.find(A.ui.rows[1].detail.fullText, "01:00", 1, true),
     "duration stays visible with outcome"
 )
+A.editMode = true
+A.RefreshUI()
+local homeKills
+for _, card in ipairs(A.ui.model.cards) do
+    if card.entryAction and card.entryAction.kind == "total" and card.entryAction.key == "kills" then
+        homeKills = card
+    end
+end
+check(
+    homeKills
+        and A.ui.model.layout == "dashboard"
+        and A.ui.v2Hero:IsShown()
+        and table.getn(A.ui.model.cards) == 4,
+    "home edit keeps dashboard lifetime totals including kills"
+)
+_, _, _, restoreX = A.ui.restoreRows:GetPoint()
+_, _, _, doneX = A.ui.editToggle:GetPoint()
+check(
+    restoreX + A.ui.restoreRows:GetWidth() + 10 <= doneX
+        and doneX + A.ui.editToggle:GetWidth() <= 920,
+    "home edit chrome keeps Restore and Done inset with a gap"
+)
+A.editMode = false
+A.RefreshUI()
+A.ui.historyLink.callback()
+A.editMode = true
+A.RefreshUI()
+_, _, _, restoreX = A.ui.restoreRows:GetPoint()
+_, _, _, doneX = A.ui.editToggle:GetPoint()
+local _, _, _, diffX = A.ui.difficultyButton:GetPoint()
+check(
+    restoreX + A.ui.restoreRows:GetWidth() + 10 <= doneX
+        and diffX + A.ui.difficultyButton:GetWidth() <= restoreX
+        and doneX + A.ui.editToggle:GetWidth() <= 920,
+    "history edit chrome clears class/difficulty and Restore/Done"
+)
+A.editMode = false
+A.view.tab = 1
+A.RefreshUI()
 local graph = A.ui.v2Graph
 check(
     graph.axisMaxT >= 120 and graph.axisMaxY == 10,

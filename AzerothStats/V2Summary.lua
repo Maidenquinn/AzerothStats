@@ -75,7 +75,9 @@ local function part(model, key, label, text)
         detail = text,
     }
     table.insert(model.sections, item)
-    if A.editMode then
+    -- Home keeps its dashboard cards/rows so lifetime totals stay editable.
+    -- Report Overview still flattens summary parts into the editable list.
+    if A.editMode and model.v2Summary ~= "home" then
         table.insert(model.rows, item)
     end
 end
@@ -91,10 +93,6 @@ function A.V2SummaryModel(model, run)
     end
     model.v2Summary, model.sections = home and "home" or "report", {}
     model.liveHero = home and A.V2LiveContext() or nil
-    if A.editMode and home then
-        model.layout, model.cards, model.records = "list", {}, nil
-        model.rowY, model.rowHeight, model.capacity = 194, 48, 8
-    end
     local source = run
     if home then
         source = A.run
@@ -130,11 +128,9 @@ function A.V2SummaryModel(model, run)
                 or A.T("No data yet")
         )
         part(model, "goal", "Next objective", nextGoal())
-        if not A.editMode then
-            -- The complete retained history is one click away. Three compact
-            -- recent rows leave room for the same two-column story as the mockup.
-            model.rowY, model.rowHeight, model.capacity = 382, 50, 3
-        end
+        -- Keep the curated dashboard geometry in edit mode so lifetime totals
+        -- remain on-screen with Reset this total instead of a stripped list.
+        model.rowY, model.rowHeight, model.capacity = 382, 50, 3
     elseif run then
         table.insert(model.cards, {
             label = A.Metric("level"),

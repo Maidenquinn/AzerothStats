@@ -106,19 +106,26 @@ function A.Account(run)
     local groups = { bucket(database.totals), bucket(database.classes[run.class]) }
     for _, group in ipairs(groups) do
         if not run.counted then
-            group.runs = (group.runs or 0) + 1
+            if not (run.sumResets and run.sumResets.runs) then
+                group.runs = (group.runs or 0) + 1
+            end
         end
         if run.result == "victory" and not run.winCounted then
-            group.wins = (group.wins or 0) + 1
+            if not (run.sumResets and run.sumResets.wins) then
+                group.wins = (group.wins or 0) + 1
+            end
         end
         for _, key in ipairs(A.metrics) do
             local value, old = A.Number(run.values[key]), run.accounted[key]
             if value then
-                if old == nil then
-                    group.coverage[key] = (group.coverage[key] or 0) + 1
-                end
-                if key ~= "level" and key ~= "peakDps" then
-                    group.sum[key] = (group.sum[key] or 0) + value - (old or 0)
+                local sumBlocked = run.sumResets and run.sumResets[key]
+                if not sumBlocked then
+                    if old == nil then
+                        group.coverage[key] = (group.coverage[key] or 0) + 1
+                    end
+                    if key ~= "level" and key ~= "peakDps" then
+                        group.sum[key] = (group.sum[key] or 0) + value - (old or 0)
+                    end
                 end
                 local rec = group.records[key]
                 if

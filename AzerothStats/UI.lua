@@ -333,7 +333,7 @@ local function editButton(parent)
     control.label.fontWidth = 22
     control.label:SetJustifyH("CENTER")
     control:ClearAllPoints()
-    control:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -2, -2)
+    control:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -6)
     return control
 end
 
@@ -2616,12 +2616,12 @@ function A.BuildUI()
         A.view.page = math.max(1, A.view.page - 1)
         A.RefreshUI()
     end)
-    UI.next = button(frame, 265, 714, 38, 24, ">", function()
+    UI.next = button(frame, 268, 714, 38, 24, ">", function()
         local model = A.PageModel()
         A.view.page = math.min(math.ceil(table.getn(model.rows) / model.capacity), A.view.page + 1)
         A.RefreshUI()
     end)
-    UI.paging = font(frame, 320, 715, 400, 23, 11, COLORS.muted)
+    UI.paging = font(frame, 324, 715, 400, 23, 11, COLORS.muted)
     if frame.EnableMouseWheel then
         frame:EnableMouseWheel(true)
         frame:SetScript("OnMouseWheel", function()
@@ -3249,6 +3249,7 @@ function A.BuildUI()
         end
         local verbs = {
             record = "Reset this record",
+            total = "Reset this total",
             trend = "Reset this entry",
             nemesis = "Reset this entry",
             bookmark = "Remove favorite",
@@ -3259,7 +3260,15 @@ function A.BuildUI()
         put(entry.title, A.T("Confirm deletion"))
         put(
             entry.subject,
-            (plan.kind == "record" and A.Metric(plan.key) or plan.label)
+            (
+                plan.kind == "total"
+                    and (plan.key == "runs" and A.T("Observed runs")
+                        or plan.key == "wins" and A.T("Wins")
+                        or plan.key == "duration" and A.T("Play time")
+                        or A.Metric(plan.key))
+                or plan.kind == "record" and A.Metric(plan.key)
+                or plan.label
+            )
                 .. "\n"
                 .. (
                     plan.scope
@@ -3276,6 +3285,7 @@ function A.BuildUI()
                 .. "\n\n"
                 .. A.T(
                     plan.kind == "run" and "History only; totals stay unchanged"
+                        or plan.kind == "total" and "Lifetime totals are cleared; retained runs stay"
                         or "Only this entry is reset; other entries are kept"
                 )
         )
@@ -3312,6 +3322,7 @@ function A.BuildUI()
             table.insert(choices, {
                 label = A.T(
                     item.entryAction.kind == "record" and "Reset this record"
+                        or item.entryAction.kind == "total" and "Reset this total"
                         or item.entryAction.kind == "bookmark" and "Remove favorite"
                         or item.entryAction.kind == "run" and "Delete run details"
                         or "Reset this entry"
