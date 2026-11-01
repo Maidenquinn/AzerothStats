@@ -144,10 +144,25 @@ function A.ObserveBuild(run)
     local usage = run.usage
     usage.spells, usage.jewelry, usage.slots =
         usage.spells or {}, usage.jewelry or {}, usage.slots or {}
-    local fresh = not run.spellsBaseline
-        or A.Sign(A.Copy(AZS_SPELLS)) ~= run.spellsBaseline
-        or A.spellPacket
+    local spellsStamp = AZS_SPELLS_UPDATED
+    local fresh = A.spellPacket or not run.spellsBaseline
+    if not fresh then
+        if spellsStamp ~= nil then
+            fresh = spellsStamp ~= run.spellsObserveStamp
+        else
+            -- No native stamp: compare the last observed signature (never delay rank gains).
+            local sig = A.Sign(A.Copy(AZS_SPELLS))
+            fresh = sig ~= run.spellsObserveSig
+            if fresh then
+                run.spellsObserveSig = sig
+            end
+        end
+    end
     if fresh and type(AZS_SPELLS) == "table" then
+        run.spellsObserveStamp = spellsStamp
+        if spellsStamp == nil and not run.spellsObserveSig then
+            run.spellsObserveSig = A.Sign(A.Copy(AZS_SPELLS))
+        end
         for i = 1, math.min(table.getn(AZS_SPELLS), 256) do
             local spell = AZS_SPELLS[i]
             local rank = type(spell) == "table" and A.Number(spell.rank)
@@ -200,18 +215,20 @@ function A.ObserveBuild(run)
                     and not A.TrendKeyReset(run, "jewelry", key)
                     and A.Admit(usage.jewelry, key, A.limits.usageKeys, run, "usageTruncated")
                 then
-                    local lines = A.CaptureItem(slot)
+                    local old = usage.slots[slot]
+                    local linkText = A.PrefixText(link, 500)
+                    -- Rescan the tooltip only when the slot link itself changed.
+                    local lines = old and old.link == linkText and old.tooltip or A.CaptureItem(slot)
                     local sig = A.Sign(lines or link)
                     local entry = usage.jewelry[key]
                     if not entry then
                         entry = { name = name, changes = 0 }
                         usage.jewelry[key] = entry
                     end
-                    local old = usage.slots[slot]
                     if old and (old.key ~= key or old.sig ~= sig) then
                         entry.changes = entry.changes + 1
                     end
-                    entry.link = A.PrefixText(link, 500)
+                    entry.link = linkText
                     entry.tooltip = lines or entry.tooltip
                     entry.slot = slot
                     if type(GetInventoryItemTexture) == "function" then
@@ -220,13 +237,15 @@ function A.ObserveBuild(run)
                             entry.icon = A.TexturePath(ic)
                         end
                     end
-                    usage.slots[slot] = { key = key, sig = sig }
+                    usage.slots[slot] = { key = key, sig = sig, link = linkText, tooltip = entry.tooltip }
                     A.AccountUsage(run, "jewelry", key, entry)
                 end
             elseif ok then
-                usage.slots[slot] = { key = "", sig = "" }
+                usage.slots[slot] = { key = "", sig = "", link = "", tooltip = nil }
             end
         end
+        -- Without this, the first jewelry change re-scans every 1 Hz forever.
+        run.inventoryBaseline = inventory
     end
     A.spellPacket = nil
 end

@@ -24,16 +24,50 @@ function A.BeginJournal(run)
     run.buildJournal = { version = 1, entries = {}, last = {}, partial = run.partial == true }
 end
 
+--- True only when native spell/stat tables actually changed.
+--- Prefer *_UPDATED stamps; otherwise compare against the last observed signature
+--- (not the run baseline, which permanently diverges after the first upgrade).
+local function tableChanged(run, rawName, packetFlag, stampKey, sigKey)
+    if packetFlag then
+        return true
+    end
+    local stamp = getglobal(rawName .. "_UPDATED")
+    if stamp ~= nil then
+        if stamp == run[stampKey] then
+            return false
+        end
+        run[stampKey] = stamp
+        return true
+    end
+    local sig = A.Sign(A.Copy(getglobal(rawName)))
+    if sig == run[sigKey] then
+        return false
+    end
+    run[sigKey] = sig
+    return true
+end
+
 --- Read complete bounded rank maps only when the native spell state is fresh.
 local function ranks(run)
+    if type(AZS_SPELLS) ~= "table" or getmetatable(AZS_SPELLS) then
+        return nil
+    end
     if
-        run.spellsBaseline
-        and A.Sign(A.Copy(AZS_SPELLS)) == run.spellsBaseline
-        and not A.spellPacket
+        not tableChanged(
+            run,
+            "AZS_SPELLS",
+            A.spellPacket,
+            "journalSpellsStamp",
+            "journalSpellsSig"
+        )
     then
         return nil
     end
-    if type(AZS_SPELLS) ~= "table" or getmetatable(AZS_SPELLS) then
+    if
+        run.spellsBaseline
+        and run.journalSpellsSig == run.spellsBaseline
+        and not A.spellPacket
+    then
         return nil
     end
     if table.getn(AZS_SPELLS) > 32 then
@@ -62,19 +96,29 @@ local function ranks(run)
         end
         result[item.key] = rank
     end
+    if not run.journalSpellsSig then
+        run.journalSpellsSig = A.Sign(A.Copy(AZS_SPELLS))
+    end
     return result
 end
 
 --- Read a fixed numeric global-stat whitelist; unrelated nested/native data is ignored.
 local function stats(run)
+    if type(AZS_STATS) ~= "table" or getmetatable(AZS_STATS) then
+        return nil
+    end
     if
-        run.statsBaseline
-        and A.Sign(A.Copy(AZS_STATS)) == run.statsBaseline
-        and not A.statsPacket
+        not tableChanged(
+            run,
+            "AZS_STATS",
+            A.statsPacket,
+            "journalStatsStamp",
+            "journalStatsSig"
+        )
     then
         return nil
     end
-    if type(AZS_STATS) ~= "table" or getmetatable(AZS_STATS) then
+    if run.statsBaseline and run.journalStatsSig == run.statsBaseline and not A.statsPacket then
         return nil
     end
     local result = {}
@@ -91,6 +135,9 @@ local function stats(run)
     end
     if not next(result) then
         return nil
+    end
+    if not run.journalStatsSig then
+        run.journalStatsSig = A.Sign(A.Copy(AZS_STATS))
     end
     return result
 end

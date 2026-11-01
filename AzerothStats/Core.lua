@@ -145,7 +145,7 @@ driver:SetScript("OnEvent", function()
         A.ApplyUI()
     end
 end)
-local tick, languageTick = 0, 0
+local tick, languageTick, uiTick, overlayTick = 0, 0, 0, 0
 driver:SetScript("OnUpdate", function()
     tick = tick + (A.Number(arg1) or 0)
     languageTick = languageTick + (A.Number(arg1) or 0)
@@ -154,12 +154,16 @@ driver:SetScript("OnUpdate", function()
     end
     tick = 0
     if A.db then
-        if languageTick >= 10 then
+        if languageTick >= 30 then
             languageTick = 0
-            local old = A.Locale()
-            A.DetectLocale()
-            if A.Locale() ~= old then
-                A.ApplyUI()
+            -- Manual language never needs the GameText/tooltip rescan; auto only.
+            local setting = A.db.settings.language
+            if not setting or setting == "auto" then
+                local old = A.Locale()
+                A.DetectLocale()
+                if A.Locale() ~= old then
+                    A.ApplyUI()
+                end
             end
         end
         -- Refit owned panels only when the native viewport actually changes.
@@ -169,8 +173,35 @@ driver:SetScript("OnUpdate", function()
             A.ApplyUI()
         end
         A.Sample()
-        A.RefreshUI()
-        A.SyncScreenOverlays()
+        -- Full page rebuild is expensive while the window is open; keep the HUD
+        -- bar fresh at most every two seconds and rebuild pages every three.
+        uiTick = uiTick + 1
+        local barLive = A.db.settings.bar ~= false and A.bar and A.bar:IsShown()
+        if A.window and A.window:IsShown() then
+            if uiTick >= 3 then
+                uiTick = 0
+                A.RefreshUI()
+            elseif uiTick == 1 or uiTick == 2 then
+                if barLive then
+                    A.RefreshBar()
+                end
+                A.RefreshReportNotice()
+            end
+        else
+            if uiTick >= 2 then
+                uiTick = 0
+                if barLive then
+                    A.RefreshBar()
+                end
+                A.RefreshReportNotice()
+            end
+        end
+        -- Overlay registration is sticky; reconcile rarely outside UI toggles.
+        overlayTick = overlayTick + 1
+        if overlayTick >= 15 then
+            overlayTick = 0
+            A.SyncScreenOverlays()
+        end
     end
 end)
 SLASH_AZEROTHSTATS1 = "/azstats"

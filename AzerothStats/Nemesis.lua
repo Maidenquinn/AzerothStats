@@ -48,14 +48,26 @@ local function pattern(format)
     return out .. "$", order
 end
 
+-- Combat chat can fire many times per second; compile each format once.
+local compiledPatterns = {}
+
 --- Match a bounded native message through pcall and reorder positional fields; no text is evaluated.
 local function parse(message, format)
     if type(format) ~= "string" or string.len(format) > 500 then
         return nil
     end
-    local p, order = pattern(format)
-    if not p then
+    local cached = compiledPatterns[format]
+    local p, order
+    if cached == false then
         return nil
+    elseif cached then
+        p, order = cached[1], cached[2]
+    else
+        p, order = pattern(format)
+        compiledPatterns[format] = p and { p, order } or false
+        if not p then
+            return nil
+        end
     end
     local ok, first, last, a, b, c, d = pcall(string.find, message, p)
     if not ok then

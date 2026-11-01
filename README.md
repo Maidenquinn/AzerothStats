@@ -2,7 +2,7 @@
 
 Persistent run history and build statistics for **Azeroth Survivors on Windows**, using the client's Lua addon interface (11200 / Lua 5.0).
 
-## V2 development candidate — 2.0.0-dev.11
+## V2 development candidate — 2.0.0-dev.12
 
 The isolated `codex/v2-runtime` branch implements the approved V2 navigation:
 **Overview, My runs, Analyze run, My progress, Favorites and Nemesis**, with

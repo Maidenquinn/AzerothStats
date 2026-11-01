@@ -89,17 +89,23 @@ local function party(run)
         A.BeginInsights(run)
         session = A.partySession
     end
-    local signature = A.Sign(A.Copy(AZS_PARTY))
     local generation = A.partyGeneration or 0
-    if
-        generation == session.generation
-        and AZS_PARTY_UPDATED == session.stamp
-        and signature == session.signature
-    then
-        if not coop.sampledAt then
-            coop.unavailable = "No fresh party sample"
+    -- Stamp/generation first: avoid Sign(Copy) every second when the roster is unchanged.
+    if generation == session.generation and AZS_PARTY_UPDATED == session.stamp then
+        if AZS_PARTY_UPDATED ~= nil or generation ~= 0 then
+            if not coop.sampledAt then
+                coop.unavailable = "No fresh party sample"
+            end
+            return
         end
-        return
+        local signature = A.Sign(A.Copy(AZS_PARTY))
+        if signature == session.signature then
+            if not coop.sampledAt then
+                coop.unavailable = "No fresh party sample"
+            end
+            return
+        end
+        session.signature = signature
     end
     if AZS_PARTY_UPDATED == nil and generation == 0 then
         coop.unavailable = "No fresh party sample"
@@ -107,7 +113,7 @@ local function party(run)
     end
     session.generation = generation
     session.stamp = AZS_PARTY_UPDATED
-    session.signature = signature
+    session.signature = A.Sign(A.Copy(AZS_PARTY))
     local latest, rows, seen = {}, {}, {}
     local partial = table.getn(AZS_PARTY) > 32
     local selfIncluded = false

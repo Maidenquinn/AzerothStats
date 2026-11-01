@@ -502,7 +502,9 @@ function A.V2Update(run, observer)
         end
     end
     store.runs[run.id] = entry
-    if not valid(store) or not shape(store) or not A.ValidateDatabase(A.db) then
+    -- Validate only the V2 store we mutated. Walking A.ValidateDatabase(A.db) here
+    -- re-traverses the whole SavedVariables tree (10MB+) on every live sample write.
+    if not valid(store) or not shape(store) then
         store.runs[run.id] = old
         if victim then
             store.runs[victim] = victimData

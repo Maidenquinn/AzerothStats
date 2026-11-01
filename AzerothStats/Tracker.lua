@@ -18,6 +18,8 @@ local summaryFields = {
     magnets = "magnets",
 }
 
+local drainEquipment, finalizeEquipment
+
 --- Accept matching supplied identity fields, retain the first official result and update final exact counters.
 local function applySummary(run, summary)
     if not A.SummaryMatches(run, summary) then
@@ -42,6 +44,7 @@ local function applySummary(run, summary)
             run.values[k] = A.Number(summary[field])
         end
     end
+    finalizeEquipment(run)
     A.FinishReport(run)
     A.Event(run, "summary", "Resume officiel : " .. summary.result)
 end
@@ -55,6 +58,7 @@ local function close(reason)
         end
         run.closeReason = reason
         A.Event(run, "boundary", reason)
+        finalizeEquipment(run)
         A.Account(run)
     end
     A.run = nil
@@ -139,8 +143,90 @@ local function start(phase, serverTime)
     A.Trim()
 end
 
+--- Capture at most a few inventory tooltips per tick; GameTooltip scans hitch hard in a batch of 19.
+drainEquipment = function(run, budget)
+    local pending = run.equipmentPending
+    if not pending or table.getn(pending) == 0 then
+        return
+    end
+    run.equipment = run.equipment or {}
+    run.equipmentIcons = run.equipmentIcons or {}
+    run.equipmentTooltips = run.equipmentTooltips or {}
+    budget = math.max(1, math.floor(A.Number(budget) or 4))
+    while budget > 0 and table.getn(pending) > 0 do
+        local slot = table.remove(pending, 1)
+        budget = budget - 1
+        local link = run.equipment[slot]
+        if type(link) == "string" then
+            run.equipmentTooltips[slot] = A.CaptureItem(slot)
+        else
+            run.equipmentTooltips[slot] = nil
+        end
+    end
+end
+
+--- Finish any staggered equipment tooltip captures before a run leaves the live tracker.
+finalizeEquipment = function(run)
+    if not run then
+        return
+    end
+    run.equipment = run.equipment or {}
+    run.equipmentTooltips = run.equipmentTooltips or {}
+    run.equipmentPending = run.equipmentPending or {}
+    for slot, link in pairs(run.equipment) do
+        if type(link) == "string" and not run.equipmentTooltips[slot] then
+            table.insert(run.equipmentPending, slot)
+        end
+    end
+    drainEquipment(run, 19)
+end
+
+--- Refresh slot links/icons and queue tooltip rescans only for changed links.
+local function refreshEquipment(run, force)
+    local previous = run.equipment or {}
+    local previousTips = run.equipmentTooltips or {}
+    local previousIcons = run.equipmentIcons or {}
+    local equipment, icons, tips, pending = {}, {}, {}, {}
+    for slot = 1, 19 do
+        local link
+        -- Inventory's API takes two arguments, unlike the simple one-argument reader.
+        if type(GetInventoryItemLink) == "function" then
+            local ok, value = pcall(GetInventoryItemLink, "player", slot)
+            if ok then
+                link = value
+            else
+                link = nil
+            end
+        end
+        if type(link) == "string" then
+            link = A.PrefixText(link, 500)
+            equipment[slot] = link
+            if type(GetInventoryItemTexture) == "function" then
+                local ok, texture = pcall(GetInventoryItemTexture, "player", slot)
+                if ok and type(texture) == "string" then
+                    icons[slot] = A.TexturePath(texture)
+                end
+            end
+            if not force and previous[slot] == link and previousTips[slot] then
+                tips[slot] = previousTips[slot]
+                if not icons[slot] then
+                    icons[slot] = previousIcons[slot]
+                end
+            else
+                table.insert(pending, slot)
+            end
+        end
+    end
+    run.equipment = equipment
+    run.equipmentIcons = icons
+    run.equipmentTooltips = tips
+    run.equipmentPending = pending
+end
+
 --- Save bounded build/inventory/timeline details every 15 server seconds, or immediately at a terminal phase.
 local function snapshot(run, raw, force)
+    -- Always finish queued tooltip scans so a 15s hitch never becomes a 19-scan spike.
+    drainEquipment(run, force and 19 or 4)
     if
         not force
         and run.snapshotAt
@@ -162,38 +248,28 @@ local function snapshot(run, raw, force)
         table.remove(run.timeline, 2)
         run.timelineTruncated = true
     end
-    local sig = A.Sign(A.Copy(AZS_SPELLS))
-    if not run.spellsBaseline or sig ~= run.spellsBaseline then
-        run.spells = A.Copy(AZS_SPELLS)
-    end
-    if not run.statsBaseline or A.Sign(A.Copy(AZS_STATS)) ~= run.statsBaseline then
-        run.stats = A.Copy(AZS_STATS)
-    end
-    run.equipment = {}
-    run.equipmentIcons = {}
-    run.equipmentTooltips = {}
-    for slot = 1, 19 do
-        local link
-        -- Inventory's API takes two arguments, unlike the simple one-argument reader.
-        if type(GetInventoryItemLink) == "function" then
-            local ok, value = pcall(GetInventoryItemLink, "player", slot)
-            if ok then
-                link = value
-            else
-                link = nil
-            end
-        end
-        if type(link) == "string" then
-            run.equipment[slot] = A.PrefixText(link, 500)
-            run.equipmentTooltips[slot] = A.CaptureItem(slot)
-        end
-        if type(GetInventoryItemTexture) == "function" then
-            local ok, texture = pcall(GetInventoryItemTexture, "player", slot)
-            if ok and type(texture) == "string" then
-                run.equipmentIcons[slot] = A.TexturePath(texture)
-            end
+    local spellsStamp = AZS_SPELLS_UPDATED
+    if
+        A.spellPacket
+        or not run.spellsBaseline
+        or spellsStamp == nil
+        or run.spellsSnapshotStamp ~= spellsStamp
+    then
+        local sig = A.Sign(A.Copy(AZS_SPELLS))
+        run.spellsSnapshotStamp = spellsStamp
+        if not run.spellsBaseline or sig ~= run.spellsBaseline then
+            run.spells = A.Copy(AZS_SPELLS)
         end
     end
+    local statsStamp = AZS_STATS_UPDATED
+    if not run.statsBaseline or statsStamp == nil or run.statsSnapshotStamp ~= statsStamp then
+        run.statsSnapshotStamp = statsStamp
+        if not run.statsBaseline or A.Sign(A.Copy(AZS_STATS)) ~= run.statsBaseline then
+            run.stats = A.Copy(AZS_STATS)
+        end
+    end
+    refreshEquipment(run, force)
+    drainEquipment(run, force and 19 or 4)
 end
 
 --- Advance the run state machine from one validated native snapshot; missing data is not a fabricated end.
@@ -356,27 +432,46 @@ function A.Sample()
                 run.gate[k] = nil
             end
         end
-        for k in pairs(A.sources) do
-            local m, reason = A.ReadMeter(k, run.gate)
-            if m then
-                local old = run.meters[k]
-                if k ~= "boss" and old and m.total < old.total then
-                    run.unavailable[k] = "compteur en baisse : dernier echantillon conserve"
-                    run.meterReset = true
-                else
-                    run.meters[k] = m
-                    run.unavailable[k] = nil
-                    -- Raw run counters have priority over sampled spell lists for whole-run totals.
-                    if
-                        k == "healing"
-                        or (k == "damage" and raw.dealt == nil)
-                        or (k == "taken" and raw.taken == nil)
-                    then
-                        run.values[k] = m.total
-                    end
-                end
+        -- Full meter copies are large; honor packets/UPDATED stamps immediately, otherwise poll every 2s.
+        run.meterReadAt = run.meterReadAt or {}
+        run.meterStampAt = run.meterStampAt or {}
+        local nowRead = GetTime()
+        for k, source in pairs(A.sources) do
+            local stamp = getglobal(source.raw .. "_UPDATED")
+            local forced = A.meterPackets and A.meterPackets[k]
+            local stampChanged = stamp ~= nil and stamp ~= run.meterStampAt[k]
+            if
+                not forced
+                and not stampChanged
+                and run.meters[k]
+                and run.meterReadAt[k]
+                and nowRead - run.meterReadAt[k] < 2
+            then
+                -- keep last validated meter between quiet polls
             else
-                run.unavailable[k] = reason
+                local m, reason = A.ReadMeter(k, run.gate)
+                if m then
+                    local old = run.meters[k]
+                    if k ~= "boss" and old and m.total < old.total then
+                        run.unavailable[k] = "compteur en baisse : dernier echantillon conserve"
+                        run.meterReset = true
+                    else
+                        run.meters[k] = m
+                        run.unavailable[k] = nil
+                        run.meterReadAt[k] = nowRead
+                        run.meterStampAt[k] = stamp
+                        -- Raw run counters have priority over sampled spell lists for whole-run totals.
+                        if
+                            k == "healing"
+                            or (k == "damage" and raw.dealt == nil)
+                            or (k == "taken" and raw.taken == nil)
+                        then
+                            run.values[k] = m.total
+                        end
+                    end
+                else
+                    run.unavailable[k] = reason
+                end
             end
         end
         local level = run.values.level

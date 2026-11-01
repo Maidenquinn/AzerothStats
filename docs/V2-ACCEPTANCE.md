@@ -1,6 +1,6 @@
 # V2 native acceptance recipe
 
-Candidate: **2.0.0-dev.11**, branch `codex/v2-runtime`. Not a stable release or a
+Candidate: **2.0.0-dev.12**, branch `codex/v2-runtime`. Not a stable release or a
 claim of fresh game-team approval. Native acceptance remains pending.
 
 ## Prepare
@@ -13,7 +13,7 @@ saves. Disable duplicate copies. Extract the player ZIP so
 
 ## Native interface
 
-1. `/azstats`: verify version 2.0.0-dev.11, all six routes, Settings and Diagnostics.
+1. `/azstats`: verify version 2.0.0-dev.12, all six routes, Settings and Diagnostics.
    Check normal/smaller screens, large text and scale.
 2. Preview all five themes; Apply/Cancel retain/restore the choice. Check dropdowns,
    tooltips, historical item descriptions and minimap button.
@@ -153,7 +153,7 @@ navigation session; these live observation paths are not accepted by this audit.
 
 ### dev.8 native counter-check after reload
 
-The client displayed 2.0.0-dev.11. The retained Elwynn 21:50 two-player report
+The client displayed 2.0.0-dev.12. The retained Elwynn 21:50 two-player report
 showed three group cards followed by a separate ranking for Maiden and Maidenn,
 with no overlap. A fresh custom-objective draft changed Wins to Gold and retained
 its explicit Add goal button; the Progression column was localized to French.

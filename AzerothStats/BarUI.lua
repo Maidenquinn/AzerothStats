@@ -6,13 +6,26 @@ local editor
 
 --- Ellipsize plain HUD text at the readable floor; full model text stays available in its tooltip.
 local function barText(font, value)
+    value = value or ""
     W.put(font, value)
-    if font.GetStringWidth then
-        local prefix = value
-        while string.len(prefix) > 0 and font:GetStringWidth() > font.fontWidth do
-            prefix = A.PrefixText(prefix, string.len(prefix) - 1)
-            font:SetText(prefix .. "...")
+    if not font.GetStringWidth or not font.fontWidth or font:GetStringWidth() <= font.fontWidth then
+        return
+    end
+    -- Binary search: character-by-character GetStringWidth was a multi-ms hitch per cell.
+    local lo, hi = 0, string.len(value)
+    while lo < hi do
+        local mid = math.floor((lo + hi + 1) / 2)
+        font:SetText(A.PrefixText(value, mid) .. "...")
+        if font:GetStringWidth() <= font.fontWidth then
+            lo = mid
+        else
+            hi = mid - 1
         end
+    end
+    if lo <= 0 then
+        font:SetText("...")
+    else
+        font:SetText(A.PrefixText(value, lo) .. "...")
     end
 end
 

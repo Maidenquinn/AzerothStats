@@ -1,3 +1,11 @@
+# 2.0.0-dev.12 — live sampler performance without data loss
+
+- Cut combat freezes from the 1 Hz sampler: staggered equipment tooltip scans, stamp-aware meter/spell/journal freshness, and jewelry baseline caching.
+- Stop full SavedVariables validation on every V2 write; validate the mutated V2 store only.
+- Cache Nemesis combat-log patterns; skip HUD bar repaint when hidden; index locale GameText once.
+- Force meter rereads on native UPDATED stamps, flush equipment tooltips at run end, and keep immediate spell-rank accounting.
+- Add offline PERF DATA INTEGRITY coverage (7,432 assertions total).
+
 # 2.0.0-dev.11 — isolate native foreground artifact
 
 - Add session-only `/azstats overlay off|on|bar|window` controls for live A/B diagnosis.

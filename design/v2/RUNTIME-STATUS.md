@@ -1,4 +1,4 @@
-# V2 native — candidat 2.0.0-dev.11, 31 octobre 2026
+# V2 native — candidat 2.0.0-dev.12, 31 octobre 2026
 
 Branche isolée : `codex/v2-runtime`. La V1 publique 1.7.1-beta.1 reste inchangée. Le candidat dev.3
 n'a pas été installé : l'installation locale précédente reste en place. Ce candidat n'est pas une release stable.

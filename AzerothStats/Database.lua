@@ -142,6 +142,30 @@ function A.Account(run)
         end
     end
     -- Separate ledger for sampled spell counters. Never add rates or last-boss meters.
+    -- Include native UPDATED stamps so composition changes are not skipped when totals match.
+    -- Do not use sampledAt: it changes every poll and would defeat the skip.
+    local meterMark = {
+        damage = run.meters.damage and {
+            run.meters.damage.total,
+            table.getn(run.meters.damage.rows or {}),
+            AZS_METER_UPDATED,
+        },
+        healing = run.meters.healing and {
+            run.meters.healing.total,
+            table.getn(run.meters.healing.rows or {}),
+            AZS_HEALING_UPDATED,
+        },
+        taken = run.meters.taken and {
+            run.meters.taken.total,
+            table.getn(run.meters.taken.rows or {}),
+            AZS_TAKEN_UPDATED,
+        },
+    }
+    local meterSig = A.Sign(meterMark)
+    if meterSig == run.spellMeterSig then
+        return
+    end
+    run.spellMeterSig = meterSig
     run.spellAccounted = run.spellAccounted or {}
     for _, mode in ipairs({ "damage", "healing", "taken" }) do
         local m = run.meters[mode]

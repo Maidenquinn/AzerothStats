@@ -181,12 +181,14 @@ function A.ReadMeter(key, gate)
     end
     local raw = getglobal(source.raw)
     local boundary = gate and gate[key]
-    if
-        boundary
-        and boundary.sig == A.Sign(A.Copy(raw))
-        and boundary.stamp == getglobal(source.raw .. "_UPDATED")
-    then
-        return nil, "attente d'un paquet frais"
+    -- Prefer the native UPDATED stamp before Sign(Copy): leftover meter tables are large.
+    if boundary then
+        local stamp = getglobal(source.raw .. "_UPDATED")
+        if boundary.stamp == stamp then
+            if boundary.sig == A.Sign(A.Copy(raw)) then
+                return nil, "attente d'un paquet frais"
+            end
+        end
     end
     if type(raw) ~= "table" then
         return nil, "API absente"
