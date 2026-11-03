@@ -1,7 +1,16 @@
 -- LOT 2: bounded, opt-in combat-event observer. Never modifies the native meter.
 local A = AzerothStats
-local state =
-    { cursor = nil, streamId = nil, runId = nil, summary = nil, lastRun = nil, lastFlush = nil, status = "disabled", lastError = nil, reads = 0 }
+local state = {
+    cursor = nil,
+    streamId = nil,
+    runId = nil,
+    summary = nil,
+    lastRun = nil,
+    lastFlush = nil,
+    status = "disabled",
+    lastError = nil,
+    reads = 0,
+}
 local function newSummary()
     return {
         hits = 0,
@@ -75,7 +84,12 @@ local function flush()
     end
 end
 function A.V2CombatDiagnostics()
-    return { status = state.status, error = state.lastError, reads = state.reads, summary = state.summary }
+    return {
+        status = state.status,
+        error = state.lastError,
+        reads = state.reads,
+        summary = state.summary,
+    }
 end
 function A.V2CombatReset()
     state.cursor, state.streamId, state.runId, state.summary = nil, nil, nil, nil
