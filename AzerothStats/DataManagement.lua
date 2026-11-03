@@ -282,9 +282,9 @@ function A.CreateDataBackup(automatic)
         while table.getn(store.entries) > 15 do
             table.remove(store.entries, 1)
         end
-        return true, "Automatic safety backup #" .. id .. " saved"
+        return true, "Automatic safety backup No." .. id .. " saved"
     end
-    return true, "Manual backup #" .. id .. " saved; reload to write it to disk"
+    return true, "Manual backup No." .. id .. " saved; reload to write it to disk"
 end
 
 function A.RestoreDataBackup(id, automatic)
@@ -315,7 +315,7 @@ function A.RestoreDataBackup(id, automatic)
         return false, "Backup could not be loaded"
     end
     A.V2Reconcile()
-    return true, "Backup #" .. entry.id .. " restored; reload recommended"
+    return true, "Backup No." .. entry.id .. " restored; reload recommended"
 end
 
 function A.DeleteDataBackup(id, automatic)
