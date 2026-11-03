@@ -1227,14 +1227,14 @@ function A.RefreshUI()
     show(UI.historyMap, browsingHistory)
     if browsingHistory then
         UI.classButton:ClearAllPoints()
-        UI.classButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 218, -160)
+        UI.classButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 218, -160)
         UI.difficultyButton:ClearAllPoints()
-        UI.difficultyButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 518, -160)
+        UI.difficultyButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 518, -160)
     else
         UI.classButton:ClearAllPoints()
-        UI.classButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 714, -100)
+        UI.classButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 714, -100)
         UI.difficultyButton:ClearAllPoints()
-        UI.difficultyButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 518, -100)
+        UI.difficultyButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 518, -100)
     end
     put(
         UI.historyMap.label,
