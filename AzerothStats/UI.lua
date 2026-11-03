@@ -2590,7 +2590,6 @@ function A.BuildUI()
     surface(advanced, "main")
     -- A solid top-layer fill keeps rows readable regardless of theme opacity.
     advanced.opaqueBackdrop = solid(advanced, unpack(COLORS.background))
-    advanced.opaqueBackdrop:SetDrawLayer("ARTWORK", -8)
     advanced:Hide()
     UI.advancedFields = {}
     local title = font(advanced, 18, 10, 500, 28, 17, COLORS.gold)
@@ -2675,7 +2674,6 @@ function A.BuildUI()
     calendar:EnableMouse(true)
     surface(calendar, "main")
     calendar.opaqueBackdrop = solid(calendar, unpack(COLORS.panel))
-    calendar.opaqueBackdrop:SetDrawLayer("ARTWORK", -8)
     calendar:Hide()
     UI.historyCalendar = calendar
     local monthNames = {
