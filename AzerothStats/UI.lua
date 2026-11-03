@@ -1981,6 +1981,30 @@ local function buildSettings(frame)
     button(p, 370, 364, 330, 28, "Manage local data", function()
         A.OpenDataManagement()
     end)
+    button(p, 370, 402, 160, 28, "Backup now", function()
+        local ok, message = A.CreateDataBackup()
+        A.Say(message)
+        if ok and type(ReloadUI) == "function" then
+            ReloadUI()
+        end
+    end)
+    local restoreConfirm = false
+    local restoreButton
+    restoreButton = button(p, 540, 402, 160, 28, "Restore backup", function()
+        if not restoreConfirm then
+            restoreConfirm = true
+            put(restoreButton.label, "Confirm restore")
+            A.Say("Restore replaces your current statistics. Click Confirm restore again.")
+            return
+        end
+        restoreConfirm = false
+        put(restoreButton.label, "Restore backup")
+        local ok, message = A.RestoreDataBackup()
+        A.Say(message)
+        if ok and type(ReloadUI) == "function" then
+            ReloadUI()
+        end
+    end)
 end
 
 --- Create all addon-owned frames once, then initialize local positioning and presentation.
