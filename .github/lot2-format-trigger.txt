@@ -1,1 +1,0 @@
-Normalize LOT 2 observer and player checksums once.
