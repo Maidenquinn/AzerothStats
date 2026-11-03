@@ -327,7 +327,12 @@ local function historyDate(text, endOfDay)
     end
     if type(time) == "function" then
         local ok, value = pcall(time, {
-            year = year, month = month, day = day, hour = hour, min = minute, sec = second,
+            year = year,
+            month = month,
+            day = day,
+            hour = hour,
+            min = minute,
+            sec = second,
         })
         if ok and type(value) == "number" then
             return value
@@ -366,8 +371,11 @@ function A.ParseHistoryFilters(fields)
                 filters[field] = tonumber(raw)
             end
         end
-        if filters[key .. "Min"] and filters[key .. "Max"]
-            and filters[key .. "Min"] > filters[key .. "Max"] then
+        if
+            filters[key .. "Min"]
+            and filters[key .. "Max"]
+            and filters[key .. "Min"] > filters[key .. "Max"]
+        then
             return nil, "Minimum exceeds maximum for " .. key
         end
     end
@@ -424,19 +432,42 @@ function A.MatchesHistory(run)
             return false
         end
     end
-    if not between((run.values and run.values.level) or run.level, filters.levelMin, filters.levelMax) then
+    if
+        not between(
+            (run.values and run.values.level) or run.level,
+            filters.levelMin,
+            filters.levelMax
+        )
+    then
         return false
     end
-    if not between((run.values and run.values.kills) or run.kills, filters.killsMin, filters.killsMax) then
+    if
+        not between(
+            (run.values and run.values.kills) or run.kills,
+            filters.killsMin,
+            filters.killsMax
+        )
+    then
         return false
     end
-    if not between((run.values and run.values.gold) or run.gold, filters.goldMin, filters.goldMax) then
+    if
+        not between((run.values and run.values.gold) or run.gold, filters.goldMin, filters.goldMax)
+    then
         return false
     end
-    if not between((run.values and run.values.duration) or run.duration, filters.durationMin, filters.durationMax) then
+    if
+        not between(
+            (run.values and run.values.duration) or run.duration,
+            filters.durationMin,
+            filters.durationMax
+        )
+    then
         return false
     end
-    if (filters.dateMin or filters.dateMax) and not between(run.startedAt, filters.dateMin, filters.dateMax) then
+    if
+        (filters.dateMin or filters.dateMax)
+        and not between(run.startedAt, filters.dateMin, filters.dateMax)
+    then
         return false
     end
     local search = string.lower(A.Text(A.view.historySearch or "", 80) or "")
