@@ -1,3 +1,11 @@
+# 2.0.0-dev.14 — V2 LOT 1 compatibility foundation
+
+- Add passive feature capability checks for native game 0.139.2, with independent handling of missing, unavailable, malformed and failing APIs.
+- Establish opt-in Combat Intelligence and Encounter Intelligence, co-op-aware default and balanced reports as read-only defaults; no new polling or persistent schema migration.
+- Add offline regression tests and data/API contract documentation; preserve V1 accounting and V2 schema-1 history.
+- Normalize existing V2 formatting and rebuild a stale generated localization catalog to restore green CI.
+- Remains a preview: native in-game acceptance of the future collectors is not claimed.
+
 # 2.0.0-dev.13 — reset lifetime totals and edit chrome spacing
 
 - Add **Reset this total** for Overview lifetime counters (runs, wins, play time, kills, gold, damage and related sums), with `sumResets` fences so old runs cannot repopulate cleared ledgers.
