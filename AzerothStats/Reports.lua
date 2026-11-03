@@ -281,6 +281,33 @@ function A.RunValueSource(run, key)
     return A.T("Last sample")
 end
 
+-- Translate native combat source identifiers only for presentation; preserve raw keys in saved data.
+local function combatSourceLabel(raw)
+    if type(raw) ~= "string" then
+        return A.T("Unknown"), nil
+    end
+    local _, _, kind, token = string.find(raw, "^(%a+):([%w_%.]+):r%d+$")
+    if not kind then
+        _, _, kind, token = string.find(raw, "^(%a+):([%w_%.]+)$")
+    end
+    if kind and token then
+        local _, _, slug = string.find(token, "([%w_]+)$")
+        if slug then
+            local key = "ability." .. slug .. ".name"
+            local translated = A.G(key)
+            if translated then
+                return translated, A.gameSpellIcons and A.gameSpellIcons[key]
+            end
+            local words = string.gsub(slug, "_", " ")
+            words = string.gsub(words, "(%a)([%w]*)", function(first, rest)
+                return string.upper(first) .. rest
+            end)
+            return words, nil
+        end
+    end
+    return A.SourceName(raw), A.SpellIcon(raw)
+end
+
 function A.ReportModel(model, run)
     model.title, model.layout, model.report = A.T("Run report"), "report", true
     model.rowY, model.rowHeight, model.capacity = 350, 58, 6
@@ -492,12 +519,14 @@ function A.ReportModel(model, run)
                 end)
                 for i = 1, math.min(5, table.getn(sources)) do
                     local source = sources[i]
-                    row(
-                        "Source: " .. A.SourceName(source.name),
-                        A.Short(source.damage),
-                        A.Format(source.hits)
-                            .. " recorded hits; observed damage, not the official meter."
-                    )
+                    local displayName, icon = combatSourceLabel(source.name)
+                    table.insert(model.rows, {
+                        label = displayName,
+                        value = A.Short(source.damage),
+                        exact = A.Format(source.damage),
+                        detail = A.Format(source.hits) .. " " .. A.T("Hits") .. " · " .. A.T("Observed"),
+                        icon = icon,
+                    })
                 end
             else
                 row(
