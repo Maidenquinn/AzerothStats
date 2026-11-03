@@ -110,7 +110,10 @@ check(
         and A.db.totals.records.damage.id == "old-pruned",
     "detail deletion subtracts accounted run and preserves unrelated pruned record"
 )
-check(AzerothStatsBackup and AzerothStatsBackup.data.totals.runs == 103, "deletion creates independent backup")
+check(
+    AzerothStatsBackup and AzerothStatsBackup.data.totals.runs == 103,
+    "deletion creates independent backup"
+)
 check(AzerothStatsBackup.data.runs[1].id == "delete-a", "backup retains deleted run")
 local beforeRestore = A.db.totals.runs
 check(A.RestoreDataBackup(), "restore succeeds from validated independent snapshot")
@@ -134,7 +137,10 @@ check(
     A.FindRun(b.id) and A.FindRun(c.id) and not A.FindRun(d.id) and not A.FindRun(e.id),
     "class-history clear preserves favorites and other classes"
 )
-check(A.db.totals.runs == 100 and A.db.totals.sum.damage == 120456, "class-history clear subtracts known contributions only")
+check(
+    A.db.totals.runs == 100 and A.db.totals.sum.damage == 120456,
+    "class-history clear subtracts known contributions only"
+)
 totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
 -- The visible list selects a run without changing any saved data.
 A.OpenDataManagement()
