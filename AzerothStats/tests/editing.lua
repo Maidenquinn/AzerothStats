@@ -285,8 +285,8 @@ A.pendingEntryPlan =
 check(A.ConfirmEntryAction() and A.FindRun(second.id), "removing a bookmark keeps its source run")
 A.pendingEntryPlan = A.EntryPlan({ kind = "run", key = second.id, label = "History" })
 check(
-    A.ConfirmEntryAction() and not A.FindRun(second.id) and A.Sign(A.db.totals.sum) == sums,
-    "single-row history deletion keeps cumulative totals"
+    A.ConfirmEntryAction() and not A.FindRun(second.id) and A.db.totals.sum.damage == 1000,
+    "single-row history deletion removes accounted damage from cumulative totals"
 )
 -- Lifetime totals (e.g. kills) were hide-only; expose an explicit total reset.
 first.values.kills, first.accounted.kills = 30, nil
