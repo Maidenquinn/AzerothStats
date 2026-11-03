@@ -181,12 +181,16 @@ A.editMode = true
 A.RefreshUI()
 _, _, _, restoreX = A.ui.restoreRows:GetPoint()
 _, _, _, doneX = A.ui.editToggle:GetPoint()
-local _, _, _, diffX = A.ui.difficultyButton:GetPoint()
+local _, _, _, _, diffY = A.ui.difficultyButton:GetPoint()
+local _, _, _, _, restoreY = A.ui.restoreRows:GetPoint()
+local _, _, _, _, doneY = A.ui.editToggle:GetPoint()
 check(
     restoreX + A.ui.restoreRows:GetWidth() + 10 <= doneX
-        and diffX + A.ui.difficultyButton:GetWidth() <= restoreX
-        and doneX + A.ui.editToggle:GetWidth() <= 920,
-    "history edit chrome clears class/difficulty and Restore/Done"
+        and doneX + A.ui.editToggle:GetWidth() <= 920
+        and restoreY == -724
+        and doneY == -724
+        and diffY > restoreY + A.ui.restoreRows:GetHeight(),
+    "history edit chrome stays in footer below class/difficulty filters"
 )
 A.editMode = false
 A.view.tab = 1
