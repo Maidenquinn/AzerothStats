@@ -111,12 +111,12 @@ check(
     "detail deletion subtracts accounted run and preserves unrelated pruned record"
 )
 check(
-    AzerothStatsAutoBackup and AzerothStatsAutoBackup.data.totals.runs == 103,
+    AzerothStatsAutoBackup and AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)].data.totals.runs == 103,
     "deletion creates independent automatic backup"
 )
 check(A.CreateDataBackup(), "manual backup can be created independently")
 check(
-    AzerothStatsAutoBackup.data.runs[1].id == "delete-a",
+    AzerothStatsAutoBackup.entries[1].data.runs[1].id == "delete-a",
     "automatic snapshot retains deleted run"
 )
 local beforeRestore = A.db.totals.runs
@@ -127,10 +127,19 @@ check(A.db.totals.runs ~= beforeRestore, "restore changes data rather than merel
 A.PrepareDataAction("run", nil, "delete-a")
 check(A.ConfirmDataAction(), "run can be removed again after restore")
 check(
-    AzerothStatsBackup.data.totals.runs == 103,
+    AzerothStatsBackup.entries[1].data.totals.runs == 103,
     "automatic deletion never overwrites manual backup"
 )
-check(AzerothStatsAutoBackup.data.totals.runs == 103, "automatic snapshot updates independently")
+check(AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)].data.totals.runs == 103, "automatic snapshot updates independently")
+for index = 1, 17 do
+    check(A.CreateDataBackup(true), "automatic snapshot " .. index)
+end
+check(table.getn(A.ListDataBackups(true)) == 15, "automatic history capped at fifteen")
+check(table.getn(A.ListDataBackups(false)) == 1, "manual backup remains independent")
+check(AzerothStatsAutoBackup.entries[1].id > 1, "oldest automatic snapshots rotate out")
+check(A.CreateDataBackup(), "second manual snapshot")
+check(table.getn(A.ListDataBackups(false)) == 2, "manual history appends instead of overwriting")
+
 totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
 local d = fixture("other-warrior")
 table.insert(A.db.runs, d)
