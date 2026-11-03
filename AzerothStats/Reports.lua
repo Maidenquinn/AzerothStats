@@ -380,7 +380,9 @@ function A.ReportModel(model, run)
         end
         model.emptyText = A.T(run.recordBaseline and "No data yet" or "No record baseline")
     else
-        if section == "Combat" then
+        if section == "Combat Intelligence" then
+            model.columnLabel, model.columnValue = "Combat Intelligence", "Observed"
+            model.note = "Partial native combat events; official damage meter remains authoritative"
             local data = A.V2RunData and A.V2RunData(run)
             local combat = data and data.combatIntelligence
             local live = A.V2CombatDiagnostics and A.V2CombatDiagnostics()
@@ -420,6 +422,7 @@ function A.ReportModel(model, run)
                 end
             end
         end
+        if section ~= "Combat Intelligence" then
         local meter = run.meters and run.meters.damage
         local rows = {}
         for i = 1, math.min(256, table.getn(meter and meter.rows or {})) do
@@ -439,6 +442,7 @@ function A.ReportModel(model, run)
                 detail = A.T("Per second") .. " " .. A.CompactRate(entry.dps),
                 icon = A.SpellIcon(name),
             })
+        end
         end
     end
     A.DecorateFavorites(model, 5, run)
