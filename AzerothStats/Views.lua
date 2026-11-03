@@ -302,6 +302,131 @@ function A.RunContext(run)
         .. (A.CoopLabel(run) and (" · " .. A.CoopLabel(run)) or "")
 end
 
+--- Calendar dates are validated before changing active filters. UTC fallback is deterministic
+--- in the offline test harness; the game client's local time() takes precedence.
+local function historyDate(text, endOfDay)
+    if text == nil or text == "" then
+        return nil
+    end
+    local _, _, year, month, day = string.find(tostring(text), "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+    year, month, day = tonumber(year), tonumber(month), tonumber(day)
+    if not year or year < 1970 or year > 2100 or not month or month < 1 or month > 12 then
+        return nil, "Invalid date (YYYY-MM-DD)"
+    end
+    local days = ({ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 })[month]
+    local leap = math.mod(year, 4) == 0 and (math.mod(year, 100) ~= 0 or math.mod(year, 400) == 0)
+    if month == 2 and leap then
+        days = 29
+    end
+    if not day or day < 1 or day > days then
+        return nil, "Invalid date (YYYY-MM-DD)"
+    end
+    local hour, minute, second = 0, 0, 0
+    if endOfDay then
+        hour, minute, second = 23, 59, 59
+    end
+    if type(time) == "function" then
+        local ok, value = pcall(time, {
+            year = year,
+            month = month,
+            day = day,
+            hour = hour,
+            min = minute,
+            sec = second,
+        })
+        if ok and type(value) == "number" then
+            return value
+        end
+    end
+    local y = year - (month <= 2 and 1 or 0)
+    local era = math.floor(y / 400)
+    local yoe = y - era * 400
+    local m = month + (month > 2 and -3 or 9)
+    local doy = math.floor((153 * m + 2) / 5) + day - 1
+    local doe = yoe * 365 + math.floor(yoe / 4) - math.floor(yoe / 100) + doy
+    return (era * 146097 + doe - 719468) * 86400 + hour * 3600 + minute * 60 + second
+end
+
+--- Bounds are derived only from retained runs, not hypothetical game limits.
+function A.HistoryMetricBounds()
+    local result = {}
+    for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+        local lowest, highest, count = nil, nil, 0
+        for _, run in ipairs(A.db.runs or {}) do
+            local values = run.values or {}
+            local value = tonumber(values[key])
+            if value == nil then
+                value = tonumber(run[key])
+            end
+            if value and value >= 0 then
+                value = math.floor(value)
+                lowest = lowest and math.min(lowest, value) or value
+                highest = highest and math.max(highest, value) or value
+                count = count + 1
+            end
+        end
+        if count > 0 then
+            -- All runs begin at level 1; other statistics may start at zero.
+            result[key] = {
+                min = key == "level" and 1 or 0,
+                max = math.max(highest, key == "level" and 1 or 0),
+                observedMin = lowest,
+                count = count,
+            }
+        end
+    end
+    return result
+end
+
+--- Parse an entire panel as one transaction, rejecting reversed or invalid ranges.
+function A.ParseHistoryFilters(fields)
+    fields = fields or {}
+    local filters = {}
+    local map = tostring(fields.map or "")
+    map = string.gsub(map, "^%s+", "")
+    map = string.gsub(map, "%s+$", "")
+    if string.len(map) > 80 then
+        return nil, "Map filter is too long"
+    end
+    if map ~= "" then
+        filters.map = map
+    end
+    for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+        for _, bound in ipairs({ "Min", "Max" }) do
+            local field = key .. bound
+            local raw = tostring(fields[field] or "")
+            if raw ~= "" then
+                if not string.find(raw, "^%d+$") or string.len(raw) > 12 then
+                    return nil, "Invalid " .. key .. " range"
+                end
+                filters[field] = tonumber(raw)
+            end
+        end
+        if
+            filters[key .. "Min"]
+            and filters[key .. "Max"]
+            and filters[key .. "Min"] > filters[key .. "Max"]
+        then
+            return nil, "Minimum exceeds maximum for " .. key
+        end
+    end
+    local from, fromErr = historyDate(fields.dateFrom, false)
+    if fromErr then
+        return nil, fromErr
+    end
+    local to, toErr = historyDate(fields.dateTo, true)
+    if toErr then
+        return nil, toErr
+    end
+    if from and to and from > to then
+        return nil, "Start date exceeds end date"
+    end
+    filters.dateMin, filters.dateMax = from, to
+    filters.dateFrom = fields.dateFrom ~= "" and fields.dateFrom or nil
+    filters.dateTo = fields.dateTo ~= "" and fields.dateTo or nil
+    return filters
+end
+
 --- Search is bounded plain text, never a Lua pattern. No group evidence means unknown, not solo.
 function A.MatchesHistory(run)
     if A.view.class and A.view.class ~= run.class then
@@ -319,6 +444,63 @@ function A.MatchesHistory(run)
     if A.view.historyKind == "favorite" and not A.IsFavorite("run", run.id) then
         return false
     end
+    local filters = A.view.historyAdvanced or {}
+    local function between(value, low, high)
+        if low == nil and high == nil then
+            return true
+        end
+        value = tonumber(value)
+        if not value then
+            return false
+        end
+        return (low == nil or value >= low) and (high == nil or value <= high)
+    end
+    if filters.map and filters.map ~= "" then
+        local map = string.lower(
+            tostring(run.zone or run.map or run.mapName or "") .. " " .. A.ZoneName(run)
+        )
+        if not string.find(map, string.lower(filters.map), 1, true) then
+            return false
+        end
+    end
+    if
+        not between(
+            (run.values and run.values.level) or run.level,
+            filters.levelMin,
+            filters.levelMax
+        )
+    then
+        return false
+    end
+    if
+        not between(
+            (run.values and run.values.kills) or run.kills,
+            filters.killsMin,
+            filters.killsMax
+        )
+    then
+        return false
+    end
+    if
+        not between((run.values and run.values.gold) or run.gold, filters.goldMin, filters.goldMax)
+    then
+        return false
+    end
+    if
+        not between(
+            (run.values and run.values.duration) or run.duration,
+            filters.durationMin,
+            filters.durationMax
+        )
+    then
+        return false
+    end
+    if
+        (filters.dateMin or filters.dateMax)
+        and not between(run.startedAt, filters.dateMin, filters.dateMax)
+    then
+        return false
+    end
     local search = string.lower(A.Text(A.view.historySearch or "", 80) or "")
     if search ~= "" then
         local text =
@@ -332,6 +514,8 @@ end
 
 function A.ClearHistoryFilters()
     A.view.historySearch, A.view.historyResult, A.view.historyKind = nil, nil, nil
+    A.view.historyAdvanced = nil
+    A.view.historyAdvancedOpen = false
     A.view.class, A.view.difficulty, A.view.page = nil, nil, 1
 end
 

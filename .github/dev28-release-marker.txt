@@ -1,0 +1,2 @@
+Publish verified AzerothStats 2.0.0-dev.28 test prerelease from this branch.
+Retry after runtime version alignment.

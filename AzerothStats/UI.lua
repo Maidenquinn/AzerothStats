@@ -811,6 +811,12 @@ function A.ApplyUI()
         UI.dataDialog.token:SetFont(A.Font(false), 14, "")
     end
     for _, frame in ipairs(UI.surfaces or {}) do
+        if frame.opaqueBackdrop then
+            frame.opaqueBackdrop:SetTexture(
+                unpack(frame == UI.advancedPanel and COLORS.background or COLORS.panel)
+            )
+            frame.opaqueBackdrop:SetAlpha(1)
+        end
         frame.base:SetTexture(
             unpack(frame.themeKind == "card" and COLORS.panel or COLORS.background)
         )
@@ -1218,6 +1224,22 @@ function A.RefreshUI()
             })
     )
     local browsingHistory = tab == 3 and not model.report and not model.comparison
+    show(UI.historyMap, browsingHistory)
+    if browsingHistory then
+        UI.classButton:ClearAllPoints()
+        UI.classButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 218, -160)
+        UI.difficultyButton:ClearAllPoints()
+        UI.difficultyButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 518, -160)
+    else
+        UI.classButton:ClearAllPoints()
+        UI.classButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 714, -100)
+        UI.difficultyButton:ClearAllPoints()
+        UI.difficultyButton:SetPoint("TOPLEFT", UI.historyMap:GetParent(), "TOPLEFT", 518, -100)
+    end
+    put(
+        UI.historyMap.label,
+        (A.view.historyAdvanced and A.view.historyAdvanced.map) or A.T("All maps")
+    )
     for _, widget in ipairs(UI.historyFilters or {}) do
         show(widget, browsingHistory)
     end
@@ -1240,7 +1262,49 @@ function A.RefreshUI()
                 or "All runs"
         )
     )
-    put(UI.historyReset.label, A.T("Reset filters"))
+    put(UI.historyReset.label, A.T("Filters"))
+    selected(UI.historyReset, browsingHistory and A.view.historyAdvancedOpen)
+    if UI.advancedPanel then
+        show(UI.advancedPanel, browsingHistory and A.view.historyAdvancedOpen == true)
+        if browsingHistory and A.view.historyAdvancedOpen and not UI.advancedPanel.initialized then
+            local active = A.view.historyAdvanced or {}
+            for key, field in pairs(UI.advancedFields) do
+                local val = active[key]
+                field:SetText(val == nil and "" or tostring(val))
+            end
+            UI.advancedPanel.mapChoice = active.map
+            put(UI.advancedMap.label, active.map or A.T("All maps"))
+            local bounds = A.HistoryMetricBounds()
+            for key, pair in pairs(UI.advancedSliders or {}) do
+                local limits = bounds[key]
+                for _, bound in ipairs({ "Min", "Max" }) do
+                    local slider = pair[bound]
+                    local input = UI.advancedFields[key .. bound]
+                    slider.syncing = true
+                    if limits then
+                        slider:SetMinMaxValues(limits.min, limits.max)
+                        local value = active[key .. bound]
+                        if value == nil then
+                            value = bound == "Min" and limits.min or limits.max
+                        end
+                        value = math.max(limits.min, math.min(limits.max, value))
+                        slider:SetValue(value)
+                        input:SetText(tostring(value))
+                        slider:Show()
+                    else
+                        input:SetText("")
+                        slider:Hide()
+                    end
+                    slider.syncing = false
+                end
+            end
+            for _, picker in ipairs({ UI.historyDateFromPicker, UI.historyDateToPicker }) do
+                local value = UI.advancedFields[picker.dateKey]:GetText()
+                put(picker.label, value ~= "" and value or A.T("Select date"))
+            end
+            UI.advancedPanel.initialized = true
+        end
+    end
     local journal = model.report and A.view.reportSection == "Build journal"
     show(UI.journalFilter, journal)
     put(
@@ -1277,6 +1341,7 @@ function A.RefreshUI()
     end
     show(UI.reportCompare, model.report)
     show(UI.swapRuns, model.comparison)
+    show(UI.backToRuns, model.comparison)
     for i = 1, 2 do
         local band = UI.compareHeaders[i]
         local data = model.compareRuns and model.compareRuns[i]
@@ -2386,6 +2451,42 @@ function A.BuildUI()
         A.view.page = 1
         A.RefreshUI()
     end)
+    UI.historyMap = button(frame, 724, 160, 208, 26, "All maps", function(self)
+        local options = {
+            {
+                label = A.T("All maps"),
+                action = function()
+                    A.view.historyAdvanced = A.view.historyAdvanced or {}
+                    A.view.historyAdvanced.map = nil
+                    A.view.page = 1
+                end,
+            },
+        }
+        local maps, seen = {}, {}
+        for _, run in ipairs(A.db.runs or {}) do
+            local name = A.ZoneName(run)
+            if name and name ~= "" and not seen[name] then
+                seen[name] = true
+                table.insert(maps, name)
+            end
+        end
+        table.sort(maps)
+        for _, name in ipairs(maps) do
+            local selectedName = name
+            table.insert(options, {
+                label = name,
+                action = function()
+                    A.view.historyAdvanced = A.view.historyAdvanced or {}
+                    A.view.historyAdvanced.map = selectedName
+                    A.view.page = 1
+                end,
+            })
+        end
+        A.ShowMenu(self, options)
+    end)
+    UI.historyMap:ClearAllPoints()
+    UI.historyMap:SetPoint("TOPLEFT", UI.difficultyButton, "TOPRIGHT", 8, 0)
+    dropdown(UI.historyMap)
     UI.historyFilters = {}
     local searchPanel = CreateFrame("Frame", nil, frame)
     searchPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -194)
@@ -2463,7 +2564,11 @@ function A.BuildUI()
         A.ShowMenu(self, options)
     end)
     UI.historyReset = button(frame, 766, 194, 166, 32, "", function()
-        A.ClearHistoryFilters()
+        if UI.historyCalendar then
+            UI.historyCalendar:Hide()
+        end
+        A.view.historyAdvancedOpen = not A.view.historyAdvancedOpen
+        UI.advancedPanel.initialized = false
         A.RefreshUI()
     end)
     for _, b in ipairs({ UI.historyResult, UI.historyKind, UI.historyReset }) do
@@ -2472,6 +2577,384 @@ function A.BuildUI()
     end
     dropdown(UI.historyResult)
     dropdown(UI.historyKind)
+    -- Full-height modal with an opaque local backdrop and explicit row labels.
+    -- Never cover the list with unlabelled edit boxes or use game-global overlays.
+    UI.advancedPanel = CreateFrame("Frame", nil, frame)
+    local advanced = UI.advancedPanel
+    advanced:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -236)
+    advanced:SetWidth(714)
+    advanced:SetHeight(414)
+    advanced:SetFrameStrata("FULLSCREEN_DIALOG")
+    advanced:SetFrameLevel(frame:GetFrameLevel() + 20)
+    advanced:EnableMouse(true)
+    surface(advanced, "main")
+    -- A solid top-layer fill keeps rows readable regardless of theme opacity.
+    advanced.opaqueBackdrop = solid(advanced, unpack(COLORS.background))
+    advanced:Hide()
+    UI.advancedFields = {}
+    local title = font(advanced, 18, 10, 500, 28, 17, COLORS.gold)
+    title.fixedSize = true
+    put(title, A.T("Filter my runs"))
+    local function field(key, x, y, width)
+        local input = CreateFrame("EditBox", nil, advanced)
+        input:SetPoint("TOPLEFT", advanced, "TOPLEFT", x, -y)
+        input:SetWidth(width)
+        input:SetHeight(25)
+        input:SetFont(A.Font(false), 12, "")
+        input:SetTextColor(unpack(COLORS.text))
+        input:SetAutoFocus(false)
+        if input.SetMaxLetters then
+            input:SetMaxLetters(20)
+        end
+        surface(input, "card")
+        input:SetScript("OnEscapePressed", function()
+            this:ClearFocus()
+        end)
+        input:SetScript("OnEnterPressed", function()
+            this:ClearFocus()
+        end)
+        UI.advancedFields[key] = input
+        return input
+    end
+    local mapLabel = font(advanced, 18, 52, 150, 24, 12, COLORS.gold)
+    mapLabel:Hide()
+    mapLabel.fixedSize = true
+    put(mapLabel, A.T("Map"))
+    UI.advancedMap = button(advanced, 174, 52, 510, 28, "All maps", function(self)
+        local options = {
+            {
+                label = A.T("All maps"),
+                action = function()
+                    advanced.mapChoice = nil
+                    put(self.label, A.T("All maps"))
+                end,
+            },
+        }
+        local maps, seen = {}, {}
+        for _, run in ipairs(A.db.runs or {}) do
+            local name = A.ZoneName(run)
+            if name and name ~= "" and not seen[name] then
+                seen[name] = true
+                table.insert(maps, name)
+            end
+        end
+        table.sort(maps)
+        for _, name in ipairs(maps) do
+            local selectedName = name
+            table.insert(options, {
+                label = name,
+                action = function()
+                    advanced.mapChoice = selectedName
+                    put(self.label, selectedName)
+                end,
+            })
+        end
+        A.ShowMenu(self, options)
+    end)
+    dropdown(UI.advancedMap)
+    UI.advancedMap:Hide()
+    local dateLabel = font(advanced, 18, 62, 150, 24, 12, COLORS.gold)
+    dateLabel.fixedSize = true
+    put(dateLabel, A.T("Date"))
+    local fromLabel = font(advanced, 174, 62, 86, 24, 11, COLORS.muted)
+    fromLabel.fixedSize = true
+    put(fromLabel, A.T("From"))
+    field("dateFrom", 260, 62, 158)
+    local toLabel = font(advanced, 438, 62, 46, 24, 11, COLORS.muted)
+    toLabel.fixedSize = true
+    put(toLabel, A.T("To"))
+    field("dateTo", 486, 62, 198)
+    -- Native month picker: independent of external libraries and modern WoW APIs.
+    local calendar = CreateFrame("Frame", nil, advanced)
+    calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", 260, -151)
+    calendar:SetWidth(294)
+    calendar:SetHeight(216)
+    calendar:SetFrameLevel(advanced:GetFrameLevel() + 30)
+    calendar:SetFrameStrata("TOOLTIP")
+    calendar:EnableMouse(true)
+    surface(calendar, "main")
+    calendar.opaqueBackdrop = solid(calendar, unpack(COLORS.panel))
+    calendar:Hide()
+    UI.historyCalendar = calendar
+    local monthNames = {
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    }
+    local weekNames = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" }
+    local monthTitle = font(calendar, 64, 8, 172, 24, 13, COLORS.gold)
+    monthTitle.fixedSize = true
+    local function leapYear(y)
+        return math.mod(y, 4) == 0 and (math.mod(y, 100) ~= 0 or math.mod(y, 400) == 0)
+    end
+    local function daysInMonth(y, m)
+        if m == 2 then
+            return leapYear(y) and 29 or 28
+        end
+        return ({ 31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 })[m]
+    end
+    -- Monday-first Gregorian weekday, calculated without relying on OS date().
+    local function weekday(y, m, d)
+        local offsets = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 }
+        if m < 3 then
+            y = y - 1
+        end
+        local sunday = math.mod(
+            y + math.floor(y / 4) - math.floor(y / 100) + math.floor(y / 400) + offsets[m] + d,
+            7
+        )
+        return math.mod(sunday + 6, 7) + 1
+    end
+    local function dateParts(raw)
+        local _, _, y, m, d = string.find(tostring(raw or ""), "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+        y, m, d = tonumber(y), tonumber(m), tonumber(d)
+        if
+            y
+            and y >= 1970
+            and y <= 2100
+            and m
+            and m >= 1
+            and m <= 12
+            and d
+            and d >= 1
+            and d <= daysInMonth(y, m)
+        then
+            return y, m, d
+        end
+    end
+    local renderCalendar
+    local function shiftMonth(delta)
+        local value = calendar.year * 12 + calendar.month - 1 + delta
+        local y = math.floor(value / 12)
+        if y < 1970 or y > 2100 then
+            return
+        end
+        calendar.year, calendar.month = y, math.mod(value, 12) + 1
+        renderCalendar()
+    end
+    button(calendar, 8, 8, 32, 25, "<", function()
+        shiftMonth(-1)
+    end)
+    button(calendar, 254, 8, 32, 25, ">", function()
+        shiftMonth(1)
+    end)
+    for i, name in ipairs(weekNames) do
+        local heading = font(calendar, 8 + (i - 1) * 40, 40, 36, 20, 11, COLORS.muted)
+        heading.fixedSize = true
+        put(heading, name)
+    end
+    calendar.days = {}
+    for i = 1, 42 do
+        local index = i
+        local x = 8 + math.mod(i - 1, 7) * 40
+        local y = 62 + math.floor((i - 1) / 7) * 25
+        local dayButton = button(calendar, x, y, 36, 23, "", function()
+            local day = calendar.days[index].day
+            if not day then
+                return
+            end
+            local selected = string.format("%04d-%02d-%02d", calendar.year, calendar.month, day)
+            UI.advancedFields[calendar.target]:SetText(selected)
+            local picker = calendar.target == "dateFrom" and UI.historyDateFromPicker
+                or UI.historyDateToPicker
+            put(picker.label, selected)
+            calendar:Hide()
+        end)
+        calendar.days[i] = dayButton
+    end
+    renderCalendar = function()
+        put(monthTitle, A.T(monthNames[calendar.month]) .. " " .. tostring(calendar.year))
+        local first = weekday(calendar.year, calendar.month, 1)
+        local last = daysInMonth(calendar.year, calendar.month)
+        for i, control in ipairs(calendar.days) do
+            local day = i - first + 1
+            control.day = day >= 1 and day <= last and day or nil
+            show(control, control.day ~= nil)
+            if control.day then
+                put(control.label, tostring(day))
+            end
+        end
+    end
+    local function openCalendar(target)
+        if calendar:IsShown() and calendar.target == target then
+            calendar:Hide()
+            return
+        end
+        calendar.target = target
+        calendar:ClearAllPoints()
+        calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", target == "dateFrom" and 260 or 390, -117)
+        local input = UI.advancedFields[target]
+        if not input then
+            return
+        end
+        local y, m = dateParts(input:GetText())
+        if not y then
+            local newest
+            for _, run in ipairs(A.db.runs or {}) do
+                if type(run.startedAt) == "number" and (not newest or run.startedAt > newest) then
+                    newest = run.startedAt
+                end
+            end
+            if newest and type(date) == "function" then
+                local ok, result = pcall(date, "*t", newest)
+                if ok and type(result) == "table" then
+                    y, m = result.year, result.month
+                end
+            end
+        end
+        if not y or y < 1970 or y > 2100 or not m or m < 1 or m > 12 then
+            y, m = 2026, 1
+        end
+        calendar.year, calendar.month = y, m
+        renderCalendar()
+        calendar:Show()
+    end
+    -- Each picker owns its date key; never capture the Lua 5.1 loop variable.
+    local function addDatePicker(key, x, width)
+        local target = key
+        local input = UI.advancedFields[target]
+        input:Hide()
+        input:EnableMouse(false)
+        local picker = button(advanced, x, 62, width - 30, 25, "YYYY-MM-DD", function()
+            openCalendar(target)
+        end)
+        picker:SetFrameLevel(advanced:GetFrameLevel() + 12)
+        local iconButton = button(advanced, x + width - 28, 62, 28, 25, ">", function()
+            openCalendar(target)
+        end)
+        iconButton:SetFrameLevel(advanced:GetFrameLevel() + 13)
+        picker.dateKey = target
+        return picker
+    end
+    UI.historyDateFromPicker = addDatePicker("dateFrom", 260, 158)
+    UI.historyDateToPicker = addDatePicker("dateTo", 486, 198)
+    local dateHint = font(advanced, 260, 96, 424, 17, 11, COLORS.muted)
+    dateHint.fixedSize = true
+    put(dateHint, A.T("Click a date field to open the calendar (YYYY-MM-DD)"))
+    local groups = {
+        { "level", "Level", 153 },
+        { "kills", "Kills", 199 },
+        { "gold", "Gold", 245 },
+        { "duration", "Survival (seconds)", 291 },
+    }
+    UI.advancedSliders = {}
+    for _, def in ipairs(groups) do
+        local key, y = def[1], def[3]
+        local label = font(advanced, 18, y, 150, 26, 12, COLORS.gold)
+        label.fixedSize = true
+        put(label, A.T(def[2]))
+        local minimum = font(advanced, 174, y, 64, 25, 11, COLORS.muted)
+        minimum.fixedSize = true
+        put(minimum, A.T("Min"))
+        local low = field(key .. "Min", 212, y, 64)
+        if low.SetTextInsets then
+            low:SetTextInsets(5, 5, 0, 0)
+        end
+        local maximum = font(advanced, 452, y, 64, 25, 11, COLORS.muted)
+        maximum.fixedSize = true
+        put(maximum, A.T("Max"))
+        local high = field(key .. "Max", 490, y, 74)
+        if high.SetTextInsets then
+            high:SetTextInsets(5, 5, 0, 0)
+        end
+        local pair = {}
+        for _, bound in ipairs({ "Min", "Max" }) do
+            local x = bound == "Min" and 285 or 573
+            local slider = CreateFrame(
+                "Slider",
+                "AzerothStatsHistory" .. key .. bound,
+                advanced,
+                "OptionsSliderTemplate"
+            )
+            slider:SetPoint("TOPLEFT", advanced, "TOPLEFT", x, -(y + 4))
+            slider:SetWidth(105)
+            slider:SetHeight(16)
+            slider:SetMinMaxValues(0, 1)
+            slider:SetValueStep(1)
+            for _, suffix in ipairs({ "Text", "Low", "High" }) do
+                local t = getglobal(slider:GetName() .. suffix)
+                if t then
+                    t:Hide()
+                end
+            end
+            local input = bound == "Min" and low or high
+            slider:SetScript("OnValueChanged", function()
+                if not this.syncing then
+                    input:SetText(tostring(math.floor(this:GetValue() + 0.5)))
+                end
+            end)
+            input:SetScript("OnTextChanged", function()
+                if not slider.syncing then
+                    local value = tonumber(this:GetText())
+                    if value then
+                        slider.syncing = true
+                        slider:SetValue(value)
+                        slider.syncing = false
+                    end
+                end
+            end)
+            pair[bound] = slider
+        end
+        UI.advancedSliders[key] = pair
+    end
+    UI.advancedError = font(advanced, 18, 344, 660, 20, 11, COLORS.gold)
+    UI.advancedError.fixedSize = true
+    UI.advancedApply = button(advanced, 480, 370, 204, 30, "Apply filters", function()
+        local values = { map = (A.view.historyAdvanced and A.view.historyAdvanced.map) or "" }
+        for key, input in pairs(UI.advancedFields) do
+            values[key] = input:GetText() or ""
+        end
+        local bounds = A.HistoryMetricBounds()
+        for key, limits in pairs(bounds) do
+            for _, bound in ipairs({ "Min", "Max" }) do
+                local fieldKey = key .. bound
+                local value = tonumber(values[fieldKey])
+                if not value or value < limits.min or value > limits.max then
+                    put(UI.advancedError, A.T("Out of observed range") .. ": " .. key)
+                    return
+                end
+                -- An untouched full-range slider does not filter out legacy runs.
+                if value == (bound == "Min" and limits.min or limits.max) then
+                    values[fieldKey] = ""
+                end
+            end
+        end
+        local parsed, err = A.ParseHistoryFilters(values)
+        if not parsed then
+            put(UI.advancedError, err)
+            return
+        end
+        A.view.historyAdvanced = parsed
+        calendar:Hide()
+        A.view.page = 1
+        A.view.historyAdvancedOpen = false
+        advanced.initialized = false
+        put(UI.advancedError, "")
+        A.RefreshUI()
+    end)
+    UI.advancedClear = button(advanced, 18, 370, 204, 30, "Reset all filters", function()
+        calendar:Hide()
+        A.ClearHistoryFilters()
+        advanced.mapChoice = nil
+        advanced.initialized = false
+        put(UI.advancedError, "")
+        A.RefreshUI()
+    end)
+    UI.advancedClose = button(advanced, 612, 9, 72, 28, "Close", function()
+        A.view.historyAdvancedOpen = false
+        calendar:Hide()
+        advanced.initialized = false
+        A.RefreshUI()
+    end)
     UI.journalFilter = button(frame, 714, 318, 218, 26, "", function(self)
         local options = {
             {
@@ -2520,7 +3003,7 @@ function A.BuildUI()
             elseif section == "Run report" then
                 A.OpenReport(A.Selected() and A.Selected().id)
             else
-                A.view.historySection, A.view.page = "History", 1
+                A.view.historySection, A.view.page = "History", A.view.historyReturnPage or 1
             end
             A.RefreshUI()
         end)
@@ -2544,6 +3027,12 @@ function A.BuildUI()
     end
     UI.reportCompare = button(frame, 518, 100, 198, 26, "Compare runs", function()
         A.OpenCompare(A.Selected() and A.Selected().id)
+        A.RefreshUI()
+    end)
+    UI.backToRuns = button(frame, 218, 100, 198, 26, "Back to My runs", function()
+        A.view.historySection = "History"
+        A.view.tab = 3
+        A.view.page = A.view.historyReturnPage or 1
         A.RefreshUI()
     end)
     UI.swapRuns = button(frame, 724, 100, 208, 26, "Swap runs", function()
