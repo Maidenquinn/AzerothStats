@@ -1,4 +1,4 @@
-# Azeroth Stats - 2.0.0-dev.13
+# Azeroth Stats - 2.0.0-dev.14
 
 V2 development candidate, not a stable release. Six main routes preserve the V1
 features: Overview, My runs, Analyze run, My progress, Favorites and Nemesis.
@@ -37,7 +37,7 @@ A disappearing boss is not a confirmed kill. Shared boss meters are not
 attributed to a single enemy. Return to combat does not prove a successful
 revive. Presence maxima are samples, not casts or exact uptime. Raw affix IDs
 are not assigned guessed meanings. Marks and structured star progression remain
-unavailable. The public V1 release remains 1.7.1-beta.1.
+unavailable. The V1 stable channel remains separate. V2 dev.14 is a development prerelease; LOT 1 prepares passive API capability detection and does not activate new gameplay collectors.
 
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
