@@ -1,1 +1,0 @@
-LOT2 final format and manifest retry after concurrent branch commit.
