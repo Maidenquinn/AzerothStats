@@ -1277,6 +1277,7 @@ function A.RefreshUI()
     end
     show(UI.reportCompare, model.report)
     show(UI.swapRuns, model.comparison)
+    show(UI.backToRuns, model.comparison)
     for i = 1, 2 do
         local band = UI.compareHeaders[i]
         local data = model.compareRuns and model.compareRuns[i]
@@ -2544,6 +2545,12 @@ function A.BuildUI()
     end
     UI.reportCompare = button(frame, 518, 100, 198, 26, "Compare runs", function()
         A.OpenCompare(A.Selected() and A.Selected().id)
+        A.RefreshUI()
+    end)
+    UI.backToRuns = button(frame, 218, 100, 198, 26, "Back to My runs", function()
+        A.view.historySection = "History"
+        A.view.tab = 3
+        A.view.page = A.view.historyReturnPage or 1
         A.RefreshUI()
     end)
     UI.swapRuns = button(frame, 724, 100, 208, 26, "Swap runs", function()
