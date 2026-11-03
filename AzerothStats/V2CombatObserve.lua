@@ -173,7 +173,7 @@ function A.V2CombatTick(run)
             end
         end
         state.cursor = batch.cursor
-        if not batch.hasMore then
+        if not batch.hasMore or pages >= 8 then
             break
         end
         local nextBatch, nextError = read(state.cursor)
