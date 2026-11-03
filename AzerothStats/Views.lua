@@ -308,7 +308,7 @@ local function historyDate(text, endOfDay)
     if text == nil or text == "" then
         return nil
     end
-    local year, month, day = string.match(tostring(text), "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+    local year, month, day = string.find(tostring(text), "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
     year, month, day = tonumber(year), tonumber(month), tonumber(day)
     if not year or year < 1970 or year > 2100 or not month or month < 1 or month > 12 then
         return nil, "Invalid date (YYYY-MM-DD)"
@@ -360,7 +360,7 @@ function A.ParseHistoryFilters(fields)
             local field = key .. bound
             local raw = tostring(fields[field] or "")
             if raw ~= "" then
-                if not string.match(raw, "^%d+$") or string.len(raw) > 12 then
+                if not string.find(raw, "^%d+$") or string.len(raw) > 12 then
                     return nil, "Invalid " .. key .. " range"
                 end
                 filters[field] = tonumber(raw)
