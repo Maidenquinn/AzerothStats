@@ -69,6 +69,21 @@ table.remove(A.db.runs)
 A.V2CombatTick(nil)
 check(A.V2CombatSnapshot() == nil, "inactive run clears volatile state")
 check(store.schema == 1, "schema-1 retained")
+-- Synthetic sustained backlog: never exceed the 8-page / 2048-event tick budget.
+local events = {}
+for i = 1, 256 do
+    events[i] = { kind = "damage", amount = 1, meterSourceKey = "stress" }
+end
+local page = 0
+_G.AZS_GetCombatTextEvents = function()
+    page = page + 1
+    return { apiVersion = 1, cursor = "p" .. page, streamId = "stress", events = events, hasMore = true }
+end
+A.V2CombatTick({ id = "stress", status = "active" })
+check(page == 8, "hard limit of eight native reads per tick")
+check(A.V2CombatSnapshot().hits == 2048, "all 2048 bounded events aggregated")
+check(A.V2CombatSnapshot().truncated == true, "remaining backlog explicitly flagged")
+A.V2CombatTick(nil)
 _G.AZS_GetCombatTextEvents = original
 A.db, A.run, AzerothStatsDB = db, run, saved
 A.V2Invalidate()
