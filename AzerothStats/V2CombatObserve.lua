@@ -1,6 +1,6 @@
 -- LOT 2: bounded, opt-in combat-event observer. Never modifies the native meter.
 local A = AzerothStats
-local state = { cursor = nil, streamId = nil, runId = nil, summary = nil }
+local state = { cursor = nil, streamId = nil, runId = nil, summary = nil, lastRun = nil, lastFlush = nil }
 local function newSummary()
     return {
         hits = 0,
@@ -13,6 +13,8 @@ local function newSummary()
         invalid = 0,
         gaps = 0,
         batches = 0,
+        observed = true,
+        partial = true,
         truncated = false,
         sources = {},
         schools = {},
@@ -63,21 +65,33 @@ local function enabled(run)
         and A.V2FeaturePreferences
         and A.V2FeaturePreferences().combatIntelligence
 end
+local function flush()
+    if state.summary and state.lastRun and A.V2Update then
+        local snapshot = A.Copy(state.summary)
+        A.V2Update(state.lastRun, function(entry)
+            entry.combatIntelligence = snapshot
+        end)
+    end
+end
 function A.V2CombatReset()
     state.cursor, state.streamId, state.runId, state.summary = nil, nil, nil, nil
+    state.lastRun, state.lastFlush = nil, nil
 end
 function A.V2CombatSnapshot()
     return state.summary
 end
 function A.V2CombatTick(run)
     if not enabled(run) then
+        flush()
         A.V2CombatReset()
         return
     end
     if state.runId ~= run.id then
+        flush()
         A.V2CombatReset()
         state.runId = run.id
         state.summary = newSummary()
+        state.lastRun = run
     end
     local summary = state.summary
     local batch, err = read(state.cursor)
@@ -90,9 +104,13 @@ function A.V2CombatTick(run)
         end
         return
     end
-    if state.streamId and state.streamId ~= batch.streamId then
+    if err == "STREAM_CHANGED" or (state.streamId and state.streamId ~= batch.streamId) then
         summary.gaps = summary.gaps + 1
         state.cursor, state.streamId = nil, nil
+        return
+    end
+    if type(batch.streamId) ~= "string" then
+        summary.invalid = summary.invalid + 1
         return
     end
     state.streamId = batch.streamId
@@ -176,5 +194,10 @@ function A.V2CombatTick(run)
     end
     if batch and batch.hasMore and pages >= 8 then
         summary.truncated = true -- remaining events are read on next tick
+    end
+    local t = number(run.values and run.values.duration)
+    if t and (not state.lastFlush or t >= state.lastFlush + 15) then
+        flush()
+        state.lastFlush = t
     end
 end
