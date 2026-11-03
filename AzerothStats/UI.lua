@@ -1401,7 +1401,7 @@ function A.RefreshUI()
     for index, control in ipairs(UI.overviewTabs) do
         show(control, tab == 1)
         put(control.label, A.T(index == 1 and "Overview" or "All statistics"))
-        selected(control, (index == 2) == (not dashboard))
+        selected(control, (index == 2) == not dashboard)
     end
     show(UI.recentTitle, dashboard)
     show(UI.recentEmpty, dashboard and table.getn(model.rows) == 0)
