@@ -3262,10 +3262,11 @@ function A.BuildUI()
             entry.subject,
             (
                 plan.kind == "total"
-                    and (plan.key == "runs" and A.T("Observed runs")
-                        or plan.key == "wins" and A.T("Wins")
-                        or plan.key == "duration" and A.T("Play time")
-                        or A.Metric(plan.key))
+                    and (plan.key == "runs" and A.T("Observed runs") or plan.key == "wins" and A.T(
+                        "Wins"
+                    ) or plan.key == "duration" and A.T("Play time") or A.Metric(
+                        plan.key
+                    ))
                 or plan.kind == "record" and A.Metric(plan.key)
                 or plan.label
             )

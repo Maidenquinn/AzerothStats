@@ -218,7 +218,8 @@ function A.ObserveBuild(run)
                     local old = usage.slots[slot]
                     local linkText = A.PrefixText(link, 500)
                     -- Rescan the tooltip only when the slot link itself changed.
-                    local lines = old and old.link == linkText and old.tooltip or A.CaptureItem(slot)
+                    local lines = old and old.link == linkText and old.tooltip
+                        or A.CaptureItem(slot)
                     local sig = A.Sign(lines or link)
                     local entry = usage.jewelry[key]
                     if not entry then
@@ -237,7 +238,8 @@ function A.ObserveBuild(run)
                             entry.icon = A.TexturePath(ic)
                         end
                     end
-                    usage.slots[slot] = { key = key, sig = sig, link = linkText, tooltip = entry.tooltip }
+                    usage.slots[slot] =
+                        { key = key, sig = sig, link = linkText, tooltip = entry.tooltip }
                     A.AccountUsage(run, "jewelry", key, entry)
                 end
             elseif ok then

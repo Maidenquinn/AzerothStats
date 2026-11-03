@@ -152,7 +152,11 @@ A.editMode = true
 A.RefreshUI()
 local homeKills
 for _, card in ipairs(A.ui.model.cards) do
-    if card.entryAction and card.entryAction.kind == "total" and card.entryAction.key == "kills" then
+    if
+        card.entryAction
+        and card.entryAction.kind == "total"
+        and card.entryAction.key == "kills"
+    then
         homeKills = card
     end
 end

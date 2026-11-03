@@ -53,21 +53,11 @@ local function ranks(run)
         return nil
     end
     if
-        not tableChanged(
-            run,
-            "AZS_SPELLS",
-            A.spellPacket,
-            "journalSpellsStamp",
-            "journalSpellsSig"
-        )
+        not tableChanged(run, "AZS_SPELLS", A.spellPacket, "journalSpellsStamp", "journalSpellsSig")
     then
         return nil
     end
-    if
-        run.spellsBaseline
-        and run.journalSpellsSig == run.spellsBaseline
-        and not A.spellPacket
-    then
+    if run.spellsBaseline and run.journalSpellsSig == run.spellsBaseline and not A.spellPacket then
         return nil
     end
     if table.getn(AZS_SPELLS) > 32 then
@@ -108,13 +98,7 @@ local function stats(run)
         return nil
     end
     if
-        not tableChanged(
-            run,
-            "AZS_STATS",
-            A.statsPacket,
-            "journalStatsStamp",
-            "journalStatsSig"
-        )
+        not tableChanged(run, "AZS_STATS", A.statsPacket, "journalStatsStamp", "journalStatsSig")
     then
         return nil
     end

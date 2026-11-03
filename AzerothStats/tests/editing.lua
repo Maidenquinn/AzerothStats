@@ -291,11 +291,18 @@ check(
 -- Lifetime totals (e.g. kills) were hide-only; expose an explicit total reset.
 first.values.kills, first.accounted.kills = 30, nil
 A.Account(first)
-check(A.db.totals.sum.kills == 30 and A.db.classes.warrior.sum.kills == 30, "kills enter lifetime sums")
+check(
+    A.db.totals.sum.kills == 30 and A.db.classes.warrior.sum.kills == 30,
+    "kills enter lifetime sums"
+)
 A.view.tab, A.view.overviewStats, A.editMode = 1, true, true
 local killsCard
 for _, item in ipairs(A.PageModel().cards) do
-    if item.entryAction and item.entryAction.kind == "total" and item.entryAction.key == "kills" then
+    if
+        item.entryAction
+        and item.entryAction.kind == "total"
+        and item.entryAction.key == "kills"
+    then
         killsCard = item
     end
 end

@@ -94,9 +94,7 @@ AZS_METER_UPDATED = 2
 NOW = NOW + 0.5
 A.Sample()
 check(
-    run.meters.damage
-        and run.meters.damage.total == 65
-        and A.db.totals.spells.damage.Backstab == 25,
+    run.meters.damage and run.meters.damage.total == 65 and A.db.totals.spells.damage.Backstab == 25,
     "UPDATED stamp forces meter reread inside the 2s quiet window"
 )
 check(run.meterReadAt.damage ~= nil, "meter read clock is recorded")
@@ -154,7 +152,10 @@ check(
     run.equipmentTooltips[1] and run.equipmentTooltips[12],
     "end-of-run finalize keeps equipment descriptions"
 )
-check(A.db.totals.wins == 1 and A.db.totals.sum.damage == 65, "lifetime ledgers keep final counters")
+check(
+    A.db.totals.wins == 1 and A.db.totals.sum.damage == 65,
+    "lifetime ledgers keep final counters"
+)
 
 GetInventoryItemLink, GetInventoryItemTexture = oldLink, oldTexture
 methods.SetInventoryItem, methods.NumLines = oldSet, oldNum
