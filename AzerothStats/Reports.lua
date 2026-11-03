@@ -11,6 +11,9 @@ function A.FindRun(id)
 end
 
 function A.OpenReport(id)
+    if A.view.tab == 3 and (A.view.historySection == nil or A.view.historySection == "History") then
+        A.view.historyReturnPage = A.view.page or 1
+    end
     A.view.tab, A.view.historySection, A.view.page = 3, "Run report", 1
     A.view.selected = id
     A.view.reportSection = A.view.reportSection or "Overview"
@@ -24,6 +27,9 @@ function A.OpenCompare(id)
         first = A.FindRun(id)
     else
         first = A.Selected()
+    end
+    if A.view.tab == 3 and (A.view.historySection == nil or A.view.historySection == "History") then
+        A.view.historyReturnPage = A.view.page or 1
     end
     A.view.tab, A.view.historySection, A.view.page = 3, "Compare runs", 1
     A.view.compareA, A.view.compareB = first and first.id, nil
