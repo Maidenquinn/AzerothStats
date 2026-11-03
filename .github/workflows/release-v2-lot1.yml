@@ -24,7 +24,7 @@ jobs:
       - name: Verify package policy and build installable artifact
         run: |
           python tools/build_release.py --output release-assets/lot1
-          sha256sum --check release-assets/lot1/AzerothStats-2.0.0-dev.14.zip.sha256
+          (cd release-assets/lot1 && sha256sum --check AzerothStats-2.0.0-dev.14.zip.sha256)
       - name: Publish a development prerelease
         env:
           GH_TOKEN: ${{ github.token }}

@@ -1,1 +1,1 @@
-One-shot release of V2 LOT 1 dev.14 when this branch is merged into main.
+Retry publishing dev.14 after fixing checksum verification working directory. 2026-11-03.
