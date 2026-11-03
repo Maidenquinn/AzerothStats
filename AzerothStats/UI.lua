@@ -812,7 +812,9 @@ function A.ApplyUI()
     end
     for _, frame in ipairs(UI.surfaces or {}) do
         if frame.opaqueBackdrop then
-            frame.opaqueBackdrop:SetTexture(unpack(frame == UI.advancedPanel and COLORS.background or COLORS.panel))
+            frame.opaqueBackdrop:SetTexture(
+                unpack(frame == UI.advancedPanel and COLORS.background or COLORS.panel)
+            )
             frame.opaqueBackdrop:SetAlpha(1)
         end
         frame.base:SetTexture(
@@ -1223,7 +1225,10 @@ function A.RefreshUI()
     )
     local browsingHistory = tab == 3 and not model.report and not model.comparison
     show(UI.historyMap, browsingHistory)
-    put(UI.historyMap.label, (A.view.historyAdvanced and A.view.historyAdvanced.map) or A.T("All maps"))
+    put(
+        UI.historyMap.label,
+        (A.view.historyAdvanced and A.view.historyAdvanced.map) or A.T("All maps")
+    )
     for _, widget in ipairs(UI.historyFilters or {}) do
         show(widget, browsingHistory)
     end
@@ -2747,7 +2752,8 @@ function A.BuildUI()
             end
             local selected = string.format("%04d-%02d-%02d", calendar.year, calendar.month, day)
             UI.advancedFields[calendar.target]:SetText(selected)
-            local picker = calendar.target == "dateFrom" and UI.historyDateFromPicker or UI.historyDateToPicker
+            local picker = calendar.target == "dateFrom" and UI.historyDateFromPicker
+                or UI.historyDateToPicker
             put(picker.label, selected)
             calendar:Hide()
         end)
@@ -2773,13 +2779,7 @@ function A.BuildUI()
         end
         calendar.target = target
         calendar:ClearAllPoints()
-        calendar:SetPoint(
-            "TOPLEFT",
-            advanced,
-            "TOPLEFT",
-            target == "dateFrom" and 260 or 390,
-            -117
-        )
+        calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", target == "dateFrom" and 260 or 390, -117)
         local y, m = dateParts(UI.advancedFields[target]:GetText())
         if not y then
             local newest
