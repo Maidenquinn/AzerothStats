@@ -319,6 +319,23 @@ function A.MatchesHistory(run)
     if A.view.historyKind == "favorite" and not A.IsFavorite("run", run.id) then
         return false
     end
+    local filters = A.view.historyAdvanced or {}
+    local function between(value, low, high)
+        if low == nil and high == nil then return true end
+        value = tonumber(value)
+        if not value then return false end
+        return (low == nil or value >= low) and (high == nil or value <= high)
+    end
+    if filters.map and filters.map ~= "" then
+        local map = string.lower(tostring(run.map or run.zone or run.mapName or ""))
+        if not string.find(map, string.lower(filters.map), 1, true) then return false end
+    end
+    if not between(run.level or run.maxLevel, filters.levelMin, filters.levelMax) then return false end
+    if not between(run.kills, filters.killsMin, filters.killsMax) then return false end
+    if not between(run.gold, filters.goldMin, filters.goldMax) then return false end
+    if not between(run.duration or run.playTime or run.elapsed, filters.durationMin, filters.durationMax) then return false end
+    local started = tonumber(run.startedAt)
+    if (filters.dateMin or filters.dateMax) and not between(started, filters.dateMin, filters.dateMax) then return false end
     local search = string.lower(A.Text(A.view.historySearch or "", 80) or "")
     if search ~= "" then
         local text =
@@ -332,6 +349,7 @@ end
 
 function A.ClearHistoryFilters()
     A.view.historySearch, A.view.historyResult, A.view.historyKind = nil, nil, nil
+    A.view.historyAdvanced = nil
     A.view.class, A.view.difficulty, A.view.page = nil, nil, 1
 end
 
