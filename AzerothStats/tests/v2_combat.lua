@@ -1,0 +1,58 @@
+-- LOT 2: passive by default; independent cursor; bounded, loss-aware summaries.
+local A = AzerothStats
+local original, db, run, saved = _G.AZS_GetCombatTextEvents, A.db, A.run, AzerothStatsDB
+local function check(ok, why)
+    TEST_COUNT = TEST_COUNT + 1
+    assert(ok, "LOT2 combat: " .. why)
+end
+local calls = 0
+_G.AZS_GetCombatTextEvents = function()
+    calls = calls + 1
+    return { apiVersion = 1, cursor = "tail", streamId = "s1", events = {} }
+end
+A.V2CombatReset()
+A.V2CombatTick({ id = "lot2", status = "active" })
+check(calls == 0, "disabled by default, zero native reads")
+A.db, A.run, AzerothStatsDB = nil, nil, nil
+check(A.InitDB(), "database initializes")
+local store = A.V2Store(true)
+store.preferences.combatIntelligence = true
+local active = { id = "lot2", status = "active" }
+A.V2CombatTick(active)
+check(calls == 1 and A.V2CombatSnapshot().hits == 0, "subscribe at tail, no historic events")
+local cursorSeen
+_G.AZS_GetCombatTextEvents = function(cursor)
+    cursorSeen = cursor
+    return {
+        apiVersion = 1, streamId = "s1", cursor = "next", droppedCount = 2,
+        events = {
+            { kind = "damage", amount = 123, meterSourceKey = "spell:1", schoolMask = 4, critical = true },
+            { kind = "miss", result = { key = "dodge" } },
+            { kind = "damage", amount = 30, periodic = true, sourceKind = "pet" },
+        },
+    }
+end
+A.V2CombatTick(active)
+local s = A.V2CombatSnapshot()
+check(cursorSeen == "tail", "independent cursor carried forward")
+check(s.hits == 2 and s.misses == 1 and s.damageObserved == 153, "hits, misses and amount")
+check(s.critical == 1 and s.periodic == 1 and s.dropped == 2, "flags and losses")
+check(s.sources["spell:1"].damage == 123, "source aggregation")
+check(s.schools["4"].damage == 123, "school aggregation")
+_G.AZS_GetCombatTextEvents = function()
+    return nil, { code = "STREAM_CHANGED" }
+end
+A.V2CombatTick(active)
+check(A.V2CombatSnapshot().gaps == 1, "stream reset recorded")
+_G.AZS_GetCombatTextEvents = function(cursor)
+    return { apiVersion = 1, streamId = "s2", cursor = "new", events = {} }
+end
+A.V2CombatTick(active)
+check(A.V2CombatSnapshot().hits == 2, "new stream does not overwrite observations")
+A.V2CombatTick(nil)
+check(A.V2CombatSnapshot() == nil, "inactive run clears volatile state")
+check(store.schema == 1 and store.runs.lot2 == nil, "no per-hit persistent writes")
+_G.AZS_GetCombatTextEvents = original
+A.db, A.run, AzerothStatsDB = db, run, saved
+A.V2Invalidate()
+print("V2 LOT 2 COMBAT OBSERVER PASSED")
