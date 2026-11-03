@@ -216,6 +216,22 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
     local settings = A.db.settings
     if not command or command == "toggle" then
         A.ToggleUI()
+    elseif command == "backup" then
+        local ok, msg = A.CreateDataBackup()
+        A.Say(msg)
+    elseif command == "restore" then
+        if value ~= "confirm" then
+            A.Say("To restore the last backup, type /azstats restore confirm")
+        else
+            local ok, msg = A.RestoreDataBackup()
+            A.Say(msg)
+            if ok then
+                A.ApplyUI()
+            end
+        end
+    elseif command == "resync" then
+        A.V2Reconcile()
+        A.Say("Run links refreshed. Lifetime totals cannot be rebuilt from pruned history.")
     elseif command == "show" then
         A.ToggleUI(true)
     elseif command == "hide" then
