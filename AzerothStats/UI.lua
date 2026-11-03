@@ -2522,11 +2522,12 @@ function A.BuildUI()
     advanced:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -236)
     advanced:SetWidth(714)
     advanced:SetHeight(414)
+    advanced:SetFrameStrata("FULLSCREEN_DIALOG")
     advanced:SetFrameLevel(frame:GetFrameLevel() + 20)
     advanced:EnableMouse(true)
     surface(advanced, "main")
     -- A solid top-layer fill keeps rows readable regardless of theme opacity.
-    solid(advanced, 0.055, 0.047, 0.034, 0.98, "ARTWORK")
+    solid(advanced, 0.055, 0.047, 0.034, 1, "ARTWORK")
     advanced:Hide()
     UI.advancedFields = {}
     local title = font(advanced, 18, 10, 500, 28, 17, COLORS.gold)
@@ -2601,9 +2602,9 @@ function A.BuildUI()
     field("dateTo", 486, 96, 198)
     -- Native month picker: independent of external libraries and modern WoW APIs.
     local calendar = CreateFrame("Frame", nil, advanced)
-    calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", 174, -139)
-    calendar:SetWidth(510)
-    calendar:SetHeight(231)
+    calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", 260, -151)
+    calendar:SetWidth(294)
+    calendar:SetHeight(224)
     calendar:SetFrameLevel(advanced:GetFrameLevel() + 10)
     calendar:EnableMouse(true)
     surface(calendar, "main")
@@ -2625,7 +2626,7 @@ function A.BuildUI()
         "December",
     }
     local weekNames = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" }
-    local monthTitle = font(calendar, 150, 8, 220, 24, 13, COLORS.gold)
+    local monthTitle = font(calendar, 64, 8, 172, 24, 13, COLORS.gold)
     monthTitle.fixedSize = true
     local function leapYear(y)
         return math.mod(y, 4) == 0 and (math.mod(y, 100) ~= 0 or math.mod(y, 400) == 0)
@@ -2675,23 +2676,23 @@ function A.BuildUI()
         calendar.year, calendar.month = y, math.mod(value, 12) + 1
         renderCalendar()
     end
-    button(calendar, 12, 8, 44, 25, "<", function()
+    button(calendar, 8, 8, 32, 25, "<", function()
         shiftMonth(-1)
     end)
-    button(calendar, 454, 8, 44, 25, ">", function()
+    button(calendar, 254, 8, 32, 25, ">", function()
         shiftMonth(1)
     end)
     for i, name in ipairs(weekNames) do
-        local heading = font(calendar, 12 + (i - 1) * 70, 40, 60, 20, 11, COLORS.muted)
+        local heading = font(calendar, 8 + (i - 1) * 40, 40, 36, 20, 11, COLORS.muted)
         heading.fixedSize = true
         put(heading, name)
     end
     calendar.days = {}
     for i = 1, 42 do
         local index = i
-        local x = 10 + math.mod(i - 1, 7) * 70
-        local y = 62 + math.floor((i - 1) / 7) * 26
-        local dayButton = button(calendar, x, y, 62, 24, "", function()
+        local x = 8 + math.mod(i - 1, 7) * 40
+        local y = 62 + math.floor((i - 1) / 7) * 25
+        local dayButton = button(calendar, x, y, 36, 23, "", function()
             local day = calendar.days[index].day
             if not day then
                 return
@@ -2721,6 +2722,14 @@ function A.BuildUI()
             return
         end
         calendar.target = target
+        calendar:ClearAllPoints()
+        calendar:SetPoint(
+            "TOPLEFT",
+            advanced,
+            "TOPLEFT",
+            target == "dateFrom" and 260 or 390,
+            -151
+        )
         local y, m = dateParts(UI.advancedFields[target]:GetText())
         if not y then
             local newest
@@ -2749,7 +2758,7 @@ function A.BuildUI()
     UI.historyDateToPicker = button(advanced, 574, 126, 110, 22, "Pick to", function()
         openCalendar("dateTo")
     end)
-    local dateHint = font(advanced, 174, 124, 460, 17, 11, COLORS.muted)
+    local dateHint = font(advanced, 174, 124, 180, 17, 11, COLORS.muted)
     dateHint.fixedSize = true
     put(dateHint, "YYYY-MM-DD")
     local groups = {
