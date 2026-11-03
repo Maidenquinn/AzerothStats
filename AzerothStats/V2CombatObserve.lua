@@ -61,6 +61,9 @@ local function read(cursor)
     if not ok then
         return nil, "exception"
     end
+    if type(err) == "table" and err.code == "STREAM_CHANGED" then
+        return nil, "STREAM_CHANGED"
+    end
     if not batch then
         return nil, type(err) == "table" and err.code or "unavailable"
     end
@@ -126,7 +129,7 @@ function A.V2CombatTick(run)
         end
         return
     end
-    if err == "STREAM_CHANGED" or (state.streamId and state.streamId ~= batch.streamId) then
+    if state.streamId and state.streamId ~= batch.streamId then
         summary.gaps = summary.gaps + 1
         state.cursor, state.streamId = nil, nil
         return
@@ -199,6 +202,7 @@ function A.V2CombatTick(run)
             break
         end
         local nextBatch, nextError = read(state.cursor)
+        state.reads = state.reads + 1
         if
             not nextBatch
             or nextBatch.cursor == state.cursor

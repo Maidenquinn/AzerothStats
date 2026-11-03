@@ -15,6 +15,15 @@ modules = [
     if line.strip() and not line.startswith("#")
 ]
 assert len(modules) == 39 and set(modules) == {p.name for p in addon.glob("*.lua")}
+# Regression: the native combat observer must be wired to the live tracker and
+# exposed through a selectable, isolated report (not the spell meter).
+tracker = (addon / "Tracker.lua").read_text(encoding="utf-8")
+reports = (addon / "Reports.lua").read_text(encoding="utf-8")
+v2ui = (addon / "V2UI.lua").read_text(encoding="utf-8")
+assert "A.V2CombatTick(run)" in tracker
+assert 'section == "Combat Intelligence"' in reports
+assert 'section ~= "Combat Intelligence"' in reports
+assert '{ "Combat Intelligence", "Combat Intelligence" }' in v2ui
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"

@@ -56,6 +56,7 @@ local function initialize()
                 reportSection = {
                     "Overview",
                     "Combat",
+                    "Combat Intelligence",
                     "Character",
                     "Co-op",
                     "Records",

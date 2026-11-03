@@ -1,3 +1,11 @@
+# 2.0.0-dev.17 — Combat collector wiring and report routing
+
+- Call the optional combat stream observer during live run sampling.
+- Make Combat Intelligence accessible as a separate report from the Combat menu.
+- Handle native stream change responses and show collection diagnostics.
+- Preserve native meter totals and existing saved data; unavailable healing/taken remain unavailable rather than fabricated.
+- Add regression assertions for collector invocation and report navigation.
+
 # 2.0.0-dev.16 — Combat live diagnostics hotfix
 
 - Live Combat report reads current in-memory combat observations while the run is active.
