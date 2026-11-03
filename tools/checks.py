@@ -30,6 +30,9 @@ assert '"Collection quality"' in reports
 assert '"Native API reads"' not in reports
 assert "if hits > 0 then" in reports
 assert "math.min(5, table.getn(sources))" in reports
+assert "combatSourceLabel(source.name)" in reports
+assert '"Source: " .. A.SourceName(source.name)' not in reports
+assert '"ability." .. slug .. ".name"' in reports
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"
