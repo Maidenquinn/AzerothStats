@@ -2021,6 +2021,32 @@ local function buildSettings(frame)
     button(p, 370, 440, 330, 28, "Choose backup (manual / auto)", function(self)
         chooseBackup(self)
     end)
+    local deleteConfirm = false
+    local deleteButton
+    deleteButton = button(p, 370, 478, 330, 28, "Delete selected backup", function()
+        if not selectedBackup then
+            A.Say("Choose a backup first")
+            return
+        end
+        if not deleteConfirm then
+            deleteConfirm = true
+            put(deleteButton.label, "Confirm backup deletion")
+            A.Say("Delete " .. backupTitle(selectedBackup) .. "? Click again to confirm.")
+            return
+        end
+        deleteConfirm = false
+        put(deleteButton.label, "Delete selected backup")
+        local ok, message = A.DeleteDataBackup(selectedBackup.id, selectedBackup.automatic)
+        A.Say(message)
+        if ok then
+            selectedBackup = nil
+            restoreConfirm = false
+            put(restoreButton.label, "Restore selected")
+            if type(ReloadUI) == "function" then
+                ReloadUI()
+            end
+        end
+    end)
     restoreButton = button(p, 540, 402, 160, 28, "Restore selected", function()
         if not selectedBackup then
             A.Say("Choose a backup first")
