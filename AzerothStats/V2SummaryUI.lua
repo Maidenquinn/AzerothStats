@@ -108,26 +108,21 @@ function A.PlaceEditChrome(ui, model)
     if not ui or not ui.editToggle or not model or model.editable ~= true then
         return
     end
-    -- Content pane ends at x=932; keep a real gutter and gap so buttons are not flush.
-    local paneRight, inset, y, gap = 932, 14, 138, 12
+    -- Footer actions share one stable bottom-right anchor on every editable page.
+    -- Never move them back into the header during a UI refresh.
+    local paneRight, inset, y, gap = 932, 14, 724, 12
     local right = paneRight - inset
     local editing = A.editMode == true
-    local tall = model.cohort or model.analysis
-    local h = tall and 26 or 24
-    local editW = editing and 128 or (model.cohort and 198 or 110)
+    local h = 30
+    local editW = editing and 142 or 136
     local editX = right - editW
     place(ui.editToggle, A.window, editX, y, editW, h)
-    if editing and ui.restoreRows then
-        local restoreW = 186
-        local restoreX = editX - gap - restoreW
-        if model.cohort and restoreX < 632 then
-            restoreX = 632
-            restoreW = math.max(120, editX - gap - restoreX)
-        end
-        place(ui.restoreRows, A.window, restoreX, y, restoreW, h)
-        if model.analysis and ui.reportCompare then
-            place(ui.reportCompare, A.window, 360, 100, 198, 26)
-        end
+    if ui.restoreRows then
+        local restoreW = 182
+        place(ui.restoreRows, A.window, editX - gap - restoreW, y, restoreW, h)
+    end
+    if editing and model.analysis and ui.reportCompare then
+        place(ui.reportCompare, A.window, 360, 100, 198, 26)
     end
 end
 local function openGoals()
