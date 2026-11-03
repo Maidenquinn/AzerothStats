@@ -400,13 +400,21 @@ function A.ReportModel(model, run)
                 local prefs = A.V2FeaturePreferences and A.V2FeaturePreferences()
                 local status = live and live.status or "waiting"
                 if not (prefs and prefs.combatIntelligence) then
-                    row("Combat tracking", "Off", "Enable Combat Intelligence in Settings to collect new events.")
+                    row(
+                        "Combat tracking",
+                        "Off",
+                        "Enable Combat Intelligence in Settings to collect new events."
+                    )
                 elseif status == "receiving" then
                     row("Combat tracking", "Active", "Combat events are being received.")
                 elseif status == "waiting" then
                     row("Combat tracking", "Waiting", "Waiting for combat events from the game.")
                 else
-                    row("Combat tracking", "Unavailable", "The game is not currently providing combat events. See Diagnostics.")
+                    row(
+                        "Combat tracking",
+                        "Unavailable",
+                        "The game is not currently providing combat events. See Diagnostics."
+                    )
                 end
             end
             if combat then
@@ -416,36 +424,64 @@ function A.ReportModel(model, run)
                     row(
                         "Critical hit rate",
                         string.format("%.1f%%", 100 * crit / hits),
-                        A.Format(crit) .. " critical hits out of " .. A.Format(hits) .. " recorded hits."
+                        A.Format(crit)
+                            .. " critical hits out of "
+                            .. A.Format(hits)
+                            .. " recorded hits."
                     )
                     row(
                         "Periodic hit rate",
                         string.format("%.1f%%", 100 * periodic / hits),
-                        A.Format(periodic) .. " periodic hits out of " .. A.Format(hits) .. " recorded hits."
+                        A.Format(periodic)
+                            .. " periodic hits out of "
+                            .. A.Format(hits)
+                            .. " recorded hits."
                     )
                 else
                     row("Critical hit rate", "Not available", "No damage hits recorded yet.")
                     row("Periodic hit rate", "Not available", "No damage hits recorded yet.")
                 end
-                row("Missed attacks", A.Format(count("misses")), "Miss events reported by the game.")
-                row("Damage recorded", A.Short(count("damageObserved")), "Partial event feed, not the official damage total.")
+                row(
+                    "Missed attacks",
+                    A.Format(count("misses")),
+                    "Miss events reported by the game."
+                )
+                row(
+                    "Damage recorded",
+                    A.Short(count("damageObserved")),
+                    "Partial event feed, not the official damage total."
+                )
                 local dropped, gaps = count("dropped"), count("gaps")
                 if dropped == 0 and gaps == 0 then
-                    row("Collection quality", "No reported loss", "No dropped events or stream interruptions reported; completeness is not guaranteed.")
+                    row(
+                        "Collection quality",
+                        "No reported loss",
+                        "No dropped events or stream interruptions reported; completeness is not guaranteed."
+                    )
                 else
                     row(
                         "Collection quality",
                         "Possible gaps",
-                        A.Format(dropped) .. " dropped events; " .. A.Format(gaps) .. " stream interruptions."
+                        A.Format(dropped)
+                            .. " dropped events; "
+                            .. A.Format(gaps)
+                            .. " stream interruptions."
                     )
                 end
                 if combat.truncated then
-                    row("Detailed breakdown", "Limited", "Some source categories were capped to protect performance.")
+                    row(
+                        "Detailed breakdown",
+                        "Limited",
+                        "Some source categories were capped to protect performance."
+                    )
                 end
                 local sources = {}
                 for key, entry in pairs(combat.sources or {}) do
                     if type(entry) == "table" and type(entry.damage) == "number" then
-                        table.insert(sources, { name = key, damage = entry.damage, hits = entry.hits or 0 })
+                        table.insert(
+                            sources,
+                            { name = key, damage = entry.damage, hits = entry.hits or 0 }
+                        )
                     end
                 end
                 table.sort(sources, function(a, b)
@@ -459,11 +495,16 @@ function A.ReportModel(model, run)
                     row(
                         "Source: " .. A.SourceName(source.name),
                         A.Short(source.damage),
-                        A.Format(source.hits) .. " recorded hits; observed damage, not the official meter."
+                        A.Format(source.hits)
+                            .. " recorded hits; observed damage, not the official meter."
                     )
                 end
             else
-                row("Combat data", "Not collected", "Enable tracking and play a new run to record combat events.")
+                row(
+                    "Combat data",
+                    "Not collected",
+                    "Enable tracking and play a new run to record combat events."
+                )
             end
         end
         if section ~= "Combat Intelligence" then
