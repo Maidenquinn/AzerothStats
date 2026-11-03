@@ -2856,12 +2856,16 @@ function A.BuildUI()
         minimum.fixedSize = true
         put(minimum, A.T("Min"))
         local low = field(key .. "Min", 212, y, 64)
-        low:SetTextInsets(5, 5, 0, 0)
+        if low.SetTextInsets then
+            low:SetTextInsets(5, 5, 0, 0)
+        end
         local maximum = font(advanced, 452, y, 64, 25, 11, COLORS.muted)
         maximum.fixedSize = true
         put(maximum, A.T("Max"))
         local high = field(key .. "Max", 490, y, 74)
-        high:SetTextInsets(5, 5, 0, 0)
+        if high.SetTextInsets then
+            high:SetTextInsets(5, 5, 0, 0)
+        end
         local pair = {}
         for _, bound in ipairs({ "Min", "Max" }) do
             local x = bound == "Min" and 285 or 573
