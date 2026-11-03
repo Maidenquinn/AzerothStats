@@ -213,6 +213,9 @@ local function presence(entry, key, raw, t, effects)
 end
 
 function A.ObserveV2World(run)
+    if A.V2CombatTick then
+        A.V2CombatTick(run)
+    end
     local packets = A.v2Packets or {}
     A.v2Packets = nil
     if not run or run.status ~= "active" then
