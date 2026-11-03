@@ -327,7 +327,11 @@ local function options(anchor)
         return
     end
     local rows = {}
-    for _, def in ipairs({ { "summons", "Summons" }, { "effects", "Effects" } }) do
+    for _, def in ipairs({
+        { "summons", "Summons" },
+        { "effects", "Effects" },
+        { "combatIntelligence", "Combat Intelligence" },
+    }) do
         local key = def[1]
         table.insert(rows, {
             label = A.T(def[2]) .. " · " .. A.T(
@@ -336,6 +340,10 @@ local function options(anchor)
             detail = A.T("Observed presence"),
             action = function()
                 store.preferences[key] = not store.preferences[key]
+                if key == "combatIntelligence" and A.V2CombatReset then
+                    A.V2CombatReset()
+                end
+                A.RefreshUI()
             end,
         })
     end

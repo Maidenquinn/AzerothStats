@@ -380,6 +380,27 @@ function A.ReportModel(model, run)
         end
         model.emptyText = A.T(run.recordBaseline and "No data yet" or "No record baseline")
     else
+        if section == "Combat" then
+            local data = A.V2RunData and A.V2RunData(run)
+            local combat = data and data.combatIntelligence
+            if combat then
+                for _, metric in ipairs({
+                    { "Observed hits", "hits" },
+                    { "Observed misses", "misses" },
+                    { "Observed critical hits", "critical" },
+                    { "Observed periodic hits", "periodic" },
+                    { "Observed damage (not meter total)", "damageObserved" },
+                    { "Dropped combat events", "dropped" },
+                    { "Combat stream gaps", "gaps" },
+                }) do
+                    table.insert(model.rows, {
+                        label = metric[1],
+                        value = A.Format(combat[metric[2]]),
+                        detail = "Combat Intelligence · partial event feed",
+                    })
+                end
+            end
+        end
         local meter = run.meters and run.meters.damage
         local rows = {}
         for i = 1, math.min(256, table.getn(meter and meter.rows or {})) do

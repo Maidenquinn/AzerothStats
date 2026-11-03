@@ -1,4 +1,4 @@
-# Azeroth Stats - 2.0.0-dev.14
+# Azeroth Stats - 2.0.0-dev.15
 
 V2 development candidate, not a stable release. Six main routes preserve the V1
 features: Overview, My runs, Analyze run, My progress, Favorites and Nemesis.

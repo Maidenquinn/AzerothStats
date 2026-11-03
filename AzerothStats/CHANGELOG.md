@@ -1,3 +1,11 @@
+# 2.0.0-dev.15 — V2 LOT 2 Combat Intelligence preview
+
+- Add opt-in Combat Intelligence collector (off by default), with independent combat text cursor and bounded 1 Hz reads.
+- Observe damage, misses, critical and periodic hits; aggregate limited sources and schools, count dropped events and stream gaps.
+- Store bounded partial per-run summaries in the existing V2 extension and show them in the Combat report without replacing native meter totals.
+- Add a toggle to Optional analyses and offline observer regression tests.
+- This is a development preview: live 0.139.2 gameplay and heavy-load behavior still require user acceptance.
+
 # 2.0.0-dev.14 — V2 LOT 1 compatibility foundation
 
 - Add passive feature capability checks for native game 0.139.2, with independent handling of missing, unavailable, malformed and failing APIs.
