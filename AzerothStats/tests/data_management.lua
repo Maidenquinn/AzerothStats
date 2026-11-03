@@ -120,8 +120,7 @@ check(
     "automatic snapshot retains deleted run"
 )
 local beforeRestore = A.db.totals.runs
-AzerothStatsBackup = AzerothStatsAutoBackup
-check(A.RestoreDataBackup(), "restore succeeds from validated independent snapshot")
+check(A.RestoreDataBackup(nil, true), "restore succeeds from validated independent snapshot")
 check(A.db.totals.runs == 103 and A.FindRun("delete-a"), "restore recovers run and lifetime totals")
 check(A.db.totals.runs ~= beforeRestore, "restore changes data rather than merely refreshing UI")
 A.PrepareDataAction("run", nil, "delete-a")
