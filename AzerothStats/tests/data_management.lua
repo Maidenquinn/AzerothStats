@@ -111,9 +111,10 @@ check(
     "detail deletion subtracts accounted run and preserves unrelated pruned record"
 )
 check(
-    AzerothStatsBackup and AzerothStatsBackup.data.totals.runs == 103,
-    "deletion creates independent backup"
+    AzerothStatsAutoBackup and AzerothStatsAutoBackup.data.totals.runs == 103,
+    "deletion creates independent automatic backup"
 )
+check(A.CreateDataBackup(), "manual backup can be created independently")
 check(AzerothStatsBackup.data.runs[1].id == "delete-a", "backup retains deleted run")
 local beforeRestore = A.db.totals.runs
 check(A.RestoreDataBackup(), "restore succeeds from validated independent snapshot")
@@ -121,6 +122,8 @@ check(A.db.totals.runs == 103 and A.FindRun("delete-a"), "restore recovers run a
 check(A.db.totals.runs ~= beforeRestore, "restore changes data rather than merely refreshing UI")
 A.PrepareDataAction("run", nil, "delete-a")
 check(A.ConfirmDataAction(), "run can be removed again after restore")
+check(AzerothStatsBackup.data.totals.runs == 102, "automatic deletion never overwrites manual backup")
+check(AzerothStatsAutoBackup.data.totals.runs == 103, "automatic snapshot updates independently")
 totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
 local d = fixture("other-warrior")
 table.insert(A.db.runs, d)
