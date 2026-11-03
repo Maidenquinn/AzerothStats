@@ -355,6 +355,9 @@ function A.HistoryMetricBounds()
         for _, run in ipairs(A.db.runs or {}) do
             local values = run.values or {}
             local value = tonumber(values[key])
+            if value == nil then
+                value = tonumber(run[key])
+            end
             if value and value >= 0 then
                 value = math.floor(value)
                 lowest = lowest and math.min(lowest, value) or value
