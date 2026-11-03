@@ -177,6 +177,87 @@ local function unaccountRemovedRuns(remove)
     end
 end
 
+-- A bounded, independent snapshot. Never use A.Copy here: it truncates large
+-- databases and would silently turn a backup into an incomplete copy.
+local function snapshot(value, state, depth)
+    if depth > 40 then
+        return nil, "Backup exceeds nesting limit"
+    end
+    state.count = state.count + 1
+    if state.count > 300000 then
+        return nil, "Backup exceeds safety limit"
+    end
+    local kind = type(value)
+    if kind ~= "table" then
+        if kind == "nil" or kind == "string" or kind == "boolean" then
+            return value
+        end
+        if kind == "number" and value == value and math.abs(value) < 1e100 then
+            return value
+        end
+        return nil, "Unsupported backup value"
+    end
+    if getmetatable(value) or state.visiting[value] then
+        return nil, "Unsafe backup structure"
+    end
+    state.visiting[value] = true
+    local result = {}
+    for key, child in pairs(value) do
+        local copiedKey, keyError = snapshot(key, state, depth + 1)
+        if keyError then
+            state.visiting[value] = nil
+            return nil, keyError
+        end
+        local copied, err = snapshot(child, state, depth + 1)
+        if err then
+            state.visiting[value] = nil
+            return nil, err
+        end
+        result[copiedKey] = copied
+    end
+    state.visiting[value] = nil
+    return result
+end
+
+function A.CreateDataBackup()
+    if not A.db then
+        return false, "No database loaded"
+    end
+    if A.run and A.run.status == "active" then
+        return false, "Backups are available between runs"
+    end
+    local data, err = snapshot(A.db, { count = 0, visiting = {} }, 0)
+    if err then
+        return false, err
+    end
+    if not A.ValidateDatabase(data) then
+        return false, "Backup failed validation"
+    end
+    -- Keep one independent backup, outside the mutable database tree.
+    AzerothStatsBackup = { schema = 1, data = data }
+    return true, "Backup saved; /reload to write it to disk"
+end
+
+function A.RestoreDataBackup()
+    if A.run and A.run.status == "active" then
+        return false, "Restore is available between runs"
+    end
+    if type(AzerothStatsBackup) ~= "table" or AzerothStatsBackup.schema ~= 1 then
+        return false, "No compatible backup"
+    end
+    local data, err = snapshot(AzerothStatsBackup.data, { count = 0, visiting = {} }, 0)
+    if err or not A.ValidateDatabase(data) then
+        return false, err or "Backup validation failed"
+    end
+    AzerothStatsDB = data
+    A.pendingDataPlan = nil
+    if not A.InitDB() then
+        return false, "Backup could not be loaded"
+    end
+    A.V2Reconcile()
+    return true, "Backup restored; /reload recommended"
+end
+
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.
 function A.DataPlan(kind, class, id)
     if
@@ -281,6 +362,10 @@ function A.ConfirmDataAction(token)
     end
     if fresh.kind == "reset" and token ~= "RESET" then
         return false, "Type RESET to confirm"
+    end
+    local backupOK, backupMessage = A.CreateDataBackup()
+    if not backupOK then
+        return false, backupMessage
     end
     if A.dataCategories[fresh.kind] then
         clearCategory(fresh.kind)
