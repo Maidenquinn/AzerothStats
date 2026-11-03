@@ -2,7 +2,7 @@ name: Publish AzerothStats dev.28.1 test prerelease
 on:
   push:
     branches:
-      - feat/dev281-runs-navigation-filters
+      - feat/dev28-runs-navigation-filters
     paths:
       - .github/dev281-release-marker.txt
 permissions:
