@@ -2544,6 +2544,7 @@ function A.BuildUI()
         table.insert(UI.compareSections, b)
     end
     UI.reportCompare = button(frame, 518, 100, 198, 26, "Compare runs", function()
+        A.view.historyReturnPage = A.view.page
         A.OpenCompare(A.Selected() and A.Selected().id)
         A.RefreshUI()
     end)
