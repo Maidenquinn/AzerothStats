@@ -1,4 +1,4 @@
-name: Publish Combat source labels dev.20 prerelease
+name: Publish run integrity and backups dev.20 prerelease
 on:
   push:
     branches: [main]
