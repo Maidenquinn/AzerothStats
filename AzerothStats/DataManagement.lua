@@ -93,6 +93,86 @@ local function clearCategory(kind)
     A.view.page = 1
 end
 
+-- Remove only contributions proven by a retained run's accounting ledger.
+-- This deliberately does not reconstruct lifetime totals from incomplete history.
+local function unaccountRemovedRuns(remove)
+    local groups = { A.db.totals }
+    local affected = {}
+    local removed = {}
+    for _, run in ipairs(A.db.runs) do
+        if remove[run.id] then
+            table.insert(removed, run)
+            affected[run.class] = true
+        end
+    end
+    for class in pairs(affected) do
+        if A.db.classes[class] then
+            table.insert(groups, A.db.classes[class])
+        end
+    end
+    for _, run in ipairs(removed) do
+        local ownGroups = { A.db.totals, A.db.classes[run.class] }
+        for _, group in ipairs(ownGroups) do
+            if group then
+                if run.counted and not (run.sumResets and run.sumResets.runs) then
+                    group.runs = math.max(0, (group.runs or 0) - 1)
+                end
+                if run.winCounted and not (run.sumResets and run.sumResets.wins) then
+                    group.wins = math.max(0, (group.wins or 0) - 1)
+                end
+                for _, key in ipairs(A.metrics) do
+                    if not (run.sumResets and run.sumResets[key]) then
+                        local value = run.accounted and A.Number(run.accounted[key])
+                        if value ~= nil then
+                            if key ~= "level" and key ~= "peakDps" and group.sum and group.sum[key] then
+                                group.sum[key] = math.max(0, group.sum[key] - value)
+                            end
+                            if group.coverage and group.coverage[key] then
+                                group.coverage[key] = math.max(0, group.coverage[key] - 1)
+                            end
+                        end
+                    end
+                end
+                for mode, entries in pairs(run.spellAccounted or {}) do
+                    local aggregate = group.spells and group.spells[mode]
+                    if aggregate then
+                        for name, amount in pairs(entries) do
+                            if type(amount) == "number" and aggregate[name] then
+                                aggregate[name] = math.max(0, aggregate[name] - amount)
+                            end
+                        end
+                    end
+                end
+                -- A record pointing at the deleted run is invalid. Retained runs can
+                -- supply a replacement, but older pruned runs may have had a higher one.
+                for _, key in ipairs(A.metrics) do
+                    local record = group.records and group.records[key]
+                    if record and record.id == run.id then
+                        group.records[key] = nil
+                    end
+                end
+            end
+        end
+    end
+    -- Rebuild only missing records, respecting explicit record reset fences.
+    for _, run in ipairs(A.db.runs) do
+        if not remove[run.id] and not run.recordsReset then
+            for _, group in ipairs({ A.db.totals, A.db.classes[run.class] or {} }) do
+                group.records = group.records or {}
+                for _, key in ipairs(A.metrics) do
+                    if not (run.recordResets and run.recordResets[key]) then
+                        local value = run.values and A.Number(run.values[key])
+                        local rec = group.records[key]
+                        if value and (not rec or value > rec.value) then
+                            group.records[key] = { value = value, id = run.id, at = run.startedAt }
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.
 function A.DataPlan(kind, class, id)
     if
@@ -224,6 +304,7 @@ function A.ConfirmDataAction(token)
         for _, id in ipairs(fresh.ids) do
             remove[id] = true
         end
+        unaccountRemovedRuns(remove)
         for i = table.getn(A.db.runs), 1, -1 do
             if remove[A.db.runs[i].id] then
                 table.remove(A.db.runs, i)
