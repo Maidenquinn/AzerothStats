@@ -1981,90 +1981,168 @@ local function buildSettings(frame)
     button(p, 370, 364, 330, 28, "Manage local data", function()
         A.OpenDataManagement()
     end)
-    button(p, 370, 402, 160, 28, "Backup now", function()
-        local ok, message = A.CreateDataBackup()
-        A.Say(message)
-        if ok and type(ReloadUI) == "function" then
-            ReloadUI()
-        end
-    end)
-    local selectedBackup
-    local restoreConfirm = false
-    local restoreButton
-    local function backupTitle(entry)
-        local kind = entry.automatic and "Auto" or "Manual"
-        local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or "Legacy"
-        return kind .. " No." .. entry.id .. " | " .. stamp .. " | " .. entry.runs .. " runs"
-    end
-    local function chooseBackup(anchor)
-        local options = {}
-        for _, automatic in ipairs({ false, true }) do
-            for _, entry in ipairs(A.ListDataBackups(automatic)) do
-                local choice = entry
-                table.insert(options, {
-                    label = backupTitle(choice),
-                    action = function()
-                        selectedBackup = choice
-                        restoreConfirm = false
-                        put(restoreButton.label, "Restore selected")
-                        A.Say("Selected " .. backupTitle(choice))
-                    end,
-                })
-            end
-        end
-        if table.getn(options) == 0 then
-            A.Say("No backups available")
+    -- Backup history gets its own bounded dialog instead of overflowing the
+    -- Storage panel. Every row is a full-width, single-line selectable entry.
+    local manager
+    local function openBackupManager()
+        if manager then
+            manager:Show()
+            manager.refresh()
             return
         end
-        A.ShowMenu(anchor, options)
-    end
-    button(p, 370, 440, 330, 28, "Choose backup (manual / auto)", function(self)
-        chooseBackup(self)
-    end)
-    local deleteConfirm = false
-    local deleteButton
-    deleteButton = button(p, 370, 478, 330, 28, "Delete selected backup", function()
-        if not selectedBackup then
-            A.Say("Choose a backup first")
-            return
+        manager = CreateFrame("Frame", "AzerothStatsBackupManager", A.window)
+        manager:SetWidth(650)
+        manager:SetHeight(510)
+        manager:SetPoint("CENTER", A.window, "CENTER", 0, 0)
+        manager:SetFrameStrata("FULLSCREEN_DIALOG")
+        manager:SetFrameLevel(A.window:GetFrameLevel() + 35)
+        manager:EnableMouse(true)
+        surface(manager, "main")
+        local heading = font(manager, 20, 16, 550, 28, 18, COLORS.gold, true)
+        put(heading, "Backup history")
+        local close = button(manager, 610, 12, 26, 26, "X", function()
+            manager:Hide()
+        end)
+        close.key = nil
+        local hint = font(manager, 20, 48, 600, 36, 12, COLORS.muted)
+        put(hint, "Select a snapshot to restore or delete. Automatic backups retain the latest 15.")
+        local selectedBackup
+        local page = 1
+        local entries = {}
+        local confirmAction
+        local rows = {}
+        local selectedText = font(manager, 20, 348, 605, 35, 12, COLORS.text)
+        local paging = font(manager, 230, 305, 190, 28, 12, COLORS.muted)
+        paging:SetJustifyH("CENTER")
+        local restoreButton
+        local deleteButton
+        local function entryTitle(entry)
+            local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or "Legacy"
+            return (entry.automatic and "Auto" or "Manual")
+                .. " No."
+                .. entry.id
+                .. "  |  "
+                .. stamp
+                .. "  |  "
+                .. entry.runs
+                .. " runs"
         end
-        if not deleteConfirm then
-            deleteConfirm = true
-            put(deleteButton.label, "Confirm backup deletion")
-            A.Say("Delete " .. backupTitle(selectedBackup) .. "? Click again to confirm.")
-            return
-        end
-        deleteConfirm = false
-        put(deleteButton.label, "Delete selected backup")
-        local ok, message = A.DeleteDataBackup(selectedBackup.id, selectedBackup.automatic)
-        A.Say(message)
-        if ok then
-            selectedBackup = nil
-            restoreConfirm = false
+        local function resetConfirmation()
+            confirmAction = nil
+            restoreButton.key = nil
+            deleteButton.key = nil
             put(restoreButton.label, "Restore selected")
-            if type(ReloadUI) == "function" then
+            put(deleteButton.label, "Delete selected")
+        end
+        local function refresh()
+            entries = {}
+            for _, automatic in ipairs({ false, true }) do
+                for _, entry in ipairs(A.ListDataBackups(automatic)) do
+                    table.insert(entries, entry)
+                end
+            end
+            local pages = math.max(1, math.ceil(table.getn(entries) / 7))
+            page = math.max(1, math.min(page, pages))
+            for index, row in ipairs(rows) do
+                local entry = entries[(page - 1) * 7 + index]
+                row.entry = entry
+                if entry then
+                    row.key = nil
+                    put(row.label, entryTitle(entry))
+                    selected(
+                        row,
+                        selectedBackup
+                            and selectedBackup.id == entry.id
+                            and selectedBackup.automatic == entry.automatic
+                    )
+                    row:Show()
+                else
+                    row:Hide()
+                end
+            end
+            put(paging, "Page " .. page .. " / " .. pages)
+            put(
+                selectedText,
+                selectedBackup and ("Selected: " .. entryTitle(selectedBackup))
+                    or "No backup selected"
+            )
+        end
+        for index = 1, 7 do
+            local row = button(manager, 20, 82 + (index - 1) * 31, 610, 28, "", function(self)
+                selectedBackup = self.entry
+                resetConfirmation()
+                refresh()
+            end)
+            row.key = nil
+            table.insert(rows, row)
+        end
+        local previous = button(manager, 20, 306, 155, 27, "Previous page", function()
+            page = math.max(1, page - 1)
+            refresh()
+        end)
+        local nextPage = button(manager, 475, 306, 155, 27, "Next page", function()
+            page = page + 1
+            refresh()
+        end)
+        previous.key = nil
+        nextPage.key = nil
+        restoreButton = button(manager, 20, 402, 295, 32, "Restore selected", function()
+            if not selectedBackup then
+                A.Say("Select a backup first")
+                return
+            end
+            if confirmAction ~= "restore" then
+                resetConfirmation()
+                confirmAction = "restore"
+                put(restoreButton.label, "CONFIRM RESTORE")
+                return
+            end
+            local ok, message = A.RestoreDataBackup(selectedBackup.id, selectedBackup.automatic)
+            A.Say(message)
+            resetConfirmation()
+            if ok and type(ReloadUI) == "function" then
                 ReloadUI()
             end
-        end
-    end)
-    restoreButton = button(p, 540, 402, 160, 28, "Restore selected", function()
-        if not selectedBackup then
-            A.Say("Choose a backup first")
-            return
-        end
-        if not restoreConfirm then
-            restoreConfirm = true
-            put(restoreButton.label, "Confirm restore")
-            A.Say("Restore " .. backupTitle(selectedBackup) .. "? Click again to confirm.")
-            return
-        end
-        restoreConfirm = false
-        put(restoreButton.label, "Restore selected")
-        local ok, message = A.RestoreDataBackup(selectedBackup.id, selectedBackup.automatic)
-        A.Say(message)
-        if ok and type(ReloadUI) == "function" then
-            ReloadUI()
-        end
+        end)
+        deleteButton = button(manager, 335, 402, 295, 32, "Delete selected", function()
+            if not selectedBackup then
+                A.Say("Select a backup first")
+                return
+            end
+            if confirmAction ~= "delete" then
+                resetConfirmation()
+                confirmAction = "delete"
+                put(deleteButton.label, "CONFIRM DELETE")
+                return
+            end
+            local ok, message = A.DeleteDataBackup(selectedBackup.id, selectedBackup.automatic)
+            A.Say(message)
+            resetConfirmation()
+            if ok then
+                selectedBackup = nil
+                refresh()
+                if type(ReloadUI) == "function" then
+                    ReloadUI()
+                end
+            end
+        end)
+        restoreButton.key = nil
+        deleteButton.key = nil
+        local backupNow = button(manager, 20, 452, 610, 32, "Create new manual backup", function()
+            local ok, message = A.CreateDataBackup()
+            A.Say(message)
+            if ok and type(ReloadUI) == "function" then
+                ReloadUI()
+            else
+                refresh()
+            end
+        end)
+        backupNow.key = nil
+        manager.refresh = refresh
+        refresh()
+    end
+    button(p, 370, 402, 330, 28, "Manage backups", function()
+        openBackupManager()
     end)
 end
 
