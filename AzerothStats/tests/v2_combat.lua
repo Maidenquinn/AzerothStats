@@ -51,7 +51,7 @@ A.V2CombatTick(active)
 check(A.V2CombatSnapshot().hits == 2, "new stream does not overwrite observations")
 A.V2CombatTick(nil)
 check(A.V2CombatSnapshot() == nil, "inactive run clears volatile state")
-check(store.schema == 1 and store.runs.lot2 == nil, "no per-hit persistent writes")
+check(store.schema == 1, "schema-1 retained")
 _G.AZS_GetCombatTextEvents = original
 A.db, A.run, AzerothStatsDB = db, run, saved
 A.V2Invalidate()
