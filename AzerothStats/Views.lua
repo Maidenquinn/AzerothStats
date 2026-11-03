@@ -347,6 +347,34 @@ local function historyDate(text, endOfDay)
     return (era * 146097 + doe - 719468) * 86400 + hour * 3600 + minute * 60 + second
 end
 
+--- Bounds are derived only from retained runs, not hypothetical game limits.
+function A.HistoryMetricBounds()
+    local result = {}
+    for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+        local lowest, highest, count = nil, nil, 0
+        for _, run in ipairs(A.db.runs or {}) do
+            local values = run.values or {}
+            local value = tonumber(values[key])
+            if value and value >= 0 then
+                value = math.floor(value)
+                lowest = lowest and math.min(lowest, value) or value
+                highest = highest and math.max(highest, value) or value
+                count = count + 1
+            end
+        end
+        if count > 0 then
+            -- All runs begin at level 1; other statistics may start at zero.
+            result[key] = {
+                min = key == "level" and 1 or 0,
+                max = math.max(highest, key == "level" and 1 or 0),
+                observedMin = lowest,
+                count = count,
+            }
+        end
+    end
+    return result
+end
+
 --- Parse an entire panel as one transaction, rejecting reversed or invalid ranges.
 function A.ParseHistoryFilters(fields)
     fields = fields or {}
