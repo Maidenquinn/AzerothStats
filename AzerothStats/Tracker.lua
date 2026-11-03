@@ -484,6 +484,11 @@ function A.Sample()
         A.ObserveJournal(run)
         A.ObserveV2(run)
         A.ObserveV2World(run)
+        -- LOT 2: sample the opt-in native combat stream once per tracker tick.
+        -- Never substitute this partial event feed for official meter totals.
+        if A.V2CombatTick then
+            A.V2CombatTick(run)
+        end
         A.statsPacket = nil
         if run.status == "active" then
             A.ObserveBuild(run)
