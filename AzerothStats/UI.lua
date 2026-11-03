@@ -1252,6 +1252,30 @@ function A.RefreshUI()
             end
             UI.advancedPanel.mapChoice = active.map
             put(UI.advancedMap.label, active.map or A.T("All maps"))
+            local bounds = A.HistoryMetricBounds()
+            for key, pair in pairs(UI.advancedSliders or {}) do
+                local limits = bounds[key]
+                for _, bound in ipairs({ "Min", "Max" }) do
+                    local slider = pair[bound]
+                    local input = UI.advancedFields[key .. bound]
+                    slider.syncing = true
+                    if limits then
+                        slider:SetMinMaxValues(limits.min, limits.max)
+                        local value = active[key .. bound]
+                        if value == nil then
+                            value = bound == "Min" and limits.min or limits.max
+                        end
+                        value = math.max(limits.min, math.min(limits.max, value))
+                        slider:SetValue(value)
+                        input:SetText(tostring(value))
+                        slider:Show()
+                    else
+                        input:SetText("")
+                        slider:Hide()
+                    end
+                    slider.syncing = false
+                end
+            end
             UI.advancedPanel.initialized = true
         end
     end
@@ -2581,18 +2605,54 @@ function A.BuildUI()
         { "gold", "Gold", 245 },
         { "duration", "Survival (seconds)", 291 },
     }
+    UI.advancedSliders = {}
     for _, def in ipairs(groups) do
-        local label = font(advanced, 18, def[3], 150, 26, 12, COLORS.gold)
+        local key, y = def[1], def[3]
+        local label = font(advanced, 18, y, 150, 26, 12, COLORS.gold)
         label.fixedSize = true
         put(label, A.T(def[2]))
-        local minimum = font(advanced, 174, def[3], 86, 25, 11, COLORS.muted)
+        local minimum = font(advanced, 174, y, 64, 25, 11, COLORS.muted)
         minimum.fixedSize = true
-        put(minimum, A.T("Minimum"))
-        field(def[1] .. "Min", 260, def[3], 158)
-        local maximum = font(advanced, 438, def[3], 86, 25, 11, COLORS.muted)
+        put(minimum, A.T("Min"))
+        local low = field(key .. "Min", 212, y, 64)
+        local maximum = font(advanced, 452, y, 64, 25, 11, COLORS.muted)
         maximum.fixedSize = true
-        put(maximum, A.T("Maximum"))
-        field(def[1] .. "Max", 526, def[3], 158)
+        put(maximum, A.T("Max"))
+        local high = field(key .. "Max", 490, y, 74)
+        local pair = {}
+        for _, bound in ipairs({ "Min", "Max" }) do
+            local x = bound == "Min" and 285 or 573
+            local slider = CreateFrame("Slider", "AzerothStatsHistory" .. key .. bound, advanced, "OptionsSliderTemplate")
+            slider:SetPoint("TOPLEFT", advanced, "TOPLEFT", x, -(y + 4))
+            slider:SetWidth(105)
+            slider:SetHeight(16)
+            slider:SetMinMaxValues(0, 1)
+            slider:SetValueStep(1)
+            for _, suffix in ipairs({ "Text", "Low", "High" }) do
+                local t = getglobal(slider:GetName() .. suffix)
+                if t then
+                    t:Hide()
+                end
+            end
+            local input = bound == "Min" and low or high
+            slider:SetScript("OnValueChanged", function()
+                if not this.syncing then
+                    input:SetText(tostring(math.floor(this:GetValue() + 0.5)))
+                end
+            end)
+            input:SetScript("OnTextChanged", function()
+                if not slider.syncing then
+                    local value = tonumber(this:GetText())
+                    if value then
+                        slider.syncing = true
+                        slider:SetValue(value)
+                        slider.syncing = false
+                    end
+                end
+            end)
+            pair[bound] = slider
+        end
+        UI.advancedSliders[key] = pair
     end
     UI.advancedError = font(advanced, 18, 344, 660, 20, 11, COLORS.gold)
     UI.advancedError.fixedSize = true
@@ -2600,6 +2660,21 @@ function A.BuildUI()
         local values = { map = advanced.mapChoice or "" }
         for key, input in pairs(UI.advancedFields) do
             values[key] = input:GetText() or ""
+        end
+        local bounds = A.HistoryMetricBounds()
+        for key, limits in pairs(bounds) do
+            for _, bound in ipairs({ "Min", "Max" }) do
+                local fieldKey = key .. bound
+                local value = tonumber(values[fieldKey])
+                if not value or value < limits.min or value > limits.max then
+                    put(UI.advancedError, A.T("Out of observed range") .. ": " .. key)
+                    return
+                end
+                -- An untouched full-range slider does not filter out legacy runs.
+                if value == (bound == "Min" and limits.min or limits.max) then
+                    values[fieldKey] = ""
+                end
+            end
         end
         local parsed, err = A.ParseHistoryFilters(values)
         if not parsed then
