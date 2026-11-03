@@ -219,7 +219,7 @@ local function snapshot(value, state, depth)
     return result
 end
 
-function A.CreateDataBackup()
+function A.CreateDataBackup(automatic)
     if not A.db then
         return false, "No database loaded"
     end
@@ -234,8 +234,12 @@ function A.CreateDataBackup()
         return false, "Backup failed validation"
     end
     -- Keep one independent backup, outside the mutable database tree.
+    if automatic then
+        AzerothStatsAutoBackup = { schema = 1, data = data }
+        return true, "Safety snapshot saved"
+    end
     AzerothStatsBackup = { schema = 1, data = data }
-    return true, "Backup saved; /reload to write it to disk"
+    return true, "Manual backup saved; /reload to write it to disk"
 end
 
 function A.RestoreDataBackup()
@@ -363,7 +367,7 @@ function A.ConfirmDataAction(token)
     if fresh.kind == "reset" and token ~= "RESET" then
         return false, "Type RESET to confirm"
     end
-    local backupOK, backupMessage = A.CreateDataBackup()
+    local backupOK, backupMessage = A.CreateDataBackup(true)
     if not backupOK then
         return false, backupMessage
     end
