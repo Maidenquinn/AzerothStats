@@ -1988,18 +1988,53 @@ local function buildSettings(frame)
             ReloadUI()
         end
     end)
+    local selectedBackup
     local restoreConfirm = false
     local restoreButton
-    restoreButton = button(p, 540, 402, 160, 28, "Restore backup", function()
+    local function backupTitle(entry)
+        local kind = entry.automatic and "Auto" or "Manual"
+        local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or "Legacy"
+        return kind .. " #" .. entry.id .. " | " .. stamp .. " | " .. entry.runs .. " runs"
+    end
+    local function chooseBackup(anchor)
+        local options = {}
+        for _, automatic in ipairs({ false, true }) do
+            for _, entry in ipairs(A.ListDataBackups(automatic)) do
+                local choice = entry
+                table.insert(options, {
+                    label = backupTitle(choice),
+                    action = function()
+                        selectedBackup = choice
+                        restoreConfirm = false
+                        put(restoreButton.label, "Restore selected")
+                        A.Say("Selected " .. backupTitle(choice))
+                    end,
+                })
+            end
+        end
+        if table.getn(options) == 0 then
+            A.Say("No backups available")
+            return
+        end
+        A.ShowMenu(anchor, options)
+    end
+    button(p, 370, 440, 330, 28, "Choose backup (manual / auto)", function(self)
+        chooseBackup(self)
+    end)
+    restoreButton = button(p, 540, 402, 160, 28, "Restore selected", function()
+        if not selectedBackup then
+            A.Say("Choose a backup first")
+            return
+        end
         if not restoreConfirm then
             restoreConfirm = true
             put(restoreButton.label, "Confirm restore")
-            A.Say("Restore replaces your current statistics. Click Confirm restore again.")
+            A.Say("Restore " .. backupTitle(selectedBackup) .. "? Click again to confirm.")
             return
         end
         restoreConfirm = false
-        put(restoreButton.label, "Restore backup")
-        local ok, message = A.RestoreDataBackup()
+        put(restoreButton.label, "Restore selected")
+        local ok, message = A.RestoreDataBackup(selectedBackup.id, selectedBackup.automatic)
         A.Say(message)
         if ok and type(ReloadUI) == "function" then
             ReloadUI()
