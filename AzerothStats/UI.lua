@@ -811,6 +811,10 @@ function A.ApplyUI()
         UI.dataDialog.token:SetFont(A.Font(false), 14, "")
     end
     for _, frame in ipairs(UI.surfaces or {}) do
+        if frame.opaqueBackdrop then
+            frame.opaqueBackdrop:SetTexture(unpack(frame == UI.advancedPanel and COLORS.background or COLORS.panel))
+            frame.opaqueBackdrop:SetAlpha(1)
+        end
         frame.base:SetTexture(
             unpack(frame.themeKind == "card" and COLORS.panel or COLORS.background)
         )
@@ -2527,7 +2531,8 @@ function A.BuildUI()
     advanced:EnableMouse(true)
     surface(advanced, "main")
     -- A solid top-layer fill keeps rows readable regardless of theme opacity.
-    solid(advanced, 0.055, 0.047, 0.034, 1, "ARTWORK")
+    advanced.opaqueBackdrop = solid(advanced, unpack(COLORS.background))
+    advanced.opaqueBackdrop:SetDrawLayer("ARTWORK", -8)
     advanced:Hide()
     UI.advancedFields = {}
     local title = font(advanced, 18, 10, 500, 28, 17, COLORS.gold)
@@ -2608,7 +2613,8 @@ function A.BuildUI()
     calendar:SetFrameLevel(advanced:GetFrameLevel() + 10)
     calendar:EnableMouse(true)
     surface(calendar, "main")
-    solid(calendar, 0.055, 0.047, 0.034, 1, "ARTWORK")
+    calendar.opaqueBackdrop = solid(calendar, unpack(COLORS.panel))
+    calendar.opaqueBackdrop:SetDrawLayer("ARTWORK", -8)
     calendar:Hide()
     UI.historyCalendar = calendar
     local monthNames = {
@@ -2752,15 +2758,18 @@ function A.BuildUI()
         renderCalendar()
         calendar:Show()
     end
-    UI.historyDateFromPicker = button(advanced, 380, 126, 110, 22, "Pick from", function()
-        openCalendar("dateFrom")
-    end)
-    UI.historyDateToPicker = button(advanced, 574, 126, 110, 22, "Pick to", function()
-        openCalendar("dateTo")
-    end)
-    local dateHint = font(advanced, 174, 124, 180, 17, 11, COLORS.muted)
+    for _, key in ipairs({ "dateFrom", "dateTo" }) do
+        local input = UI.advancedFields[key]
+        input:SetScript("OnMouseDown", function()
+            openCalendar(key)
+        end)
+        input:SetScript("OnEditFocusGained", function()
+            openCalendar(key)
+        end)
+    end
+    local dateHint = font(advanced, 260, 124, 424, 17, 11, COLORS.muted)
     dateHint.fixedSize = true
-    put(dateHint, "YYYY-MM-DD")
+    put(dateHint, A.T("Click a date field to open the calendar (YYYY-MM-DD)"))
     local groups = {
         { "level", "Level", 153 },
         { "kills", "Kills", 199 },
@@ -2777,10 +2786,12 @@ function A.BuildUI()
         minimum.fixedSize = true
         put(minimum, A.T("Min"))
         local low = field(key .. "Min", 212, y, 64)
+        low:SetTextInsets(5, 5, 0, 0)
         local maximum = font(advanced, 452, y, 64, 25, 11, COLORS.muted)
         maximum.fixedSize = true
         put(maximum, A.T("Max"))
         local high = field(key .. "Max", 490, y, 74)
+        high:SetTextInsets(5, 5, 0, 0)
         local pair = {}
         for _, bound in ipairs({ "Min", "Max" }) do
             local x = bound == "Min" and 285 or 573
