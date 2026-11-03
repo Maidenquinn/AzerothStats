@@ -80,7 +80,13 @@ end
 local page = 0
 _G.AZS_GetCombatTextEvents = function()
     page = page + 1
-    return { apiVersion = 1, cursor = "p" .. page, streamId = "stress", events = events, hasMore = true }
+    return {
+        apiVersion = 1,
+        cursor = "p" .. page,
+        streamId = "stress",
+        events = events,
+        hasMore = true,
+    }
 end
 A.V2CombatTick({ id = "stress", status = "active" })
 check(page == 8, "hard limit of eight native reads per tick")
