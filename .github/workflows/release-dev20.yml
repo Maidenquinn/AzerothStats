@@ -34,13 +34,13 @@ jobs:
             exit 0
           fi
           cat > /tmp/dev20-notes.md <<'NOTES'
-          ## AzerothStats 2.0.0-dev.20 — Combat Intelligence player experience
-          - Opt-in Combat Intelligence with bounded outgoing hit/miss aggregation, loss tracking and per-run partial snapshots.
-          - Combat Intelligence is disabled by default and can be enabled under Optional analyses.
-          - Schema 1, V1 accounting and native meter totals remain authoritative. New combat text summaries are partial, never exhaustive.
-          - Combat observations are bounded and persisted at checkpoints; no raw hit history is stored.
-          - Player-friendly combat report with critical and periodic hit rates, collection quality and top observed sources; official damage meter remains authoritative.
+          ## AzerothStats 2.0.0-dev.20 — P0 run integrity and backup
+          - Automatically creates a validated independent backup before destructive local-data operations.
+          - New commands: /azstats backup, /azstats restore confirm, /azstats resync.
+          - Run deletion now subtracts ledger-backed contributions from lifetime/class aggregates and invalidates only affected records.
+          - Historical runs pruned by retention cannot be reconstructed; resync does not fabricate missing data.
+          - Schema 1 and all other addons remain unchanged.
           
-          **Development preview.** Offline tests and packaging pass. Live gameplay and high-rate behavior still require acceptance. Install the attached player ZIP (not GitHub source archive) into AddOns; keep AzerothStatsDB and fully restart the game.
+          **Development preview.** Offline checks pass; in-game acceptance is required. Keep an external copy of SavedVariables before testing. Install the attached player ZIP (not GitHub source archive) and fully restart the game.
           NOTES
           gh release create v2.0.0-dev.20 release-assets/dev20/AzerothStats-2.0.0-dev.20.zip release-assets/dev20/AzerothStats-2.0.0-dev.20.zip.sha256 --target "$GITHUB_SHA" --title "Azeroth Stats V2 Preview 2.0.0-dev.20" --notes-file /tmp/dev20-notes.md --prerelease --repo "${{ github.repository }}"
