@@ -1,0 +1,27 @@
+name: p0 final format
+on:
+  push:
+    branches: [fix/p0-run-integrity-backup]
+    paths: [.github/p0-final-trigger.txt]
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: |
+          curl --fail --location --output /tmp/stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/download/v2.6.0/stylua-linux-x86_64.zip
+          echo 'a485f72bbfa22e4642e77a84b5edc2611a5cab7477b34e2e709dd8f78e919895  /tmp/stylua.zip' | sha256sum --check
+          unzip /tmp/stylua.zip -d /tmp/azerothstats-stylua
+          /tmp/azerothstats-stylua/stylua AzerothStats
+          python -m pip install black==25.1.0
+          python -m black tools/checks.py
+          python tools/update_manifest.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add AzerothStats tools/checks.py
+          if ! git diff --cached --quiet; then
+            git commit -m "style: finalize P0 formatting"
+            git push origin HEAD:fix/p0-run-integrity-backup
+          fi
