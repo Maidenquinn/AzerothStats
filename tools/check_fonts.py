@@ -26,6 +26,22 @@ def main():
         (ROOT / "data/catalogs/uiText.json").read_text(encoding="utf-8")
     )
     recipe = json.loads((ROOT / "data/font-sources.json").read_text(encoding="utf-8"))
+    portraits = json.loads(
+        (ROOT / "data/catalogs/creaturePortraits.json").read_text(encoding="utf-8")
+    )
+    # Enemy names are native localized labels, not UI messages. Preserve their
+    # CJK glyphs too; no transliteration or replacement names are fabricated.
+    for language in ("zh", "ja", "ko"):
+        labels[language] = dict(labels[language])
+        labels[language]["__native_portraits"] = "".join(
+            char
+            for name in portraits
+            for char in name
+            if 0x3400 <= ord(char) <= 0x9FFF
+            or (language == "ja" and 0x3040 <= ord(char) <= 0x30FF)
+            or (language == "ko" and 0xAC00 <= ord(char) <= 0xD7AF)
+        )
+
     for language, source in recipe.items():
         output = ROOT / "AzerothStats/media" / source["file"]
         if args.source_dir:

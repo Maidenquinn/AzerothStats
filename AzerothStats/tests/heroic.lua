@@ -88,7 +88,7 @@ for level = 0, 5 do
         check(run.heroic == level, "history difficulty filter is exact")
     end
     check(
-        model.cards[1].value == A.Format(table.getn(model.rows)),
+        model.historySummary[1].value == A.Format(table.getn(model.rows)),
         "filtered summary covers only matching retained rows"
     )
 end

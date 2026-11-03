@@ -6,13 +6,26 @@ local editor
 
 --- Ellipsize plain HUD text at the readable floor; full model text stays available in its tooltip.
 local function barText(font, value)
+    value = value or ""
     W.put(font, value)
-    if font.GetStringWidth then
-        local prefix = value
-        while string.len(prefix) > 0 and font:GetStringWidth() > font.fontWidth do
-            prefix = A.PrefixText(prefix, string.len(prefix) - 1)
-            font:SetText(prefix .. "...")
+    if not font.GetStringWidth or not font.fontWidth or font:GetStringWidth() <= font.fontWidth then
+        return
+    end
+    -- Binary search: character-by-character GetStringWidth was a multi-ms hitch per cell.
+    local lo, hi = 0, string.len(value)
+    while lo < hi do
+        local mid = math.floor((lo + hi + 1) / 2)
+        font:SetText(A.PrefixText(value, mid) .. "...")
+        if font:GetStringWidth() <= font.fontWidth then
+            lo = mid
+        else
+            hi = mid - 1
         end
+    end
+    if lo <= 0 then
+        font:SetText("...")
+    else
+        font:SetText(A.PrefixText(value, lo) .. "...")
     end
 end
 
@@ -99,6 +112,7 @@ local function barFrame(parent, preview)
         cell.caption.fixedSize = true
         cell.value.fixedSize = true
         cell.line = W.solid(cell, 0.54, 0.44, 0.27, 0.5, "ARTWORK")
+        A.ThemeTexture(cell.line, "bronze")
         cell.line:ClearAllPoints()
         cell.line:SetPoint("LEFT", cell, "LEFT", 0, 0)
         cell.line:SetWidth(1)
@@ -163,7 +177,7 @@ local function paintBar(frame, config)
         frame.scopeTitle:Hide()
     end
     if frame.grain then
-        frame.grain:SetAlpha(config.opacity * 0.16)
+        frame.grain:SetAlpha(config.opacity * A.theme.grainAlpha)
     end
     frame.gear:ClearAllPoints()
     frame.gear:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
@@ -582,6 +596,7 @@ local function buildEditor()
         editor:Hide()
         A.RefreshBar()
     end)
+    editor.apply.intent = "primary"
     table.insert(editor.translated, editor.cancel)
     table.insert(editor.translated, editor.apply)
     editor.cancel.editorX = 230

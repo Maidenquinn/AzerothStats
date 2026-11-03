@@ -60,6 +60,12 @@ local function initialize()
                     "Co-op",
                     "Records",
                     "Build journal",
+                    "Attributes",
+                    "Timeline",
+                    "Encounters",
+                    "Summons",
+                    "Effects",
+                    "Observed support",
                 },
                 compareSection = { "Overview", "Combat", "Spells", "Equipment" },
             }
@@ -70,10 +76,27 @@ local function initialize()
                     end
                 end
             end
+            for _, key in ipairs({ "kills", "gold", "level", "damage", "healing", "taken" }) do
+                if viewSettings.v2CurveMetric == key then
+                    A.view.v2CurveMetric = key
+                end
+            end
+            if
+                type(viewSettings.v2CurveCompare) == "string"
+                and A.FindRun(viewSettings.v2CurveCompare)
+            then
+                A.view.v2CurveCompare = viewSettings.v2CurveCompare
+            end
             A.view.compareA, A.view.compareB =
                 A.Text(viewSettings.compareA, 80), A.Text(viewSettings.compareB, 80)
             if A.view.historySection == "Run report" then
                 A.view.selected = A.Text(viewSettings.reportRun, 80)
+            end
+            A.view.v2Goals = viewSettings.v2Goals == true
+            for _, group in ipairs({ "all", "essential", "advanced", "gear" }) do
+                if viewSettings.v2AttributeGroup == group then
+                    A.view.v2AttributeGroup = group
+                end
             end
             A.view.cumulative = viewSettings.cumulative == true
             A.view.overviewStats = viewSettings.overviewStats == true
@@ -122,7 +145,7 @@ driver:SetScript("OnEvent", function()
         A.ApplyUI()
     end
 end)
-local tick, languageTick = 0, 0
+local tick, languageTick, uiTick, overlayTick = 0, 0, 0, 0
 driver:SetScript("OnUpdate", function()
     tick = tick + (A.Number(arg1) or 0)
     languageTick = languageTick + (A.Number(arg1) or 0)
@@ -131,16 +154,54 @@ driver:SetScript("OnUpdate", function()
     end
     tick = 0
     if A.db then
-        if languageTick >= 10 then
+        if languageTick >= 30 then
             languageTick = 0
-            local old = A.Locale()
-            A.DetectLocale()
-            if A.Locale() ~= old then
-                A.ApplyUI()
+            -- Manual language never needs the GameText/tooltip rescan; auto only.
+            local setting = A.db.settings.language
+            if not setting or setting == "auto" then
+                local old = A.Locale()
+                A.DetectLocale()
+                if A.Locale() ~= old then
+                    A.ApplyUI()
+                end
             end
         end
+        -- Refit owned panels only when the native viewport actually changes.
+        local width, height = UIParent:GetWidth(), UIParent:GetHeight()
+        if A.ui and (A.ui.viewportWidth ~= width or A.ui.viewportHeight ~= height) then
+            A.ui.viewportWidth, A.ui.viewportHeight = width, height
+            A.ApplyUI()
+        end
         A.Sample()
-        A.RefreshUI()
+        -- Full page rebuild is expensive while the window is open; keep the HUD
+        -- bar fresh at most every two seconds and rebuild pages every three.
+        uiTick = uiTick + 1
+        local barLive = A.db.settings.bar ~= false and A.bar and A.bar:IsShown()
+        if A.window and A.window:IsShown() then
+            if uiTick >= 3 then
+                uiTick = 0
+                A.RefreshUI()
+            elseif uiTick == 1 or uiTick == 2 then
+                if barLive then
+                    A.RefreshBar()
+                end
+                A.RefreshReportNotice()
+            end
+        else
+            if uiTick >= 2 then
+                uiTick = 0
+                if barLive then
+                    A.RefreshBar()
+                end
+                A.RefreshReportNotice()
+            end
+        end
+        -- Overlay registration is sticky; reconcile rarely outside UI toggles.
+        overlayTick = overlayTick + 1
+        if overlayTick >= 15 then
+            overlayTick = 0
+            A.SyncScreenOverlays()
+        end
     end
 end)
 SLASH_AZEROTHSTATS1 = "/azstats"
@@ -163,6 +224,12 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
     elseif command == "bar" then
         settings.bar = not settings.bar
         A.ApplyUI()
+    elseif command == "overlay" then
+        if value ~= "" and not A.SetScreenOverlayMode(value) then
+            A.Say("/azstats overlay on | off | bar | window")
+        else
+            A.Say("Overlay · " .. A.ScreenOverlayStatus())
+        end
     elseif command == "minimap" then
         settings.minimap = not settings.minimap
         A.ApplyUI()

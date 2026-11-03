@@ -15,6 +15,7 @@ MODULES = {
     "GameText.lua": ("gameText",),
     "Collection.lua": ("collectionAliases", "collectionSources", "abilityClasses"),
     "Icons.lua": ("gameSpellIcons",),
+    "CreaturePortraits.lua": ("creaturePortraits",),
 }
 LANGUAGES = set("en fr pl cs de pt es ro tr ru uk zh ja ko".split())
 

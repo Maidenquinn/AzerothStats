@@ -144,6 +144,7 @@ lua.execute((root / "tests/journal.lua").read_text(encoding="utf-8"))
 lua.execute((root / "tests/ux_review.lua").read_text(encoding="utf-8"))
 lua.execute((root / "tests/data_management.lua").read_text(encoding="utf-8"))
 lua.execute((root / "tests/editing.lua").read_text(encoding="utf-8"))
+lua.execute((root / "tests/themes.lua").read_text(encoding="utf-8"))
 report["assertions"] = lua.globals().TEST_COUNT
 lua.execute((root / "tests/serialize.lua").read_text(encoding="utf-8-sig"))
 saved = lua.eval("SNAPSHOT(AzerothStatsDB)")

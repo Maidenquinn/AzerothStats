@@ -89,17 +89,23 @@ local function party(run)
         A.BeginInsights(run)
         session = A.partySession
     end
-    local signature = A.Sign(A.Copy(AZS_PARTY))
     local generation = A.partyGeneration or 0
-    if
-        generation == session.generation
-        and AZS_PARTY_UPDATED == session.stamp
-        and signature == session.signature
-    then
-        if not coop.sampledAt then
-            coop.unavailable = "No fresh party sample"
+    -- Stamp/generation first: avoid Sign(Copy) every second when the roster is unchanged.
+    if generation == session.generation and AZS_PARTY_UPDATED == session.stamp then
+        if AZS_PARTY_UPDATED ~= nil or generation ~= 0 then
+            if not coop.sampledAt then
+                coop.unavailable = "No fresh party sample"
+            end
+            return
         end
-        return
+        local signature = A.Sign(A.Copy(AZS_PARTY))
+        if signature == session.signature then
+            if not coop.sampledAt then
+                coop.unavailable = "No fresh party sample"
+            end
+            return
+        end
+        session.signature = signature
     end
     if AZS_PARTY_UPDATED == nil and generation == 0 then
         coop.unavailable = "No fresh party sample"
@@ -107,7 +113,7 @@ local function party(run)
     end
     session.generation = generation
     session.stamp = AZS_PARTY_UPDATED
-    session.signature = signature
+    session.signature = A.Sign(A.Copy(AZS_PARTY))
     local latest, rows, seen = {}, {}, {}
     local partial = table.getn(AZS_PARTY) > 32
     local selfIncluded = false
@@ -377,7 +383,7 @@ function A.CoopLabel(run)
     end
     local sample = run.coop.comparison
     if sample and sample.rows and table.getn(sample.rows) > 1 then
-        return A.T("Co-op") .. " · " .. A.T("Players in sample") .. " " .. table.getn(sample.rows)
+        return A.T("Co-op") .. " · " .. A.T("Observed players") .. " " .. table.getn(sample.rows)
     end
     if run.coop.peers and next(run.coop.peers) then
         return A.T("Co-op") .. " · " .. A.T("Partial")
@@ -398,6 +404,10 @@ function A.CoopReport(model, run)
         model.note = model.note .. " · " .. A.T("Partial")
     end
     model.emptyText = A.T("No group snapshot recorded")
+    if table.getn(comparison.rows) == 0 then
+        -- An absent group sample is an empty state, never three empty score cards.
+        return
+    end
     for _, data in ipairs({
         { "Group damage", A.Short(comparison.total), "Ability_Warrior_SavageBlow" },
         { "Group DPS", A.CompactRate(comparison.rate), "Spell_Nature_Lightning" },

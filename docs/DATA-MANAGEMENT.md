@@ -12,7 +12,9 @@ This release adds explicit user-controlled removal of addon-owned local data. No
 - Favorites: removes all bookmark metadata, without deleting any retained run. Those runs are no longer pinned against subsequent retention cleanup.
 - Reset all statistics: clears runs, global/class aggregates, records, observed Trends/co-op/death statistics and all favorites. Preserves the exact UI/HUD settings object, schema/version, migration markers and sequence counter. New runs get fresh monotonic IDs. This is deliberately global, not a per-class cumulative reset.
 
-Retained runs are not a complete lifetime ledger: older details may already have been pruned. This feature never subtracts those snapshots from aggregates or guesses replacement records. Deleting one arbitrary lifetime counter/class contribution is not included. Category cleanup applies to all classes; it never subtracts incomplete retained values.
+Retained runs are not a complete lifetime ledger: older details may already have been pruned. This feature never subtracts those snapshots from aggregates or guesses replacement records. Category cleanup applies to all classes; it never subtracts incomplete retained values.
+
+Per-page **Reset this total** on Overview (and All statistics) clears one lifetime counter globally and in every class bucket — observed runs, wins, play time, kills, gold, damage, healing, taken, bosses, elites, guardians, chests or magnets. Retained run details stay. `sumResets` barriers prevent old runs from repopulating that counter; new runs collect it again. Records remain a separate maximum ledger (`Reset this record`).
 
 ## Confirmation and lifecycle
 
@@ -86,6 +88,9 @@ page leaves edit mode. Empty views still expose editing so hidden rows can be re
 - **Reset this record** clears the named metric only, globally and in all class record
   buckets, plus that metric's historical record milestones. Stored duration/damage/gold
   etc. and lifetime sums are retained. This is not subtraction from incomplete history.
+- **Reset this total** clears one lifetime Overview counter (`runs`, `wins`, or a summed
+  metric such as kills/gold/damage) globally and per class. Retained runs stay; that
+  counter is fenced with `sumResets` so late accounting cannot rebuild it from old runs.
 - **Reset this entry** on Nemesis removes the named source and matching retained death
   evidence; aggregate death counts decrease by that source's exact recorded confidence
   counts, preserving other and unknown sources. On Trends it clears the chosen canonical
@@ -98,10 +103,28 @@ page leaves edit mode. Empty views still expose editing so hidden rows can be re
 
 Per-entry review has an explicit red operation button, Cancel and native Escape handling.
 It recomputes a bounded signature before mutation. Changed data requires fresh review.
-`recordResets`, `trendResets` and `nemesisResets` on older retained runs prevent late
-packets, report recomputation and reloads from restoring cleared keys. New runs have
-no masks. Caps are checked before extending masks; the validator rejects malformed
-keys/flags. No schema bump, file I/O, native writes or outgoing messaging is added.
+`recordResets`, `sumResets`, `trendResets` and `nemesisResets` on older retained runs
+prevent late packets, report recomputation and reloads from restoring cleared keys.
+New runs have no masks. Caps are checked before extending masks; the validator rejects
+malformed keys/flags. No schema bump, file I/O, native writes or outgoing messaging is
+added.
+
+## Edit / hide / reset matrix (audit)
+
+| Surface | Hide row | Destructive edit | Notes |
+| --- | --- | --- | --- |
+| Overview / All statistics lifetime counters (runs, wins, play time, kills, gold, damage, healing, taken, bosses, elites, guardians, chests, magnets) | Yes | **Reset this total** | Clears global + class sums; fences with `sumResets`. Retained run values stay. |
+| Records page (and featured record cards) | Yes | **Reset this record** | Clears maxima only; fences with `recordResets`. |
+| Landing dashboard recent runs | Yes | **Delete run details** (when bookmarked as run favorite path) | Same protection rules as History. |
+| Landing dashboard lifetime cards | Yes | **Reset this total** | Same totals as Overview (subset shown). Record strip uses **Reset this record**. |
+| History | Yes | **Delete run details** | Totals/records/Trends unchanged. Active/favorite protected. |
+| Combat / Character / Diagnostics / calculated ranks | Yes | Hide only | Avoid rewriting inputs or inconsistent percentages. |
+| Trends (spell / jewelry / companion keys) | Yes | **Reset this entry** | Fences with `trendResets`. |
+| Nemesis sources | Yes | **Reset this entry** | Adjusts death aggregates; fences with `nemesisResets`. |
+| Favorites | Yes | **Remove favorite** | Keeps the source run. |
+| Settings → Manage local data | n/a | Category / history / full reset | Broader scopes; full reset needs RESET token. |
+
+Closed gap from player feedback: lifetime **total kills** (and the other Overview sums) were hide-only; they now use **Reset this total**.
 
 Tests use isolated synthetic databases: subset preservation, exact source-count removal,
 old callback/reload barriers, new collection, visibility restoration, card controls,

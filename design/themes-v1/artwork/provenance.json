@@ -1,0 +1,12 @@
+{
+  "grimoire-frame-source.png": {
+    "kind": "original generated production texture",
+    "tool": "Codex ImageGen built-in",
+    "sha256": "3e18ba1faa1bd03220f95b8610753eee9d0533205aca0ad68c162ddfdba41f9e",
+    "role": "nine-slice leather binding and quiet parchment, no text or UI content",
+    "nativeSize": [
+      256,
+      256
+    ]
+  }
+}

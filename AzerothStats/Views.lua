@@ -135,27 +135,32 @@ end
 --- Build global/class cards and coverage rows from already-accounted data.
 local function overview(model, group)
     for _, entry in ipairs({
-        { "Observed runs", group.runs or 0, "INV_Misc_Book_09" },
-        { "Wins", group.wins or 0, "INV_Misc_Coin_02" },
+        { "Observed runs", "runs", group.runs or 0, "INV_Misc_Book_09" },
+        { "Wins", "wins", group.wins or 0, "INV_Misc_Coin_02" },
     }) do
-        card(
+        local c = card(
             model,
             A.T(entry[1]),
-            A.Format(entry[2]),
+            A.Format(entry[3]),
             A.T("Collected since installation"),
-            entry[3]
+            entry[4]
         )
+        c.metric = entry[2]
+        c.entryAction = { kind = "total", key = entry[2], label = A.T(entry[1]) }
     end
     for _, key in ipairs({ "duration", "kills", "damage", "gold" }) do
         local v = group.sum and group.sum[key]
+        local label = key == "duration" and A.T("Play time") or A.Metric(key)
         local c = card(
             model,
-            key == "duration" and A.T("Play time") or A.Metric(key),
+            label,
             key == "duration" and A.Duration(v) or A.Short(v),
             A.Coverage(group, key),
             A.metricIcons[key]
         )
         c.exact = key == "duration" and A.Duration(v) or A.Format(v)
+        c.metric = key
+        c.entryAction = { kind = "total", key = key, label = label }
     end
     for _, key in ipairs({
         "healing",
@@ -166,7 +171,7 @@ local function overview(model, group)
         "chests",
         "magnets",
     }) do
-        row(
+        local item = row(
             model.rows,
             A.Metric(key),
             A.Format(group.sum and group.sum[key]),
@@ -174,6 +179,8 @@ local function overview(model, group)
             nil,
             A.metricIcons[key]
         )
+        item.metric = key
+        item.entryAction = { kind = "total", key = key, label = A.Metric(key) }
     end
     model.note = A.T("Values from available samples")
 end
@@ -500,10 +507,11 @@ local function combat(model, run, group)
     card(
         model,
         A.T("Per second"),
-        A.Rate(rate),
+        A.CompactRate(rate),
         A.view.cumulative and A.T("Unavailable") or A.T("Last sample"),
         "Spell_Nature_Lightning"
-    )
+    ).exact =
+        A.Rate(rate)
     card(
         model,
         A.T("Play time"),
@@ -884,7 +892,7 @@ function A.PageModel()
                 model.rows,
                 A.Metric(key),
                 rec
-                        and (key == "duration" and A.Duration(rec.value) or (key == "peakDps" and A.Rate(
+                        and (key == "duration" and A.Duration(rec.value) or (key == "peakDps" and A.CompactRate(
                             rec.value
                         ) or A.Format(rec.value)))
                     or A.T("Unavailable"),
@@ -1024,7 +1032,7 @@ function A.PageModel()
                 )
                 card(
                     model,
-                    A.T("Players in sample"),
+                    A.T("Observed players"),
                     A.Format(table.getn(comparison.rows)),
                     A.T("Last sample") .. " · " .. A.Duration(comparison.observedTime),
                     A.metricIcons.duration
@@ -1153,9 +1161,11 @@ function A.PageModel()
                     item.tooltip = entry.tooltip
                 end
             end
-            model.subtitle = A.T(A.view.cumulative and "All runs" or "Current run")
-                .. " · "
-                .. (A.view.class and A.ClassName(A.view.class) or A.T("All classes"))
+            model.subtitle = A.T(
+                A.view.cumulative and "All runs" or run == A.run and "Current run" or "Run report"
+            ) .. " · " .. (not A.view.cumulative and run and A.ClassName(run.class) or A.view.class and A.ClassName(
+                A.view.class
+            ) or A.T("All classes"))
             model.note = A.T("Build observations since 1.3; not clicks or casts")
         end
     end
@@ -1183,6 +1193,9 @@ function A.PageModel()
     end
     A.DecorateFavorites(model, tab, run)
     stylePage(model, run, group)
+    A.V2EnhanceModel(model, run)
+    A.V2Layout(model, run)
+    A.V2SummaryModel(model, run)
     A.DecorateEditing(model, run)
     if table.getn(model.rows) == 0 and table.getn(model.cards) == 0 and tab ~= 8 then
         model.empty = true

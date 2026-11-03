@@ -1,0 +1,172 @@
+[
+  {
+    "source": "AzerothStats/media/ChronicleGlyph01.tga",
+    "output": "ChronicleGlyph01.png",
+    "sourceSha256": "40d9f4231bca3d5caf90063b657434b51a81a9beb3fd971283ab92a095c716a2"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph02.tga",
+    "output": "ChronicleGlyph02.png",
+    "sourceSha256": "66900121ce5b99616b4fa0c4ce82df98534f53140c9b1d3079edfb07cda70b88"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph03.tga",
+    "output": "ChronicleGlyph03.png",
+    "sourceSha256": "665f54db175d24968775b1c98b47d08e51ef23387950cf97ad17cd46eef3173b"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph04.tga",
+    "output": "ChronicleGlyph04.png",
+    "sourceSha256": "fc538d432f7e94a80d97a02d66db62f5ca66de5a0d41b141dab0fde50549eb5a"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph05.tga",
+    "output": "ChronicleGlyph05.png",
+    "sourceSha256": "5a27bf7f20df94e4ac4501c410757b97be3b417c37034c2b8a467d675486e566"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph06.tga",
+    "output": "ChronicleGlyph06.png",
+    "sourceSha256": "d5d505ffeeb28ea712f14f212d1a4ee6b025bd27820c85857e81478320473817"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph07.tga",
+    "output": "ChronicleGlyph07.png",
+    "sourceSha256": "33bb035205c9730a9e02ce24b18ad49de2b794d728492d333d4115f634c1234a"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph08.tga",
+    "output": "ChronicleGlyph08.png",
+    "sourceSha256": "1c190b4d8863f01cd2953720ea16f3f625f044eeffacc5cae0749b5eff1f92bb"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph09.tga",
+    "output": "ChronicleGlyph09.png",
+    "sourceSha256": "35a067196dcc9f427c63ebffd509c58635f58551ee81a00fe67686653ded5d40"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph10.tga",
+    "output": "ChronicleGlyph10.png",
+    "sourceSha256": "3440d9fd94212f168d4bc6403452606e0489f2cdb4a4abf034fd71d507f4440a"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph11.tga",
+    "output": "ChronicleGlyph11.png",
+    "sourceSha256": "a8eecb96aceaa4bb588c19982d4c0a37f17ffde580e9efdde6f4f6e9fa3ba5b3"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph12.tga",
+    "output": "ChronicleGlyph12.png",
+    "sourceSha256": "03bdece96d601dd895190e717e48ae81ffb9d3f5b6a32cc6de4603288b54e4fa"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph13.tga",
+    "output": "ChronicleGlyph13.png",
+    "sourceSha256": "74fdb2576e7ded1ab9cfaf6748c9d80f9cfa9657f1d139764669f6c7d19cd01d"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph14.tga",
+    "output": "ChronicleGlyph14.png",
+    "sourceSha256": "3147f674f26f4f09e35132a05cdb66a8c29a345f9802de6155b704ae131e52df"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph15.tga",
+    "output": "ChronicleGlyph15.png",
+    "sourceSha256": "2af1e7268fd2b11b6057f198d6081ab4469011aeaaac89a58c2198904eb61840"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGlyph16.tga",
+    "output": "ChronicleGlyph16.png",
+    "sourceSha256": "ea117d4d4c7d485b6ba06f9fe445d465d093e1092e874cef95fef62024881141"
+  },
+  {
+    "source": "AzerothStats/media/ChronicleGrain.tga",
+    "output": "ChronicleGrain.png",
+    "sourceSha256": "a8dfe4cf993085897118dbe667e736010d39d0721fdd7c5c9bfa856447f02514"
+  },
+  {
+    "source": "AzerothStats/media/ChroniclePlate4.tga",
+    "output": "ChroniclePlate4.png",
+    "sourceSha256": "7eab80065cea4a499303820187de5df32dec8579bde18f59053dc4d049dea4a7"
+  },
+  {
+    "source": "AzerothStats/media/GrimoirePaper.tga",
+    "output": "GrimoirePaper.png",
+    "sourceSha256": "e392ef6622344dee59f1d1ab3f9959f302e0ae0489850ef8ef83c7a56fcd804a"
+  },
+  {
+    "source": "AzerothStats/media/GrimoirePlate4.tga",
+    "output": "GrimoirePlate4.png",
+    "sourceSha256": "b41d58e63ca757c7601cb5ee6fd219fe9d406a3db4878472cbdb57e1111e3d9a"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-ab.tga",
+    "output": "RunZone-ab.png",
+    "sourceSha256": "b23e074af68fc66690b928668467e52798f550d9b1c1c42f91701236c0de8c67"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-aq.tga",
+    "output": "RunZone-aq.png",
+    "sourceSha256": "4af00d838ac75122135efdc1973f0fb7ad60ccc8e05b624197c366e272aa1579"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-arena.tga",
+    "output": "RunZone-arena.png",
+    "sourceSha256": "b02bf960f60aaf1f2d2a0741494cbaf21731b8918de615173de85bc6c5332b3e"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-av.tga",
+    "output": "RunZone-av.png",
+    "sourceSha256": "52521fcc735167c651087c92a46e5fd583bf2bcba3ded06ab9473dcd0aad9ed6"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-brm.tga",
+    "output": "RunZone-brm.png",
+    "sourceSha256": "abf192744026dc9ac02de547cff66ad294ac99bc3495610afdf46f90c0781c28"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-duskwood.tga",
+    "output": "RunZone-duskwood.png",
+    "sourceSha256": "4b6870b96af8379adcf2723ea8b032da00cb41beca58c04897974faf4cdf635f"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-elwynn.tga",
+    "output": "RunZone-elwynn.png",
+    "sourceSha256": "dc509d5827ff5a4141c21e3f3e122e04fde296311009e57ccf1ce98b9415b108"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-feralas.tga",
+    "output": "RunZone-feralas.png",
+    "sourceSha256": "54100c6ad5c2b9edccf7d8aec1a760429720fb80ca52d1eb5089a3e3e1890c17"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-naxx.tga",
+    "output": "RunZone-naxx.png",
+    "sourceSha256": "ab3ef1ec7a732c53997a2f0fb0582c38104befb56ddc7483256f175ba7961a9d"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-sm.tga",
+    "output": "RunZone-sm.png",
+    "sourceSha256": "c68967bc74f0cd04637deea7cf51703dfa8bd0f771d21afbbd920d6312428692"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-ungoro.tga",
+    "output": "RunZone-ungoro.png",
+    "sourceSha256": "319d5ba084ca76cf9de211582343790ab39e3ee8f4a49726bce49555a3775fdb"
+  },
+  {
+    "source": "AzerothStats/media/RunZone-wsg.tga",
+    "output": "RunZone-wsg.png",
+    "sourceSha256": "867f0ed0ec2d98798afd48ec578c75c45a5c5444fe443dfaf519b7c9dd2abbb4"
+  },
+  {
+    "source": "AzerothStats/media/AzerothSans.ttf",
+    "output": "AzerothSans.ttf",
+    "sourceSha256": "eabcbfd9d8f91780eabcf59f4628d00cf629dcfb3f20c7fd4c94f163fbcd0fe0"
+  },
+  {
+    "source": "AzerothStats/media/AzerothSerif.ttf",
+    "output": "AzerothSerif.ttf",
+    "sourceSha256": "e447d6a412357a324e2bb72d2627500ea88d9c00205a8b1a6205546e1152ddef"
+  }
+]

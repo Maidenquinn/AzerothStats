@@ -48,14 +48,26 @@ local function pattern(format)
     return out .. "$", order
 end
 
+-- Combat chat can fire many times per second; compile each format once.
+local compiledPatterns = {}
+
 --- Match a bounded native message through pcall and reorder positional fields; no text is evaluated.
 local function parse(message, format)
     if type(format) ~= "string" or string.len(format) > 500 then
         return nil
     end
-    local p, order = pattern(format)
-    if not p then
+    local cached = compiledPatterns[format]
+    local p, order
+    if cached == false then
         return nil
+    elseif cached then
+        p, order = cached[1], cached[2]
+    else
+        p, order = pattern(format)
+        compiledPatterns[format] = p and { p, order } or false
+        if not p then
+            return nil
+        end
     end
     local ok, first, last, a, b, c, d = pcall(string.find, message, p)
     if not ok then
@@ -253,14 +265,24 @@ function A.ObserveNemesis(run, progress, phase)
     end
 end
 
+-- Name lookup uses a reviewed, literal-only native appearance catalog. Unknown
+-- or ambiguous names keep the neutral icon; never guess from a creature family.
+-- This static view is independent of the live target and makes no native writes.
+function A.NemesisPortrait(name)
+    local asset = type(name) == "string" and A.creaturePortraits[name]
+    return asset and ("Interface\\AddOns\\AzerothStats\\media\\Nemesis-" .. asset .. ".tga")
+        or A.metricIcons.bosses
+end
+
 --- Build separate confidence counts and retained death-report rows for the selected class filter.
 function A.NemesisModel(m, group)
     m.rowHeight = 43
     m.capacity = 9
     local t = group.deathEvidence or { deaths = 0, sources = {} }
-    local sorted = {}
+    local sorted, attributed = {}, 0
     for name, s in pairs(t.sources) do
         if (s.confirmed or 0) + (s.probable or 0) > 0 then
+            attributed = attributed + (s.confirmed or 0) + (s.probable or 0)
             table.insert(sorted, { name = name, s = s })
         end
     end
@@ -280,7 +302,7 @@ function A.NemesisModel(m, group)
                 v.s.probable
             ) .. " · " .. A.T("Probable"),
             detail = A.T("Last attacker is not proof of a killing blow"),
-            icon = A.metricIcons.bosses,
+            icon = A.NemesisPortrait(v.name),
         })
     end
     for i = table.getn(A.db.runs), 1, -1 do
@@ -301,6 +323,7 @@ function A.NemesisModel(m, group)
                 end
                 table.insert(m.rows, {
                     exact = evidence,
+                    icon = A.NemesisPortrait(death.source),
                     label = A.Date(death.at) .. " · " .. (death.source or A.T("Unknown")),
                     value = A.Duration(death.t),
                     detail = A.ClassName(run.class)
@@ -319,7 +342,11 @@ function A.NemesisModel(m, group)
         end
     end
     m.subtitle = A.T("Observed deaths") .. " : " .. A.Format(t.deaths)
-    m.note = A.T("Last attacker is not proof of a killing blow")
+    m.note = A.T("Unknown")
+        .. " : "
+        .. A.Format(math.max(0, (t.deaths or 0) - attributed))
+        .. " · "
+        .. A.T("Last attacker is not proof of a killing blow")
     m.emptyText = A.T((t.deaths or 0) > 0 and "Unavailable" or "No death evidence recorded")
     if t.truncated then
         m.note = m.note .. " · " .. A.T("Partial")

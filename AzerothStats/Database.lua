@@ -20,6 +20,9 @@ A.metrics = {
 
 --- Initialize a new own database or validate an existing schema-1 tree; migrate only after validation.
 function A.InitDB()
+    if A.V2Invalidate then
+        A.V2Invalidate()
+    end
     if AzerothStatsDB == nil then
         AzerothStatsDB = {
             schema = 1,
@@ -73,8 +76,13 @@ function A.InitDB()
     if s.language ~= "auto" and not A.uiText[s.language] then
         s.language = "auto"
     end
+    s.theme = A.ThemeId(s.theme)
+    A.UseTheme(s.theme)
     s.hud = A.NormalizeBar(s.hud)
     database.version = A.version
+    if A.V2Reconcile then
+        A.V2Reconcile()
+    end
     return true
 end
 
@@ -98,19 +106,26 @@ function A.Account(run)
     local groups = { bucket(database.totals), bucket(database.classes[run.class]) }
     for _, group in ipairs(groups) do
         if not run.counted then
-            group.runs = (group.runs or 0) + 1
+            if not (run.sumResets and run.sumResets.runs) then
+                group.runs = (group.runs or 0) + 1
+            end
         end
         if run.result == "victory" and not run.winCounted then
-            group.wins = (group.wins or 0) + 1
+            if not (run.sumResets and run.sumResets.wins) then
+                group.wins = (group.wins or 0) + 1
+            end
         end
         for _, key in ipairs(A.metrics) do
             local value, old = A.Number(run.values[key]), run.accounted[key]
             if value then
-                if old == nil then
-                    group.coverage[key] = (group.coverage[key] or 0) + 1
-                end
-                if key ~= "level" and key ~= "peakDps" then
-                    group.sum[key] = (group.sum[key] or 0) + value - (old or 0)
+                local sumBlocked = run.sumResets and run.sumResets[key]
+                if not sumBlocked then
+                    if old == nil then
+                        group.coverage[key] = (group.coverage[key] or 0) + 1
+                    end
+                    if key ~= "level" and key ~= "peakDps" then
+                        group.sum[key] = (group.sum[key] or 0) + value - (old or 0)
+                    end
                 end
                 local rec = group.records[key]
                 if
@@ -134,6 +149,30 @@ function A.Account(run)
         end
     end
     -- Separate ledger for sampled spell counters. Never add rates or last-boss meters.
+    -- Include native UPDATED stamps so composition changes are not skipped when totals match.
+    -- Do not use sampledAt: it changes every poll and would defeat the skip.
+    local meterMark = {
+        damage = run.meters.damage and {
+            run.meters.damage.total,
+            table.getn(run.meters.damage.rows or {}),
+            AZS_METER_UPDATED,
+        },
+        healing = run.meters.healing and {
+            run.meters.healing.total,
+            table.getn(run.meters.healing.rows or {}),
+            AZS_HEALING_UPDATED,
+        },
+        taken = run.meters.taken and {
+            run.meters.taken.total,
+            table.getn(run.meters.taken.rows or {}),
+            AZS_TAKEN_UPDATED,
+        },
+    }
+    local meterSig = A.Sign(meterMark)
+    if meterSig == run.spellMeterSig then
+        return
+    end
+    run.spellMeterSig = meterSig
     run.spellAccounted = run.spellAccounted or {}
     for _, mode in ipairs({ "damage", "healing", "taken" }) do
         local m = run.meters[mode]
@@ -200,6 +239,9 @@ function A.Trim()
         else
             i = i + 1
         end
+    end
+    if A.V2Reconcile then
+        A.V2Reconcile()
     end
 end
 

@@ -14,7 +14,7 @@ modules = [
     for line in toc.splitlines()
     if line.strip() and not line.startswith("#")
 ]
-assert len(modules) == 27 and set(modules) == {p.name for p in addon.glob("*.lua")}
+assert len(modules) == 38 and set(modules) == {p.name for p in addon.glob("*.lua")}
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"
@@ -138,9 +138,17 @@ lua.execute((addon / "tests/bar.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/heroic.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/reports.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/journal.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/perf_integrity.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/ux_review.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/data_management.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/editing.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/themes.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/v2_data.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/v2_foundations.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/v2_observe.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/v2_views.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/v2_personal.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/v2_summary.lua").read_text(encoding="utf-8"))
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",

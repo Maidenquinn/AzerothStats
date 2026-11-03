@@ -1,8 +1,44 @@
-# Azeroth Stats - 1.7.1-beta.1
+# Azeroth Stats - 2.0.0-dev.14
 
-Public beta hotfix, publication authorized by the maintainer. Automated Lua 5.0.3/5.1 checks passed; this specific HUD change still needs in-game feedback. No data is erased merely by installation or by opening the management dialog.
+V2 development candidate, not a stable release. Six main routes preserve the V1
+features: Overview, My runs, Analyze run, My progress, Favorites and Nemesis.
+Settings and Diagnostics remain available. Five themes and all existing HUD,
+editing, hiding, restoration and guarded deletion controls are retained.
 
-Current-run bosses, elites, guardians and magnets show "At run end" until the official final count is received. The just-finished tracked run remains visible until the tracker detaches it. This update does not add an exact live boss-kill counter.
+V2 adds 29 build attributes with separate native equipment contributions,
+measured progression points/comparisons, raw Heroic affix IDs, observed boss
+encounters/shared meter snapshots, support attempts, optional summons/effects,
+local run notes and personal objectives. Optional presence collection is off by
+default; enable it through Optional analyses. Notes are under Analyze run →
+Details → Your note. Objectives are under My progress → Personal objectives.
+The goal editor accepts your own name and target, with metric/class/zone/difficulty
+scopes (including all classes/zones/difficulties). Goals use completed retained
+history, not native unlocks; levels use a best rather than a sum. Native Nemesis
+portraits use an exact static appearance catalog; missing/ambiguous names keep a
+neutral icon. Preparation context does not create an accounted run.
+
+The common database stays schema 1, with V2 data in a separate versioned
+namespace. One normal installation can be replaced by V1 or V2 between game
+sessions; never enable both copies. Offline roundtrips pass with V1 1.6.2,
+1.7.0 and 1.7.1, including new common runs and serialized extension data.
+Native client persistence still requires acceptance testing.
+
+Advanced observations retain up to 32 enriched runs. When full, the oldest
+unprotected completed observations expire; the common run, totals and local note
+remain. Favorite run references protect advanced observations too. If all slots
+are protected, collection reports a limit instead of silently removing them.
+Each run has at most 32 attribute samples, 120 combat progression points,
+16 observed encounters, 12 shared boss samples, 40 support events and 24 types
+per presence category. Local notes (500 UTF-8 bytes) remain with retained runs;
+up to 12 personal objectives count matching victories in retained history only.
+Truncation, expiry and unavailable data are labelled explicitly.
+
+A disappearing boss is not a confirmed kill. Shared boss meters are not
+attributed to a single enemy. Return to combat does not prove a successful
+revive. Presence maxima are samples, not casts or exact uptime. Raw affix IDs
+are not assigned guessed meanings. Marks and structured star progression remain
+unavailable. The V1 stable channel remains separate. V2 dev.14 is a development prerelease; LOT 1 prepares passive API capability detection and does not activate new gameplay collectors.
+
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
@@ -28,7 +64,7 @@ Full source, privacy/reviewer notes, tests and limits: https://github.com/Maiden
 
 ## Game update 0.121
 
-Observed Normal/Heroic I-V is retained per run and filterable in History. Older/missing difficulty remains unknown; lifetime records combine difficulties. Native item tooltips preserve long set/star descriptions and decimal bonuses; reference fallbacks may differ from the historical upgrade level. Fixed legacy drop percentages are no longer shown. Marks, affixes and structured stars are unavailable unless a verified native API exposes them; no save import or gameplay action was added.
+Observed Normal/Heroic I-V is retained per run and filterable in History. Older/missing difficulty remains unknown; lifetime records combine difficulties. Native item tooltips preserve long set/star descriptions and decimal bonuses; reference fallbacks may differ from the historical upgrade level. Fixed legacy drop percentages are no longer shown. Marks and structured stars are unavailable unless a verified native API exposes them; native affix strings are retained as raw IDs; no save import or gameplay action was added.
 
 ## Run reports and comparisons
 

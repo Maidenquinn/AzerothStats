@@ -201,6 +201,7 @@ function A.ConfirmDataAction(token)
     if A.dataCategories[fresh.kind] then
         clearCategory(fresh.kind)
     elseif fresh.kind == "reset" then
+        A.V2Reset()
         -- Keep schema/version, migrations, monotonic IDs and the exact settings object.
         -- Do not rebuild totals from retained runs: their older history may be pruned.
         A.db.runs, A.db.totals, A.db.classes = {}, {}, {}
@@ -245,5 +246,6 @@ function A.ConfirmDataAction(token)
         A.view.page = 1
     end
     A.pendingDataPlan = nil
+    A.V2Reconcile()
     return true, "Local data cleared"
 end

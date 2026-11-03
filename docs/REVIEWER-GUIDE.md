@@ -2,6 +2,15 @@
 
 The player package has **27 runtime Lua modules and 77 files including its manifest**. The maintainer reported successful in-game testing of 1.7.0-dev.5 and authorized this release. See [approval status](APPROVAL-STATUS.md) for the recorded distribution permission; no separate game-team review of every update or independent certification is claimed.
 
+## V2 development candidate
+
+Review `V2Data.lua` (plain-data contracts/transaction/retention),
+`V2Observe.lua` (notification freshness), `V2Views.lua` (units and provenance),
+`V2Personal.lua` (local-only notes/goals), and `V2UI.lua` (owned widgets).
+The namespace is additive to schema 1; frozen V1 roundtrip tests are in
+`design/v2/tests/runtime_roundtrip.py`. No native persistence/visual acceptance
+is claimed yet; follow [the acceptance recipe](V2-ACCEPTANCE.md).
+
 ## Suggested review order
 
 1. `AzerothStats.toc` lists the complete executable surface. `tools/security_review.py` inventories that surface and verifies literal-only generated data modules.

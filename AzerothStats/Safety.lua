@@ -420,13 +420,28 @@ function A.ValidateDatabase(database)
         then
             return false
         end
-        if not mask(run.recordResets, 13, 80) or not mask(run.nemesisResets, 512, 600) then
+        if
+            not mask(run.recordResets, 13, 80)
+            or not mask(run.sumResets, 15, 80)
+            or not mask(run.nemesisResets, 512, 600)
+        then
             return false
         end
         for key in pairs(run.recordResets or {}) do
             local valid = false
             for _, name in ipairs(A.metrics) do
                 if key == name then
+                    valid = true
+                end
+            end
+            if not valid then
+                return false
+            end
+        end
+        for key in pairs(run.sumResets or {}) do
+            local valid = key == "runs" or key == "wins"
+            for _, name in ipairs(A.metrics) do
+                if key == name and key ~= "level" and key ~= "peakDps" then
                     valid = true
                 end
             end

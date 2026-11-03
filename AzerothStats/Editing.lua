@@ -11,8 +11,16 @@ local function metric(key)
     end
 end
 
+--- Lifetime counters that overview exposes: summed metrics plus run/win tallies.
+local function totalKey(key)
+    return key == "runs" or key == "wins" or (metric(key) and key ~= "level" and key ~= "peakDps")
+end
+
 --- Preserve row identity across value changes, ranks and translated UI labels.
 local function identity(item)
+    if type(item.visibilityKey) == "string" then
+        return "v2:" .. string.sub(item.visibilityKey, 1, 200)
+    end
     if item.metric then
         return "metric:" .. item.metric
     end
@@ -56,6 +64,8 @@ function A.EditContext(run)
         usage = v.usageTab,
         combat = v.combatTab,
         category = v.favoriteCategory,
+        v2Goals = v.v2Goals,
+        v2BossSample = v.v2BossSample,
         run = (
             v.tab == 4
             or v.tab == 5
@@ -78,13 +88,15 @@ function A.DecorateEditing(model, run)
     model.editContext, model.editable = context, true
     local hidden = A.db.settings.hiddenRows and A.db.settings.hiddenRows[context] or {}
     model.hiddenCount = 0
-    for _, field in ipairs({ "rows", "cards", "records" }) do
+    for _, field in ipairs({ "rows", "cards", "records", "sections" }) do
         local visible = {}
         for _, item in ipairs(model[field] or {}) do
             local key = identity(item)
             item.editIdentity, item.editContext = key, context
             item.hidden = hidden[key] == true
-            if (A.view.tab == 6 or field == "records") and item.metric then
+            if item.entryAction and item.entryAction.kind == "total" then
+                -- Overview lifetime counters keep Reset this total; do not coerce to records.
+            elseif (A.view.tab == 6 or field == "records") and item.metric then
                 item.entryAction = { kind = "record", key = item.metric, label = item.label }
             elseif A.view.tab == 10 and item.favorite then
                 item.entryAction = {
@@ -169,6 +181,12 @@ end
 
 --- Return an immutable data-only review plan. Invalid/unsupported descriptors fail closed.
 function A.EntryPlan(action)
+    if type(action) == "table" and action.kind == "v2Goal" then
+        return A.V2GoalPlan(action)
+    end
+    if type(action) == "table" and action.kind == "v2" then
+        return A.V2EntryPlan(action)
+    end
     if
         not A.db
         or type(action) ~= "table"
@@ -180,6 +198,7 @@ function A.EntryPlan(action)
     local kind = action.kind
     if
         kind ~= "record"
+        and kind ~= "total"
         and kind ~= "nemesis"
         and kind ~= "trend"
         and kind ~= "bookmark"
@@ -188,6 +207,9 @@ function A.EntryPlan(action)
         return nil
     end
     if kind == "record" and not metric(action.key) then
+        return nil
+    end
+    if kind == "total" and not totalKey(action.key) then
         return nil
     end
     if
@@ -217,9 +239,25 @@ function A.EntryPlan(action)
         state = A.db.favorites.entries[action.key]
         plan.count = state and 1 or 0
     else
-        state = { global = target(A.db.totals, action), classes = {} }
-        for class, group in pairs(A.db.classes) do
-            state.classes[class] = target(group, action)
+        if kind == "total" then
+            local function snapshot(group)
+                if action.key == "runs" then
+                    return group.runs
+                end
+                if action.key == "wins" then
+                    return group.wins
+                end
+                return group.sum and group.sum[action.key]
+            end
+            state = { global = snapshot(A.db.totals), classes = {} }
+            for class, group in pairs(A.db.classes) do
+                state.classes[class] = snapshot(group)
+            end
+        else
+            state = { global = target(A.db.totals, action), classes = {} }
+            for class, group in pairs(A.db.classes) do
+                state.classes[class] = target(group, action)
+            end
         end
         if state.global then
             plan.count = plan.count + 1
@@ -263,7 +301,7 @@ function A.EntryPlan(action)
     return plan
 end
 
---- Reset one category key, not its numeric combat contribution or lifetime sums.
+--- Reset one category key. Totals clear lifetime ledgers without deleting retained runs.
 function A.ConfirmEntryAction()
     local old = A.pendingEntryPlan
     if not old then
@@ -288,6 +326,10 @@ function A.ConfirmEntryAction()
         end
     elseif plan.kind == "bookmark" then
         A.db.favorites.entries[plan.key] = nil
+    elseif plan.kind == "v2" then
+        A.V2RemoveEntry(plan)
+    elseif plan.kind == "v2Goal" then
+        A.V2Store(false).preferences.goals[plan.key] = nil
     else
         local groups = { A.db.totals }
         for _, group in pairs(A.db.classes) do
@@ -297,6 +339,19 @@ function A.ConfirmEntryAction()
             if plan.kind == "record" then
                 if group.records then
                     group.records[plan.key] = nil
+                end
+            elseif plan.kind == "total" then
+                if plan.key == "runs" then
+                    group.runs = 0
+                elseif plan.key == "wins" then
+                    group.wins = 0
+                else
+                    if group.sum then
+                        group.sum[plan.key] = nil
+                    end
+                    if group.coverage then
+                        group.coverage[plan.key] = nil
+                    end
                 end
             elseif plan.kind == "nemesis" then
                 local evidence = group.deathEvidence
@@ -322,6 +377,17 @@ function A.ConfirmEntryAction()
                 run.recordResets[plan.key] = true
                 if run.reportRecords then
                     run.reportRecords[plan.key] = nil
+                end
+            elseif plan.kind == "total" then
+                run.sumResets = run.sumResets or {}
+                run.sumResets[plan.key] = true
+                if plan.key == "runs" then
+                    run.counted = true
+                elseif plan.key == "wins" then
+                    run.winCounted = true
+                elseif run.values and run.values[plan.key] ~= nil then
+                    run.accounted = run.accounted or {}
+                    run.accounted[plan.key] = run.values[plan.key]
                 end
             elseif plan.kind == "nemesis" then
                 run.nemesisResets = run.nemesisResets or {}

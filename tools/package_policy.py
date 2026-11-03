@@ -1,5 +1,6 @@
 """Single allowlist for the player package: runtime, user docs and fixed assets."""
 
+import json
 from pathlib import Path
 import re
 
@@ -12,6 +13,7 @@ MEDIA = (
     "AzerothSans-ko.otf",
     "ChronicleEdge.tga",
     "ChronicleGrain.tga",
+    "GrimoirePaper.tga",
     "ChronicleSeal.tga",
     "ChronicleIcons.tga",
     "FavoriteHeartEmpty.tga",
@@ -21,6 +23,7 @@ MEDIA = (
 ) + tuple(
     [f"ChronicleGlyph{i:02d}.tga" for i in range(1, 17)]
     + [f"ChroniclePlate{i}.tga" for i in range(1, 5)]
+    + [f"GrimoirePlate{i}.tga" for i in range(1, 5)]
     + [
         "RunZone-" + zone + ".tga"
         for zone in (
@@ -38,6 +41,17 @@ MEDIA = (
             "wsg",
         )
     ]
+)
+# Fixed, hash-reviewed native portrait assets; never discover arbitrary media files.
+MEDIA += tuple(
+    sorted(
+        json.loads(
+            (
+                Path(__file__).resolve().parent.parent
+                / "data/nemesis-portrait-sources.json"
+            ).read_text(encoding="utf-8")
+        )["assets"]
+    )
 )
 
 

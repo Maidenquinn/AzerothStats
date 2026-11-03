@@ -139,6 +139,38 @@ function A.Reason(reason)
     return A.T(key or "Unavailable")
 end
 
+--- Build reverse class-name and ability-name indexes once; DetectLocale used to walk GameText every 10s.
+local function localeIndexes()
+    if A.classLocaleIndex and A.abilityLocaleIndex then
+        return
+    end
+    A.classLocaleIndex, A.abilityLocaleIndex = {}, {}
+    for _, lang in ipairs(A.languages) do
+        local code, d = lang[1], A.gameText[lang[1]]
+        if d then
+            for key, value in pairs(d) do
+                if type(value) == "string" then
+                    if string.find(key, "^class%.", 1, false) then
+                        local list = A.classLocaleIndex[value]
+                        if not list then
+                            list = {}
+                            A.classLocaleIndex[value] = list
+                        end
+                        table.insert(list, code)
+                    elseif string.find(key, "^ability%..+%.name$", 1, false) then
+                        local list = A.abilityLocaleIndex[value]
+                        if not list then
+                            list = {}
+                            A.abilityLocaleIndex[value] = list
+                        end
+                        table.insert(list, { code, key })
+                    end
+                end
+            end
+        end
+    end
+end
+
 --- Honor a manual preference, otherwise combine native class/spell-tooltip evidence and locale fallback.
 function A.DetectLocale()
     local setting = A.db and A.db.settings.language
@@ -147,22 +179,10 @@ function A.DetectLocale()
         A.localeSource = "Settings"
         return setting
     end
+    localeIndexes()
     local clsName = A.Call(UnitClass, "player")
-    local classCandidate, classCount = nil, 0
-    for _, lang in ipairs(A.languages) do
-        local d = A.gameText[lang[1]]
-        if d then
-            for key, value in pairs(d) do
-                if string.find(key, "^class%.") and value == clsName then
-                    classCandidate = lang[1]
-                    classCount = classCount + 1
-                end
-            end
-        end
-    end
-    if classCount ~= 1 then
-        classCandidate = nil
-    end
+    local classHits = clsName and A.classLocaleIndex[clsName]
+    local classCandidate = classHits and table.getn(classHits) == 1 and classHits[1] or nil
     -- The client can report enUS while the game's own tooltip is French, etc.
     -- Only standard 1.12 GameTooltip methods verified in the installed client are used.
     local candidates
@@ -183,14 +203,16 @@ function A.DetectLocale()
             tip:Hide()
             if name and name ~= "" then
                 local found, count, single = {}, 0, nil
-                for lg, d in pairs(A.gameText) do
-                    if
-                        d["ability." .. probe[2] .. ".name"] == name
-                        and (not candidates or candidates[lg])
-                    then
-                        found[lg] = true
-                        count = count + 1
-                        single = lg
+                local abilityKey = "ability." .. probe[2] .. ".name"
+                local hits = A.abilityLocaleIndex[name]
+                if hits then
+                    for _, hit in ipairs(hits) do
+                        local lg, key = hit[1], hit[2]
+                        if key == abilityKey and (not candidates or candidates[lg]) then
+                            found[lg] = true
+                            count = count + 1
+                            single = lg
+                        end
                     end
                 end
                 if count == 1 then
@@ -240,7 +262,7 @@ function A.Font(title, locale)
     if lg == "zh" or lg == "ja" or lg == "ko" then
         return root .. "AzerothSans-" .. lg .. ".otf"
     end
-    return root .. (title and "AzerothSerif.ttf" or "AzerothSans.ttf")
+    return root .. (title and A.theme.serif and "AzerothSerif.ttf" or "AzerothSans.ttf")
 end
 
 --- Resolve a known spell key, otherwise show the recorded name/ID.

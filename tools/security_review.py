@@ -18,6 +18,7 @@ DATA_MODULES = {
     "GameText.lua": {"gameText"},
     "Collection.lua": {"collectionAliases", "collectionSources", "abilityClasses"},
     "Icons.lua": {"gameSpellIcons"},
+    "CreaturePortraits.lua": {"creaturePortraits"},
     "InsightsStrings.lua": {"uiText"},
 }
 FORBIDDEN = set(

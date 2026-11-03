@@ -2,6 +2,26 @@
 
 Persistent run history and build statistics for **Azeroth Survivors on Windows**, using the client's Lua addon interface (11200 / Lua 5.0).
 
+## V2 development candidate — 2.0.0-dev.13
+
+The isolated `codex/v2-runtime` branch implements the approved V2 navigation:
+**Overview, My runs, Analyze run, My progress, Favorites and Nemesis**, with
+Settings and Diagnostics in the footer. The five themes, configurable HUD and
+all V1 data views remain accessible. V2 adds measured progression plots,
+advanced build attributes, native affix identifiers, observed encounters and
+support events, optional summons/effects, local notes and personal objectives.
+
+**This candidate is not a stable player release.** Offline tests do not prove
+native rendering, packet ordering or the game's SavedVariables persistence.
+The public V1 download below remains unchanged. See the
+[V2 implementation status and acceptance gates](design/v2/RUNTIME-STATUS.md),
+[native test recipe](docs/V2-ACCEPTANCE.md) and
+[bidirectional data contract](design/v2/DATA-COMPATIBILITY.md).
+
+V1 and V2 use the same schema-1 `AzerothStatsDB` ledger. V2-only data lives in
+`extensions.azerothStatsV2`; returning to V1 does not discard common runs played
+in V2. Do not enable two copies of Azeroth Stats simultaneously.
+
 ## Review status
 
 **Approved for posting as a verified addon, as reported by the maintainer on 28 October 2026. The current release is 1.7.1-beta.1.** This is game-team distribution approval, not independent security certification or a promise that future updates are approved. It includes the Chroniques interface, configurable HUD, run reports/comparisons and verified 0.121 Heroic metadata. The earlier 1.5.1-review.1 audit is historical evidence, not certification or approval of this build.
@@ -12,7 +32,7 @@ The new native slate/bronze theme includes original generated artwork, a curated
 
 Read [the UI implementation and test guide](docs/CHRONIQUES.md), [architecture](docs/ARCHITECTURE.md) and the earlier [security review](docs/SECURITY-REVIEW.md).
 
-## Features
+## Public V1 features
 
 Azeroth Stats observes native counters during play and keeps local history after the next run starts. Its eleven pages provide:
 
