@@ -115,7 +115,10 @@ check(
     "deletion creates independent automatic backup"
 )
 check(A.CreateDataBackup(), "manual backup can be created independently")
-check(AzerothStatsAutoBackup.data.runs[1].id == "delete-a", "automatic snapshot retains deleted run")
+check(
+    AzerothStatsAutoBackup.data.runs[1].id == "delete-a",
+    "automatic snapshot retains deleted run"
+)
 local beforeRestore = A.db.totals.runs
 AzerothStatsBackup = AzerothStatsAutoBackup
 check(A.RestoreDataBackup(), "restore succeeds from validated independent snapshot")
