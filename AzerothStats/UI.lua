@@ -2827,7 +2827,8 @@ function A.BuildUI()
             A.Say(A.T(message))
         else
             data.status = message
-            data.stage = "select"
+            A.Say(message)
+            data.stage = "review"
             data.token:SetText("")
             A.RefreshDataDialog()
         end
@@ -3030,7 +3031,7 @@ function A.BuildUI()
                 .. A.T(
                     category and "Category cleanup applies to all classes"
                         or data.kind == "reset" and "Reset all statistics"
-                        or "History only; totals stay unchanged"
+                        or "Deleted run contributions are removed from totals"
                 )
         )
         local count = plan and plan.count or 0
@@ -3155,7 +3156,7 @@ function A.BuildUI()
                 or A.T(
                     data.kind == "favorites"
                             and "Removing favorites unprotects runs from future history cleanup"
-                        or "This cannot be undone"
+                        or "A backup is created before deletion; restore between runs"
                 )
         )
         put(data.tokenCaption, A.T("Type RESET to confirm"))

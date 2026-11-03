@@ -180,12 +180,12 @@ end
 -- A bounded, independent snapshot. Never use A.Copy here: it truncates large
 -- databases and would silently turn a backup into an incomplete copy.
 local function snapshot(value, state, depth)
-    if depth > 40 then
+    if depth > A.limits.savedDepth then
         return nil, "Backup exceeds nesting limit"
     end
     state.count = state.count + 1
-    if state.count > 300000 then
-        return nil, "Backup exceeds safety limit"
+    if state.count > A.limits.savedNodes then
+        return nil, "Backup exceeds database validation limit; no data changed"
     end
     local kind = type(value)
     if kind ~= "table" then
