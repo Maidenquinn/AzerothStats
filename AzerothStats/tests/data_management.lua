@@ -104,9 +104,14 @@ check(
     "deleting selected details returns to History instead of silently switching reports"
 )
 check(
-    A.Sign(A.db.totals) == totals and A.Sign(A.db.classes) == classes,
-    "detail deletion keeps totals and records including pruned history exactly"
+    A.db.totals.runs == 102
+        and A.db.totals.sum.damage == 122456
+        and A.db.classes.warrior.runs == 69
+        and A.db.totals.records.damage.id == "old-pruned",
+    "detail deletion subtracts accounted run and preserves unrelated pruned record"
 )
+check(AzerothStatsBackup and AzerothStatsBackup.data.totals.runs == 103, "deletion creates independent backup")
+totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
 local d = fixture("other-warrior")
 table.insert(A.db.runs, d)
 A.PrepareDataAction("history", "warrior")
@@ -122,7 +127,8 @@ check(
     A.FindRun(b.id) and A.FindRun(c.id) and not A.FindRun(d.id) and not A.FindRun(e.id),
     "class-history clear preserves favorites and other classes"
 )
-check(A.Sign(A.db.totals) == totals, "class-history clear never subtracts guessed lifetime totals")
+check(A.db.totals.runs == 100 and A.db.totals.sum.damage == 120456, "class-history clear subtracts known contributions only")
+totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
 -- The visible list selects a run without changing any saved data.
 A.OpenDataManagement()
 A.ui.dataDialog.actions[1].callback()
