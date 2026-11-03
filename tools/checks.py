@@ -28,8 +28,8 @@ assert '"Critical hit rate"' in reports
 assert '"Periodic hit rate"' in reports
 assert '"Collection quality"' in reports
 assert '"Native API reads"' not in reports
-assert 'if hits > 0 then' in reports
-assert 'math.min(5, table.getn(sources))' in reports
+assert "if hits > 0 then" in reports
+assert "math.min(5, table.getn(sources))" in reports
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"
