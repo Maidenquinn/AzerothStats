@@ -24,6 +24,12 @@ assert "A.V2CombatTick(run)" in tracker
 assert 'section == "Combat Intelligence"' in reports
 assert 'section ~= "Combat Intelligence"' in reports
 assert '{ "Combat Intelligence", "Combat Intelligence" }' in v2ui
+assert '"Critical hit rate"' in reports
+assert '"Periodic hit rate"' in reports
+assert '"Collection quality"' in reports
+assert '"Native API reads"' not in reports
+assert "if hits > 0 then" in reports
+assert "math.min(5, table.getn(sources))" in reports
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"
