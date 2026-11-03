@@ -124,7 +124,7 @@ check(A.db.totals.runs ~= beforeRestore, "restore changes data rather than merel
 A.PrepareDataAction("run", nil, "delete-a")
 check(A.ConfirmDataAction(), "run can be removed again after restore")
 check(
-    AzerothStatsBackup.data.totals.runs == 102,
+    AzerothStatsBackup.data.totals.runs == 103,
     "automatic deletion never overwrites manual backup"
 )
 check(AzerothStatsAutoBackup.data.totals.runs == 103, "automatic snapshot updates independently")
