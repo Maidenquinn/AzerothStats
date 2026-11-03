@@ -1845,9 +1845,9 @@ local function buildSettings(frame)
     UI.settings = p
     for _, rect in ipairs({
         { -12, -12, 736, 241 },
-        { -12, 232, 356, 180 },
-        { 358, 232, 356, 180 },
-        { -12, 457, 736, 116 },
+        { -12, 232, 356, 226 },
+        { 358, 232, 356, 226 },
+        { -12, 472, 736, 100 },
     }) do
         for _, texture in ipairs(A.ThemePanel(p, unpack(rect))) do
             table.insert(UI.solids, { texture = texture, multiplier = 0.65 })
@@ -1856,7 +1856,7 @@ local function buildSettings(frame)
     UI.appearance = font(p, 0, 0, 690, 24, 16, COLORS.gold, true)
     UI.behaviour = font(p, 0, 232, 320, 24, 16, COLORS.gold, true)
     UI.storage = font(p, 370, 232, 320, 24, 16, COLORS.gold, true)
-    UI.saveNote = font(p, 0, 415, 710, 30, 11, COLORS.muted)
+    UI.saveNote = font(p, 0, 438, 345, 24, 11, COLORS.muted)
     UI.sliders = {}
     UI.checks = {}
     local definitions = {
@@ -1970,9 +1970,9 @@ local function buildSettings(frame)
     UI.themeButton = button(p, 370, 194, 330, 28, "", function()
         A.OpenThemePicker()
     end)
-    UI.hudSettingsTitle = font(p, 0, 465, 690, 26, 18, COLORS.gold, true)
-    UI.hudSettingsHint = font(p, 0, 504, 340, 48, 12, COLORS.muted)
-    button(p, 370, 506, 330, 32, "Customize bar", function()
+    UI.hudSettingsTitle = font(p, 0, 485, 690, 26, 18, COLORS.gold, true)
+    UI.hudSettingsHint = font(p, 0, 523, 340, 36, 12, COLORS.muted)
+    button(p, 370, 522, 330, 32, "Customize bar", function()
         A.OpenBarEditor()
     end)
     button(p, 370, 326, 330, 28, "Reset position", function()
