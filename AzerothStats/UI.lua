@@ -2502,6 +2502,9 @@ function A.BuildUI()
         A.ShowMenu(self, options)
     end)
     UI.historyReset = button(frame, 766, 194, 166, 32, "", function()
+        if UI.historyCalendar then
+            UI.historyCalendar:Hide()
+        end
         A.view.historyAdvancedOpen = not A.view.historyAdvancedOpen
         UI.advancedPanel.initialized = false
         A.RefreshUI()
@@ -2814,6 +2817,7 @@ function A.BuildUI()
             return
         end
         A.view.historyAdvanced = parsed
+        calendar:Hide()
         A.view.page = 1
         A.view.historyAdvancedOpen = false
         advanced.initialized = false
@@ -2821,6 +2825,7 @@ function A.BuildUI()
         A.RefreshUI()
     end)
     UI.advancedClear = button(advanced, 18, 370, 204, 30, "Reset all filters", function()
+        calendar:Hide()
         A.ClearHistoryFilters()
         advanced.mapChoice = nil
         advanced.initialized = false
