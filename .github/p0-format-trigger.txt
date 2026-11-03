@@ -1,1 +1,1 @@
-Refresh P0 checksums.
+Refresh P0 checksums after backup and commands.
