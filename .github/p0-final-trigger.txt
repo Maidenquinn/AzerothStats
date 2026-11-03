@@ -1,1 +1,0 @@
-Format P0 fixture.
