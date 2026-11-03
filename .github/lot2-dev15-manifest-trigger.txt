@@ -1,1 +1,0 @@
-Generate dev.15 player checksums.
