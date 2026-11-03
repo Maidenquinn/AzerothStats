@@ -2794,7 +2794,11 @@ function A.BuildUI()
         calendar.target = target
         calendar:ClearAllPoints()
         calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", target == "dateFrom" and 260 or 390, -117)
-        local y, m = dateParts(UI.advancedFields[target]:GetText())
+        local input = UI.advancedFields[target]
+        if not input then
+            return
+        end
+        local y, m = dateParts(input:GetText())
         if not y then
             local newest
             for _, run in ipairs(A.db.runs or {}) do
@@ -2816,29 +2820,25 @@ function A.BuildUI()
         renderCalendar()
         calendar:Show()
     end
-    for _, key in ipairs({ "dateFrom", "dateTo" }) do
-        local input = UI.advancedFields[key]
+    -- Each picker owns its date key; never capture the Lua 5.1 loop variable.
+    local function addDatePicker(key, x, width)
+        local target = key
+        local input = UI.advancedFields[target]
         input:Hide()
         input:EnableMouse(false)
-        local x = key == "dateFrom" and 260 or 486
-        local width = key == "dateFrom" and 158 or 198
-        local picker = button(advanced, x, 62, width, 25, "YYYY-MM-DD", function()
-            openCalendar(key)
+        local picker = button(advanced, x, 62, width - 30, 25, "YYYY-MM-DD", function()
+            openCalendar(target)
         end)
         picker:SetFrameLevel(advanced:GetFrameLevel() + 12)
-        picker:SetWidth(width - 30)
-        local iconButton = button(advanced, x + width - 28, 62, 28, 25, "D", function()
-            openCalendar(key)
+        local iconButton = button(advanced, x + width - 28, 62, 28, 25, ">", function()
+            openCalendar(target)
         end)
         iconButton:SetFrameLevel(advanced:GetFrameLevel() + 13)
-        iconButton.label:SetText(">")
-        picker.dateKey = key
-        if key == "dateFrom" then
-            UI.historyDateFromPicker = picker
-        else
-            UI.historyDateToPicker = picker
-        end
+        picker.dateKey = target
+        return picker
     end
+    UI.historyDateFromPicker = addDatePicker("dateFrom", 260, 158)
+    UI.historyDateToPicker = addDatePicker("dateTo", 486, 198)
     local dateHint = font(advanced, 260, 96, 424, 17, 11, COLORS.muted)
     dateHint.fixedSize = true
     put(dateHint, A.T("Click a date field to open the calendar (YYYY-MM-DD)"))
