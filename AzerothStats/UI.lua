@@ -1994,7 +1994,7 @@ local function buildSettings(frame)
     local function backupTitle(entry)
         local kind = entry.automatic and "Auto" or "Manual"
         local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or "Legacy"
-        return kind .. " #" .. entry.id .. " | " .. stamp .. " | " .. entry.runs .. " runs"
+        return kind .. " No." .. entry.id .. " | " .. stamp .. " | " .. entry.runs .. " runs"
     end
     local function chooseBackup(anchor)
         local options = {}
