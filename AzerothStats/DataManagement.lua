@@ -117,7 +117,12 @@ local function unaccountRemovedRuns(remove)
                     if not (run.sumResets and run.sumResets[key]) then
                         local value = run.accounted and A.Number(run.accounted[key])
                         if value ~= nil then
-                            if key ~= "level" and key ~= "peakDps" and group.sum and group.sum[key] then
+                            if
+                                key ~= "level"
+                                and key ~= "peakDps"
+                                and group.sum
+                                and group.sum[key]
+                            then
                                 group.sum[key] = math.max(0, group.sum[key] - value)
                             end
                             if group.coverage and group.coverage[key] then
@@ -155,7 +160,11 @@ local function unaccountRemovedRuns(remove)
             for _, group in ipairs({ A.db.totals, A.db.classes[run.class] or {} }) do
                 group.records = group.records or {}
                 for _, key in ipairs(A.metrics) do
-                    if missing[group] and missing[group][key] and not (run.recordResets and run.recordResets[key]) then
+                    if
+                        missing[group]
+                        and missing[group][key]
+                        and not (run.recordResets and run.recordResets[key])
+                    then
                         local value = run.values and A.Number(run.values[key])
                         local rec = group.records[key]
                         if value and (not rec or value > rec.value) then
