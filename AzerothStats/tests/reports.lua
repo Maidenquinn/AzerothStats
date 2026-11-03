@@ -41,6 +41,13 @@ check(bounds.level and bounds.level.min == 1, "level range begins at one")
 check(bounds.level.max == 35, "level range uses maximum recorded level")
 check(bounds.gold.max == 900, "gold range uses maximum recorded run")
 check(bounds.kills and bounds.kills.max >= 20, "kills range uses recorded runs")
+local legacy = { values = {}, level = 64, gold = 1200 }
+table.insert(A.db.runs, legacy)
+local legacyBounds = A.HistoryMetricBounds()
+check(legacyBounds.level.max == 64, "legacy level included in observed slider range")
+check(legacyBounds.gold.max == 1200, "legacy gold included in observed slider range")
+table.remove(A.db.runs)
+
 local parsed, errorText = A.ParseHistoryFilters({
     map = "Feralas",
     levelMin = "15",
