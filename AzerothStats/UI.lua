@@ -2763,9 +2763,6 @@ function A.BuildUI()
         input:SetScript("OnMouseDown", function()
             openCalendar(key)
         end)
-        input:SetScript("OnEditFocusGained", function()
-            openCalendar(key)
-        end)
     end
     local dateHint = font(advanced, 260, 124, 424, 17, 11, COLORS.muted)
     dateHint.fixedSize = true
