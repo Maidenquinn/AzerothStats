@@ -1,0 +1,1 @@
+Publish verified Combat Intelligence collector and report hotfix.
