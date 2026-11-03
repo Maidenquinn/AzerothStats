@@ -93,6 +93,171 @@ local function clearCategory(kind)
     A.view.page = 1
 end
 
+-- Remove only contributions proven by a retained run's accounting ledger.
+-- This deliberately does not reconstruct lifetime totals from incomplete history.
+local function unaccountRemovedRuns(remove)
+    local removed = {}
+    local missing = {}
+    for _, run in ipairs(A.db.runs) do
+        if remove[run.id] then
+            table.insert(removed, run)
+        end
+    end
+    for _, run in ipairs(removed) do
+        local ownGroups = { A.db.totals, A.db.classes[run.class] }
+        for _, group in ipairs(ownGroups) do
+            if group then
+                if run.counted and not (run.sumResets and run.sumResets.runs) then
+                    group.runs = math.max(0, (group.runs or 0) - 1)
+                end
+                if run.winCounted and not (run.sumResets and run.sumResets.wins) then
+                    group.wins = math.max(0, (group.wins or 0) - 1)
+                end
+                for _, key in ipairs(A.metrics) do
+                    if not (run.sumResets and run.sumResets[key]) then
+                        local value = run.accounted and A.Number(run.accounted[key])
+                        if value ~= nil then
+                            if
+                                key ~= "level"
+                                and key ~= "peakDps"
+                                and group.sum
+                                and group.sum[key]
+                            then
+                                group.sum[key] = math.max(0, group.sum[key] - value)
+                            end
+                            if group.coverage and group.coverage[key] then
+                                group.coverage[key] = math.max(0, group.coverage[key] - 1)
+                            end
+                        end
+                    end
+                end
+                for mode, entries in pairs(run.spellAccounted or {}) do
+                    local aggregate = group.spells and group.spells[mode]
+                    if aggregate then
+                        for name, amount in pairs(entries) do
+                            if type(amount) == "number" and aggregate[name] then
+                                aggregate[name] = math.max(0, aggregate[name] - amount)
+                            end
+                        end
+                    end
+                end
+                -- A record pointing at the deleted run is invalid. Retained runs can
+                -- supply a replacement, but older pruned runs may have had a higher one.
+                for _, key in ipairs(A.metrics) do
+                    local record = group.records and group.records[key]
+                    if record and record.id == run.id then
+                        group.records[key] = nil
+                        missing[group] = missing[group] or {}
+                        missing[group][key] = true
+                    end
+                end
+            end
+        end
+    end
+    -- Restore records only where the deleted run was the record holder.
+    for _, run in ipairs(A.db.runs) do
+        if not remove[run.id] and not run.recordsReset then
+            for _, group in ipairs({ A.db.totals, A.db.classes[run.class] or {} }) do
+                group.records = group.records or {}
+                for _, key in ipairs(A.metrics) do
+                    if
+                        missing[group]
+                        and missing[group][key]
+                        and not (run.recordResets and run.recordResets[key])
+                    then
+                        local value = run.values and A.Number(run.values[key])
+                        local rec = group.records[key]
+                        if value and (not rec or value > rec.value) then
+                            group.records[key] = { value = value, id = run.id, at = run.startedAt }
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- A bounded, independent snapshot. Never use A.Copy here: it truncates large
+-- databases and would silently turn a backup into an incomplete copy.
+local function snapshot(value, state, depth)
+    if depth > 40 then
+        return nil, "Backup exceeds nesting limit"
+    end
+    state.count = state.count + 1
+    if state.count > 300000 then
+        return nil, "Backup exceeds safety limit"
+    end
+    local kind = type(value)
+    if kind ~= "table" then
+        if kind == "nil" or kind == "string" or kind == "boolean" then
+            return value
+        end
+        if kind == "number" and value == value and math.abs(value) < 1e100 then
+            return value
+        end
+        return nil, "Unsupported backup value"
+    end
+    if getmetatable(value) or state.visiting[value] then
+        return nil, "Unsafe backup structure"
+    end
+    state.visiting[value] = true
+    local result = {}
+    for key, child in pairs(value) do
+        local copiedKey, keyError = snapshot(key, state, depth + 1)
+        if keyError then
+            state.visiting[value] = nil
+            return nil, keyError
+        end
+        local copied, err = snapshot(child, state, depth + 1)
+        if err then
+            state.visiting[value] = nil
+            return nil, err
+        end
+        result[copiedKey] = copied
+    end
+    state.visiting[value] = nil
+    return result
+end
+
+function A.CreateDataBackup()
+    if not A.db then
+        return false, "No database loaded"
+    end
+    if A.run and A.run.status == "active" then
+        return false, "Backups are available between runs"
+    end
+    local data, err = snapshot(A.db, { count = 0, visiting = {} }, 0)
+    if err then
+        return false, err
+    end
+    if not A.ValidateDatabase(data) then
+        return false, "Backup failed validation"
+    end
+    -- Keep one independent backup, outside the mutable database tree.
+    AzerothStatsBackup = { schema = 1, data = data }
+    return true, "Backup saved; /reload to write it to disk"
+end
+
+function A.RestoreDataBackup()
+    if A.run and A.run.status == "active" then
+        return false, "Restore is available between runs"
+    end
+    if type(AzerothStatsBackup) ~= "table" or AzerothStatsBackup.schema ~= 1 then
+        return false, "No compatible backup"
+    end
+    local data, err = snapshot(AzerothStatsBackup.data, { count = 0, visiting = {} }, 0)
+    if err or not A.ValidateDatabase(data) then
+        return false, err or "Backup validation failed"
+    end
+    AzerothStatsDB = data
+    A.pendingDataPlan = nil
+    if not A.InitDB() then
+        return false, "Backup could not be loaded"
+    end
+    A.V2Reconcile()
+    return true, "Backup restored; /reload recommended"
+end
+
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.
 function A.DataPlan(kind, class, id)
     if
@@ -198,6 +363,10 @@ function A.ConfirmDataAction(token)
     if fresh.kind == "reset" and token ~= "RESET" then
         return false, "Type RESET to confirm"
     end
+    local backupOK, backupMessage = A.CreateDataBackup()
+    if not backupOK then
+        return false, backupMessage
+    end
     if A.dataCategories[fresh.kind] then
         clearCategory(fresh.kind)
     elseif fresh.kind == "reset" then
@@ -224,6 +393,7 @@ function A.ConfirmDataAction(token)
         for _, id in ipairs(fresh.ids) do
             remove[id] = true
         end
+        unaccountRemovedRuns(remove)
         for i = table.getn(A.db.runs), 1, -1 do
             if remove[A.db.runs[i].id] then
                 table.remove(A.db.runs, i)

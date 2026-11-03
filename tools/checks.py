@@ -33,6 +33,11 @@ assert "math.min(5, table.getn(sources))" in reports
 assert "combatSourceLabel(source.name)" in reports
 assert '"Source: " .. A.SourceName(source.name)' not in reports
 assert '"ability." .. slug .. ".name"' in reports
+management = (addon / "DataManagement.lua").read_text(encoding="utf-8")
+assert "unaccountRemovedRuns(remove)" in management
+assert "run.spellAccounted or {}" in management
+assert "run.sumResets and run.sumResets[key]" in management
+assert "run.recordResets and run.recordResets[key]" in management
 version = re.search(r"^## Version: (.+)$", toc, re.M)[1].strip()
 assert ('version = "' + version + '"') in (addon / "Util.lua").read_text(
     encoding="utf-8"
