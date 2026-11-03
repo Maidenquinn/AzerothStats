@@ -393,14 +393,11 @@ function A.ReportModel(model, run)
                     { "Dropped combat events", "dropped" },
                     { "Combat stream gaps", "gaps" },
                 }) do
-                    table.insert(
-                        model.rows,
-                        {
-                            label = metric[1],
-                            value = A.Format(combat[metric[2]]),
-                            detail = "Combat Intelligence · partial event feed",
-                        }
-                    )
+                    table.insert(model.rows, {
+                        label = metric[1],
+                        value = A.Format(combat[metric[2]]),
+                        detail = "Combat Intelligence · partial event feed",
+                    })
                 end
             end
         end
