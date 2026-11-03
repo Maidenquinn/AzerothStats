@@ -327,7 +327,7 @@ function A.MatchesHistory(run)
         return (low == nil or value >= low) and (high == nil or value <= high)
     end
     if filters.map and filters.map ~= "" then
-        local map = string.lower(tostring(run.map or run.zone or run.mapName or ""))
+        local map = string.lower(tostring(run.zone or run.map or run.mapName or ""))
         if not string.find(map, string.lower(filters.map), 1, true) then return false end
     end
     if not between(run.level or run.maxLevel, filters.levelMin, filters.levelMax) then return false end
