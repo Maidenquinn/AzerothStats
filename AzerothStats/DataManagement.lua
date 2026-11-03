@@ -219,6 +219,42 @@ local function snapshot(value, state, depth)
     return result
 end
 
+-- Historical backups are kept outside the main database so restoring a snapshot
+-- never overwrites the catalogue. Legacy single-slot snapshots remain readable.
+local function backupStore(automatic)
+    local name = automatic and AzerothStatsAutoBackup or AzerothStatsBackup
+    if type(name) == "table" and name.schema == 2 and type(name.entries) == "table" then
+        return name
+    end
+    local store = { schema = 2, nextId = 1, entries = {} }
+    if type(name) == "table" and name.schema == 1 and type(name.data) == "table" then
+        table.insert(store.entries, { id = 1, at = 0, data = name.data, legacy = true })
+        store.nextId = 2
+    end
+    if automatic then
+        AzerothStatsAutoBackup = store
+    else
+        AzerothStatsBackup = store
+    end
+    return store
+end
+
+function A.ListDataBackups(automatic)
+    local store = backupStore(automatic)
+    local result = {}
+    for index = table.getn(store.entries), 1, -1 do
+        local entry = store.entries[index]
+        table.insert(result, {
+            id = entry.id,
+            at = entry.at,
+            runs = entry.runs or (entry.data and table.getn(entry.data.runs or {})) or 0,
+            automatic = automatic and true or false,
+            legacy = entry.legacy,
+        })
+    end
+    return result
+end
+
 function A.CreateDataBackup(automatic)
     if not A.db then
         return false, "No database loaded"
@@ -233,23 +269,43 @@ function A.CreateDataBackup(automatic)
     if not A.ValidateDatabase(data) then
         return false, "Backup failed validation"
     end
-    -- Keep one independent backup, outside the mutable database tree.
+    local store = backupStore(automatic)
+    local id = store.nextId
+    store.nextId = id + 1
+    table.insert(store.entries, {
+        id = id,
+        at = time and time() or 0,
+        runs = table.getn(data.runs or {}),
+        data = data,
+    })
     if automatic then
-        AzerothStatsAutoBackup = { schema = 1, data = data }
-        return true, "Safety snapshot saved"
+        while table.getn(store.entries) > 15 do
+            table.remove(store.entries, 1)
+        end
+        return true, "Automatic safety backup #" .. id .. " saved"
     end
-    AzerothStatsBackup = { schema = 1, data = data }
-    return true, "Manual backup saved; /reload to write it to disk"
+    return true, "Manual backup #" .. id .. " saved; reload to write it to disk"
 end
 
-function A.RestoreDataBackup()
+function A.RestoreDataBackup(id, automatic)
     if A.run and A.run.status == "active" then
         return false, "Restore is available between runs"
     end
-    if type(AzerothStatsBackup) ~= "table" or AzerothStatsBackup.schema ~= 1 then
-        return false, "No compatible backup"
+    local store = backupStore(automatic)
+    local entry
+    for _, candidate in ipairs(store.entries) do
+        if candidate.id == id then
+            entry = candidate
+            break
+        end
     end
-    local data, err = snapshot(AzerothStatsBackup.data, { count = 0, visiting = {} }, 0)
+    if not entry and id == nil then
+        entry = store.entries[table.getn(store.entries)]
+    end
+    if not entry then
+        return false, "Selected backup not found"
+    end
+    local data, err = snapshot(entry.data, { count = 0, visiting = {} }, 0)
     if err or not A.ValidateDatabase(data) then
         return false, err or "Backup validation failed"
     end
@@ -259,7 +315,21 @@ function A.RestoreDataBackup()
         return false, "Backup could not be loaded"
     end
     A.V2Reconcile()
-    return true, "Backup restored; /reload recommended"
+    return true, "Backup #" .. entry.id .. " restored; reload recommended"
+end
+
+function A.DeleteDataBackup(id, automatic)
+    if A.run and A.run.status == "active" then
+        return false, "Backup deletion is available between runs"
+    end
+    local store = backupStore(automatic)
+    for index, entry in ipairs(store.entries) do
+        if entry.id == id then
+            table.remove(store.entries, index)
+            return true, "Backup deleted"
+        end
+    end
+    return false, "Backup not found"
 end
 
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.
