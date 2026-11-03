@@ -58,6 +58,14 @@ _G.AZS_GetCombatTextEvents = function(cursor)
 end
 A.V2CombatTick(active)
 check(A.V2CombatSnapshot().hits == 2, "new stream does not overwrite observations")
+-- Exercise the real V2 transactional store using a retained run identity.
+active.values = { duration = 30 }
+table.insert(A.db.runs, active)
+A.V2CombatTick(active)
+local persisted = A.V2Store(false).runs[active.id]
+check(persisted and persisted.combatIntelligence and persisted.combatIntelligence.hits == 2, "bounded run checkpoint persists")
+check(persisted.combatIntelligence.dropped == 2, "loss flags persist")
+table.remove(A.db.runs)
 A.V2CombatTick(nil)
 check(A.V2CombatSnapshot() == nil, "inactive run clears volatile state")
 check(store.schema == 1, "schema-1 retained")
