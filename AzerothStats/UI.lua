@@ -1240,7 +1240,19 @@ function A.RefreshUI()
                 or "All runs"
         )
     )
-    put(UI.historyReset.label, A.T("Reset filters"))
+    put(UI.historyReset.label, A.T("Filters"))
+    selected(UI.historyReset, browsingHistory and A.view.historyAdvancedOpen)
+    if UI.advancedPanel then
+        show(UI.advancedPanel, browsingHistory and A.view.historyAdvancedOpen == true)
+        if browsingHistory and A.view.historyAdvancedOpen and not UI.advancedPanel.initialized then
+            local active = A.view.historyAdvanced or {}
+            for key, field in pairs(UI.advancedFields) do
+                local val = active[key]
+                field:SetText(val == nil and "" or tostring(val))
+            end
+            UI.advancedPanel.initialized = true
+        end
+    end
     local journal = model.report and A.view.reportSection == "Build journal"
     show(UI.journalFilter, journal)
     put(
@@ -2464,7 +2476,8 @@ function A.BuildUI()
         A.ShowMenu(self, options)
     end)
     UI.historyReset = button(frame, 766, 194, 166, 32, "", function()
-        A.ClearHistoryFilters()
+        A.view.historyAdvancedOpen = not A.view.historyAdvancedOpen
+        UI.advancedPanel.initialized = false
         A.RefreshUI()
     end)
     for _, b in ipairs({ UI.historyResult, UI.historyKind, UI.historyReset }) do
@@ -2473,6 +2486,85 @@ function A.BuildUI()
     end
     dropdown(UI.historyResult)
     dropdown(UI.historyKind)
+    -- Compact advanced search is an owned overlay; it never changes stored run data.
+    UI.advancedPanel = CreateFrame("Frame", nil, frame)
+    local advanced = UI.advancedPanel
+    advanced:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -236)
+    advanced:SetWidth(714)
+    advanced:SetHeight(316)
+    advanced:SetFrameLevel(frame:GetFrameLevel() + 16)
+    advanced:EnableMouse(true)
+    advanced:SetScript("OnMouseDown", function() end)
+    surface(advanced, "card")
+    advanced:Hide()
+    UI.advancedFields = {}
+    font(advanced, 16, 9, 470, 25, 16, COLORS.gold):SetText(A.T("Advanced filters"))
+    local function field(key, label, x, y, width)
+        local caption = font(advanced, x, y, width, 16, 11, COLORS.muted)
+        put(caption, A.T(label))
+        local input = CreateFrame("EditBox", nil, advanced)
+        input:SetPoint("TOPLEFT", advanced, "TOPLEFT", x, -(y + 18))
+        input:SetWidth(width)
+        input:SetHeight(22)
+        input:SetFont(A.Font(false), 12, "")
+        input:SetTextColor(unpack(COLORS.text))
+        input:SetAutoFocus(false)
+        if input.SetMaxLetters then
+            input:SetMaxLetters(key == "map" and 80 or 20)
+        end
+        surface(input, "card")
+        input:SetScript("OnEscapePressed", function()
+            this:ClearFocus()
+        end)
+        input:SetScript("OnEnterPressed", function()
+            this:ClearFocus()
+        end)
+        UI.advancedFields[key] = input
+        return input
+    end
+    field("map", "Map (name or zone)", 18, 45, 212)
+    field("dateFrom", "Date from (YYYY-MM-DD)", 248, 45, 208)
+    field("dateTo", "Date to (YYYY-MM-DD)", 474, 45, 220)
+    local groups = {
+        { "level", "Level", 18, 107 },
+        { "kills", "Kills", 368, 107 },
+        { "gold", "Gold", 18, 173 },
+        { "duration", "Survival seconds", 368, 173 },
+    }
+    for _, def in ipairs(groups) do
+        font(advanced, def[3], def[4], 94, 18, 11, COLORS.muted):SetText(A.T(def[2]))
+        field(def[1] .. "Min", "Min", def[3] + 96, def[4], 100)
+        field(def[1] .. "Max", "Max", def[3] + 206, def[4], 100)
+    end
+    UI.advancedError = font(advanced, 18, 240, 440, 22, 11, COLORS.muted)
+    UI.advancedApply = button(advanced, 490, 266, 204, 30, "Apply filters", function()
+        local values = {}
+        for key, input in pairs(UI.advancedFields) do
+            values[key] = input:GetText() or ""
+        end
+        local parsed, err = A.ParseHistoryFilters(values)
+        if not parsed then
+            put(UI.advancedError, err)
+            return
+        end
+        A.view.historyAdvanced = parsed
+        A.view.page = 1
+        A.view.historyAdvancedOpen = false
+        advanced.initialized = false
+        put(UI.advancedError, "")
+        A.RefreshUI()
+    end)
+    UI.advancedClear = button(advanced, 18, 266, 204, 30, "Reset all filters", function()
+        A.ClearHistoryFilters()
+        advanced.initialized = false
+        put(UI.advancedError, "")
+        A.RefreshUI()
+    end)
+    UI.advancedClose = button(advanced, 622, 8, 72, 28, "Close", function()
+        A.view.historyAdvancedOpen = false
+        advanced.initialized = false
+        A.RefreshUI()
+    end)
     UI.journalFilter = button(frame, 714, 318, 218, 26, "", function(self)
         local options = {
             {
@@ -2521,7 +2613,7 @@ function A.BuildUI()
             elseif section == "Run report" then
                 A.OpenReport(A.Selected() and A.Selected().id)
             else
-                A.view.historySection, A.view.page = "History", 1
+                A.view.historySection, A.view.page = "History", A.view.historyReturnPage or 1
             end
             A.RefreshUI()
         end)
@@ -2544,7 +2636,6 @@ function A.BuildUI()
         table.insert(UI.compareSections, b)
     end
     UI.reportCompare = button(frame, 518, 100, 198, 26, "Compare runs", function()
-        A.view.historyReturnPage = A.view.page
         A.OpenCompare(A.Selected() and A.Selected().id)
         A.RefreshUI()
     end)
