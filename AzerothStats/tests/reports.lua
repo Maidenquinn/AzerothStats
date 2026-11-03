@@ -37,8 +37,12 @@ a.values.level, a.values.gold = 18, 250
 b.values.level, b.values.gold = 35, 900
 b.values.kills = 20
 local parsed, errorText = A.ParseHistoryFilters({
-    map = "Feralas", levelMin = "15", levelMax = "20",
-    killsMin = "10", goldMax = "300", durationMax = "120",
+    map = "Feralas",
+    levelMin = "15",
+    levelMax = "20",
+    killsMin = "10",
+    goldMax = "300",
+    durationMax = "120",
 })
 check(parsed and not errorText, "combined filters parse")
 A.view.historyAdvanced = parsed
