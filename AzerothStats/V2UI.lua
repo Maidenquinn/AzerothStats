@@ -422,7 +422,15 @@ local function setup(ui)
         local key = keys[i]
         button.v2Key = key
         button.callback = function(self)
-            if key == "Character" then
+            if key == "Combat" then
+                menu(self, {
+                    { "Combat", "Damage by spell" },
+                    { "Combat Intelligence", "Combat Intelligence" },
+                }, function(value)
+                    section(value)
+                    A.RefreshUI()
+                end)
+            elseif key == "Character" then
                 buildMenu(self)
             elseif key == "Details" then
                 menu(self, {
