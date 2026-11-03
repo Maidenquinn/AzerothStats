@@ -1359,7 +1359,7 @@ function A.RefreshUI()
         end
     end
     show(UI.context, model.banner ~= nil)
-    show(UI.subtitle, model.banner == nil)
+    show(UI.subtitle, model.banner == nil and A.view.tab ~= 1)
     if model.banner then
         local band, data = UI.context, model.banner
         band:ClearAllPoints()
@@ -2788,7 +2788,7 @@ function A.BuildUI()
         UI.recordItems[index] = record
     end
     UI.empty = font(frame, 268, 293, 608, 80, 16, COLORS.muted, true)
-    UI.note = font(frame, 218, 738, 714, 19, 10, COLORS.muted)
+    UI.note = font(frame, 218, 738, 550, 19, 10, COLORS.muted)
     UI.previous = button(frame, 218, 714, 38, 24, "<", function()
         A.view.page = math.max(1, A.view.page - 1)
         A.RefreshUI()
