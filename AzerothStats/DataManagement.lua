@@ -96,18 +96,12 @@ end
 -- Remove only contributions proven by a retained run's accounting ledger.
 -- This deliberately does not reconstruct lifetime totals from incomplete history.
 local function unaccountRemovedRuns(remove)
-    local groups = { A.db.totals }
     local affected = {}
     local removed = {}
     for _, run in ipairs(A.db.runs) do
         if remove[run.id] then
             table.insert(removed, run)
             affected[run.class] = true
-        end
-    end
-    for class in pairs(affected) do
-        if A.db.classes[class] then
-            table.insert(groups, A.db.classes[class])
         end
     end
     for _, run in ipairs(removed) do
