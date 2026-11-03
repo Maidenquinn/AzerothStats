@@ -185,7 +185,11 @@ def inspect(root=ROOT):
             LiteralCatalog(stream, DATA_MODULES[name]).check()
         else:
             for index, token in enumerate(stream):
-                assert token.kind != "identifier" or token.text not in FORBIDDEN or (name == "UI.lua" and token.text == "ReloadUI"), (
+                assert (
+                    token.kind != "identifier"
+                    or token.text not in FORBIDDEN
+                    or (name == "UI.lua" and token.text == "ReloadUI")
+                ), (
                     name,
                     token.line,
                     token.text,
