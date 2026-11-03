@@ -524,7 +524,7 @@ function A.ReportModel(model, run)
                         label = displayName,
                         value = A.Short(source.damage),
                         exact = A.Format(source.damage),
-                        detail = A.Format(source.hits) .. " hits · observed damage (partial)",
+                        detail = A.Format(source.hits) .. " " .. A.T("Hits") .. " · " .. A.T("Partial"),
                         icon = icon,
                     })
                 end
