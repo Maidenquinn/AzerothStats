@@ -111,7 +111,9 @@ check(
     "detail deletion subtracts accounted run and preserves unrelated pruned record"
 )
 check(
-    AzerothStatsAutoBackup and AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)].data.totals.runs == 103,
+    AzerothStatsAutoBackup
+        and AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)].data.totals.runs
+            == 103,
     "deletion creates independent automatic backup"
 )
 check(A.CreateDataBackup(), "manual backup can be created independently")
@@ -129,7 +131,11 @@ check(
     AzerothStatsBackup.entries[1].data.totals.runs == 103,
     "automatic deletion never overwrites manual backup"
 )
-check(AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)].data.totals.runs == 103, "automatic snapshot updates independently")
+check(
+    AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)].data.totals.runs
+        == 103,
+    "automatic snapshot updates independently"
+)
 for index = 1, 17 do
     check(A.CreateDataBackup(true), "automatic snapshot " .. index)
 end
