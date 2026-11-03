@@ -1,0 +1,35 @@
+name: Build AzerothStats test ZIP (no release)
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Branch or commit to package for review
+        required: true
+        default: feat/dev28-runs-navigation-filters
+        type: string
+permissions:
+  contents: read
+jobs:
+  test-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_ref }}
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Verify and package without publishing
+        run: |
+          python tools/checks.py
+          python tools/build_release.py --output review-build
+          cd review-build
+          sha256sum --check *.zip.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: AzerothStats-review-ZIP
+          path: review-build/*.zip
+          retention-days: 3
+          if-no-files-found: error
