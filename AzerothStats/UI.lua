@@ -2006,7 +2006,7 @@ local function buildSettings(frame)
         close.key = nil
         local hint = font(manager, 20, 48, 600, 36, 12, COLORS.muted)
         put(hint, "Select a snapshot to restore or delete. Automatic backups retain the latest 15.")
-        local selected
+        local selectedBackup
         local page = 1
         local entries = {}
         local confirmAction
@@ -2043,18 +2043,18 @@ local function buildSettings(frame)
                 if entry then
                     row.key = nil
                     put(row.label, entryTitle(entry))
-                    selected(row, selected and selected.id == entry.id and selected.automatic == entry.automatic)
+                    selected(row, selectedBackup and selectedBackup.id == entry.id and selectedBackup.automatic == entry.automatic)
                     row:Show()
                 else
                     row:Hide()
                 end
             end
             put(paging, "Page " .. page .. " / " .. pages)
-            put(selectedText, selected and ("Selected: " .. entryTitle(selected)) or "No backup selected")
+            put(selectedText, selectedBackup and ("Selected: " .. entryTitle(selectedBackup)) or "No backup selected")
         end
         for index = 1, 7 do
             local row = button(manager, 20, 82 + (index - 1) * 31, 610, 28, "", function(self)
-                selected = self.entry
+                selectedBackup = self.entry
                 resetConfirmation()
                 refresh()
             end)
@@ -2072,7 +2072,7 @@ local function buildSettings(frame)
         previous.key = nil
         nextPage.key = nil
         restoreButton = button(manager, 20, 402, 295, 32, "Restore selected", function()
-            if not selected then
+            if not selectedBackup then
                 A.Say("Select a backup first")
                 return
             end
@@ -2082,7 +2082,7 @@ local function buildSettings(frame)
                 put(restoreButton.label, "CONFIRM RESTORE")
                 return
             end
-            local ok, message = A.RestoreDataBackup(selected.id, selected.automatic)
+            local ok, message = A.RestoreDataBackup(selectedBackup.id, selectedBackup.automatic)
             A.Say(message)
             resetConfirmation()
             if ok and type(ReloadUI) == "function" then
@@ -2090,7 +2090,7 @@ local function buildSettings(frame)
             end
         end)
         deleteButton = button(manager, 335, 402, 295, 32, "Delete selected", function()
-            if not selected then
+            if not selectedBackup then
                 A.Say("Select a backup first")
                 return
             end
@@ -2100,11 +2100,11 @@ local function buildSettings(frame)
                 put(deleteButton.label, "CONFIRM DELETE")
                 return
             end
-            local ok, message = A.DeleteDataBackup(selected.id, selected.automatic)
+            local ok, message = A.DeleteDataBackup(selectedBackup.id, selectedBackup.automatic)
             A.Say(message)
             resetConfirmation()
             if ok then
-                selected = nil
+                selectedBackup = nil
                 refresh()
                 if type(ReloadUI) == "function" then
                     ReloadUI()
