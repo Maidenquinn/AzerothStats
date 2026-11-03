@@ -423,26 +423,26 @@ function A.ReportModel(model, run)
             end
         end
         if section ~= "Combat Intelligence" then
-        local meter = run.meters and run.meters.damage
-        local rows = {}
-        for i = 1, math.min(256, table.getn(meter and meter.rows or {})) do
-            table.insert(rows, meter.rows[i])
-        end
-        table.sort(rows, function(a, b)
-            return a.dmg > b.dmg
-        end)
-        for _, entry in ipairs(rows) do
-            local name = A.SourceName(entry.name or entry.source)
-            table.insert(model.rows, {
-                label = name,
-                value = A.Short(entry.dmg),
-                exact = A.Format(entry.dmg) .. "\n" .. A.T("Per second") .. " " .. A.Rate(
-                    entry.dps
-                ),
-                detail = A.T("Per second") .. " " .. A.CompactRate(entry.dps),
-                icon = A.SpellIcon(name),
-            })
-        end
+            local meter = run.meters and run.meters.damage
+            local rows = {}
+            for i = 1, math.min(256, table.getn(meter and meter.rows or {})) do
+                table.insert(rows, meter.rows[i])
+            end
+            table.sort(rows, function(a, b)
+                return a.dmg > b.dmg
+            end)
+            for _, entry in ipairs(rows) do
+                local name = A.SourceName(entry.name or entry.source)
+                table.insert(model.rows, {
+                    label = name,
+                    value = A.Short(entry.dmg),
+                    exact = A.Format(entry.dmg) .. "\n" .. A.T("Per second") .. " " .. A.Rate(
+                        entry.dps
+                    ),
+                    detail = A.T("Per second") .. " " .. A.CompactRate(entry.dps),
+                    icon = A.SpellIcon(name),
+                })
+            end
         end
     end
     A.DecorateFavorites(model, 5, run)
