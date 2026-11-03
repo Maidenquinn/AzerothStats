@@ -32,6 +32,36 @@ local a, b = run("report-a", 1000, "warrior", 2), run("report-b", 1500, "warrior
 local c, d = run("report-c", 2000, "mage", 2), run("report-d", 4000, "warrior", nil)
 A.db.runs = { a, b, c, d }
 A.db.classes.warrior = { records = { damage = { value = 900 }, kills = { value = 99 } } }
+-- dev.28: isolated advanced-filter validation with complete and partial history.
+a.values.level, a.values.gold = 18, 250
+b.values.level, b.values.gold = 35, 900
+b.values.kills = 20
+local parsed, errorText = A.ParseHistoryFilters({
+    map = "Feralas", levelMin = "15", levelMax = "20",
+    killsMin = "10", goldMax = "300", durationMax = "120",
+})
+check(parsed and not errorText, "combined filters parse")
+A.view.historyAdvanced = parsed
+check(A.MatchesHistory(a) and not A.MatchesHistory(b), "combined predicates restrict retained runs")
+A.view.historyAdvanced = nil
+local invalid = A.ParseHistoryFilters({ levelMin = "30", levelMax = "10" })
+check(invalid == nil, "reversed numeric range rejected")
+invalid = A.ParseHistoryFilters({ dateFrom = "2026-02-30" })
+check(invalid == nil, "impossible calendar date rejected")
+invalid = A.ParseHistoryFilters({ killsMin = "1e3" })
+check(invalid == nil, "noninteger range rejected")
+parsed = A.ParseHistoryFilters({ dateFrom = "2026-01-01", dateTo = "2026-01-02" })
+check(parsed and parsed.dateMax > parsed.dateMin, "calendar bounds include full final day")
+A.view.historyAdvanced = { goldMin = 1 }
+c.values.gold = nil
+check(not A.MatchesHistory(c), "unknown historical metric never assumed zero")
+A.ClearHistoryFilters()
+check(A.view.historyAdvanced == nil and A.view.page == 1, "reset advanced history filters")
+A.view.tab, A.view.historySection, A.view.page = 3, "History", 4
+A.OpenReport(a.id)
+check(A.view.historyReturnPage == 4, "opening report remembers history page")
+A.OpenCompare(a.id)
+check(A.view.historyReturnPage == 4, "comparison from report preserves history page")
 A.OpenCompare(a.id)
 check(
     A.view.compareB == b.id,
@@ -60,6 +90,11 @@ check(
     A.ui.model.comparison and A.ui.rows[1].leftCell:IsShown(),
     "comparison uses paired value cells"
 )
+check(A.ui.backToRuns:IsShown(), "comparison provides visible back navigation")
+A.ui.backToRuns.callback()
+check(A.view.historySection == "History" and A.view.page >= 1, "back navigation returns to history")
+A.OpenCompare(a.id)
+A.RefreshUI()
 A.ui.swapRuns.callback()
 check(A.view.compareA == b.id and A.view.compareB == a.id, "swap uses exact stored run IDs")
 A.ui.swapRuns.callback()
