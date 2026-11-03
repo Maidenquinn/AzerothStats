@@ -36,6 +36,11 @@ A.db.classes.warrior = { records = { damage = { value = 900 }, kills = { value =
 a.values.level, a.values.gold = 18, 250
 b.values.level, b.values.gold = 35, 900
 b.values.kills = 20
+local bounds = A.HistoryMetricBounds()
+check(bounds.level and bounds.level.min == 1, "level range begins at one")
+check(bounds.level.max == 35, "level range uses maximum recorded level")
+check(bounds.gold.max == 900, "gold range uses maximum recorded run")
+check(bounds.kills and bounds.kills.max >= 20, "kills range uses recorded runs")
 local parsed, errorText = A.ParseHistoryFilters({
     map = "Feralas",
     levelMin = "15",
