@@ -2019,7 +2019,13 @@ local function buildSettings(frame)
         local function entryTitle(entry)
             local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or "Legacy"
             return (entry.automatic and "Auto" or "Manual")
-                .. " No." .. entry.id .. "  |  " .. stamp .. "  |  " .. entry.runs .. " runs"
+                .. " No."
+                .. entry.id
+                .. "  |  "
+                .. stamp
+                .. "  |  "
+                .. entry.runs
+                .. " runs"
         end
         local function resetConfirmation()
             confirmAction = nil
@@ -2043,14 +2049,23 @@ local function buildSettings(frame)
                 if entry then
                     row.key = nil
                     put(row.label, entryTitle(entry))
-                    selected(row, selectedBackup and selectedBackup.id == entry.id and selectedBackup.automatic == entry.automatic)
+                    selected(
+                        row,
+                        selectedBackup
+                            and selectedBackup.id == entry.id
+                            and selectedBackup.automatic == entry.automatic
+                    )
                     row:Show()
                 else
                     row:Hide()
                 end
             end
             put(paging, "Page " .. page .. " / " .. pages)
-            put(selectedText, selectedBackup and ("Selected: " .. entryTitle(selectedBackup)) or "No backup selected")
+            put(
+                selectedText,
+                selectedBackup and ("Selected: " .. entryTitle(selectedBackup))
+                    or "No backup selected"
+            )
         end
         for index = 1, 7 do
             local row = button(manager, 20, 82 + (index - 1) * 31, 610, 28, "", function(self)
