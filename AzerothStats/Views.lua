@@ -330,10 +330,10 @@ function A.MatchesHistory(run)
         local map = string.lower(tostring(run.zone or run.map or run.mapName or ""))
         if not string.find(map, string.lower(filters.map), 1, true) then return false end
     end
-    if not between(run.level or run.maxLevel, filters.levelMin, filters.levelMax) then return false end
-    if not between(run.kills, filters.killsMin, filters.killsMax) then return false end
-    if not between(run.gold, filters.goldMin, filters.goldMax) then return false end
-    if not between(run.duration or run.playTime or run.elapsed, filters.durationMin, filters.durationMax) then return false end
+    if not between((run.values and run.values.level) or run.level, filters.levelMin, filters.levelMax) then return false end
+    if not between((run.values and run.values.kills) or run.kills, filters.killsMin, filters.killsMax) then return false end
+    if not between((run.values and run.values.gold) or run.gold, filters.goldMin, filters.goldMax) then return false end
+    if not between((run.values and run.values.duration) or run.duration, filters.durationMin, filters.durationMax) then return false end
     local started = tonumber(run.startedAt)
     if (filters.dateMin or filters.dateMax) and not between(started, filters.dateMin, filters.dateMax) then return false end
     local search = string.lower(A.Text(A.view.historySearch or "", 80) or "")
