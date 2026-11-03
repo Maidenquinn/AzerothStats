@@ -1222,6 +1222,8 @@ function A.RefreshUI()
             })
     )
     local browsingHistory = tab == 3 and not model.report and not model.comparison
+    show(UI.historyMap, browsingHistory)
+    put(UI.historyMap.label, (A.view.historyAdvanced and A.view.historyAdvanced.map) or A.T("All maps"))
     for _, widget in ipairs(UI.historyFilters or {}) do
         show(widget, browsingHistory)
     end
@@ -1279,6 +1281,10 @@ function A.RefreshUI()
                     end
                     slider.syncing = false
                 end
+            end
+            for _, picker in ipairs({ UI.historyDateFromPicker, UI.historyDateToPicker }) do
+                local value = UI.advancedFields[picker.dateKey]:GetText()
+                put(picker.label, value ~= "" and value or A.T("Select date"))
             end
             UI.advancedPanel.initialized = true
         end
@@ -2429,6 +2435,40 @@ function A.BuildUI()
         A.view.page = 1
         A.RefreshUI()
     end)
+    UI.historyMap = button(frame, 724, 100, 208, 26, "All maps", function(self)
+        local options = {
+            {
+                label = A.T("All maps"),
+                action = function()
+                    A.view.historyAdvanced = A.view.historyAdvanced or {}
+                    A.view.historyAdvanced.map = nil
+                    A.view.page = 1
+                end,
+            },
+        }
+        local maps, seen = {}, {}
+        for _, run in ipairs(A.db.runs or {}) do
+            local name = A.ZoneName(run)
+            if name and name ~= "" and not seen[name] then
+                seen[name] = true
+                table.insert(maps, name)
+            end
+        end
+        table.sort(maps)
+        for _, name in ipairs(maps) do
+            local selectedName = name
+            table.insert(options, {
+                label = name,
+                action = function()
+                    A.view.historyAdvanced = A.view.historyAdvanced or {}
+                    A.view.historyAdvanced.map = selectedName
+                    A.view.page = 1
+                end,
+            })
+        end
+        A.ShowMenu(self, options)
+    end)
+    dropdown(UI.historyMap)
     UI.historyFilters = {}
     local searchPanel = CreateFrame("Frame", nil, frame)
     searchPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -194)
@@ -2560,6 +2600,7 @@ function A.BuildUI()
         return input
     end
     local mapLabel = font(advanced, 18, 52, 150, 24, 12, COLORS.gold)
+    mapLabel:Hide()
     mapLabel.fixedSize = true
     put(mapLabel, A.T("Map"))
     UI.advancedMap = button(advanced, 174, 52, 510, 28, "All maps", function(self)
@@ -2594,17 +2635,18 @@ function A.BuildUI()
         A.ShowMenu(self, options)
     end)
     dropdown(UI.advancedMap)
-    local dateLabel = font(advanced, 18, 96, 150, 24, 12, COLORS.gold)
+    UI.advancedMap:Hide()
+    local dateLabel = font(advanced, 18, 62, 150, 24, 12, COLORS.gold)
     dateLabel.fixedSize = true
     put(dateLabel, A.T("Date"))
-    local fromLabel = font(advanced, 174, 96, 86, 24, 11, COLORS.muted)
+    local fromLabel = font(advanced, 174, 62, 86, 24, 11, COLORS.muted)
     fromLabel.fixedSize = true
     put(fromLabel, A.T("From"))
-    field("dateFrom", 260, 96, 158)
-    local toLabel = font(advanced, 438, 96, 46, 24, 11, COLORS.muted)
+    field("dateFrom", 260, 62, 158)
+    local toLabel = font(advanced, 438, 62, 46, 24, 11, COLORS.muted)
     toLabel.fixedSize = true
     put(toLabel, A.T("To"))
-    field("dateTo", 486, 96, 198)
+    field("dateTo", 486, 62, 198)
     -- Native month picker: independent of external libraries and modern WoW APIs.
     local calendar = CreateFrame("Frame", nil, advanced)
     calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", 260, -151)
@@ -2705,6 +2747,8 @@ function A.BuildUI()
             end
             local selected = string.format("%04d-%02d-%02d", calendar.year, calendar.month, day)
             UI.advancedFields[calendar.target]:SetText(selected)
+            local picker = calendar.target == "dateFrom" and UI.historyDateFromPicker or UI.historyDateToPicker
+            put(picker.label, selected)
             calendar:Hide()
         end)
         calendar.days[i] = dayButton
@@ -2734,7 +2778,7 @@ function A.BuildUI()
             advanced,
             "TOPLEFT",
             target == "dateFrom" and 260 or 390,
-            -151
+            -117
         )
         local y, m = dateParts(UI.advancedFields[target]:GetText())
         if not y then
@@ -2760,11 +2804,20 @@ function A.BuildUI()
     end
     for _, key in ipairs({ "dateFrom", "dateTo" }) do
         local input = UI.advancedFields[key]
-        input:SetScript("OnMouseDown", function()
+        input:EnableMouse(false)
+        local x = key == "dateFrom" and 260 or 486
+        local width = key == "dateFrom" and 158 or 198
+        local picker = button(advanced, x, 62, width, 25, "YYYY-MM-DD", function()
             openCalendar(key)
         end)
+        picker.dateKey = key
+        if key == "dateFrom" then
+            UI.historyDateFromPicker = picker
+        else
+            UI.historyDateToPicker = picker
+        end
     end
-    local dateHint = font(advanced, 260, 124, 424, 17, 11, COLORS.muted)
+    local dateHint = font(advanced, 260, 96, 424, 17, 11, COLORS.muted)
     dateHint.fixedSize = true
     put(dateHint, A.T("Click a date field to open the calendar (YYYY-MM-DD)"))
     local groups = {
@@ -2832,7 +2885,7 @@ function A.BuildUI()
     UI.advancedError = font(advanced, 18, 344, 660, 20, 11, COLORS.gold)
     UI.advancedError.fixedSize = true
     UI.advancedApply = button(advanced, 480, 370, 204, 30, "Apply filters", function()
-        local values = { map = advanced.mapChoice or "" }
+        local values = { map = (A.view.historyAdvanced and A.view.historyAdvanced.map) or "" }
         for key, input in pairs(UI.advancedFields) do
             values[key] = input:GetText() or ""
         end
