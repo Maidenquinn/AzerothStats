@@ -1,0 +1,46 @@
+name: Publish V2 LOT 1 dev.14 prerelease
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/lot1-release-marker.txt
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Verify version and test schema-preserving behavior
+        run: |
+          grep -q '^## Version: 2.0.0-dev.14$' AzerothStats/AzerothStats.toc
+          python tools/checks.py
+          python tools/build_catalogs.py --check
+          python tools/build_insights_strings.py --check
+      - name: Verify package policy and build installable artifact
+        run: |
+          python tools/build_release.py --output release-assets/lot1
+          sha256sum --check release-assets/lot1/AzerothStats-2.0.0-dev.14.zip.sha256
+      - name: Publish a development prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v2.0.0-dev.14 --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo 'Release already exists, refusing to replace it.'
+            exit 0
+          fi
+          cat > /tmp/lot1-notes.md <<'NOTES'
+          ## AzerothStats 2.0.0-dev.14 — LOT 1 foundations
+          - Passive 0.139.2 native capability detection for Combat Text, World Anchors, Downed Party Members and Player Position.
+          - Future analysis defaults: Combat Intelligence opt-in/off; Encounter Intelligence opt-in/off; Co-op Intelligence auto only in confirmed co-op; balanced reports.
+          - Schema 1, V1 accounting, V2 retained history and optional feature behavior remain intact. No new combat, co-op or encounter collector is activated.
+          - Existing V2 formatting and generated catalog were normalized for reproducible CI.
+          - Includes additional offline compatibility regressions and documented data contracts.
+          
+          **Development preview.** Offline tests and packaging pass. New native APIs and gameplay behavior have not been accepted in-game. Install the attached player ZIP (not GitHub source archive) into AddOns; keep AzerothStatsDB and fully restart the game.
+          NOTES
+          gh release create v2.0.0-dev.14 release-assets/lot1/AzerothStats-2.0.0-dev.14.zip release-assets/lot1/AzerothStats-2.0.0-dev.14.zip.sha256 --target "$GITHUB_SHA" --title "Azeroth Stats V2 Preview 2.0.0-dev.14" --notes-file /tmp/lot1-notes.md --prerelease --repo "${{ github.repository }}"
