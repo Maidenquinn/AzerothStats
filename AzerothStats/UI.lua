@@ -1398,8 +1398,11 @@ function A.RefreshUI()
     put(UI.columnValue, model.columnValue or "")
     put(UI.columnShare, A.T("Share"))
     show(UI.note, not dashboard)
-    show(UI.statsLink, tab == 1)
-    put(UI.statsLink.label, A.T(dashboard and "All statistics" or "Overview"))
+    for index, control in ipairs(UI.overviewTabs) do
+        show(control, tab == 1)
+        put(control.label, A.T(index == 1 and "Overview" or "All statistics"))
+        selected(control, (index == 2) == (not dashboard))
+    end
     show(UI.recentTitle, dashboard)
     show(UI.recentEmpty, dashboard and table.getn(model.rows) == 0)
     put(UI.recentEmpty, A.T("No data yet"))
@@ -2715,21 +2718,32 @@ function A.BuildUI()
         r.edit = editButton(r)
         UI.rows[i] = r
     end
-    UI.editToggle = button(frame, 834, 138, 98, 24, "", function()
+    -- Page editing is a secondary action, consistently anchored to the footer.
+    UI.editToggle = button(frame, 796, 724, 136, 30, "", function()
         A.editMode = not A.editMode
         A.RefreshUI()
     end)
-    UI.restoreRows = button(frame, 642, 138, 182, 24, "", function()
+    UI.restoreRows = button(frame, 602, 724, 182, 30, "", function()
         if UI.model then
             A.RestorePageRows(UI.model.editContext)
         end
         A.RefreshUI()
     end)
-    UI.statsLink = button(frame, 518, 100, 186, 26, "", function()
-        A.view.overviewStats = not A.view.overviewStats
-        A.view.page = 1
-        A.RefreshUI()
-    end)
+    -- Both overview presentations are always visible as explicit tabs.
+    UI.overviewTabs = {}
+    for index, item in ipairs({
+        { "Overview", false },
+        { "All statistics", true },
+    }) do
+        local statsMode = item[2]
+        local control = button(frame, 548 + (index - 1) * 192, 140, 184, 29, item[1], function()
+            A.view.overviewStats = statsMode
+            A.view.page = 1
+            A.RefreshUI()
+        end)
+        control.key = nil
+        UI.overviewTabs[index] = control
+    end
     UI.recentTitle = font(frame, 218, 322, 430, 30, 22, COLORS.gold, true)
     UI.recentEmpty = font(frame, 240, 370, 650, 55, 14, COLORS.muted)
     UI.historyLink = button(frame, 772, 322, 160, 30, "History", function()
