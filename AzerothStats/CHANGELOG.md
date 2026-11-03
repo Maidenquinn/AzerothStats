@@ -1,3 +1,14 @@
+# 2.0.0 — Full V2 release (3 November 2026)
+
+Consolidated full release since `2.0.0-dev.12`. See [full release notes](../docs/RELEASE-NOTES-2.0.0.md).
+
+- **My runs:** combined map/date/level/kills/gold/duration filters, native date pickers, paired range controls, retained pagination and direct Back from run comparison.
+- **Overview:** explicit Overview / All statistics tabs, consistent edit controls and redesigned spacing/navigation.
+- **Data safety:** individual lifetime-total reset, ledger-aware run deletion, validated pre-deletion backup, manual and automatic backup history, paginated manager and confirmation-based restore.
+- **Combat Intelligence:** optional off-by-default, bounded observed combat text with diagnostics and a separate partial combat report; official meter remains authoritative.
+- **Compatibility:** native API detection, no intentional schema-1 migration, improved UI/API fallbacks and verified package-integrity checks.
+- **Known limitation:** native move-to-begin text can overlap addon windows; partial optional client data is not a guaranteed full combat log.
+
 # 2.0.0-dev.18 — Combat Intelligence UX
 
 - Player-friendly combat tracking status, critical and periodic hit rates, observed damage, collection quality and top sources.
