@@ -34,6 +34,7 @@ UI.lua
 BarUI.lua
 V2Data.lua
 V2Foundations.lua
+V2CombatObserve.lua
 V2Observe.lua
 V2Views.lua
 V2Personal.lua
