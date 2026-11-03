@@ -1,5 +1,8 @@
 -- LOT 1: capability isolation, passive defaults and schema compatibility.
 local A = AzerothStats
+local function assign(name, value)
+    _G[name] = value
+end
 local savedDB, savedRun, savedGlobal = A.db, A.run, AzerothStatsDB
 local names = {
     "AZS_GetCombatTextCapabilities",
@@ -12,7 +15,7 @@ local names = {
 local saved = {}
 for _, name in ipairs(names) do
     saved[name] = getglobal(name)
-    setglobal(name, nil)
+    assign(name, nil)
 end
 local function check(value, description)
     TEST_COUNT = TEST_COUNT + 1
@@ -24,25 +27,25 @@ check(not empty.coop.available and empty.coop.state == "missing", "coop missing"
 check(not empty.encounter.available and empty.encounter.state == "missing", "encounter missing")
 check(not empty.playerPosition.available, "position missing")
 local calls = 0
-setglobal("AZS_GetCombatTextCapabilities", function()
+assign("AZS_GetCombatTextCapabilities", function()
     return { apiVersion = 1, maxEventsPerRead = 256 }
 end)
-setglobal("AZS_GetWorldAnchorCapabilities", function()
+assign("AZS_GetWorldAnchorCapabilities", function()
     return { apiVersion = 1, maxEntriesPerCall = 256 }
 end)
-setglobal("AZS_GetCombatTextEvents", function()
+assign("AZS_GetCombatTextEvents", function()
     calls = calls + 1
     error("must not subscribe in LOT 1")
 end)
-setglobal("AZS_GetWorldAnchors", function()
+assign("AZS_GetWorldAnchors", function()
     calls = calls + 1
     error("must not scan in LOT 1")
 end)
-setglobal("AZS_GetDownedPartyMembers", function()
+assign("AZS_GetDownedPartyMembers", function()
     calls = calls + 1
     error("must not poll in LOT 1")
 end)
-setglobal("AZS_GetPlayerPosition", function()
+assign("AZS_GetPlayerPosition", function()
     calls = calls + 1
     error("must not poll in LOT 1")
 end)
@@ -50,19 +53,19 @@ local caps = A.V2NativeCapabilities()
 check(caps.combat.available and caps.coop.available, "independent combat and coop detection")
 check(caps.encounter.available and caps.playerPosition.available, "encounter and position detected")
 check(calls == 0, "capability probes never invoke collection readers")
-setglobal("AZS_GetCombatTextCapabilities", function()
+assign("AZS_GetCombatTextCapabilities", function()
     return nil, "NOT_READY"
 end)
 check(A.V2NativeCapabilities().combat.state == "notReady", "not ready is nonfatal")
-setglobal("AZS_GetCombatTextCapabilities", function()
+assign("AZS_GetCombatTextCapabilities", function()
     return { apiVersion = 2 }
 end)
 check(A.V2NativeCapabilities().combat.state == "invalid", "unknown API version rejected")
-setglobal("AZS_GetCombatTextCapabilities", function()
+assign("AZS_GetCombatTextCapabilities", function()
     error("client capability failure")
 end)
 check(A.V2NativeCapabilities().combat.state == "error", "native exception isolated")
-setglobal("AZS_GetCombatTextCapabilities", nil)
+assign("AZS_GetCombatTextCapabilities", nil)
 check(A.V2NativeCapabilities().encounter.available, "failure does not disable other features")
 A.db, A.run, AzerothStatsDB = nil, nil, nil
 local defaults = A.V2FeaturePreferences()
@@ -99,6 +102,6 @@ check(store.schema == 99, "future schema preserved")
 A.db, A.run, AzerothStatsDB = savedDB, savedRun, savedGlobal
 A.V2Invalidate()
 for _, name in ipairs(names) do
-    setglobal(name, saved[name])
+    assign(name, saved[name])
 end
 print("V2 LOT 1 FOUNDATIONS PASSED")
