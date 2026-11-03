@@ -2596,6 +2596,138 @@ function A.BuildUI()
     toLabel.fixedSize = true
     put(toLabel, A.T("To"))
     field("dateTo", 486, 96, 198)
+    -- Native month picker: independent of external libraries and modern WoW APIs.
+    local calendar = CreateFrame("Frame", nil, advanced)
+    calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", 174, -139)
+    calendar:SetWidth(510)
+    calendar:SetHeight(231)
+    calendar:SetFrameLevel(advanced:GetFrameLevel() + 10)
+    calendar:EnableMouse(true)
+    surface(calendar, "main")
+    solid(calendar, 0.055, 0.047, 0.034, 1, "ARTWORK")
+    calendar:Hide()
+    UI.historyCalendar = calendar
+    local monthNames = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December",
+    }
+    local weekNames = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" }
+    local monthTitle = font(calendar, 150, 8, 220, 24, 13, COLORS.gold)
+    monthTitle.fixedSize = true
+    local function leapYear(y)
+        return math.mod(y, 4) == 0 and (math.mod(y, 100) ~= 0 or math.mod(y, 400) == 0)
+    end
+    local function daysInMonth(y, m)
+        if m == 2 then
+            return leapYear(y) and 29 or 28
+        end
+        return ({ 31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 })[m]
+    end
+    -- Monday-first Gregorian weekday, calculated without relying on OS date().
+    local function weekday(y, m, d)
+        local offsets = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 }
+        if m < 3 then
+            y = y - 1
+        end
+        local sunday = math.mod(
+            y + math.floor(y / 4) - math.floor(y / 100) + math.floor(y / 400)
+                + offsets[m] + d,
+            7
+        )
+        return math.mod(sunday + 6, 7) + 1
+    end
+    local function dateParts(raw)
+        local _, _, y, m, d = string.find(tostring(raw or ""), "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+        y, m, d = tonumber(y), tonumber(m), tonumber(d)
+        if y and y >= 1970 and y <= 2100 and m and m >= 1 and m <= 12
+            and d and d >= 1 and d <= daysInMonth(y, m) then
+            return y, m, d
+        end
+    end
+    local renderCalendar
+    local function shiftMonth(delta)
+        local value = calendar.year * 12 + calendar.month - 1 + delta
+        local y = math.floor(value / 12)
+        if y < 1970 or y > 2100 then
+            return
+        end
+        calendar.year, calendar.month = y, math.mod(value, 12) + 1
+        renderCalendar()
+    end
+    button(calendar, 12, 8, 44, 25, "<", function()
+        shiftMonth(-1)
+    end)
+    button(calendar, 454, 8, 44, 25, ">", function()
+        shiftMonth(1)
+    end)
+    for i, name in ipairs(weekNames) do
+        local heading = font(calendar, 12 + (i - 1) * 70, 40, 60, 20, 11, COLORS.muted)
+        heading.fixedSize = true
+        put(heading, name)
+    end
+    calendar.days = {}
+    for i = 1, 42 do
+        local index = i
+        local x = 10 + math.mod(i - 1, 7) * 70
+        local y = 62 + math.floor((i - 1) / 7) * 26
+        local dayButton = button(calendar, x, y, 62, 24, "", function()
+            local day = calendar.days[index].day
+            if not day then
+                return
+            end
+            local selected = string.format("%04d-%02d-%02d", calendar.year, calendar.month, day)
+            UI.advancedFields[calendar.target]:SetText(selected)
+            calendar:Hide()
+        end)
+        calendar.days[i] = dayButton
+    end
+    renderCalendar = function()
+        put(monthTitle, A.T(monthNames[calendar.month]) .. " " .. tostring(calendar.year))
+        local first = weekday(calendar.year, calendar.month, 1)
+        local last = daysInMonth(calendar.year, calendar.month)
+        for i, control in ipairs(calendar.days) do
+            local day = i - first + 1
+            control.day = day >= 1 and day <= last and day or nil
+            show(control, control.day ~= nil)
+            if control.day then
+                put(control.label, tostring(day))
+            end
+        end
+    end
+    local function openCalendar(target)
+        if calendar:IsShown() and calendar.target == target then
+            calendar:Hide()
+            return
+        end
+        calendar.target = target
+        local y, m = dateParts(UI.advancedFields[target]:GetText())
+        if not y then
+            local newest
+            for _, run in ipairs(A.db.runs or {}) do
+                if type(run.startedAt) == "number" and (not newest or run.startedAt > newest) then
+                    newest = run.startedAt
+                end
+            end
+            if newest and type(date) == "function" then
+                local ok, result = pcall(date, "*t", newest)
+                if ok and type(result) == "table" then
+                    y, m = result.year, result.month
+                end
+            end
+        end
+        if not y or y < 1970 or y > 2100 or not m or m < 1 or m > 12 then
+            y, m = 2026, 1
+        end
+        calendar.year, calendar.month = y, m
+        renderCalendar()
+        calendar:Show()
+    end
+    UI.historyDateFromPicker = button(advanced, 380, 126, 110, 22, "Pick from", function()
+        openCalendar("dateFrom")
+    end)
+    UI.historyDateToPicker = button(advanced, 574, 126, 110, 22, "Pick to", function()
+        openCalendar("dateTo")
+    end)
     local dateHint = font(advanced, 174, 124, 460, 17, 11, COLORS.muted)
     dateHint.fixedSize = true
     put(dateHint, "YYYY-MM-DD")
@@ -2697,6 +2829,7 @@ function A.BuildUI()
     end)
     UI.advancedClose = button(advanced, 612, 9, 72, 28, "Close", function()
         A.view.historyAdvancedOpen = false
+        calendar:Hide()
         advanced.initialized = false
         A.RefreshUI()
     end)
