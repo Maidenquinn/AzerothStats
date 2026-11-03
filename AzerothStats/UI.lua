@@ -2611,8 +2611,18 @@ function A.BuildUI()
     calendar:Hide()
     UI.historyCalendar = calendar
     local monthNames = {
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
     }
     local weekNames = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" }
     local monthTitle = font(calendar, 150, 8, 220, 24, 13, COLORS.gold)
@@ -2633,8 +2643,7 @@ function A.BuildUI()
             y = y - 1
         end
         local sunday = math.mod(
-            y + math.floor(y / 4) - math.floor(y / 100) + math.floor(y / 400)
-                + offsets[m] + d,
+            y + math.floor(y / 4) - math.floor(y / 100) + math.floor(y / 400) + offsets[m] + d,
             7
         )
         return math.mod(sunday + 6, 7) + 1
@@ -2642,8 +2651,17 @@ function A.BuildUI()
     local function dateParts(raw)
         local _, _, y, m, d = string.find(tostring(raw or ""), "^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
         y, m, d = tonumber(y), tonumber(m), tonumber(d)
-        if y and y >= 1970 and y <= 2100 and m and m >= 1 and m <= 12
-            and d and d >= 1 and d <= daysInMonth(y, m) then
+        if
+            y
+            and y >= 1970
+            and y <= 2100
+            and m
+            and m >= 1
+            and m <= 12
+            and d
+            and d >= 1
+            and d <= daysInMonth(y, m)
+        then
             return y, m, d
         end
     end
@@ -2757,7 +2775,12 @@ function A.BuildUI()
         local pair = {}
         for _, bound in ipairs({ "Min", "Max" }) do
             local x = bound == "Min" and 285 or 573
-            local slider = CreateFrame("Slider", "AzerothStatsHistory" .. key .. bound, advanced, "OptionsSliderTemplate")
+            local slider = CreateFrame(
+                "Slider",
+                "AzerothStatsHistory" .. key .. bound,
+                advanced,
+                "OptionsSliderTemplate"
+            )
             slider:SetPoint("TOPLEFT", advanced, "TOPLEFT", x, -(y + 4))
             slider:SetWidth(105)
             slider:SetHeight(16)
