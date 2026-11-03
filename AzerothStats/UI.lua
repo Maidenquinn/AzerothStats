@@ -1225,6 +1225,17 @@ function A.RefreshUI()
     )
     local browsingHistory = tab == 3 and not model.report and not model.comparison
     show(UI.historyMap, browsingHistory)
+    if browsingHistory then
+        UI.classButton:ClearAllPoints()
+        UI.classButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 218, -160)
+        UI.difficultyButton:ClearAllPoints()
+        UI.difficultyButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 518, -160)
+    else
+        UI.classButton:ClearAllPoints()
+        UI.classButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 714, -100)
+        UI.difficultyButton:ClearAllPoints()
+        UI.difficultyButton:SetPoint("TOPLEFT", UI.frame, "TOPLEFT", 518, -100)
+    end
     put(
         UI.historyMap.label,
         (A.view.historyAdvanced and A.view.historyAdvanced.map) or A.T("All maps")
@@ -2440,7 +2451,7 @@ function A.BuildUI()
         A.view.page = 1
         A.RefreshUI()
     end)
-    UI.historyMap = button(frame, 724, 100, 208, 26, "All maps", function(self)
+    UI.historyMap = button(frame, 724, 160, 208, 26, "All maps", function(self)
         local options = {
             {
                 label = A.T("All maps"),
@@ -2657,7 +2668,7 @@ function A.BuildUI()
     calendar:SetPoint("TOPLEFT", advanced, "TOPLEFT", 260, -151)
     calendar:SetWidth(294)
     calendar:SetHeight(216)
-    calendar:SetFrameLevel(advanced:GetFrameLevel() + 10)
+    calendar:SetFrameLevel(advanced:GetFrameLevel() + 30)
     calendar:EnableMouse(true)
     surface(calendar, "main")
     calendar.opaqueBackdrop = solid(calendar, unpack(COLORS.panel))
@@ -2804,12 +2815,14 @@ function A.BuildUI()
     end
     for _, key in ipairs({ "dateFrom", "dateTo" }) do
         local input = UI.advancedFields[key]
+        input:Hide()
         input:EnableMouse(false)
         local x = key == "dateFrom" and 260 or 486
         local width = key == "dateFrom" and 158 or 198
         local picker = button(advanced, x, 62, width, 25, "YYYY-MM-DD", function()
             openCalendar(key)
         end)
+        picker:SetFrameLevel(advanced:GetFrameLevel() + 12)
         picker.dateKey = key
         if key == "dateFrom" then
             UI.historyDateFromPicker = picker
