@@ -122,7 +122,10 @@ check(A.db.totals.runs == 103 and A.FindRun("delete-a"), "restore recovers run a
 check(A.db.totals.runs ~= beforeRestore, "restore changes data rather than merely refreshing UI")
 A.PrepareDataAction("run", nil, "delete-a")
 check(A.ConfirmDataAction(), "run can be removed again after restore")
-check(AzerothStatsBackup.data.totals.runs == 102, "automatic deletion never overwrites manual backup")
+check(
+    AzerothStatsBackup.data.totals.runs == 102,
+    "automatic deletion never overwrites manual backup"
+)
 check(AzerothStatsAutoBackup.data.totals.runs == 103, "automatic snapshot updates independently")
 totals, classes = A.Sign(A.db.totals), A.Sign(A.db.classes)
 local d = fixture("other-warrior")
