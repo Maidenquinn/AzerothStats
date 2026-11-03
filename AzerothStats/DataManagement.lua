@@ -96,12 +96,11 @@ end
 -- Remove only contributions proven by a retained run's accounting ledger.
 -- This deliberately does not reconstruct lifetime totals from incomplete history.
 local function unaccountRemovedRuns(remove)
-    local affected = {}
     local removed = {}
+    local missing = {}
     for _, run in ipairs(A.db.runs) do
         if remove[run.id] then
             table.insert(removed, run)
-            affected[run.class] = true
         end
     end
     for _, run in ipairs(removed) do
@@ -143,18 +142,20 @@ local function unaccountRemovedRuns(remove)
                     local record = group.records and group.records[key]
                     if record and record.id == run.id then
                         group.records[key] = nil
+                        missing[group] = missing[group] or {}
+                        missing[group][key] = true
                     end
                 end
             end
         end
     end
-    -- Rebuild only missing records, respecting explicit record reset fences.
+    -- Restore records only where the deleted run was the record holder.
     for _, run in ipairs(A.db.runs) do
         if not remove[run.id] and not run.recordsReset then
             for _, group in ipairs({ A.db.totals, A.db.classes[run.class] or {} }) do
                 group.records = group.records or {}
                 for _, key in ipairs(A.metrics) do
-                    if not (run.recordResets and run.recordResets[key]) then
+                    if missing[group] and missing[group][key] and not (run.recordResets and run.recordResets[key]) then
                         local value = run.values and A.Number(run.values[key])
                         local rec = group.records[key]
                         if value and (not rec or value > rec.value) then
