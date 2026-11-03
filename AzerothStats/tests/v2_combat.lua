@@ -24,9 +24,18 @@ local cursorSeen
 _G.AZS_GetCombatTextEvents = function(cursor)
     cursorSeen = cursor
     return {
-        apiVersion = 1, streamId = "s1", cursor = "next", droppedCount = 2,
+        apiVersion = 1,
+        streamId = "s1",
+        cursor = "next",
+        droppedCount = 2,
         events = {
-            { kind = "damage", amount = 123, meterSourceKey = "spell:1", schoolMask = 4, critical = true },
+            {
+                kind = "damage",
+                amount = 123,
+                meterSourceKey = "spell:1",
+                schoolMask = 4,
+                critical = true,
+            },
             { kind = "miss", result = { key = "dodge" } },
             { kind = "damage", amount = 30, periodic = true, sourceKind = "pet" },
         },

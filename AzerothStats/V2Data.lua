@@ -214,7 +214,15 @@ local function shape(store)
                         return type(r) == "table" and type(r.name) == "string" and A.Number(r.dmg)
                     end)
             end)
-            or (data.combatIntelligence ~= nil and (type(data.combatIntelligence) ~= "table" or not map(data.combatIntelligence.sources, 24, function(row) return type(row) == "table" and A.Number(row.hits) and A.Number(row.damage) end) or not map(data.combatIntelligence.schools, 24, function(row) return type(row) == "table" and A.Number(row.hits) and A.Number(row.damage) end)))
+            or (data.combatIntelligence ~= nil and (type(data.combatIntelligence) ~= "table" or not map(
+                data.combatIntelligence.sources,
+                24,
+                function(row)
+                    return type(row) == "table" and A.Number(row.hits) and A.Number(row.damage)
+                end
+            ) or not map(data.combatIntelligence.schools, 24, function(row)
+                return type(row) == "table" and A.Number(row.hits) and A.Number(row.damage)
+            end)))
             or not map(data.summons, 24, presence)
             or not map(data.buffs, 24, presence)
             or not map(data.debuffs, 24, presence)
@@ -318,7 +326,11 @@ function A.V2Reset()
     if A.db and type(A.db.extensions) == "table" then
         local store = A.V2Store(false)
         local preferences = store and store.preferences or {}
-        local keep = { summons = preferences.summons, effects = preferences.effects, combatIntelligence = preferences.combatIntelligence }
+        local keep = {
+            summons = preferences.summons,
+            effects = preferences.effects,
+            combatIntelligence = preferences.combatIntelligence,
+        }
         A.db.extensions[namespace] = nil
         if next(keep) then
             A.db.extensions[namespace] = { schema = 1, runs = {}, preferences = keep }

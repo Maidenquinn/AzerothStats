@@ -384,8 +384,23 @@ function A.ReportModel(model, run)
             local data = A.V2RunData and A.V2RunData(run)
             local combat = data and data.combatIntelligence
             if combat then
-                for _, metric in ipairs({ { "Observed hits", "hits" }, { "Observed misses", "misses" }, { "Observed critical hits", "critical" }, { "Observed periodic hits", "periodic" }, { "Observed damage (not meter total)", "damageObserved" }, { "Dropped combat events", "dropped" }, { "Combat stream gaps", "gaps" } }) do
-                    table.insert(model.rows, { label = metric[1], value = A.Format(combat[metric[2]]), detail = "Combat Intelligence · partial event feed" })
+                for _, metric in ipairs({
+                    { "Observed hits", "hits" },
+                    { "Observed misses", "misses" },
+                    { "Observed critical hits", "critical" },
+                    { "Observed periodic hits", "periodic" },
+                    { "Observed damage (not meter total)", "damageObserved" },
+                    { "Dropped combat events", "dropped" },
+                    { "Combat stream gaps", "gaps" },
+                }) do
+                    table.insert(
+                        model.rows,
+                        {
+                            label = metric[1],
+                            value = A.Format(combat[metric[2]]),
+                            detail = "Combat Intelligence · partial event feed",
+                        }
+                    )
                 end
             end
         end
