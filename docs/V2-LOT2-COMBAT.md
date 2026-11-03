@@ -12,9 +12,9 @@ The first implementation introduces a volatile, opt-in observer in `V2CombatObse
 - No native rendering/frame handlers and no impact projection.
 
 ## Not yet complete
-- The summary is currently **volatile**; no run history persistence or reporting UI exists yet.
+- A bounded summary is now checkpointed to the existing schema-1 V2 extension and displayed alongside the authoritative native meter in the Combat report.
 - The 1 Hz polling budget and high event-rate scenarios need benchmarking and tests.
-- Settings UI needs an explicit opt-in control before player-facing enablement.
+- The Optional analyses menu now exposes a Combat Intelligence opt-in toggle, off by default.
 - Co-op and encounter intelligence are separate lots.
 
-**Do not publish or merge this branch until the above items and full CI are resolved.**
+**Do not publish or merge until CI, overload tests and in-game validation are complete.**
