@@ -1,0 +1,46 @@
+name: Publish V2 LOT 2 dev.16 prerelease
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/dev16-release-marker.txt
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Verify version and test schema-preserving behavior
+        run: |
+          grep -q '^## Version: 2.0.0-dev.16$' AzerothStats/AzerothStats.toc
+          python tools/checks.py
+          python tools/build_catalogs.py --check
+          python tools/build_insights_strings.py --check
+      - name: Verify package policy and build installable artifact
+        run: |
+          python tools/build_release.py --output release-assets/dev16
+          (cd release-assets/dev16 && sha256sum --check AzerothStats-2.0.0-dev.16.zip.sha256)
+      - name: Publish a development prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v2.0.0-dev.16 --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo 'Release already exists, refusing to replace it.'
+            exit 0
+          fi
+          cat > /tmp/dev16-notes.md <<'NOTES'
+          ## AzerothStats 2.0.0-dev.16 — Combat Intelligence live diagnostics hotfix
+          - Opt-in Combat Intelligence with bounded outgoing hit/miss aggregation, loss tracking and per-run partial snapshots.
+          - Combat Intelligence is disabled by default and can be enabled under Optional analyses.
+          - Schema 1, V1 accounting and native meter totals remain authoritative. New combat text summaries are partial, never exhaustive.
+          - Combat observations are bounded and persisted at checkpoints; no raw hit history is stored.
+          - Shows active-run observations and native API status/read counts in Combat reports.
+          
+          **Development preview.** Offline tests and packaging pass. Live gameplay and high-rate behavior still require acceptance. Install the attached player ZIP (not GitHub source archive) into AddOns; keep AzerothStatsDB and fully restart the game.
+          NOTES
+          gh release create v2.0.0-dev.16 release-assets/dev16/AzerothStats-2.0.0-dev.16.zip release-assets/dev16/AzerothStats-2.0.0-dev.16.zip.sha256 --target "$GITHUB_SHA" --title "Azeroth Stats V2 Preview 2.0.0-dev.16" --notes-file /tmp/dev16-notes.md --prerelease --repo "${{ github.repository }}"

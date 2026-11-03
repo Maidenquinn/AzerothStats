@@ -1,7 +1,16 @@
 -- LOT 2: bounded, opt-in combat-event observer. Never modifies the native meter.
 local A = AzerothStats
-local state =
-    { cursor = nil, streamId = nil, runId = nil, summary = nil, lastRun = nil, lastFlush = nil }
+local state = {
+    cursor = nil,
+    streamId = nil,
+    runId = nil,
+    summary = nil,
+    lastRun = nil,
+    lastFlush = nil,
+    status = "disabled",
+    lastError = nil,
+    reads = 0,
+}
 local function newSummary()
     return {
         hits = 0,
@@ -74,9 +83,18 @@ local function flush()
         end)
     end
 end
+function A.V2CombatDiagnostics()
+    return {
+        status = state.status,
+        error = state.lastError,
+        reads = state.reads,
+        summary = state.summary,
+    }
+end
 function A.V2CombatReset()
     state.cursor, state.streamId, state.runId, state.summary = nil, nil, nil, nil
     state.lastRun, state.lastFlush = nil, nil
+    state.status, state.lastError, state.reads = "disabled", nil, 0
 end
 function A.V2CombatSnapshot()
     return state.summary
@@ -93,10 +111,13 @@ function A.V2CombatTick(run)
         state.runId = run.id
         state.summary = newSummary()
         state.lastRun = run
+        state.status = "waiting"
     end
     local summary = state.summary
     local batch, err = read(state.cursor)
+    state.reads = state.reads + 1
     if not batch then
+        state.status, state.lastError = "unavailable", err
         if err == "STREAM_CHANGED" then
             summary.gaps = summary.gaps + 1
             state.cursor, state.streamId = nil, nil
@@ -115,6 +136,7 @@ function A.V2CombatTick(run)
         return
     end
     state.streamId = batch.streamId
+    state.status, state.lastError = "receiving", nil
     local pages = 0
     while batch and pages < 8 do
         pages = pages + 1

@@ -1,3 +1,9 @@
+# 2.0.0-dev.16 — Combat live diagnostics hotfix
+
+- Live Combat report reads current in-memory combat observations while the run is active.
+- Expose native API stream status, error and read counters for diagnosis.
+- Previous per-run checkpoint behavior and native meter remain unchanged.
+
 # 2.0.0-dev.15 — V2 LOT 2 Combat Intelligence preview
 
 - Add opt-in Combat Intelligence collector (off by default), with independent combat text cursor and bounded 1 Hz reads.

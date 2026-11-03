@@ -383,6 +383,25 @@ function A.ReportModel(model, run)
         if section == "Combat" then
             local data = A.V2RunData and A.V2RunData(run)
             local combat = data and data.combatIntelligence
+            local live = A.V2CombatDiagnostics and A.V2CombatDiagnostics()
+            if run.status == "active" and live and live.summary then
+                combat = live.summary
+            end
+            if run.status == "active" then
+                local prefs = A.V2FeaturePreferences and A.V2FeaturePreferences()
+                local status = not (prefs and prefs.combatIntelligence) and "Disabled"
+                    or (live and live.status or "Waiting")
+                table.insert(model.rows, {
+                    label = "Combat Intelligence status",
+                    value = status,
+                    detail = live and (live.error or "No native error") or "Collector not loaded",
+                })
+                table.insert(model.rows, {
+                    label = "Native API reads",
+                    value = A.Format(live and live.reads or 0),
+                    detail = "Since collector initialization",
+                })
+            end
             if combat then
                 for _, metric in ipairs({
                     { "Observed hits", "hits" },
