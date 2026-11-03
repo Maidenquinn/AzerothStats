@@ -1,0 +1,45 @@
+name: Publish versioned backup history dev.23 prerelease
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/dev23-release-marker.txt
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Verify version and test schema-preserving behavior
+        run: |
+          grep -q '^## Version: 2.0.0-dev.23$' AzerothStats/AzerothStats.toc
+          python tools/checks.py
+          python tools/build_catalogs.py --check
+          python tools/build_insights_strings.py --check
+      - name: Verify package policy and build installable artifact
+        run: |
+          python tools/build_release.py --output release-assets/dev23
+          (cd release-assets/dev23 && sha256sum --check AzerothStats-2.0.0-dev.23.zip.sha256)
+      - name: Publish a development prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v2.0.0-dev.23 --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo 'Release already exists, refusing to replace it.'
+            exit 0
+          fi
+          cat > /tmp/dev23-notes.md <<'NOTES'
+          ## AzerothStats 2.0.0-dev.23 — Backup history
+          - Manual backups now append to history rather than overwriting previous snapshots.
+          - Automatic safety backups rotate to retain the latest 15 snapshots.
+          - Settings can select a specific manual or automatic snapshot, restore with confirmation, or delete a selected backup.
+          - Existing dev.22 single-slot snapshots migrate into the versioned history.
+          - Test with a separate copy of SavedVariables before relying on it; full snapshots can grow large.
+
+          NOTES
+          gh release create v2.0.0-dev.23 release-assets/dev23/AzerothStats-2.0.0-dev.23.zip release-assets/dev23/AzerothStats-2.0.0-dev.23.zip.sha256 --target "$GITHUB_SHA" --title "Azeroth Stats V2 Preview 2.0.0-dev.23" --notes-file /tmp/dev23-notes.md --prerelease --repo "${{ github.repository }}"
