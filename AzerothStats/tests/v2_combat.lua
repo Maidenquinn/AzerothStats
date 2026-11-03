@@ -63,7 +63,10 @@ active.values = { duration = 30 }
 table.insert(A.db.runs, active)
 A.V2CombatTick(active)
 local persisted = A.V2Store(false).runs[active.id]
-check(persisted and persisted.combatIntelligence and persisted.combatIntelligence.hits == 2, "bounded run checkpoint persists")
+check(
+    persisted and persisted.combatIntelligence and persisted.combatIntelligence.hits == 2,
+    "bounded run checkpoint persists"
+)
 check(persisted.combatIntelligence.dropped == 2, "loss flags persist")
 table.remove(A.db.runs)
 A.V2CombatTick(nil)
