@@ -1,6 +1,8 @@
-# Azeroth Stats - 2.0.0-dev.18
+> **Release:** [2.0.0 download and complete changelog](https://github.com/Maidenquinn/AzerothStats/releases/tag/v2.0.0). Back up SavedVariables before upgrading. The native move-to-begin overlay may still overlap addon windows.
 
-V2 development candidate, not a stable release. Six main routes preserve the V1
+# Azeroth Stats - 2.0.0
+
+Full V2 release (3 November 2026). Six main routes preserve the V1
 features: Overview, My runs, Analyze run, My progress, Favorites and Nemesis.
 Settings and Diagnostics remain available. Five themes and all existing HUD,
 editing, hiding, restoration and guarded deletion controls are retained.
@@ -37,12 +39,12 @@ A disappearing boss is not a confirmed kill. Shared boss meters are not
 attributed to a single enemy. Return to combat does not prove a successful
 revive. Presence maxima are samples, not casts or exact uptime. Raw affix IDs
 are not assigned guessed meanings. Marks and structured star progression remain
-unavailable. The V1 stable channel remains separate. V2 dev.14 is a development prerelease; LOT 1 prepares passive API capability detection and does not activate new gameplay collectors.
+unavailable. The common schema-1 history is preserved. Native capability detection is passive; optional Combat Intelligence is disabled by default and reports partial observations only.
 
 
 Chroniques native UI, run reports/comparisons, co-op reports, observed build journal and configurable HUD for Azeroth Survivors Windows, interface 11200 / Lua 5.0. The HUD-layering fix was validated locally by the maintainer; behavior on the originally affected player’s client still needs confirmation. The project has game-team permission to be posted as a verified addon; no separate game-team review of this update is claimed. Automated tests are not a safety guarantee.
 
-## Install an approved build
+## Install the official release
 
 Close the client and back up the addon's SavedVariables. Extract to the AddOns directory actually used by the game: `AddOns/AzerothStats/AzerothStats.toc`, with no extra nested folder. Restart, type `/azstats` and check the version. Preserve `AzerothStatsDB` on update. Never edit the executable/game `.sav` files.
 
