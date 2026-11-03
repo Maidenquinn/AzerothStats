@@ -1,0 +1,1 @@
+Run the reviewed JSON-to-Lua catalog generator once.
