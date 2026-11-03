@@ -3,9 +3,19 @@ local A = AzerothStats
 local state = { cursor = nil, streamId = nil, runId = nil, summary = nil }
 local function newSummary()
     return {
-        hits = 0, misses = 0, critical = 0, periodic = 0, reflected = 0,
-        damageObserved = 0, dropped = 0, invalid = 0, gaps = 0,
-        batches = 0, truncated = false, sources = {}, schools = {},
+        hits = 0,
+        misses = 0,
+        critical = 0,
+        periodic = 0,
+        reflected = 0,
+        damageObserved = 0,
+        dropped = 0,
+        invalid = 0,
+        gaps = 0,
+        batches = 0,
+        truncated = false,
+        sources = {},
+        schools = {},
     }
 end
 local function number(v)
@@ -48,8 +58,10 @@ local function read(cursor)
     return batch
 end
 local function enabled(run)
-    return run and run.status == "active"
-        and A.V2FeaturePreferences and A.V2FeaturePreferences().combatIntelligence
+    return run
+        and run.status == "active"
+        and A.V2FeaturePreferences
+        and A.V2FeaturePreferences().combatIntelligence
 end
 function A.V2CombatReset()
     state.cursor, state.streamId, state.runId, state.summary = nil, nil, nil, nil
@@ -102,13 +114,31 @@ function A.V2CombatTick(run)
                     if amount then
                         summary.hits = summary.hits + 1
                         summary.damageObserved = summary.damageObserved + amount
-                        if e.critical == true then summary.critical = summary.critical + 1 end
-                        if e.periodic == true then summary.periodic = summary.periodic + 1 end
-                        if e.reflected == true then summary.reflected = summary.reflected + 1 end
-                        if not bounded(summary.sources, e.meterSourceKey or e.meterSource or e.abilityName, amount) then
+                        if e.critical == true then
+                            summary.critical = summary.critical + 1
+                        end
+                        if e.periodic == true then
+                            summary.periodic = summary.periodic + 1
+                        end
+                        if e.reflected == true then
+                            summary.reflected = summary.reflected + 1
+                        end
+                        if
+                            not bounded(
+                                summary.sources,
+                                e.meterSourceKey or e.meterSource or e.abilityName,
+                                amount
+                            )
+                        then
                             summary.truncated = true
                         end
-                        if not bounded(summary.schools, tostring(number(e.schoolMask) or "unknown"), amount) then
+                        if
+                            not bounded(
+                                summary.schools,
+                                tostring(number(e.schoolMask) or "unknown"),
+                                amount
+                            )
+                        then
                             summary.truncated = true
                         end
                     else
@@ -128,9 +158,16 @@ function A.V2CombatTick(run)
             break
         end
         local nextBatch, nextError = read(state.cursor)
-        if not nextBatch or nextBatch.cursor == state.cursor or nextBatch.streamId ~= state.streamId then
+        if
+            not nextBatch
+            or nextBatch.cursor == state.cursor
+            or nextBatch.streamId ~= state.streamId
+        then
             summary.gaps = summary.gaps + 1
-            if nextError == "STREAM_CHANGED" or (nextBatch and nextBatch.streamId ~= state.streamId) then
+            if
+                nextError == "STREAM_CHANGED"
+                or (nextBatch and nextBatch.streamId ~= state.streamId)
+            then
                 state.cursor, state.streamId = nil, nil
             end
             break
