@@ -1,3 +1,9 @@
+# 2.0.0-dev.18 — Combat Intelligence UX
+
+- Player-friendly combat tracking status, critical and periodic hit rates, observed damage, collection quality and top sources.
+- Distinguishes observed event data from official damage meter.
+- Handles missing and zero-hit samples without misleading rates.
+
 # 2.0.0-dev.17 — Combat collector wiring and report routing
 
 - Call the optional combat stream observer during live run sampling.
