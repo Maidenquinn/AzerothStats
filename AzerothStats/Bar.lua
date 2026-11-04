@@ -62,7 +62,7 @@ function A.NormalizeBar(value)
     for _, range in ipairs({
         { "width", 240, 1600 },
         { "height", 28, 96 },
-        { "opacity", 0.45, 1 },
+        { "opacity", 0, 1 },
         { "textSize", 11, 16 },
     }) do
         result[range[1]] =
