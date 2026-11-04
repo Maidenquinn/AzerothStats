@@ -2060,7 +2060,7 @@ local function buildSettings(frame)
         end
         manager = CreateFrame("Frame", "AzerothStatsBackupManager", A.window)
         manager:SetWidth(650)
-        manager:SetHeight(510)
+        manager:SetHeight(530)
         manager:SetPoint("CENTER", A.window, "CENTER", 0, 0)
         manager:SetFrameStrata("FULLSCREEN_DIALOG")
         manager:SetFrameLevel(A.window:GetFrameLevel() + 35)
@@ -2095,6 +2095,34 @@ local function buildSettings(frame)
         put(
             retentionButton.label,
             "Automatic backups kept: " .. (A.db.settings.autoBackupRetention or 15) .. "  (change)"
+        )
+        local intervalButton = button(manager, 20, 452, 610, 28, "", function(self)
+            local options = {}
+            for _, count in ipairs({ 0, 1, 3, 5, 10, 20 }) do
+                local interval = count
+                table.insert(options, {
+                    label = interval == 0 and "Periodic backups: Off"
+                        or ("Every " .. interval .. " completed runs"),
+                    action = function()
+                        A.db.settings.autoBackupEveryRuns = interval
+                        A.db.settings.autoBackupRunCounter = 0
+                        self.key = nil
+                        put(
+                            self.label,
+                            interval == 0 and "Periodic backups: Off  (change)"
+                                or ("Periodic backups: every " .. interval .. " runs  (change)")
+                        )
+                    end,
+                })
+            end
+            A.ShowMenu(self, options)
+        end)
+        intervalButton.key = nil
+        local interval = A.db.settings.autoBackupEveryRuns or 0
+        put(
+            intervalButton.label,
+            interval == 0 and "Periodic backups: Off  (change)"
+                or ("Periodic backups: every " .. interval .. " runs  (change)")
         )
         local selectedBackup
         local page = 1
@@ -2218,7 +2246,7 @@ local function buildSettings(frame)
         end)
         restoreButton.key = nil
         deleteButton.key = nil
-        local backupNow = button(manager, 20, 452, 610, 32, "Create new manual backup", function()
+        local backupNow = button(manager, 20, 484, 610, 24, "Create new manual backup", function()
             local ok, message = A.CreateDataBackup()
             A.Say(message)
             if ok and type(ReloadUI) == "function" then
