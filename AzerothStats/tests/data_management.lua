@@ -58,6 +58,24 @@ check(
     "automatic retention never removes a manual snapshot"
 )
 A.db.settings.autoBackupRetention = 15
+A.db.settings.autoBackupEveryRuns = 2
+A.db.settings.autoBackupRunCounter = 0
+AzerothStatsAutoBackup = nil
+-- Use a minimal terminal-state record; this function must not mutate a run.
+local completed = { status = "ended" }
+check(not A.RecordCompletedRunBackup(completed), "first completed run does not snapshot")
+check(
+    A.db.settings.autoBackupRunCounter == 1 and table.getn(A.ListDataBackups(true)) == 0,
+    "periodic backup waits until the configured interval"
+)
+check(A.RecordCompletedRunBackup(completed), "second completed run triggers snapshot")
+check(
+    A.db.settings.autoBackupRunCounter == 0 and table.getn(A.ListDataBackups(true)) == 1,
+    "successful periodic backup resets its counter"
+)
+check(not A.RecordCompletedRunBackup({ status = "interrupted" }), "interrupted runs never trigger periodic backup")
+A.db.settings.autoBackupEveryRuns = 0
+check(not A.RecordCompletedRunBackup(completed), "periodic backup is disabled by default")
 A.db.sequence = 0
 AzerothStatsBackup, AzerothStatsAutoBackup = priorManual, priorAuto
 local function fixture(id, class)
