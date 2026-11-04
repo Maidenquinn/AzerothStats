@@ -70,8 +70,10 @@ check(
 )
 check(A.RecordCompletedRunBackup(completed), "second completed run triggers snapshot")
 check(
-    A.db.settings.autoBackupRunCounter == 0 and table.getn(A.ListDataBackups(true)) == 1,
-    "successful periodic backup resets its counter"
+    A.db.settings.autoBackupRunCounter == 0
+        and table.getn(A.ListDataBackups(true)) == 1
+        and AzerothStatsAutoBackup.entries[1].data.settings.autoBackupRunCounter == 0,
+    "successful periodic backup resets its live and persisted counters"
 )
 check(not A.RecordCompletedRunBackup({ status = "interrupted" }), "interrupted runs never trigger periodic backup")
 A.db.settings.autoBackupEveryRuns = 0
