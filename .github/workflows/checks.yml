@@ -37,6 +37,8 @@ jobs:
       - run: python -m unittest discover -s tools -p 'test_*.py'
       - run: python tools/security_review.py --report release-assets/ci/runtime-policy.json
       - run: python tools/checks.py
+      - name: Benchmark synthetic backup scaling (100/500/1000 runs)
+        run: python tools/benchmark_backups.py
       - run: python design/v2/tests/runtime_roundtrip.py
       - run: python tools/build_release.py --output release-assets/ci
       - name: Upload installable ZIP for in-game review (no release)
