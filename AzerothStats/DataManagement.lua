@@ -402,6 +402,48 @@ function A.DeleteDataBackup(id, automatic)
     return false, "Backup not found"
 end
 
+-- Manual snapshots are never pruned automatically. A two-step preview token
+-- prevents stale confirmations from deleting a changed backup catalogue.
+function A.PreviewManualBackupCleanup(keep)
+    if A.run and A.run.status == "active" then
+        return nil, "Backup cleanup is available between runs"
+    end
+    keep = A.Number(keep)
+    if not keep or keep ~= math.floor(keep) or keep < 1 or keep > 50 then
+        return nil, "Keep count must be between 1 and 50"
+    end
+    local store = backupStore(false)
+    local count = table.getn(store.entries)
+    local remove = math.max(0, count - keep)
+    local ids = {}
+    for i = 1, remove do
+        ids[i] = store.entries[i].id
+    end
+    local token = table.concat(ids, ",") .. "|" .. tostring(store.nextId) .. "|" .. tostring(count)
+    return { keep = keep, remove = remove, ids = ids, token = token }
+end
+
+function A.CleanupManualBackups(keep, token)
+    if type(token) ~= "string" then
+        return false, "Preview cleanup and confirm the current selection first"
+    end
+    local plan, err = A.PreviewManualBackupCleanup(keep)
+    if not plan then
+        return false, err
+    end
+    if plan.token ~= token then
+        return false, "Backup list changed; review cleanup again"
+    end
+    if plan.remove == 0 then
+        return true, "No manual backups to remove"
+    end
+    local store = backupStore(false)
+    for i = plan.remove, 1, -1 do
+        table.remove(store.entries, i)
+    end
+    return true, tostring(plan.remove) .. " older manual backups deleted; reload to save changes"
+end
+
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.
 function A.DataPlan(kind, class, id)
     if
