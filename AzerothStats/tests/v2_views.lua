@@ -157,6 +157,25 @@ check(
     "missing native co-op samples render one explicit empty state"
 )
 
+-- Nemesis evidence labels must not present a probable attacker as confirmed.
+local evidenceModel = { rows = {} }
+A.NemesisModel(evidenceModel, {
+    deathEvidence = {
+        deaths = 3,
+        sources = { ["Synthetic attacker"] = { confirmed = 1, probable = 1 } },
+    },
+})
+check(table.getn(evidenceModel.rows) == 1, "Nemesis displays attributed sources separately")
+check(
+    string.find(evidenceModel.rows[1].detail, "Explicit slain-by message", 1, true) ~= nil,
+    "Nemesis explains confirmed provenance"
+)
+check(
+    string.find(evidenceModel.rows[1].detail, "Last attacker is not proof", 1, true) ~= nil,
+    "Nemesis explains probable attribution"
+)
+check(string.find(evidenceModel.note, "1", 1, true) ~= nil, "Nemesis preserves unknown deaths")
+
 -- Party provenance: an absent co-op sample is unknown, not proof of solo play.
 A.view = { historyKind = "unknown" }
 check(A.MatchesHistory(r), "unknown filter retains runs without positive co-op evidence")
