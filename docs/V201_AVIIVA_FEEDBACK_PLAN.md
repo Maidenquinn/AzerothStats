@@ -21,6 +21,7 @@ Status: work in progress; no merge into main, no public release until owner acce
 7. Investigate storage format, compression feasibility and client-side SavedVariables limitations before changing representation.
 
 ### Lot 2: Data provenance (P1)
+- Implementation started: history now exposes an Unknown filter for runs without positive co-op evidence. This is not a Solo filter; old runs cannot be classified as solo from absence of co-op data.
 - Audit native slain-by messages and event timing before changing Nemesis confirmation.
 - Improve confirmed/probable/unknown labels, explain partial runs, and expose evidence source.
 - Add Solo/Co-op/Unknown filter and tags only when positive evidence exists.
