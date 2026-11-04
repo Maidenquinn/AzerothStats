@@ -62,6 +62,9 @@ local function close(reason)
         A.Account(run)
     end
     A.run = nil
+    if run and run.status == "ended" and A.RecordCompletedRunBackup then
+        A.RecordCompletedRunBackup(run)
+    end
 end
 
 --- Resume only plausible continuity or create one new local run, then freeze counter freshness baselines.
