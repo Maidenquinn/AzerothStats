@@ -1260,10 +1260,10 @@ function A.RefreshUI()
         (A.view.historyKind == "unknown" and (A.Locale() == "fr" and "Inconnu" or "Unknown"))
             or A.T(
                 A.view.historyKind == "coop" and "Co-op"
-                or A.view.historyKind == "unknown" and "Unknown"
-                or A.view.historyKind == "favorite" and "Favorites"
-                or "All runs"
-        )
+                    or A.view.historyKind == "unknown" and "Unknown"
+                    or A.view.historyKind == "favorite" and "Favorites"
+                    or "All runs"
+            )
     )
     put(UI.historyReset.label, A.T("Filters"))
     selected(UI.historyReset, browsingHistory and A.view.historyAdvancedOpen)
