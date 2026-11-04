@@ -195,6 +195,8 @@ for index = 1, 17 do
     A.db.sequence = A.db.sequence + 1
     check(A.CreateDataBackup(true), "automatic snapshot " .. index)
 end
+-- The rotation fixture must not alter the sequence asserted by reset tests.
+A.db.sequence = 42
 check(table.getn(A.ListDataBackups(true)) == 15, "automatic history capped at fifteen")
 check(table.getn(A.ListDataBackups(false)) == 1, "manual backup remains independent")
 check(AzerothStatsAutoBackup.entries[1].id > 1, "oldest automatic snapshots rotate out")
