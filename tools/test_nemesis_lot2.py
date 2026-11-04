@@ -10,10 +10,14 @@ lua.execute(
     """
 NOW = 100
 function GetTime() return NOW end
+function getglobal(name) return _G[name] end
+ERR_KILLED_BY_S = "You were slain by %s."
+COMBATHITOTHERSELF = "%s hits you for %d."
 AzerothStats = {
     db = { totals = {}, classes = { hunter = {} } },
     Wall = function() return 12345 end,
     Number = function(x) return tonumber(x) end,
+    Text = function(x, limit) return type(x) == "string" and string.sub(x, 1, limit) or nil end,
     Copy = function(x)
         if type(x) ~= "table" then return x end
         local out = {}
@@ -61,6 +65,34 @@ A.MarkDeath()
 assert(#run.deaths == 2)
 assert(run.deaths[2].confidence == "unknown", "stale hit leaked into new life")
 assert(A.db.totals.deathEvidence.deaths == 2)
-print("PASS: Nemesis unarmed/duplicate/upgrade/rearm/unknown regressions")
+-- Native late explicit proof: upgrade only during the two-second window.
+local run2 = { class = "hunter", values = { duration = 60 }, deaths = {} }
+A.run = run2
+A.BeginDeathWatch(run2)
+local w2 = A.deathWatch
+w2.armed = true
+A.DeathEvidence("CHAT_MSG_COMBAT_SELF_HITS", "Enemy C hits you for 25.")
+A.MarkDeath()
+assert(run2.deaths[1].confidence == "probable")
+A.DeathEvidence("UI_ERROR_MESSAGE", "You were slain by Enemy D.")
+assert(run2.deaths[1].confidence == "confirmed")
+assert(run2.deaths[1].source == "Enemy D")
+assert(A.db.totals.deathEvidence.sources["Enemy C"].probable == 0)
+assert(A.db.totals.deathEvidence.sources["Enemy D"].confirmed == 1)
+A.DeathEvidence("UI_ERROR_MESSAGE", "You were slain by Enemy D.")
+assert(A.db.totals.deathEvidence.deaths == 3, "repeated native message duplicated death")
+
+local run3 = { class = "hunter", values = { duration = 80 }, deaths = {} }
+A.run = run3
+A.BeginDeathWatch(run3)
+local w3 = A.deathWatch
+w3.armed = true
+A.MarkDeath()
+assert(run3.deaths[1].confidence == "unknown")
+NOW = NOW + 3
+A.DeathEvidence("UI_ERROR_MESSAGE", "You were slain by Enemy E.")
+assert(run3.deaths[1].confidence == "unknown", "stale native message changed an old death")
+assert(A.db.totals.deathEvidence.deaths == 4)
+print("PASS: Nemesis unarmed/duplicate/upgrade/rearm/unknown/native-late/stale regressions")
 """
 )
