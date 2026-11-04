@@ -2082,9 +2082,10 @@ local function buildSettings(frame)
             for _, count in ipairs({ 1, 2, 3, 5, 10, 15 }) do
                 local limit = count
                 table.insert(options, {
-                    label = tr("Keep ", "Conserver ")
-                        .. limit
-                        .. (limit == 1 and tr(" backup", " sauvegarde") or tr(" backups", " sauvegardes")),
+                    label = tr("Keep ", "Conserver ") .. limit .. (limit == 1 and tr(
+                        " backup",
+                        " sauvegarde"
+                    ) or tr(" backups", " sauvegardes")),
                     action = function()
                         A.db.settings.autoBackupRetention = limit
                         -- Do not silently delete old snapshots when a lower limit is
@@ -2414,9 +2415,17 @@ local function buildSettings(frame)
         manager.refresh = refresh
         refresh()
     end
-    button(p, 370, 402, 330, 28, (A.Locale() == "fr" and "Gérer les sauvegardes" or "Manage backups"), function()
-        openBackupManager()
-    end)
+    button(
+        p,
+        370,
+        402,
+        330,
+        28,
+        (A.Locale() == "fr" and "Gérer les sauvegardes" or "Manage backups"),
+        function()
+            openBackupManager()
+        end
+    )
 end
 
 --- Create all addon-owned frames once, then initialize local positioning and presentation.
