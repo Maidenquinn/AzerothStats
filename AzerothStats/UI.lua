@@ -2414,7 +2414,7 @@ local function buildSettings(frame)
         manager.refresh = refresh
         refresh()
     end
-    button(p, 370, 402, 330, 28, A.T("Manage backups"), function()
+    button(p, 370, 402, 330, 28, (A.Locale() == "fr" and "Gérer les sauvegardes" or "Manage backups"), function()
         openBackupManager()
     end)
 end
