@@ -2293,6 +2293,7 @@ local function buildSettings(frame)
                         ReloadUI()
                     end
                 end
+            end
         )
         cleanupButton.key = nil
         local backupNow = button(manager, 20, 484, 610, 24, "Create new manual backup", function()
