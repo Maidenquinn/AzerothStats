@@ -157,6 +157,14 @@ check(
     "missing native co-op samples render one explicit empty state"
 )
 
+-- Party provenance: an absent co-op sample is unknown, not proof of solo play.
+A.view = { historyKind = "unknown" }
+check(A.MatchesHistory(r), "unknown filter retains runs without positive co-op evidence")
+A.view.historyKind = "coop"
+check(not A.MatchesHistory(r), "co-op filter excludes runs without group evidence")
+A.view.historyKind = "all"
+check(A.MatchesHistory(r), "all filter retains runs regardless of party evidence")
+
 A.db, AzerothStatsDB, A.run, A.view, A.locale = old.db, old.globals, old.run, old.view, old.locale
 A.RefreshUI()
 print("V2 NATIVE VIEW AND EDITING PASSED", TEST_COUNT)
