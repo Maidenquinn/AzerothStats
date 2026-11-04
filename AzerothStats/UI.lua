@@ -1257,8 +1257,10 @@ function A.RefreshUI()
     )
     put(
         UI.historyKind.label,
-        A.T(
-            A.view.historyKind == "coop" and "Co-op"
+        (A.view.historyKind == "unknown" and (A.Locale() == "fr" and "Inconnu" or "Unknown"))
+            or A.T(
+                A.view.historyKind == "coop" and "Co-op"
+                or A.view.historyKind == "unknown" and "Unknown"
                 or A.view.historyKind == "favorite" and "Favorites"
                 or "All runs"
         )
@@ -2761,6 +2763,7 @@ function A.BuildUI()
         for _, pair in ipairs({
             { "all", "All runs" },
             { "coop", "Co-op" },
+            { "unknown", "Unknown" },
             {
                 "favorite",
                 "Favorites",
@@ -2768,7 +2771,8 @@ function A.BuildUI()
         }) do
             local key = pair[1]
             table.insert(options, {
-                label = A.T(pair[2]),
+                label = key == "unknown" and (A.Locale() == "fr" and "Inconnu" or "Unknown")
+                    or A.T(pair[2]),
                 action = function()
                     A.view.historyKind = key
                     A.view.page = 1
