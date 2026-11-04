@@ -255,6 +255,33 @@ function A.ListDataBackups(automatic)
     return result
 end
 
+-- Exact structural comparison of already validated snapshot trees. Unlike A.Sign,
+-- this never truncates strings or uses a bounded, collision-prone signature.
+-- Limit work: when uncertain, retain the additional safety snapshot.
+local function sameSnapshot(left, right, state)
+    state.nodes = state.nodes + 1
+    if state.nodes > A.limits.savedNodes then
+        return false
+    end
+    if type(left) ~= type(right) then
+        return false
+    end
+    if type(left) ~= "table" then
+        return left == right
+    end
+    for key, value in pairs(left) do
+        if right[key] == nil or not sameSnapshot(value, right[key], state) then
+            return false
+        end
+    end
+    for key in pairs(right) do
+        if left[key] == nil then
+            return false
+        end
+    end
+    return true
+end
+
 function A.CreateDataBackup(automatic)
     if not A.db then
         return false, "No database loaded"
@@ -270,6 +297,14 @@ function A.CreateDataBackup(automatic)
         return false, "Backup failed validation"
     end
     local store = backupStore(automatic)
+    -- Skip only truly identical automatic snapshots; preserve every manual
+    -- backup request and keep the existing recoverable automatic snapshot.
+    if automatic then
+        local latest = store.entries[table.getn(store.entries)]
+        if latest and latest.data and sameSnapshot(latest.data, data, { nodes = 0 }) then
+            return true, "Automatic backup already up to date (No." .. latest.id .. ")"
+        end
+    end
     local id = store.nextId
     store.nextId = id + 1
     table.insert(store.entries, {
