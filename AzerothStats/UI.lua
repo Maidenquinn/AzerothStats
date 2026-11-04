@@ -2084,7 +2084,7 @@ local function buildSettings(frame)
                 table.insert(options, {
                     label = tr("Keep ", "Conserver ")
                         .. limit
-                        .. tr(" automatic backups", " sauvegardes automatiques"),
+                        .. (limit == 1 and tr(" backup", " sauvegarde") or tr(" backups", " sauvegardes")),
                     action = function()
                         A.db.settings.autoBackupRetention = limit
                         -- Do not silently delete old snapshots when a lower limit is
@@ -2414,7 +2414,7 @@ local function buildSettings(frame)
         manager.refresh = refresh
         refresh()
     end
-    button(p, 370, 402, 330, 28, "Manage backups", function()
+    button(p, 370, 402, 330, 28, A.T("Manage backups"), function()
         openBackupManager()
     end)
 end
