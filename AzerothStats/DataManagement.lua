@@ -279,7 +279,11 @@ function A.CreateDataBackup(automatic)
         data = data,
     })
     if automatic then
-        while table.getn(store.entries) > 15 do
+        -- Respect a bounded per-player retention setting; older saves keep the
+        -- historical default until the user explicitly changes this option.
+        local retention = A.db.settings and A.Number(A.db.settings.autoBackupRetention)
+        retention = math.max(1, math.min(15, math.floor(retention or 15)))
+        while table.getn(store.entries) > retention do
             table.remove(store.entries, 1)
         end
         return true, "Automatic safety backup No." .. id .. " saved"
