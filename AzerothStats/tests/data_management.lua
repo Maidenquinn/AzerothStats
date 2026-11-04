@@ -81,10 +81,7 @@ local beforeCorruptRestore = A.db
 check(not A.RestoreDataBackup(latestAuto.id, true), "invalid snapshot cannot be restored")
 check(A.db == beforeCorruptRestore, "invalid restore preserves the live database")
 latestAuto.data = validData
-check(
-    not A.RestoreDataBackup(999999, true),
-    "unknown backup ID cannot replace the live database"
-)
+check(not A.RestoreDataBackup(999999, true), "unknown backup ID cannot replace the live database")
 A.db.settings.autoBackupRetention = 15
 A.db.settings.autoBackupEveryRuns = 2
 A.db.settings.autoBackupRunCounter = 0
