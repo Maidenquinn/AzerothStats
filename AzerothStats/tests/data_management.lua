@@ -190,6 +190,8 @@ check(
     "automatic snapshot updates independently"
 )
 for index = 1, 17 do
+    -- Distinct database states must rotate; identical states are deduplicated.
+    A.db.sequence = A.db.sequence + 1
     check(A.CreateDataBackup(true), "automatic snapshot " .. index)
 end
 check(table.getn(A.ListDataBackups(true)) == 15, "automatic history capped at fifteen")
