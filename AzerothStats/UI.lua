@@ -498,6 +498,7 @@ function A.ShowMenu(anchor, options, offset)
         if
             node == A.barEditor
             or node == UI.dataDialog
+            or (node.GetName and node:GetName() == "AzerothStatsBackupManager")
             or node == UI.themeDialog
             or node == A.v2GoalWindow
         then
