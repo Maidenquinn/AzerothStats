@@ -72,7 +72,11 @@ local completed = { status = "ended" }
 check(not A.RecordCompletedRunBackup(completed), "first completed run does not snapshot")
 check(
     A.db.settings.autoBackupRunCounter == 1 and table.getn(A.ListDataBackups(true)) == 0,
-    "periodic backup waits until the configured interval"
+    "periodic backup waits until the configured interval (counter="
+        .. tostring(A.db.settings.autoBackupRunCounter)
+        .. ", entries="
+        .. tostring(table.getn(A.ListDataBackups(true)))
+        .. ")"
 )
 check(A.RecordCompletedRunBackup(completed), "second completed run triggers snapshot")
 check(
