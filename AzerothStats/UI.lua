@@ -2250,6 +2250,39 @@ local function buildSettings(frame)
         end)
         restoreButton.key = nil
         deleteButton.key = nil
+        -- Explicit two-step cleanup; never silently remove manual snapshots.
+        local cleanupPlan
+        local cleanupButton
+        cleanupButton = button(manager, 20, 444, 610, 28, "Keep 2 newest manual backups (review)", function()
+            if not cleanupPlan then
+                local plan, err = A.PreviewManualBackupCleanup(2)
+                if not plan then
+                    A.Say(err)
+                    return
+                end
+                if plan.remove == 0 then
+                    A.Say("No older manual backups to remove")
+                    return
+                end
+                cleanupPlan = plan
+                put(cleanupButton.label, "CONFIRM DELETE " .. plan.remove .. " older manual backups")
+                A.Say("Review: delete " .. plan.remove .. " older manual backups; keep newest 2")
+                return
+            end
+            local ok, message = A.CleanupManualBackups(2, cleanupPlan.token)
+            cleanupPlan = nil
+            put(cleanupButton.label, "Keep 2 newest manual backups (review)")
+            A.Say(message)
+            if ok then
+                selectedBackup = nil
+                resetConfirmation()
+                refresh()
+                if type(ReloadUI) == "function" then
+                    ReloadUI()
+                end
+            end
+        end)
+        cleanupButton.key = nil
         local backupNow = button(manager, 20, 484, 610, 24, "Create new manual backup", function()
             local ok, message = A.CreateDataBackup()
             A.Say(message)
