@@ -441,6 +441,10 @@ function A.MatchesHistory(run)
     if A.view.historyKind == "coop" and not A.CoopLabel(run) then
         return false
     end
+    -- Lack of co-op evidence is unknown, never proof that the player was solo.
+    if A.view.historyKind == "unknown" and A.CoopLabel(run) then
+        return false
+    end
     if A.view.historyKind == "favorite" and not A.IsFavorite("run", run.id) then
         return false
     end
