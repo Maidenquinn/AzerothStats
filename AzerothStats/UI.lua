@@ -2060,14 +2060,17 @@ local function buildSettings(frame)
         end
         manager = CreateFrame("Frame", "AzerothStatsBackupManager", A.window)
         manager:SetWidth(650)
-        manager:SetHeight(530)
+        manager:SetHeight(565)
         manager:SetPoint("CENTER", A.window, "CENTER", 0, 0)
         manager:SetFrameStrata("FULLSCREEN_DIALOG")
         manager:SetFrameLevel(A.window:GetFrameLevel() + 35)
         manager:EnableMouse(true)
         surface(manager, "main")
         local heading = font(manager, 20, 16, 550, 28, 18, COLORS.gold, true)
-        put(heading, "Backup history")
+        local function tr(en, fr)
+            return A.Locale() == "fr" and fr or en
+        end
+        put(heading, tr("Backup history", "Historique des sauvegardes"))
         local close = button(manager, 610, 12, 26, 26, "X", function()
             manager:Hide()
         end)
@@ -2078,18 +2081,18 @@ local function buildSettings(frame)
             for _, count in ipairs({ 1, 2, 3, 5, 10, 15 }) do
                 local limit = count
                 table.insert(options, {
-                    label = "Keep " .. limit .. " automatic backups",
+                    label = tr("Keep ", "Conserver ") .. limit .. tr(" automatic backups", " sauvegardes automatiques"),
                     action = function()
                         A.db.settings.autoBackupRetention = limit
                         -- Do not silently delete old snapshots when a lower limit is
                         -- selected; enforce the limit on the next successful auto backup.
                         A.Say(
-                            "Automatic backup retention: "
+                            tr("Automatic backup retention: ", "Conservation automatique : ")
                                 .. limit
-                                .. " (applies to future backups)"
+                                .. tr(" (applies to future backups)", " (pour les prochaines sauvegardes)")
                         )
                         self.key = nil
-                        put(self.label, "Automatic backups kept: " .. limit .. "  (change)")
+                        put(self.label, tr("Automatic backups kept: ", "Sauvegardes automatiques conservées : ") .. limit .. tr("  (change)", "  (modifier)"))
                     end,
                 })
             end
@@ -2098,23 +2101,23 @@ local function buildSettings(frame)
         retentionButton.key = nil
         put(
             retentionButton.label,
-            "Automatic backups kept: " .. (A.db.settings.autoBackupRetention or 15) .. "  (change)"
+            tr("Automatic backups kept: ", "Sauvegardes automatiques conservées : ") .. (A.db.settings.autoBackupRetention or 15) .. tr("  (change)", "  (modifier)")
         )
-        local intervalButton = button(manager, 20, 452, 610, 28, "", function(self)
+        local intervalButton = button(manager, 20, 486, 610, 28, "", function(self)
             local options = {}
             for _, count in ipairs({ 0, 1, 3, 5, 10, 20 }) do
                 local interval = count
                 table.insert(options, {
-                    label = interval == 0 and "Periodic backups: Off"
-                        or ("Every " .. interval .. " completed runs"),
+                    label = interval == 0 and tr("Periodic backups: Off", "Sauvegardes périodiques : désactivées")
+                        or (tr("Every ", "Toutes les ") .. interval .. tr(" completed runs", " parties terminées")),
                     action = function()
                         A.db.settings.autoBackupEveryRuns = interval
                         A.db.settings.autoBackupRunCounter = 0
                         self.key = nil
                         put(
                             self.label,
-                            interval == 0 and "Periodic backups: Off  (change)"
-                                or ("Periodic backups: every " .. interval .. " runs  (change)")
+                            interval == 0 and tr("Periodic backups: Off  (change)", "Sauvegardes périodiques : désactivées (modifier)")
+                                or (tr("Periodic backups: every ", "Sauvegardes périodiques : toutes les ") .. interval .. tr(" runs  (change)", " parties (modifier)"))
                         )
                     end,
                 })
@@ -2125,8 +2128,8 @@ local function buildSettings(frame)
         local interval = A.db.settings.autoBackupEveryRuns or 0
         put(
             intervalButton.label,
-            interval == 0 and "Periodic backups: Off  (change)"
-                or ("Periodic backups: every " .. interval .. " runs  (change)")
+            interval == 0 and tr("Periodic backups: Off  (change)", "Sauvegardes périodiques : désactivées (modifier)")
+                or (tr("Periodic backups: every ", "Sauvegardes périodiques : toutes les ") .. interval .. tr(" runs  (change)", " parties (modifier)"))
         )
         local selectedBackup
         local page = 1
@@ -2139,22 +2142,22 @@ local function buildSettings(frame)
         local restoreButton
         local deleteButton
         local function entryTitle(entry)
-            local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or "Legacy"
-            return (entry.automatic and "Auto" or "Manual")
-                .. " No."
+            local stamp = entry.at and entry.at > 0 and date("%Y-%m-%d %H:%M", entry.at) or tr("Legacy", "Ancienne")
+            return (entry.automatic and tr("Auto", "Auto") or tr("Manual", "Manuelle"))
+                .. " n°"
                 .. entry.id
                 .. "  |  "
                 .. stamp
                 .. "  |  "
                 .. entry.runs
-                .. " runs"
+                .. tr(" runs", " parties")
         end
         local function resetConfirmation()
             confirmAction = nil
             restoreButton.key = nil
             deleteButton.key = nil
-            put(restoreButton.label, "Restore selected")
-            put(deleteButton.label, "Delete selected")
+            put(restoreButton.label, tr("Restore selected", "Restaurer la sélection"))
+            put(deleteButton.label, tr("Delete selected", "Supprimer la sélection"))
         end
         local function refresh()
             entries = {}
@@ -2182,11 +2185,11 @@ local function buildSettings(frame)
                     row:Hide()
                 end
             end
-            put(paging, "Page " .. page .. " / " .. pages)
+            put(paging, tr("Page ", "Page ") .. page .. " / " .. pages)
             put(
                 selectedText,
-                selectedBackup and ("Selected: " .. entryTitle(selectedBackup))
-                    or "No backup selected"
+                selectedBackup and (tr("Selected: ", "Sélection : ") .. entryTitle(selectedBackup))
+                    or tr("No backup selected", "Aucune sauvegarde sélectionnée")
             )
         end
         for index = 1, 7 do
@@ -2198,25 +2201,25 @@ local function buildSettings(frame)
             row.key = nil
             table.insert(rows, row)
         end
-        local previous = button(manager, 20, 306, 155, 27, "Previous page", function()
+        local previous = button(manager, 20, 306, 155, 27, tr("Previous page", "Page précédente"), function()
             page = math.max(1, page - 1)
             refresh()
         end)
-        local nextPage = button(manager, 475, 306, 155, 27, "Next page", function()
+        local nextPage = button(manager, 475, 306, 155, 27, tr("Next page", "Page suivante"), function()
             page = page + 1
             refresh()
         end)
         previous.key = nil
         nextPage.key = nil
-        restoreButton = button(manager, 20, 402, 295, 32, "Restore selected", function()
+        restoreButton = button(manager, 20, 402, 295, 32, tr("Restore selected", "Restaurer la sélection"), function()
             if not selectedBackup then
-                A.Say("Select a backup first")
+                A.Say(tr("Select a backup first", "Sélectionne d'abord une sauvegarde"))
                 return
             end
             if confirmAction ~= "restore" then
                 resetConfirmation()
                 confirmAction = "restore"
-                put(restoreButton.label, "CONFIRM RESTORE")
+                put(restoreButton.label, tr("CONFIRM RESTORE", "CONFIRMER LA RESTAURATION"))
                 return
             end
             local ok, message = A.RestoreDataBackup(selectedBackup.id, selectedBackup.automatic)
@@ -2226,15 +2229,15 @@ local function buildSettings(frame)
                 ReloadUI()
             end
         end)
-        deleteButton = button(manager, 335, 402, 295, 32, "Delete selected", function()
+        deleteButton = button(manager, 335, 402, 295, 32, tr("Delete selected", "Supprimer la sélection"), function()
             if not selectedBackup then
-                A.Say("Select a backup first")
+                A.Say(tr("Select a backup first", "Sélectionne d'abord une sauvegarde"))
                 return
             end
             if confirmAction ~= "delete" then
                 resetConfirmation()
                 confirmAction = "delete"
-                put(deleteButton.label, "CONFIRM DELETE")
+                put(deleteButton.label, tr("CONFIRM DELETE", "CONFIRMER LA SUPPRESSION"))
                 return
             end
             local ok, message = A.DeleteDataBackup(selectedBackup.id, selectedBackup.automatic)
@@ -2256,10 +2259,10 @@ local function buildSettings(frame)
         cleanupButton = button(
             manager,
             20,
-            444,
+            450,
             610,
             28,
-            "Keep 2 newest manual backups (review)",
+            tr("Keep 2 newest manual backups (review)", "Conserver les 2 dernières sauvegardes manuelles"),
             function()
                 if not cleanupPlan then
                     local plan, err = A.PreviewManualBackupCleanup(2)
@@ -2268,22 +2271,22 @@ local function buildSettings(frame)
                         return
                     end
                     if plan.remove == 0 then
-                        A.Say("No older manual backups to remove")
+                        A.Say(tr("No older manual backups to remove", "Aucune ancienne sauvegarde manuelle à supprimer"))
                         return
                     end
                     cleanupPlan = plan
                     put(
                         cleanupButton.label,
-                        "CONFIRM DELETE " .. plan.remove .. " older manual backups"
+                        tr("CONFIRM DELETE ", "CONFIRMER LA SUPPRESSION DE ") .. plan.remove .. tr(" older manual backups", " anciennes sauvegardes manuelles")
                     )
                     A.Say(
-                        "Review: delete " .. plan.remove .. " older manual backups; keep newest 2"
+                        tr("Review: delete ", "Vérification : supprimer ") .. plan.remove .. tr(" older manual backups; keep newest 2", " anciennes sauvegardes manuelles ; conserver les 2 dernières")
                     )
                     return
                 end
                 local ok, message = A.CleanupManualBackups(2, cleanupPlan.token)
                 cleanupPlan = nil
-                put(cleanupButton.label, "Keep 2 newest manual backups (review)")
+                put(cleanupButton.label, tr("Keep 2 newest manual backups (review)", "Conserver les 2 dernières sauvegardes manuelles"))
                 A.Say(message)
                 if ok then
                     selectedBackup = nil
@@ -2296,7 +2299,7 @@ local function buildSettings(frame)
             end
         )
         cleanupButton.key = nil
-        local backupNow = button(manager, 20, 484, 610, 24, "Create new manual backup", function()
+        local backupNow = button(manager, 20, 522, 610, 24, tr("Create new manual backup", "Créer une sauvegarde manuelle"), function()
             local ok, message = A.CreateDataBackup()
             A.Say(message)
             if ok and type(ReloadUI) == "function" then
