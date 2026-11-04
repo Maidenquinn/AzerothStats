@@ -61,6 +61,33 @@ check(
     table.getn(A.ListDataBackups(false)) == 1 and table.getn(A.ListDataBackups(true)) == 2,
     "automatic retention never removes a manual snapshot"
 )
+-- Manual cleanup requires a current preview and never touches automatic backups.
+for index = 2, 5 do
+    A.db.sequence = index
+    check(A.CreateDataBackup(false), "manual snapshot fixture can be created")
+end
+local manualPlan = A.PreviewManualBackupCleanup(2)
+check(manualPlan and manualPlan.remove == 3, "manual cleanup previews three older snapshots")
+check(not A.CleanupManualBackups(2), "cleanup without preview token is rejected")
+check(not A.CleanupManualBackups(2, "invalid"), "stale cleanup token is rejected")
+local autoBeforeCleanup = table.getn(A.ListDataBackups(true))
+check(A.CleanupManualBackups(2, manualPlan.token), "confirmed cleanup removes old manual backups")
+local keptManual = A.ListDataBackups(false)
+check(
+    table.getn(keptManual) == 2 and keptManual[1].id == 5 and keptManual[2].id == 4,
+    "cleanup keeps the newest manual snapshots and stable IDs"
+)
+check(
+    table.getn(A.ListDataBackups(true)) == autoBeforeCleanup,
+    "manual cleanup does not affect automatic backups"
+)
+local emptyPlan = A.PreviewManualBackupCleanup(2)
+check(emptyPlan and emptyPlan.remove == 0, "repeat cleanup is a no-op")
+check(A.CleanupManualBackups(2, emptyPlan.token), "confirmed no-op cleanup succeeds")
+A.run = { status = "active" }
+check(not A.PreviewManualBackupCleanup(1), "manual cleanup preview blocked during active run")
+check(not A.CleanupManualBackups(1, "invalid"), "manual cleanup blocked during active run")
+A.run = nil
 -- Active sessions must not snapshot, restore or delete a backup.
 local activeFixture = { status = "active" }
 A.run = activeFixture
