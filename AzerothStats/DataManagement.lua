@@ -291,6 +291,32 @@ function A.CreateDataBackup(automatic)
     return true, "Manual backup No." .. id .. " saved; reload to write it to disk"
 end
 
+-- Periodic snapshots are opt-in. Count only runs that reached an official
+-- terminal state and have been detached from the live tracker. Never copy
+-- the database on each poll, nor on interrupted runs.
+function A.RecordCompletedRunBackup(run)
+    if not A.db or not run or run.status ~= "ended" then
+        return false
+    end
+    local settings = A.db.settings
+    local interval = math.max(0, math.min(20, math.floor(A.Number(settings.autoBackupEveryRuns) or 0)))
+    if interval == 0 then
+        return false
+    end
+    settings.autoBackupRunCounter = math.max(
+        0,
+        math.min(20, math.floor(A.Number(settings.autoBackupRunCounter) or 0))
+    ) + 1
+    if settings.autoBackupRunCounter < interval then
+        return false
+    end
+    local ok = A.CreateDataBackup(true)
+    if ok then
+        settings.autoBackupRunCounter = 0
+    end
+    return ok
+end
+
 function A.RestoreDataBackup(id, automatic)
     if A.run and A.run.status == "active" then
         return false, "Restore is available between runs"
