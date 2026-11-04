@@ -301,9 +301,13 @@ function A.NemesisModel(m, group)
             value = A.Format(v.s.confirmed) .. " · " .. A.T("Confirmed") .. " / " .. A.Format(
                 v.s.probable
             ) .. " · " .. A.T("Probable"),
-            detail = A.T("Confirmed") .. ": " .. (A.Locale() == "fr" and "Message de décès explicite du jeu" or "Explicit slain-by message") .. " · " .. A.T(
-                "Probable"
-            ) .. ": " .. A.T("Last attacker is not proof of a killing blow"),
+            detail = A.T("Confirmed")
+                .. ": "
+                .. (A.Locale() == "fr" and "Message de décès explicite du jeu" or "Explicit slain-by message")
+                .. " · "
+                .. A.T("Probable")
+                .. ": "
+                .. A.T("Last attacker is not proof of a killing blow"),
             icon = A.NemesisPortrait(v.name),
         })
     end
@@ -318,7 +322,10 @@ function A.NemesisModel(m, group)
                     or death.confidence == "probable" and A.T(
                         "Last attacker is not proof of a killing blow"
                     )
-                    or (A.Locale() == "fr" and "Aucun attaquant identifié" or "No attacker identified")
+                    or (
+                        A.Locale() == "fr" and "Aucun attaquant identifié"
+                        or "No attacker identified"
+                    )
                 if death.explicit then
                     evidence = evidence .. "\n" .. death.explicit
                 end
