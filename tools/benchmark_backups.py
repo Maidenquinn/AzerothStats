@@ -1,4 +1,5 @@
 """Synthetic backup scaling benchmark. Never reads player SavedVariables."""
+
 from pathlib import Path
 from time import perf_counter
 from lupa.lua51 import LuaRuntime
@@ -15,7 +16,8 @@ lua.execute((root / "tests/mock.lua").read_text(encoding="utf-8-sig"))
 for name in modules:
     lua.execute((root / name).read_text(encoding="utf-8"))
 lua.execute("assert(AzerothStats.InitDB())")
-lua.execute("""
+lua.execute(
+    """
 AzerothStatsBackup = nil
 AzerothStatsAutoBackup = nil
 AzerothStats.db.settings.autoBackupRetention = 2
@@ -41,7 +43,8 @@ function AZS_BenchmarkBackup()
     assert(ok, err)
     return #AzerothStatsAutoBackup.entries
 end
-""")
+"""
+)
 fill = lua.globals().AZS_BenchmarkFill
 backup = lua.globals().AZS_BenchmarkBackup
 for count in (100, 500, 1000):
