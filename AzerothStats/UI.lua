@@ -2072,8 +2072,30 @@ local function buildSettings(frame)
             manager:Hide()
         end)
         close.key = nil
-        local hint = font(manager, 20, 48, 600, 36, 12, COLORS.muted)
-        put(hint, "Select a snapshot to restore or delete. Automatic backups retain the latest 15.")
+        -- Keep the backup policy next to its history, not in the crowded settings grid.
+        local retentionButton = button(manager, 20, 48, 610, 28, "", function(self)
+            local options = {}
+            for _, count in ipairs({ 1, 2, 3, 5, 10, 15 }) do
+                local limit = count
+                table.insert(options, {
+                    label = "Keep " .. limit .. " automatic backups",
+                    action = function()
+                        A.db.settings.autoBackupRetention = limit
+                        -- Do not silently delete old snapshots when a lower limit is
+                        -- selected; enforce the limit on the next successful auto backup.
+                        A.Say("Automatic backup retention: " .. limit .. " (applies to future backups)")
+                        self.key = nil
+                        put(self.label, "Automatic backups kept: " .. limit .. "  (change)")
+                    end,
+                })
+            end
+            A.ShowMenu(self, options)
+        end)
+        retentionButton.key = nil
+        put(
+            retentionButton.label,
+            "Automatic backups kept: " .. (A.db.settings.autoBackupRetention or 15) .. "  (change)"
+        )
         local selectedBackup
         local page = 1
         local entries = {}
