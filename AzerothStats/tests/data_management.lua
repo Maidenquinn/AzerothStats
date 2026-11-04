@@ -51,6 +51,12 @@ check(
     table.getn(automatic) == 2 and automatic[1].id == 4 and automatic[2].id == 3,
     "retention keeps the newest two snapshots and preserves stable IDs"
 )
+check(A.CreateDataBackup(true), "identical automatic snapshot is safely reusable")
+check(
+    table.getn(A.ListDataBackups(true)) == 2
+        and A.ListDataBackups(true)[1].id == 4,
+    "duplicate auto backup does not allocate a new ID or store another full copy"
+)
 check(A.CreateDataBackup(false), "manual backup remains independent")
 check(
     table.getn(A.ListDataBackups(false)) == 1
