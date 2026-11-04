@@ -37,6 +37,29 @@ AZS_GetPhase = function()
 end
 check(A.InitDB(), "data fixture initializes")
 A.SetLanguage("en")
+-- Snapshot retention is configurable without changing legacy default behavior.
+local priorManual, priorAuto = AzerothStatsBackup, AzerothStatsAutoBackup
+AzerothStatsBackup, AzerothStatsAutoBackup = nil, nil
+check(A.db.settings.autoBackupRetention == 15, "existing saves default to 15 automatic backups")
+A.db.settings.autoBackupRetention = 2
+for index = 1, 4 do
+    A.db.sequence = index
+    check(A.CreateDataBackup(true), "automatic snapshot can be created between runs")
+end
+local automatic = A.ListDataBackups(true)
+check(
+    table.getn(automatic) == 2 and automatic[1].id == 4 and automatic[2].id == 3,
+    "retention keeps the newest two snapshots and preserves stable IDs"
+)
+check(A.CreateDataBackup(false), "manual backup remains independent")
+check(
+    table.getn(A.ListDataBackups(false)) == 1
+        and table.getn(A.ListDataBackups(true)) == 2,
+    "automatic retention never removes a manual snapshot"
+)
+A.db.settings.autoBackupRetention = 15
+A.db.sequence = 0
+AzerothStatsBackup, AzerothStatsAutoBackup = priorManual, priorAuto
 local function fixture(id, class)
     return {
         id = id,
