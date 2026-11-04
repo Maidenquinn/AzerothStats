@@ -66,7 +66,7 @@ check(
 A.db.settings.autoBackupRetention = 15
 A.db.settings.autoBackupEveryRuns = 2
 A.db.settings.autoBackupRunCounter = 0
-AzerothStatsAutoBackup = nil
+AzerothStatsAutoBackup = { schema = 2, nextId = 1, entries = {} }
 -- Use a minimal terminal-state record; this function must not mutate a run.
 local completed = { status = "ended" }
 check(not A.RecordCompletedRunBackup(completed), "first completed run does not snapshot")
