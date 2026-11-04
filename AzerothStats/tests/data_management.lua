@@ -53,14 +53,12 @@ check(
 )
 check(A.CreateDataBackup(true), "identical automatic snapshot is safely reusable")
 check(
-    table.getn(A.ListDataBackups(true)) == 2
-        and A.ListDataBackups(true)[1].id == 4,
+    table.getn(A.ListDataBackups(true)) == 2 and A.ListDataBackups(true)[1].id == 4,
     "duplicate auto backup does not allocate a new ID or store another full copy"
 )
 check(A.CreateDataBackup(false), "manual backup remains independent")
 check(
-    table.getn(A.ListDataBackups(false)) == 1
-        and table.getn(A.ListDataBackups(true)) == 2,
+    table.getn(A.ListDataBackups(false)) == 1 and table.getn(A.ListDataBackups(true)) == 2,
     "automatic retention never removes a manual snapshot"
 )
 A.db.settings.autoBackupRetention = 15
@@ -85,7 +83,10 @@ check(
         and AzerothStatsAutoBackup.entries[1].data.settings.autoBackupRunCounter == 0,
     "successful periodic backup resets its live and persisted counters"
 )
-check(not A.RecordCompletedRunBackup({ status = "interrupted" }), "interrupted runs never trigger periodic backup")
+check(
+    not A.RecordCompletedRunBackup({ status = "interrupted" }),
+    "interrupted runs never trigger periodic backup"
+)
 A.db.settings.autoBackupEveryRuns = 0
 check(not A.RecordCompletedRunBackup(completed), "periodic backup is disabled by default")
 A.db.sequence = 0
