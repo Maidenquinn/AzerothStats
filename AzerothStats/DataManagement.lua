@@ -334,7 +334,8 @@ function A.RecordCompletedRunBackup(run)
         return false
     end
     local settings = A.db.settings
-    local interval = math.max(0, math.min(20, math.floor(A.Number(settings.autoBackupEveryRuns) or 0)))
+    local interval =
+        math.max(0, math.min(20, math.floor(A.Number(settings.autoBackupEveryRuns) or 0)))
     if interval == 0 then
         return false
     end
