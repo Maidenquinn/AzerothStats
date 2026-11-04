@@ -13,6 +13,7 @@ function GetTime() return NOW end
 AzerothStats = {
     db = { totals = {}, classes = { hunter = {} } },
     Wall = function() return 12345 end,
+    Number = function(x) return tonumber(x) end,
     Copy = function(x)
         if type(x) ~= "table" then return x end
         local out = {}
