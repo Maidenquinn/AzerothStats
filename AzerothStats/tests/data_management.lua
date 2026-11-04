@@ -61,6 +61,30 @@ check(
     table.getn(A.ListDataBackups(false)) == 1 and table.getn(A.ListDataBackups(true)) == 2,
     "automatic retention never removes a manual snapshot"
 )
+-- Active sessions must not snapshot, restore or delete a backup.
+local activeFixture = { status = "active" }
+A.run = activeFixture
+local protectedCount = table.getn(A.ListDataBackups(true))
+check(not A.CreateDataBackup(true), "active run cannot create a backup")
+check(not A.RestoreDataBackup(nil, true), "active run cannot restore a backup")
+check(not A.DeleteDataBackup(nil, true), "active run cannot delete a backup")
+check(
+    table.getn(A.ListDataBackups(true)) == protectedCount,
+    "active-run guards leave backup history unchanged"
+)
+A.run = nil
+-- Corrupt stored snapshots must be rejected without replacing the live DB.
+local latestAuto = AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)]
+local validData = latestAuto.data
+latestAuto.data = { invalid = true }
+local beforeCorruptRestore = A.db
+check(not A.RestoreDataBackup(latestAuto.id, true), "invalid snapshot cannot be restored")
+check(A.db == beforeCorruptRestore, "invalid restore preserves the live database")
+latestAuto.data = validData
+check(
+    not A.RestoreDataBackup(999999, true),
+    "unknown backup ID cannot replace the live database"
+)
 A.db.settings.autoBackupRetention = 15
 A.db.settings.autoBackupEveryRuns = 2
 A.db.settings.autoBackupRunCounter = 0
