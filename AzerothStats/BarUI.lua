@@ -522,7 +522,7 @@ local function buildEditor()
         { "width", "Width", 240, 1600, 10 },
         { "height", "Height", 28, 96, 1 },
         { "textSize", "Font size", 11, 16, 1 },
-        { "opacity", "Background opacity", 0.45, 1, 0.05 },
+        { "opacity", "Background opacity", 0, 1, 0.05 },
     }) do
         local x, y = 24 + math.mod(index - 1, 2) * 244, index <= 2 and 483 or 549
         local slider = CreateFrame(
