@@ -310,9 +310,13 @@ function A.RecordCompletedRunBackup(run)
     if settings.autoBackupRunCounter < interval then
         return false
     end
+    -- The snapshot must contain the reset counter as well, otherwise restoring
+    -- it would trigger an extra backup on the next completed run.
+    local pending = settings.autoBackupRunCounter
+    settings.autoBackupRunCounter = 0
     local ok = A.CreateDataBackup(true)
-    if ok then
-        settings.autoBackupRunCounter = 0
+    if not ok then
+        settings.autoBackupRunCounter = pending
     end
     return ok
 end
