@@ -2083,7 +2083,11 @@ local function buildSettings(frame)
                         A.db.settings.autoBackupRetention = limit
                         -- Do not silently delete old snapshots when a lower limit is
                         -- selected; enforce the limit on the next successful auto backup.
-                        A.Say("Automatic backup retention: " .. limit .. " (applies to future backups)")
+                        A.Say(
+                            "Automatic backup retention: "
+                                .. limit
+                                .. " (applies to future backups)"
+                        )
                         self.key = nil
                         put(self.label, "Automatic backups kept: " .. limit .. "  (change)")
                     end,
