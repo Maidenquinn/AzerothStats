@@ -39,6 +39,14 @@ jobs:
       - run: python tools/checks.py
       - run: python design/v2/tests/runtime_roundtrip.py
       - run: python tools/build_release.py --output release-assets/ci
+      - name: Upload installable ZIP for in-game review (no release)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: AzerothStats-2.0.1-lot1-review
+          path: release-assets/ci/*.zip
+          retention-days: 7
+          if-no-files-found: error
 
   lot1-regression:
     runs-on: ubuntu-latest
