@@ -2711,6 +2711,7 @@ function A.BuildUI()
     searchPanel:SetHeight(32)
     surface(searchPanel, "card")
     UI.historySearchCaption = font(searchPanel, 6, 0, 215, 12, 11, COLORS.muted)
+    UI.historySearchCaption:SetJustifyH("CENTER")
     UI.historySearchCaption.fixedSize = true
     UI.historySearch = CreateFrame("EditBox", nil, searchPanel)
     UI.historySearch:SetPoint("TOPLEFT", searchPanel, "TOPLEFT", 6, -13)
