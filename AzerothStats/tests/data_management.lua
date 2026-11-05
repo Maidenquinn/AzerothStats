@@ -109,6 +109,32 @@ check(not A.RestoreDataBackup(latestAuto.id, true), "invalid snapshot cannot be 
 check(A.db == beforeCorruptRestore, "invalid restore preserves the live database")
 latestAuto.data = validData
 check(not A.RestoreDataBackup(999999, true), "unknown backup ID cannot replace the live database")
+
+-- A validated snapshot can still fail during initialization (migration,
+-- theme initialization, or a future runtime change). Restore must be atomic
+-- with respect to the active SavedVariables pointer and pending delete plan.
+local rollbackSaved, rollbackDB = AzerothStatsDB, A.db
+local rollbackPlan = { signature = "restore-rollback-test" }
+local oldInitDB = A.InitDB
+A.pendingDataPlan = rollbackPlan
+A.InitDB = function()
+    A.db = nil
+    return false
+end
+local restoreFailed, restoreMessage = A.RestoreDataBackup(latestAuto.id, true)
+A.InitDB = oldInitDB
+check(not restoreFailed, "failed initialization rejects backup restore")
+check(
+    AzerothStatsDB == rollbackSaved and A.db == rollbackDB
+        and A.pendingDataPlan == rollbackPlan,
+    "failed restore preserves previous database pointers and pending plan"
+)
+check(
+    string.find(restoreMessage or "", "previous database preserved", 1, true) ~= nil,
+    "failed restore reports rollback to the user"
+)
+A.pendingDataPlan = nil
+
 A.db.settings.autoBackupRetention = 15
 A.db.settings.autoBackupEveryRuns = 2
 A.db.settings.autoBackupRunCounter = 0
