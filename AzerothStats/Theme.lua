@@ -243,6 +243,7 @@ local runImages = {
     elwynn = { "RunZone-elwynn.tga", 0, 1, 0.230412, 0.889588 },
     feralas = { "RunZone-feralas.tga", 0, 1, 0.170778, 0.829222 },
     naxx = { "RunZone-naxx.tga", 0, 1, 0.171298, 0.868702 },
+    scholo = { "RunZone-scholo.tga", 0, 1, 0.36, 0.64 },
     sm = { "RunZone-sm.tga", 0, 1, 0.249224, 0.910776 },
     ungoro = { "RunZone-ungoro.tga", 0, 1, 0.240251, 0.899749 },
     wsg = { "RunZone-wsg.tga", 0, 1, 0.229678, 0.890322 },
