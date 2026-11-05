@@ -8,6 +8,38 @@ local UI = { fonts = {}, solids = {}, cards = {}, rows = {}, nav = {}, controls 
 A.ui = UI
 local COLORS = A.theme
 
+-- Preserve the campaign sequence for recognized late-game maps. Unrecognized
+-- maps remain alphabetic instead of receiving a speculative progression rank.
+local function campaignMapRank(name)
+    local normalized = string.lower(name or "")
+    if string.find(normalized, "blackrock", 1, true) then
+        return 1
+    elseif string.find(normalized, "scholomance", 1, true) then
+        return 2
+    elseif string.find(normalized, "ahn", 1, true) and string.find(normalized, "qiraj", 1, true) then
+        return 3
+    elseif string.find(normalized, "naxxramas", 1, true) then
+        return 4
+    end
+    return nil
+end
+
+local function sortHistoryMaps(maps)
+    table.sort(maps, function(left, right)
+        local leftRank, rightRank = campaignMapRank(left), campaignMapRank(right)
+        if leftRank and rightRank and leftRank ~= rightRank then
+            return leftRank < rightRank
+        end
+        if leftRank and not rightRank then
+            return true
+        end
+        if rightRank and not leftRank then
+            return false
+        end
+        return string.lower(left) < string.lower(right)
+    end)
+end
+
 local coords = {
     warrior = { 0, 0.25, 0, 0.25 },
     mage = { 0.25, 0.496, 0, 0.25 },
@@ -2692,7 +2724,7 @@ function A.BuildUI()
                 table.insert(maps, name)
             end
         end
-        table.sort(maps)
+        sortHistoryMaps(maps)
         for _, name in ipairs(maps) do
             local selectedName = name
             table.insert(options, {
@@ -2864,7 +2896,7 @@ function A.BuildUI()
                 table.insert(maps, name)
             end
         end
-        table.sort(maps)
+        sortHistoryMaps(maps)
         for _, name in ipairs(maps) do
             local selectedName = name
             table.insert(options, {
