@@ -50,3 +50,32 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - **Risk:** source screenshot and TGA exist in local staging but have not been committed to GitHub; do not treat the local preview ZIP as the release artifact. Re-run source hash, generated map, package checksum, and CI after integration.
 - **Unverified:** real SavedVariables restore and large-save latency, full theme screenshots, FR/EN labels, corrupted/legacy records. A green offline CI cannot certify these native behaviors.
 - Preserve the accepted HUD 9/9 recipe; do not modify its layout without a new reproducible defect.
+
+
+## Recovery checkpoint — 2026-11-05, conversation migration
+
+**Source of truth:** repository `Maidenquinn/AzerothStats`, draft PR #31, branch `feat/v2.0.1-aviiva-feedback`, inspected head `30abc19dbdfe76563dac77f7a9a23e5a5b34faa7`. This section is a durable handoff for future assistant sessions. Always re-fetch the PR head and CI before editing; never assume this SHA remains current. PR #30 is already merged. Do not merge PR #31 or publish 2.0.1 without explicit owner acceptance.
+
+### What is actually committed at inspected head
+- Scholomance files `AzerothStats/media/RunZone-scholo.tga` and `design/run-images/scholo.jpg` appear in PR #31, together with `Theme.lua`, `GameText.lua`, `data/run-image-sources.json` and package policy changes. Earlier "asset not committed" notes above are stale for this head. Native rendering and package integrity are **not** yet verified.
+- `UI.lua` implements Search runs caption centering, settings headings and save note repositioning, overview History/Records label centering, campaign map ordering, circular minimap option and Warcraft class-emblem deduplication.
+- `Theme.lua` adjusts glyph texture coordinates and panel edge bounds. `V2UI.lua` adds optional-analysis explanations; `Insights.lua` avoids inferring Solo for legacy runs.
+- Accepted HUD lot: native 9/9 PASS, recorded in `docs/AVIIVA-FEEDBACK-2.0.1.md`. Do not reopen without a reproducible regression.
+- GitHub workflow-run and combined-status connector queries for inspected head returned empty results. **This is not a CI PASS or FAIL.** Check GitHub Actions explicitly.
+
+### Still open: priority-ordered
+1. **Data safety:** inspect `DataManagement.lua` and backup/restore/migration call paths; verify pre-delete snapshots, duplicate backup growth, retention 1–15, opt-in every 0–20 completed runs, corrupted/legacy records, restore integrity, and 100/500/1000-run latency. Do not change persisted schema without compatibility tests. The reported 12 MB for 78 runs is user evidence, not a measured current benchmark.
+2. **History and evidence:** investigate Nemesis 0 confirmed / 58 probable / 69 observed for Dread Creeper; explain confidence limits; clarify Partial (including possible FPS/event-loss correlation) and actual Sync behavior. Verify Solo/Co-op/Unknown labeling.
+3. **UI:** native test all themes, FR/EN, scales and positions; verify stretched borders, category spacing, Warcraft hover, clipped/grainy Chronicle glyphs, map order for all localized zone names, and minimap round/square transitions. Existing code is not equivalent to visual acceptance.
+4. **Assets and packaging:** verify Scholomance texture renders, source hashes, manifest, generated localization, SHA256SUMS, installable ZIP and CI.
+5. **Release gate:** full offline suite plus native acceptance on a backed-up real SavedVariables file, before any public release.
+
+### Safe working procedure for next session
+- Fetch PR #31 info, head, changed-file patches, this document and `docs/AVIIVA-FEEDBACK-2.0.1.md`.
+- Read relevant full source modules before editing; patch only the dedicated branch. Re-fetch blob SHA immediately before each file update.
+- Run tests/checks if an execution environment is available; otherwise label them NOT RUN. Never claim a test passed solely from static inspection.
+- Commit small coherent fixes, update both tracking documents after each completed sub-lot with commit SHA, CI URL/result and native PASS/FAIL.
+- Preserve existing `AzerothStatsDB` and V1/V2 data compatibility; do not delete backups or overwrite user SavedVariables.
+- Deliver a ZIP only after package verification; ask the owner for native tests that cannot be reproduced remotely.
+
+**Checkpoint action:** documentation-only recovery update. No code change, no CI run and no native acceptance performed by this checkpoint.
