@@ -192,6 +192,11 @@ local function party(run)
             source = "AZSPARTY",
         }
     end
+    -- A fresh self-only roster is positive solo evidence, unlike a missing roster.
+    -- A companion observed at any point always takes precedence.
+    if selfIncluded and table.getn(rows) == 1 and not partial then
+        coop.soloObserved = true
+    end
     coop.latest = latest
     coop.sampledAt = A.Wall()
     coop.unavailable = nil
