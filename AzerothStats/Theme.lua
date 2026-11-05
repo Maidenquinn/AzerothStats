@@ -452,7 +452,9 @@ end
 --- Settings sections are textures on their existing parent, never extra frames
 --- above its labels. Store geometry so flat themes can reduce borders to 1px.
 local function paintPanel(panel)
-    local edge = (A.theme.material == "flat" or A.theme.material == "native") and 1 or 12
+    local preferredEdge = (A.theme.material == "flat" or A.theme.material == "native") and 1 or 12
+    -- Bound the nine-slice corners for compact panels instead of letting them overlap.
+    local edge = math.min(preferredEdge, math.max(1, panel.width / 3), math.max(1, panel.height / 3))
     local xs, ys = { 0, edge, panel.width - edge }, { 0, edge, panel.height - edge }
     local cuts = { 0, 0.07, 0.93, 1 }
     for i, texture in ipairs(panel.parts) do
