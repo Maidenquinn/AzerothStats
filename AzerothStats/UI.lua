@@ -1925,10 +1925,14 @@ local function buildSettings(frame)
             table.insert(UI.solids, { texture = texture, multiplier = 0.65 })
         end
     end
-    UI.appearance = font(p, 0, 0, 690, 24, 16, COLORS.gold, true)
-    UI.behaviour = font(p, 0, 232, 320, 24, 16, COLORS.gold, true)
-    UI.storage = font(p, 370, 232, 320, 24, 16, COLORS.gold, true)
-    UI.saveNote = font(p, 0, 438, 345, 24, 11, COLORS.muted)
+    UI.appearance = font(p, 0, 4, 690, 24, 16, COLORS.gold, true)
+    UI.appearance:SetJustifyH("CENTER")
+    UI.behaviour = font(p, 0, 244, 320, 24, 16, COLORS.gold, true)
+    UI.behaviour:SetJustifyH("CENTER")
+    UI.storage = font(p, 370, 244, 320, 24, 16, COLORS.gold, true)
+    UI.storage:SetJustifyH("CENTER")
+    UI.saveNote = font(p, 8, 422, 326, 22, 11, COLORS.muted)
+    UI.saveNote:SetJustifyH("CENTER")
     UI.sliders = {}
     UI.checks = {}
     local definitions = {
