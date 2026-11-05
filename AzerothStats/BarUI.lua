@@ -160,12 +160,14 @@ local function paintBar(frame, config)
     if frame.materialCenter then
         frame.materialCenter:SetAlpha(config.opacity)
     end
-    frame.seal:SetWidth(layout.width < 600 and 22 or 30)
-    frame.seal:SetHeight(layout.width < 600 and 22 or 30)
+    -- Keep the emblem fully inside the bar even at the 28px minimum height.
+    local sealSize = math.min(layout.width < 600 and 22 or 30, layout.height - 8)
+    frame.seal:SetWidth(sealSize)
+    frame.seal:SetHeight(sealSize)
     frame.scopeTitle:ClearAllPoints()
-    frame.scopeTitle:SetPoint("TOPLEFT", frame, "TOPLEFT", layout.width < 600 and 30 or 40, -3)
+    frame.scopeTitle:SetPoint("TOPLEFT", frame, "TOPLEFT", sealSize + 10, -3)
     frame.scopeTitle:SetHeight(layout.height - 6)
-    frame.scopeTitle.fontWidth = layout.lead - (layout.width < 600 and 36 or 46)
+    frame.scopeTitle.fontWidth = layout.lead - sealSize - 16
     frame.scopeTitle:SetWidth(frame.scopeTitle.fontWidth)
     if layout.commonScope then
         local first = config.blocks[1]
