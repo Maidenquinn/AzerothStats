@@ -8,6 +8,16 @@ local database, live, view, pending, clock = AzerothStatsDB, A.run, A.view, A.pe
 AzerothStatsDB, A.db, A.run = nil, nil, nil
 A.view = { tab = 3, page = 1, mode = "damage", characterTab = "Spells" }
 check(A.InitDB(), "report fixture initializes")
+-- UI theme preferences must not rewrite run history or existing opt-out settings.
+check(A.db.settings.miniRound == true, "new database defaults to round minimap icon")
+A.db.settings.miniRound = false
+local savedRunCount = table.getn(A.db.runs)
+check(A.InitDB(), "reinitializing existing database succeeds")
+check(A.db.settings.miniRound == false, "square minimap preference survives initialization")
+check(table.getn(A.db.runs) == savedRunCount, "theme initialization preserves run count")
+A.db.settings.miniRound = true
+check(A.InitDB() and A.db.settings.miniRound == true, "round preference persists")
+
 local function run(id, damage, class, heroic)
     return {
         id = id,
