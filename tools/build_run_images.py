@@ -56,14 +56,21 @@ def build(check=False):
         assert hashlib.sha256(source.read_bytes()).hexdigest() == entry["sha256"]
         image = Image.open(source)
         assert list(image.size) == entry["size"]
-        output = image.convert("RGBA").resize((256, 256), Image.Resampling.LANCZOS)
-        buffer = io.BytesIO()
-        output.save(buffer, format="TGA")
         target = ROOT / "AzerothStats/media" / entry["texture"]
-        if check:
-            assert target.read_bytes() == buffer.getvalue(), entry["texture"]
+        if "nativeSha256" in entry:
+            # A maintainer-supplied, already-encoded native TGA is immutable.
+            # Verify its exact reviewed bytes instead of silently resampling it.
+            assert hashlib.sha256(target.read_bytes()).hexdigest() == entry["nativeSha256"], entry["texture"]
+            with Image.open(target) as native:
+                assert native.size == (256, 256), entry["texture"]
         else:
-            target.write_bytes(buffer.getvalue())
+            output = image.convert("RGBA").resize((256, 256), Image.Resampling.LANCZOS)
+            buffer = io.BytesIO()
+            output.save(buffer, format="TGA")
+            if check:
+                assert target.read_bytes() == buffer.getvalue(), entry["texture"]
+            else:
+                target.write_bytes(buffer.getvalue())
         uv = ", ".join(
             format(value, ".6f").rstrip("0").rstrip(".")
             for value in framing(image.size, entry["focus"], data["viewport"])
