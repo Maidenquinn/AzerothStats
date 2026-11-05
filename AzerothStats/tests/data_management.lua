@@ -125,8 +125,7 @@ local restoreFailed, restoreMessage = A.RestoreDataBackup(latestAuto.id, true)
 A.InitDB = oldInitDB
 check(not restoreFailed, "failed initialization rejects backup restore")
 check(
-    AzerothStatsDB == rollbackSaved and A.db == rollbackDB
-        and A.pendingDataPlan == rollbackPlan,
+    AzerothStatsDB == rollbackSaved and A.db == rollbackDB and A.pendingDataPlan == rollbackPlan,
     "failed restore preserves previous database pointers and pending plan"
 )
 check(
