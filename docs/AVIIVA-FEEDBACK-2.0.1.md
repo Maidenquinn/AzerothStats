@@ -20,9 +20,14 @@ This work continues after PR #30, which was merged as a *regression hotfix*. No 
 
 ## Priority 2 — HUD
 - [x] Bound emblem by HUD height (native smoke recipe accepted at 28px).
-- [x] Implement adaptive per-column widths and reduced conservative collapse thresholds; native final HUD recipe pending.
-- [x] Background opacity 0–100% already implemented; default height reduced 46px to 40px; persistence final recipe pending.
-- [x] Added automated viewport/height matrix and varied-label allocation tests; native visual acceptance pending.
+- [x] Implement adaptive per-column widths and reduced conservative collapse thresholds; native final HUD recipe 9/9 PASS on 2026-11-05.
+- [x] Background opacity 0–100% already implemented; default height reduced 46px to 40px; persistence confirmed by native HUD recipe 9/9 PASS.
+- [x] Added automated viewport/height matrix and varied-label allocation tests; native HUD visual acceptance 9/9 PASS.
+
+## HUD acceptance — 5 November 2026
+- [x] Final native HUD recipe: **9/9 PASS** reported by owner, including 28px emblem, 40px preset, eight metrics, FR/EN labels, narrow/wide sizes, opacity, persistence, navigation and themes.
+- [x] CI workflow #849: **PASS** on commit `5b4f23d` (https://github.com/Maidenquinn/AzerothStats/actions/runs/42040088893).
+- [x] HUD lot accepted. Do not reopen without new reproducible regression; no public 2.0.1 release yet.
 
 ## Priority 3 — UI, themes, assets
 - [ ] Restore missing Scholomance map image.
