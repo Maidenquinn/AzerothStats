@@ -209,7 +209,7 @@ function A.ObserveInsights(run, progress, phase)
     if type(AZS_GetMeterContext) == "function" then
         local ok, context = pcall(AZS_GetMeterContext)
         if ok and type(context) == "table" and type(context.partyState) == "string" then
-            run.coop = run.coop or { peers = {}, accounted = {} }
+            run.coop = run.coop or { peers = {}, latest = {}, accounted = {} }
             if context.partyState == "solo" and not run.coop.nativePartySeen then
                 run.coop.soloObserved = true
             elseif context.partyState == "active" or context.partyState == "ended" then
