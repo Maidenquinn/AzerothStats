@@ -85,3 +85,8 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - Static review of `AzerothStats/DataManagement.lua`: `CreateDataBackup(true)` snapshots and validates the DB, then compares the latest automatic snapshot recursively with `sameSnapshot`; periodic snapshots are opt-in every 0–20 officially ended runs; pre-deletion safety snapshots are intentional; automatic retention is 1–15.
 - **Tests not executed in this checkpoint.** The large-save cost of full snapshot creation and comparison remains open, as do native restore and real-file size measurements. No production backup logic changed.
 - Next: check CI for the new head, inspect backup restore paths and performance, then proceed through Nemesis/Partial/Sync and native UI acceptance.
+
+### Backup retention regression checkpoint
+- Commit `959743c4fa2268e16ae193677feea1ad880e6a17` adds tests for changed automatic snapshots, retention set to one, and isolation of manual backups. Previous deduplication tests remain.
+- Static inspection confirms `RestoreDataBackup` validates a copied snapshot before replacing `AzerothStatsDB`; however `A.InitDB()` failure handling does not explicitly roll back the previous global database. Audit this path before declaring restore atomic.
+- **CI and native tests not run/verified for this commit.** Do not merge or release based on these assertions alone.
