@@ -254,7 +254,7 @@ for _, lang in ipairs(A.languages) do
 end
 -- Multiplayer context comes only from saved observations, never absence-as-solo.
 check(A.CoopLabel(a) == nil, "legacy run without group evidence has unknown mode")
-check(A.RunMode(a) == "solo", "unflagged historical run is inferred solo")
+check(A.RunMode(a) == "unknown", "unflagged historical run remains unknown")
 a.modeTrackingVersion = 2
 check(A.RunMode(a) == "unknown", "tracked run without evidence remains unknown")
 a.coop = { peers = {}, latest = {}, accounted = {}, soloObserved = true }
