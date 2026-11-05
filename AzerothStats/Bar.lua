@@ -42,7 +42,7 @@ function A.BarPreset(name)
     return {
         version = 1,
         width = name == "compact" and 380 or 820,
-        height = 46,
+        height = 40,
         opacity = 1,
         textSize = 12,
         icons = true,
@@ -223,7 +223,9 @@ function A.BarLayout(config, availableWidth)
         end
     end
     local lead = common and (width >= 600 and 112 or 76) or 38
-    local minimum = config.labels and (common and 128 or 160) or 104
+    -- Reserve room for icons and readable values without hiding whole blocks too early.
+    -- A common scope is shown once in the leading title, not repeated per cell.
+    local minimum = config.labels and (common and 112 or 144) or 96
     local columns = math.max(1, math.floor((width - lead - 36) / minimum))
     local count = table.getn(config.blocks)
     local capacity = math.min(count, columns * rows)
