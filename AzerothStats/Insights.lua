@@ -395,6 +395,17 @@ function A.CoopLabel(run)
     end
 end
 
+--- Classify only observed modes; co-op evidence outranks any earlier solo snapshot.
+function A.RunMode(run)
+    if A.CoopLabel(run) then
+        return "coop"
+    end
+    if run and run.coop and run.coop.soloObserved then
+        return "solo"
+    end
+    return "unknown"
+end
+
 --- One presentation model shared by the report's group view; no native calls or saved writes.
 function A.CoopReport(model, run)
     local comparison = A.CoopComparison(run)
