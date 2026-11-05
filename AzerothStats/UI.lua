@@ -759,7 +759,8 @@ function A.ApplyThemeLayout()
     UI.nativeHeader:Hide()
     show(UI.brandDragon, wow)
     show(UI.brandGlyph, id ~= "essentiel")
-    show(UI.profileGlyph, id ~= "essentiel")
+    -- Warcraft already uses the player class icon in the header; avoid duplicating it.
+    show(UI.profileGlyph, id ~= "essentiel" and not wow)
     UI.brandGlyph:ClearAllPoints()
     UI.brandGlyph:SetPoint(
         "TOPLEFT",
@@ -806,7 +807,7 @@ function A.ApplyThemeLayout()
         "TOPLEFT",
         A.window,
         "TOPLEFT",
-        id == "essentiel" and 32 or modern and 75 or 82,
+        (id == "essentiel" or wow) and 32 or modern and 75 or 82,
         -129
     )
     UI.profileClass:ClearAllPoints()
@@ -814,7 +815,7 @@ function A.ApplyThemeLayout()
         "TOPLEFT",
         A.window,
         "TOPLEFT",
-        id == "essentiel" and 32 or modern and 75 or 82,
+        (id == "essentiel" or wow) and 32 or modern and 75 or 82,
         -153
     )
     for _, nav in ipairs(UI.nav) do
