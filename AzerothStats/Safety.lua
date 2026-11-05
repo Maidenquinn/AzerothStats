@@ -591,7 +591,7 @@ function A.ValidateDatabase(database)
             run.coop
             and (
                 type(run.coop.peers) ~= "table"
-                or type(run.coop.latest) ~= "table"
+                or (run.coop.latest ~= nil and type(run.coop.latest) ~= "table")
                 or type(run.coop.accounted) ~= "table"
             )
         then
@@ -603,7 +603,7 @@ function A.ValidateDatabase(database)
                     return false
                 end
             end
-            for _, entry in ipairs(run.coop.latest) do
+            for _, entry in ipairs(run.coop.latest or {}) do
                 if not peer(entry) then
                     return false
                 end
