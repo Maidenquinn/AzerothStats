@@ -598,6 +598,8 @@ function A.ShowMenu(anchor, options, offset)
         b:SetFrameLevel(menu:GetFrameLevel() + 1)
         b.item = { label = entry.label, detail = entry.detail or "", value = entry.value }
         b:SetScript("OnEnter", function()
+            -- Hover must repaint both the border and material, especially on Warcraft.
+            A.MaterialState(this, true)
             A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
             tooltip(this)
         end)
