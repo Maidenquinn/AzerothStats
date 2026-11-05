@@ -1260,6 +1260,7 @@ function A.RefreshUI()
         (A.view.historyKind == "unknown" and (A.Locale() == "fr" and "Inconnu" or "Unknown"))
             or A.T(
                 A.view.historyKind == "coop" and "Co-op"
+                    or A.view.historyKind == "solo" and "Solo"
                     or A.view.historyKind == "unknown" and "Unknown"
                     or A.view.historyKind == "favorite" and "Favorites"
                     or "All runs"
@@ -2763,6 +2764,7 @@ function A.BuildUI()
         for _, pair in ipairs({
             { "all", "All runs" },
             { "coop", "Co-op" },
+            { "solo", "Solo" },
             { "unknown", "Unknown" },
             {
                 "favorite",
