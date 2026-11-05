@@ -41,3 +41,12 @@ Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #
 
 ## Release boundary
 The remaining backup, Nemesis, Partial and Sync data-integrity investigations remain tracked in `docs/AVIIVA-FEEDBACK-2.0.1.md`; UI acceptance does not authorize the public V2.0.1 release.
+
+## Code audit follow-up — 2026-11-05
+- PR #31 diff reviewed: 17 files, 630 additions, 188 deletions at `b982767`; latest CI PASS. Changes to persistent settings are confined to the `miniRound` boolean; existing runs are not rewritten by that option.
+- Legacy run mode now remains `unknown` without observed Solo/Co-op evidence. This changes filtering, not the stored run history. Regression assertions cover both legacy cases.
+- **Risk:** `sortHistoryMaps` ranks English display strings, not canonical zone IDs. Localized map names may be sorted alphabetically instead of campaign order; fix before native acceptance.
+- **Risk:** repeated `A.ApplyUI()` in square minimap mode invalidates material caches (`materialTheme`, `themeBackdrop`, `nativeEdge`) even when nothing changed. Reduce unnecessary repaints and test round/square transitions in all five themes.
+- **Risk:** source screenshot and TGA exist in local staging but have not been committed to GitHub; do not treat the local preview ZIP as the release artifact. Re-run source hash, generated map, package checksum, and CI after integration.
+- **Unverified:** real SavedVariables restore and large-save latency, full theme screenshots, FR/EN labels, corrupted/legacy records. A green offline CI cannot certify these native behaviors.
+- Preserve the accepted HUD 9/9 recipe; do not modify its layout without a new reproducible defect.
