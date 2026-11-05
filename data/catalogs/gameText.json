@@ -248,7 +248,8 @@
     "Vs Controlled": "Proti ovládaným",
     "Vs Afflicted": "Proti postiženým",
     "Shielded": "Pod štítem",
-    "Pet Damage": "Poškození mazlíčků"
+    "Pet Damage": "Poškození mazlíčků",
+    "zone.scholo.name": "Scholomance"
   },
   "de": {
     "Area": "Fläche",
@@ -499,7 +500,8 @@
     "Vs Controlled": "Gg. Kontrollierte",
     "Vs Afflicted": "Gg. Betroffene",
     "Shielded": "Geschützt",
-    "Pet Damage": "Begleiterschaden"
+    "Pet Damage": "Begleiterschaden",
+    "zone.scholo.name": "Scholomance"
   },
   "en": {
     "Area": "Area",
@@ -750,7 +752,8 @@
     "Vs Controlled": "Vs Controlled",
     "Vs Afflicted": "Vs Afflicted",
     "Shielded": "Shielded",
-    "Pet Damage": "Pet Damage"
+    "Pet Damage": "Pet Damage",
+    "zone.scholo.name": "Scholomance"
   },
   "es": {
     "Area": "Área",
@@ -1001,7 +1004,8 @@
     "Vs Controlled": "Contra controlados",
     "Vs Afflicted": "Contra afligidos",
     "Shielded": "Con escudo",
-    "Pet Damage": "Daño de mascota"
+    "Pet Damage": "Daño de mascota",
+    "zone.scholo.name": "Scholomance"
   },
   "fr": {
     "Area": "Zone",
@@ -1252,7 +1256,8 @@
     "Vs Controlled": "Contre contrôlés",
     "Vs Afflicted": "Contre affligés",
     "Shielded": "Sous bouclier",
-    "Pet Damage": "Dégâts du familier"
+    "Pet Damage": "Dégâts du familier",
+    "zone.scholo.name": "Scholomance"
   },
   "ja": {
     "Area": "範囲",
@@ -1503,7 +1508,8 @@
     "Vs Controlled": "対行動阻害",
     "Vs Afflicted": "対状態異常",
     "Shielded": "シールド中",
-    "Pet Damage": "ペットのダメージ"
+    "Pet Damage": "ペットのダメージ",
+    "zone.scholo.name": "スコロマンス"
   },
   "ko": {
     "Area": "범위",
@@ -1754,7 +1760,8 @@
     "Vs Controlled": "제어된 적 상대",
     "Vs Afflicted": "고통받는 적 상대",
     "Shielded": "보호막 중",
-    "Pet Damage": "소환수 피해"
+    "Pet Damage": "소환수 피해",
+    "zone.scholo.name": "스칼로맨스"
   },
   "pl": {
     "Area": "Obszar",
@@ -2005,7 +2012,8 @@
     "Vs Controlled": "Na kontrolowanych",
     "Vs Afflicted": "Na dotkniętych",
     "Shielded": "Pod tarczą",
-    "Pet Damage": "Obr. zwierząt"
+    "Pet Damage": "Obr. zwierząt",
+    "zone.scholo.name": "Scholomance"
   },
   "pt": {
     "Area": "Área",
@@ -2256,7 +2264,8 @@
     "Vs Controlled": "Vs controlados",
     "Vs Afflicted": "Vs afligidos",
     "Shielded": "Com escudo",
-    "Pet Damage": "Dano de mascote"
+    "Pet Damage": "Dano de mascote",
+    "zone.scholo.name": "Scholomance"
   },
   "ro": {
     "Area": "Zonă",
@@ -2507,7 +2516,8 @@
     "Vs Controlled": "Contra celor controlați",
     "Vs Afflicted": "Contra celor afectați",
     "Shielded": "Sub scut",
-    "Pet Damage": "Daunele animalelor"
+    "Pet Damage": "Daunele animalelor",
+    "zone.scholo.name": "Scholomance"
   },
   "ru": {
     "Area": "Область",
@@ -2758,7 +2768,8 @@
     "Vs Controlled": "Против контроля",
     "Vs Afflicted": "Против поражённых",
     "Shielded": "Под щитом",
-    "Pet Damage": "Урон питомцев"
+    "Pet Damage": "Урон питомцев",
+    "zone.scholo.name": "Некроситет"
   },
   "tr": {
     "Area": "Alan",
@@ -3009,7 +3020,8 @@
     "Vs Controlled": "Kontrollülere Karşı",
     "Vs Afflicted": "Etkilenenlere Karşı",
     "Shielded": "Kalkanlı",
-    "Pet Damage": "Evcil Hayvan Hasarı"
+    "Pet Damage": "Evcil Hayvan Hasarı",
+    "zone.scholo.name": "Scholomance"
   },
   "uk": {
     "Area": "Площа",
@@ -3260,7 +3272,8 @@
     "Vs Controlled": "Проти скутих",
     "Vs Afflicted": "Проти уражених",
     "Shielded": "Під щитом",
-    "Pet Damage": "Шкода вихованців"
+    "Pet Damage": "Шкода вихованців",
+    "zone.scholo.name": "Некроситет"
   },
   "zh": {
     "Area": "范围",
@@ -3511,6 +3524,7 @@
     "Vs Controlled": "对受控敌人",
     "Vs Afflicted": "对受折磨敌人",
     "Shielded": "护盾中",
-    "Pet Damage": "宠物伤害"
+    "Pet Damage": "宠物伤害",
+    "zone.scholo.name": "通灵学院"
   }
 }
