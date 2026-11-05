@@ -258,6 +258,8 @@ function A.ZoneIllustration(texture, zone)
     texture:SetVertexColor(1, 1, 1)
     if zone == "naxxramas" then
         zone = "naxx"
+    elseif zone == "scholomance" then
+        zone = "scholo"
     end
     local entry = runImages[zone]
     texture:SetTexture(A.theme.media .. (entry and entry[1] or "ChroniclePlate4.tga"))
