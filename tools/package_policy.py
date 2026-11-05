@@ -36,6 +36,7 @@ MEDIA = (
             "elwynn",
             "feralas",
             "naxx",
+            "scholo",
             "sm",
             "ungoro",
             "wsg",
