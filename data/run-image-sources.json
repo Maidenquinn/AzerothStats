@@ -90,7 +90,7 @@
         0.5
       ],
       "texture": "RunZone-feralas.tga",
-      "archiveEntry": "images zones/f\u00e9ralas.jpg"
+      "archiveEntry": "images zones/féralas.jpg"
     },
     "wsg": {
       "source": "design/run-images/wsg.jpg",
@@ -175,6 +175,20 @@
       ],
       "texture": "RunZone-av.tga",
       "archiveEntry": "images zones/valleealterac.jpg"
+    },
+    "scholo": {
+      "source": "design/run-images/scholo.jpg",
+      "sha256": "aef891fd3dc28e4ac44db0e20180aa93276b81cd82d4a7538a26adf7db9539f7",
+      "size": [
+        1200,
+        750
+      ],
+      "focus": [
+        0.5,
+        0.5
+      ],
+      "texture": "RunZone-scholo.tga",
+      "archiveEntry": "User-supplied Scholomance screenshot 2026-11-05"
     }
   }
 }
