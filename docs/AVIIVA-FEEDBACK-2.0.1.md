@@ -10,8 +10,8 @@ This work continues after PR #30, which was merged as a *regression hotfix*. No 
 - [ ] Test restore, deletion, retention, and corrupted/legacy records without data loss.
 
 ## Priority 1 — History and data correctness
-- [x] Existing Solo/Co-op/Unknown filters; new branch removes legacy absence-as-Solo inference. **CI currently fails because `tests/reports.lua:257` still expects Solo; update assertion to Unknown.**
-- [ ] Reconcile legacy Solo inference with owner's stated rule: absent co-op evidence alone must NOT prove Solo; use Unknown where unsupported.
+- [x] Existing Solo/Co-op/Unknown filters; new branch removes legacy absence-as-Solo inference. Both historical-mode regression assertions updated; CI #837 PASS and native five-point smoke recipe accepted.
+- [x] Legacy Solo inference removed; absence of evidence remains Unknown (native smoke recipe accepted).
 - [ ] Order map options by campaign progression, not alphabetically.
 - [ ] Center Search runs and Overview > History.
 - [ ] Explain Partial inline, distinguish missing observations from confirmed zero, investigate FPS/lag sensitivity.
@@ -19,10 +19,10 @@ This work continues after PR #30, which was merged as a *regression hotfix*. No 
 - [ ] Investigate Nemesis 0 confirmed vs 58 probable / 69 observed; document source confidence and native evidence limits.
 
 ## Priority 2 — HUD
-- [ ] Fix left icon overflow at minimum height.
-- [ ] Improve right-section width allocation per section and reduce premature collapse.
-- [x] Background opacity 0–100% already implemented; default height and persistence review remain open.
-- [ ] Test min/max scale and narrow/wide screens.
+- [x] Bound emblem by HUD height (native smoke recipe accepted at 28px).
+- [x] Implement adaptive per-column widths and reduced conservative collapse thresholds; native final HUD recipe pending.
+- [x] Background opacity 0–100% already implemented; default height reduced 46px to 40px; persistence final recipe pending.
+- [x] Added automated viewport/height matrix and varied-label allocation tests; native visual acceptance pending.
 
 ## Priority 3 — UI, themes, assets
 - [ ] Restore missing Scholomance map image.
