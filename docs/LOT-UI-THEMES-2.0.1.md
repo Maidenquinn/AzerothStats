@@ -96,3 +96,9 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - `4f94e44089bd26ccd124e9cd320728f7b5f7c37e`: regression test injects a failed initializer and asserts pointer/plan rollback and user-visible error.
 - **Important limitation:** this is pointer-level rollback; any side effects of an initializer before failure (theme state, other globals) are not fully transactionally rolled back. Native validation remains required. Tests/CI were not executed or confirmed during this checkpoint.
 - Next session: inspect the new PR head, run `tests/data_management.lua` in the repository test harness and check CI before marking PASS. Do not release without native saved-variable backup/restore verification.
+
+### Nemesis evidence checkpoint — 2026-11-05
+- Reviewed `AzerothStats/Nemesis.lua`: an observed death increments `deathEvidence.deaths`; an attacker is **probable** only if the latest parsed hit is within 2 seconds; **confirmed** requires an explicit `ERR_KILLED_BY_S` native slain-by message. A late explicit message within 2 seconds can upgrade a probable attribution without increasing the death count.
+- The reported Dread Creeper 69 observed / 58 probable / 0 confirmed is consistent with missing or unrecognized explicit slain-by messages; it does not by itself prove a data-loss bug. Need real native message/event capture (without sensitive chat contents) before changing attribution semantics.
+- Commits `f1ee7db03925d23c3930a9df74ee06de041bb996` and `9abbef41a9da87ab0c834e16690ba123cf0f6869` add and reposition a regression scenario: explicit message **before** death transition should count one confirmed Dread Creeper death. Repositioning avoids disrupting existing tests that index five fixture deaths.
+- **Not yet executed or CI-verified.** No production Nemesis behavior changed. Next audit native event registration, locale-specific templates and Partial/FPS evidence; only then propose production changes.
