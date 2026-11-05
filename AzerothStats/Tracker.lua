@@ -427,6 +427,11 @@ function A.Sample()
             run.provenance.duration = "AZS_RUN.t (echantillon serveur)"
         end
         run.progress = A.Copy(raw)
+        -- Native won is sticky through endless mode; later death is not a loss.
+        if A.Number(raw.won) == 1 then
+            run.nativeVictoryObserved = true
+            run.result = "victory"
+        end
         for k, field in pairs({
             kills = "kills",
             gold = "gold",
