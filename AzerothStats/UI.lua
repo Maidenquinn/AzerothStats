@@ -955,7 +955,7 @@ end
 local function settingsRefresh()
     local settings = A.db.settings
     for _, b in ipairs(UI.checks) do
-        b:SetChecked(settings[b.setting])
+        b:SetChecked(b.setting == "miniRound" and settings.miniRound ~= false or (b.setting ~= "miniRound" and settings[b.setting]))
         put(b.caption, A.T(b.key))
     end
     for _, sl in ipairs(UI.sliders) do
