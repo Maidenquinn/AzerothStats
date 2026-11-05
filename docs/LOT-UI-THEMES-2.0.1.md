@@ -21,7 +21,7 @@ Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #
 - Clarify Partial and Sync without claiming data collection or synchronization guarantees not supported by implementation.
 
 ### UI-4 — Visual resources (separate verification gate)
-- [Asset blocked] Scholomance is absent from the 12-image maintainer-supplied source manifest. The generated zone-image pipeline checks exact coverage and SHA-256; a licensed/source image is needed to add `scholo` without fabricating provenance.
+- [Asset received; integration pending] Maintainer supplied a 1200x750 Scholomance screenshot on 2026-11-05. Converted source JPG and 256x256 WoW-compatible TGA are prepared locally. Integration still requires committing the binary assets, adding `scholo` to `gameText.json` and the image manifest, regenerating `GameText.lua` and `Theme.lua`, and updating checksum/package checks. Do not mark complete until those assets are in the branch and CI passes.
 - [Partially implemented; native pending] Remove duplicate Warcraft class emblem from the sidebar; chronicle glyph cropping and texture quality still need visual verification.
 - [Implemented; native pending] Add persisted circular minimap icon setting independent of theme, with native tracking ring and reversible square appearance.
 - Any texture optimization must preserve native WoW 1.12 texture compatibility; do not blindly replace TGA with JPEG.
