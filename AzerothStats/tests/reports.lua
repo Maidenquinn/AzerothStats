@@ -29,6 +29,19 @@ local function run(id, damage, class, heroic)
     }
 end
 local a, b = run("report-a", 1000, "warrior", 2), run("report-b", 1500, "warrior", 2)
+-- Regression: native party state previously wrote coop without latest, disabling all saved stats on reload.
+local savedRuns = A.db.runs
+local damaged = run("native-party-legacy", 10, "warrior", 1)
+damaged.coop = { peers = {}, accounted = {}, soloObserved = true }
+A.db.runs = { damaged }
+check(A.ValidateDatabase(A.db), "saved native party record without latest remains valid")
+AzerothStatsDB = A.db
+check(A.InitDB(), "saved native party record no longer disables database on reload")
+check(
+    type(damaged.coop.latest) == "table",
+    "missing optional party roster repaired without dropping run"
+)
+A.db.runs = savedRuns
 local c, d = run("report-c", 2000, "mage", 2), run("report-d", 4000, "warrior", nil)
 A.db.runs = { a, b, c, d }
 A.db.classes.warrior = { records = { damage = { value = 900 }, kills = { value = 99 } } }
@@ -241,6 +254,14 @@ for _, lang in ipairs(A.languages) do
 end
 -- Multiplayer context comes only from saved observations, never absence-as-solo.
 check(A.CoopLabel(a) == nil, "legacy run without group evidence has unknown mode")
+check(A.RunMode(a) == "solo", "unflagged historical run is inferred solo")
+a.modeTrackingVersion = 2
+check(A.RunMode(a) == "unknown", "tracked run without evidence remains unknown")
+a.coop = { peers = {}, latest = {}, accounted = {}, soloObserved = true }
+check(A.RunMode(a) == "solo", "positive self-only roster establishes solo")
+a.coop.peers["other:mage"] = { name = "Other", class = "mage" }
+check(A.RunMode(a) == "coop", "co-op evidence overrides earlier solo observation")
+a.coop = nil
 a.coop = {
     peers = {},
     latest = {},

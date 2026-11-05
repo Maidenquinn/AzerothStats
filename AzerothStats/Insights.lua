@@ -192,6 +192,11 @@ local function party(run)
             source = "AZSPARTY",
         }
     end
+    -- A fresh self-only roster is positive solo evidence, unlike a missing roster.
+    -- A companion observed at any point always takes precedence.
+    if selfIncluded and table.getn(rows) == 1 and not partial then
+        coop.soloObserved = true
+    end
     coop.latest = latest
     coop.sampledAt = A.Wall()
     coop.unavailable = nil
@@ -199,6 +204,20 @@ end
 
 --- Update death evidence, observed DPS and party snapshots for the current sampled run.
 function A.ObserveInsights(run, progress, phase)
+    run.modeTrackingVersion = run.modeTrackingVersion or 2
+    -- The official meter context identifies the party even when its DPS rows are empty.
+    if type(AZS_GetMeterContext) == "function" then
+        local ok, context = pcall(AZS_GetMeterContext)
+        if ok and type(context) == "table" and type(context.partyState) == "string" then
+            run.coop = run.coop or { peers = {}, latest = {}, accounted = {} }
+            if context.partyState == "solo" and not run.coop.nativePartySeen then
+                run.coop.soloObserved = true
+            elseif context.partyState == "active" or context.partyState == "ended" then
+                run.coop.nativePartySeen = true
+                run.coop.nativePartyState = context.partyState
+            end
+        end
+    end
     A.ObserveNemesis(run, progress, phase)
     dps(run, progress, phase)
     if run.status == "active" or run.status == "terminal" or run.status == "ended" then
@@ -388,6 +407,26 @@ function A.CoopLabel(run)
     if run.coop.peers and next(run.coop.peers) then
         return A.T("Co-op") .. " · " .. A.T("Partial")
     end
+end
+
+--- Classify only observed modes; co-op evidence outranks any earlier solo snapshot.
+function A.RunMode(run)
+    if (run and run.coop and run.coop.nativePartySeen) or A.CoopLabel(run) then
+        return "coop"
+    end
+    if run and run.coop and run.coop.soloObserved then
+        return "solo"
+    end
+    -- Historical migration is a presentation inference, never fabricated co-op telemetry.
+    -- Runs created before native mode tracking predate this provenance contract.
+    if
+        run
+        and not run.modeTrackingVersion
+        and (run.status == "ended" or run.status == "interrupted")
+    then
+        return "solo"
+    end
+    return "unknown"
 end
 
 --- One presentation model shared by the report's group view; no native calls or saved writes.

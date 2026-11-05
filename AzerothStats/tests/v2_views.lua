@@ -157,6 +157,36 @@ check(
     "missing native co-op samples render one explicit empty state"
 )
 
+-- Nemesis evidence labels must not present a probable attacker as confirmed.
+local evidenceModel = { rows = {} }
+A.NemesisModel(evidenceModel, {
+    deathEvidence = {
+        deaths = 3,
+        sources = { ["Synthetic attacker"] = { confirmed = 1, probable = 1 } },
+    },
+})
+check(table.getn(evidenceModel.rows) == 1, "Nemesis displays attributed sources separately")
+check(
+    string.find(evidenceModel.rows[1].detail, "Explicit slain-by message", 1, true) ~= nil,
+    "Nemesis explains confirmed provenance"
+)
+check(
+    string.find(evidenceModel.rows[1].detail, "Last attacker is not proof", 1, true) ~= nil,
+    "Nemesis explains probable attribution"
+)
+check(string.find(evidenceModel.note, "1", 1, true) ~= nil, "Nemesis preserves unknown deaths")
+
+-- Legacy completed runs without co-op evidence are inferred solo for presentation.
+A.view = { historyKind = "solo" }
+check(A.MatchesHistory(r), "legacy completed run appears under solo")
+r.modeTrackingVersion = 2
+A.view.historyKind = "unknown"
+check(A.MatchesHistory(r), "new tracked run without evidence remains unknown")
+A.view.historyKind = "coop"
+check(not A.MatchesHistory(r), "co-op filter excludes runs without group evidence")
+A.view.historyKind = "all"
+check(A.MatchesHistory(r), "all filter retains runs regardless of party evidence")
+
 A.db, AzerothStatsDB, A.run, A.view, A.locale = old.db, old.globals, old.run, old.view, old.locale
 A.RefreshUI()
 print("V2 NATIVE VIEW AND EDITING PASSED", TEST_COUNT)

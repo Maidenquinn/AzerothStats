@@ -246,6 +246,10 @@ check(
     A.db.totals.runs == 1 and A.db.totals.wins == 1 and A.db.totals.sum.damage == 800,
     "continuation updates same lifetime ledger"
 )
+check(
+    r.result == "victory" and r.endlessResult == "left",
+    "endless exit cannot overwrite official victory"
+)
 for i = 1, 10 do
     A.Sample()
 end

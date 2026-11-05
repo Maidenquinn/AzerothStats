@@ -37,6 +37,108 @@ AZS_GetPhase = function()
 end
 check(A.InitDB(), "data fixture initializes")
 A.SetLanguage("en")
+-- Snapshot retention is configurable without changing legacy default behavior.
+local priorManual, priorAuto = AzerothStatsBackup, AzerothStatsAutoBackup
+AzerothStatsBackup, AzerothStatsAutoBackup = nil, nil
+check(A.db.settings.autoBackupRetention == 15, "existing saves default to 15 automatic backups")
+A.db.settings.autoBackupRetention = 2
+for index = 1, 4 do
+    A.db.sequence = index
+    check(A.CreateDataBackup(true), "automatic snapshot can be created between runs")
+end
+local automatic = A.ListDataBackups(true)
+check(
+    table.getn(automatic) == 2 and automatic[1].id == 4 and automatic[2].id == 3,
+    "retention keeps the newest two snapshots and preserves stable IDs"
+)
+check(A.CreateDataBackup(true), "identical automatic snapshot is safely reusable")
+check(
+    table.getn(A.ListDataBackups(true)) == 2 and A.ListDataBackups(true)[1].id == 4,
+    "duplicate auto backup does not allocate a new ID or store another full copy"
+)
+check(A.CreateDataBackup(false), "manual backup remains independent")
+check(
+    table.getn(A.ListDataBackups(false)) == 1 and table.getn(A.ListDataBackups(true)) == 2,
+    "automatic retention never removes a manual snapshot"
+)
+-- Manual cleanup requires a current preview and never touches automatic backups.
+for index = 2, 5 do
+    A.db.sequence = index
+    check(A.CreateDataBackup(false), "manual snapshot fixture can be created")
+end
+local manualPlan = A.PreviewManualBackupCleanup(2)
+check(manualPlan and manualPlan.remove == 3, "manual cleanup previews three older snapshots")
+check(not A.CleanupManualBackups(2), "cleanup without preview token is rejected")
+check(not A.CleanupManualBackups(2, "invalid"), "stale cleanup token is rejected")
+local autoBeforeCleanup = table.getn(A.ListDataBackups(true))
+check(A.CleanupManualBackups(2, manualPlan.token), "confirmed cleanup removes old manual backups")
+local keptManual = A.ListDataBackups(false)
+check(
+    table.getn(keptManual) == 2 and keptManual[1].id == 5 and keptManual[2].id == 4,
+    "cleanup keeps the newest manual snapshots and stable IDs"
+)
+check(
+    table.getn(A.ListDataBackups(true)) == autoBeforeCleanup,
+    "manual cleanup does not affect automatic backups"
+)
+local emptyPlan = A.PreviewManualBackupCleanup(2)
+check(emptyPlan and emptyPlan.remove == 0, "repeat cleanup is a no-op")
+check(A.CleanupManualBackups(2, emptyPlan.token), "confirmed no-op cleanup succeeds")
+A.run = { status = "active" }
+check(not A.PreviewManualBackupCleanup(1), "manual cleanup preview blocked during active run")
+check(not A.CleanupManualBackups(1, "invalid"), "manual cleanup blocked during active run")
+A.run = nil
+-- Active sessions must not snapshot, restore or delete a backup.
+local activeFixture = { status = "active" }
+A.run = activeFixture
+local protectedCount = table.getn(A.ListDataBackups(true))
+check(not A.CreateDataBackup(true), "active run cannot create a backup")
+check(not A.RestoreDataBackup(nil, true), "active run cannot restore a backup")
+check(not A.DeleteDataBackup(nil, true), "active run cannot delete a backup")
+check(
+    table.getn(A.ListDataBackups(true)) == protectedCount,
+    "active-run guards leave backup history unchanged"
+)
+A.run = nil
+-- Corrupt stored snapshots must be rejected without replacing the live DB.
+local latestAuto = AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)]
+local validData = latestAuto.data
+latestAuto.data = { invalid = true }
+local beforeCorruptRestore = A.db
+check(not A.RestoreDataBackup(latestAuto.id, true), "invalid snapshot cannot be restored")
+check(A.db == beforeCorruptRestore, "invalid restore preserves the live database")
+latestAuto.data = validData
+check(not A.RestoreDataBackup(999999, true), "unknown backup ID cannot replace the live database")
+A.db.settings.autoBackupRetention = 15
+A.db.settings.autoBackupEveryRuns = 2
+A.db.settings.autoBackupRunCounter = 0
+AzerothStatsAutoBackup = { schema = 2, nextId = 1, entries = {} }
+-- Use a minimal terminal-state record; this function must not mutate a run.
+local completed = { status = "ended" }
+check(not A.RecordCompletedRunBackup(completed), "first completed run does not snapshot")
+check(
+    A.db.settings.autoBackupRunCounter == 1 and table.getn(A.ListDataBackups(true)) == 0,
+    "periodic backup waits until the configured interval (counter="
+        .. tostring(A.db.settings.autoBackupRunCounter)
+        .. ", entries="
+        .. tostring(table.getn(A.ListDataBackups(true)))
+        .. ")"
+)
+check(A.RecordCompletedRunBackup(completed), "second completed run triggers snapshot")
+check(
+    A.db.settings.autoBackupRunCounter == 0
+        and table.getn(A.ListDataBackups(true)) == 1
+        and AzerothStatsAutoBackup.entries[1].data.settings.autoBackupRunCounter == 0,
+    "successful periodic backup resets its live and persisted counters"
+)
+check(
+    not A.RecordCompletedRunBackup({ status = "interrupted" }),
+    "interrupted runs never trigger periodic backup"
+)
+A.db.settings.autoBackupEveryRuns = 0
+check(not A.RecordCompletedRunBackup(completed), "periodic backup is disabled by default")
+A.db.sequence = 0
+AzerothStatsBackup, AzerothStatsAutoBackup = priorManual, priorAuto
 local function fixture(id, class)
     return {
         id = id,
@@ -137,8 +239,12 @@ check(
     "automatic snapshot updates independently"
 )
 for index = 1, 17 do
+    -- Distinct database states must rotate; identical states are deduplicated.
+    A.db.sequence = A.db.sequence + 1
     check(A.CreateDataBackup(true), "automatic snapshot " .. index)
 end
+-- The rotation fixture must not alter the sequence asserted by reset tests.
+A.db.sequence = 42
 check(table.getn(A.ListDataBackups(true)) == 15, "automatic history capped at fifteen")
 check(table.getn(A.ListDataBackups(false)) == 1, "manual backup remains independent")
 check(AzerothStatsAutoBackup.entries[1].id > 1, "oldest automatic snapshots rotate out")

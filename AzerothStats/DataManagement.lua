@@ -255,6 +255,33 @@ function A.ListDataBackups(automatic)
     return result
 end
 
+-- Exact structural comparison of already validated snapshot trees. Unlike A.Sign,
+-- this never truncates strings or uses a bounded, collision-prone signature.
+-- Limit work: when uncertain, retain the additional safety snapshot.
+local function sameSnapshot(left, right, state)
+    state.nodes = state.nodes + 1
+    if state.nodes > A.limits.savedNodes then
+        return false
+    end
+    if type(left) ~= type(right) then
+        return false
+    end
+    if type(left) ~= "table" then
+        return left == right
+    end
+    for key, value in pairs(left) do
+        if right[key] == nil or not sameSnapshot(value, right[key], state) then
+            return false
+        end
+    end
+    for key in pairs(right) do
+        if left[key] == nil then
+            return false
+        end
+    end
+    return true
+end
+
 function A.CreateDataBackup(automatic)
     if not A.db then
         return false, "No database loaded"
@@ -270,6 +297,14 @@ function A.CreateDataBackup(automatic)
         return false, "Backup failed validation"
     end
     local store = backupStore(automatic)
+    -- Skip only truly identical automatic snapshots; preserve every manual
+    -- backup request and keep the existing recoverable automatic snapshot.
+    if automatic then
+        local latest = store.entries[table.getn(store.entries)]
+        if latest and latest.data and sameSnapshot(latest.data, data, { nodes = 0 }) then
+            return true, "Automatic backup already up to date (No." .. latest.id .. ")"
+        end
+    end
     local id = store.nextId
     store.nextId = id + 1
     table.insert(store.entries, {
@@ -279,12 +314,47 @@ function A.CreateDataBackup(automatic)
         data = data,
     })
     if automatic then
-        while table.getn(store.entries) > 15 do
+        -- Respect a bounded per-player retention setting; older saves keep the
+        -- historical default until the user explicitly changes this option.
+        local retention = A.db.settings and A.Number(A.db.settings.autoBackupRetention)
+        retention = math.max(1, math.min(15, math.floor(retention or 15)))
+        while table.getn(store.entries) > retention do
             table.remove(store.entries, 1)
         end
         return true, "Automatic safety backup No." .. id .. " saved"
     end
     return true, "Manual backup No." .. id .. " saved; reload to write it to disk"
+end
+
+-- Periodic snapshots are opt-in. Count only runs that reached an official
+-- terminal state and have been detached from the live tracker. Never copy
+-- the database on each poll, nor on interrupted runs.
+function A.RecordCompletedRunBackup(run)
+    if not A.db or not run or run.status ~= "ended" then
+        return false
+    end
+    local settings = A.db.settings
+    local interval =
+        math.max(0, math.min(20, math.floor(A.Number(settings.autoBackupEveryRuns) or 0)))
+    if interval == 0 then
+        return false
+    end
+    settings.autoBackupRunCounter = math.max(
+        0,
+        math.min(20, math.floor(A.Number(settings.autoBackupRunCounter) or 0))
+    ) + 1
+    if settings.autoBackupRunCounter < interval then
+        return false
+    end
+    -- The snapshot must contain the reset counter as well, otherwise restoring
+    -- it would trigger an extra backup on the next completed run.
+    local pending = settings.autoBackupRunCounter
+    settings.autoBackupRunCounter = 0
+    local ok = A.CreateDataBackup(true)
+    if not ok then
+        settings.autoBackupRunCounter = pending
+    end
+    return ok
 end
 
 function A.RestoreDataBackup(id, automatic)
@@ -330,6 +400,48 @@ function A.DeleteDataBackup(id, automatic)
         end
     end
     return false, "Backup not found"
+end
+
+-- Manual snapshots are never pruned automatically. A two-step preview token
+-- prevents stale confirmations from deleting a changed backup catalogue.
+function A.PreviewManualBackupCleanup(keep)
+    if A.run and A.run.status == "active" then
+        return nil, "Backup cleanup is available between runs"
+    end
+    keep = A.Number(keep)
+    if not keep or keep ~= math.floor(keep) or keep < 1 or keep > 50 then
+        return nil, "Keep count must be between 1 and 50"
+    end
+    local store = backupStore(false)
+    local count = table.getn(store.entries)
+    local remove = math.max(0, count - keep)
+    local ids = {}
+    for i = 1, remove do
+        ids[i] = store.entries[i].id
+    end
+    local token = table.concat(ids, ",") .. "|" .. tostring(store.nextId) .. "|" .. tostring(count)
+    return { keep = keep, remove = remove, ids = ids, token = token }
+end
+
+function A.CleanupManualBackups(keep, token)
+    if type(token) ~= "string" then
+        return false, "Preview cleanup and confirm the current selection first"
+    end
+    local plan, err = A.PreviewManualBackupCleanup(keep)
+    if not plan then
+        return false, err
+    end
+    if plan.token ~= token then
+        return false, "Backup list changed; review cleanup again"
+    end
+    if plan.remove == 0 then
+        return true, "No manual backups to remove"
+    end
+    local store = backupStore(false)
+    for i = plan.remove, 1, -1 do
+        table.remove(store.entries, i)
+    end
+    return true, tostring(plan.remove) .. " older manual backups deleted; reload to save changes"
 end
 
 --- Build a fresh impact summary. History removal deliberately keeps all lifetime ledgers.

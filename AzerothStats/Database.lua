@@ -44,6 +44,12 @@ function A.InitDB()
         database.favorites = { version = 1, entries = {} }
     end
     A.db = database
+    -- Repair only the known missing optional roster field after full validation.
+    for _, run in ipairs(database.runs) do
+        if run.coop and run.coop.latest == nil then
+            run.coop.latest = {}
+        end
+    end
     A.NormalizeJewelry()
     A.CorrectChests()
     local s = database.settings
@@ -70,6 +76,12 @@ function A.InitDB()
         s.locked = false
     end
     s.maxRuns = math.max(10, math.min(1000, math.floor(A.Number(s.maxRuns) or 200)))
+    s.autoBackupRetention =
+        math.max(1, math.min(15, math.floor(A.Number(s.autoBackupRetention) or 15)))
+    s.autoBackupEveryRuns =
+        math.max(0, math.min(20, math.floor(A.Number(s.autoBackupEveryRuns) or 0)))
+    s.autoBackupRunCounter =
+        math.max(0, math.min(20, math.floor(A.Number(s.autoBackupRunCounter) or 0)))
     s.scale = math.max(0.65, math.min(1.5, A.Number(s.scale) or 1))
     s.opacity = math.max(0.45, math.min(1, A.Number(s.opacity) or 1))
     s.textSize = math.max(11, math.min(16, A.Number(s.textSize) or 12))

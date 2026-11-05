@@ -1,3 +1,12 @@
+# 2.0.1 — Community feedback and saved-data recovery (5 November 2026)
+
+- **Run history:** show legacy completed solo runs as Solo when there is no cooperative evidence; preserve saved data without rewriting old runs.
+- **Solo / Co-op:** improve native party-state observation and ensure new cooperative snapshots have a complete schema-valid structure.
+- **Endless:** keep a recorded victory when the player continues into Endless and later dies.
+- **Startup recovery:** accept and repair saved native party snapshots missing the optional `coop.latest` roster; no SavedVariables reset required.
+- **Regression coverage:** add reload/validation checks for affected saved data.
+- **Known limitations:** Co-op native playtesting is deferred; Nemesis cannot reliably confirm the killer from the game's death recap when no explicit Lua event is exposed.
+
 # 2.0.0 — Full V2 release (3 November 2026)
 
 Consolidated full release since `2.0.0-dev.12`. See [full release notes](../docs/RELEASE-NOTES-2.0.0.md).

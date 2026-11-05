@@ -36,7 +36,16 @@ local function applySummary(run, summary)
     if not run.zone and type(summary.zone) == "string" then
         run.zone = summary.zone
     end
-    run.result = summary.result
+    -- A victory already awarded before endless mode is permanent. A later
+    -- death/exit summary describes the endless continuation, not a defeat.
+    if (run.official and run.official.result == "victory") or run.result == "victory" then
+        run.result = "victory"
+        if summary.result ~= "victory" then
+            run.endlessResult = summary.result
+        end
+    else
+        run.result = summary.result
+    end
     run.status = "ended"
     run.endedAt = A.Wall()
     for k, field in pairs(summaryFields) do
@@ -62,6 +71,9 @@ local function close(reason)
         A.Account(run)
     end
     A.run = nil
+    if run and run.status == "ended" and A.RecordCompletedRunBackup then
+        A.RecordCompletedRunBackup(run)
+    end
 end
 
 --- Resume only plausible continuity or create one new local run, then freeze counter freshness baselines.
@@ -415,6 +427,11 @@ function A.Sample()
             run.provenance.duration = "AZS_RUN.t (echantillon serveur)"
         end
         run.progress = A.Copy(raw)
+        -- Native won is sticky through endless mode; later death is not a loss.
+        if A.Number(raw.won) == 1 then
+            run.nativeVictoryObserved = true
+            run.result = "victory"
+        end
         for k, field in pairs({
             kills = "kills",
             gold = "gold",
