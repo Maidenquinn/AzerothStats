@@ -109,3 +109,9 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - `38b516ab6ff61af200e4c27113cc5fcddef15009` refreshes the `DataManagement.lua` entry in `AzerothStats/SHA256SUMS.txt` to `4e65ec43d74675981851d306e50bc0bc1af051546c9df892731e75093d2c88e1`, computed from the exact branch file UTF-8 contents.
 - **New CI is pending/unverified**, and native acceptance is still open. If CI remains red, inspect its job logs before changing anything else.
 - No ZIP can be declared recipe-ready until package integrity and offline tests PASS; do not merge/release.
+
+### Offline CI PASS and installable review artifact — 2026-11-05
+- GitHub Actions run [#951](https://github.com/Maidenquinn/AzerothStats/actions/runs/42100239656) at `21f1dee9a74d1b61771da3532a3b13432ae3fb23` is **SUCCESS** for both `lot1-regression` and `offline-checks`.
+- The passing workflow includes `tools/checks.py`, offline Lua model tests, synthetic backup scaling at 100/500/1000 runs, runtime roundtrip, release package generation and ZIP upload. These are CI-level checks, not native SavedVariables acceptance.
+- CI artifact `AzerothStats-2.0.1-pr-review`, artifact ID `13448357515`, workflow run `42100239656`, expires 2026-11-12. It is a **review package**, not a public GitHub Release.
+- **Native acceptance still pending:** install in game with an independent backup of SavedVariables, inspect Scholomance image, FR/EN UI themes and Nemesis evidence; restore an actual large history and verify counts before release. Keep PR #31 draft until owner acceptance.
