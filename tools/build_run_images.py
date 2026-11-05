@@ -11,6 +11,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -60,7 +61,9 @@ def build(check=False):
         if "nativeSha256" in entry:
             # A maintainer-supplied, already-encoded native TGA is immutable.
             # Verify its exact reviewed bytes instead of silently resampling it.
-            assert hashlib.sha256(target.read_bytes()).hexdigest() == entry["nativeSha256"], entry["texture"]
+            assert (
+                hashlib.sha256(target.read_bytes()).hexdigest() == entry["nativeSha256"]
+            ), entry["texture"]
             with Image.open(target) as native:
                 assert native.size == (256, 256), entry["texture"]
         else:
