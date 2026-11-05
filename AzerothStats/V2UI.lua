@@ -328,12 +328,12 @@ local function options(anchor)
     end
     local rows = {}
     for _, def in ipairs({
-        { "summons", "Summons", "Observed presence" },
-        { "effects", "Effects", "Observed presence" },
+        { "summons", "Summons", "Summons observed during a run" },
+        { "effects", "Effects", "Effects observed during a run" },
         {
             "combatIntelligence",
             "Combat Intelligence",
-            "Observed support",
+            "Experimental combat analysis based on observed events",
         },
     }) do
         local key = def[1]
