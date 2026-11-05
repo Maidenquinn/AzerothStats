@@ -379,12 +379,20 @@ function A.RestoreDataBackup(id, automatic)
     if err or not A.ValidateDatabase(data) then
         return false, err or "Backup validation failed"
     end
+    -- Keep the previous live database recoverable if initialization fails.
+    -- Validation above is necessary but does not guarantee that migrations or
+    -- native initialization will succeed. Do not clear pending actions until
+    -- the replacement has been accepted.
+    local previousSaved, previousDB = AzerothStatsDB, A.db
+    local previousPlan = A.pendingDataPlan
     AzerothStatsDB = data
-    A.pendingDataPlan = nil
-    if not A.InitDB() then
-        return false, "Backup could not be loaded"
+    local initialized, result = pcall(A.InitDB)
+    if not initialized or not result then
+        AzerothStatsDB, A.db = previousSaved, previousDB
+        A.pendingDataPlan = previousPlan
+        return false, "Backup could not be loaded; previous database preserved"
     end
-    A.V2Reconcile()
+    A.pendingDataPlan = nil
     return true, "Backup No." .. entry.id .. " restored; reload recommended"
 end
 
