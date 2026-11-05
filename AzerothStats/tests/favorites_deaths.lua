@@ -257,20 +257,6 @@ check(
 )
 NOW = NOW + 3
 A.ObserveNemesis(r, { hp = 100 }, "playing")
-local deathsBeforeExplicit = A.db.totals.deathEvidence.deaths
-A.DeathEvidence("UI_ERROR_MESSAGE", "Dread Creeper has slain you.")
-NOW = NOW + 0.1
-A.ObserveNemesis(r, { hp = 0 }, "dead")
-check(
-    r.deaths[table.getn(r.deaths)].source == "Dread Creeper"
-        and r.deaths[table.getn(r.deaths)].confidence == "confirmed",
-    "explicit slain-by evidence before death transition is confirmed"
-)
-check(
-    A.db.totals.deathEvidence.deaths == deathsBeforeExplicit + 1
-        and A.db.totals.deathEvidence.sources["Dread Creeper"].confirmed == 1,
-    "pre-death explicit evidence counts exactly one confirmed death"
-)
 NOW = NOW + 3
 A.ObserveNemesis(r, { hp = 100 }, "playing")
 A.DeathEvidence("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Mage's Fireball crits you for 12.")
@@ -309,6 +295,22 @@ check(
 )
 -- Explicit native slain-by evidence can arrive before the death-state
 -- transition. It must confirm the attacker without counting two deaths.
+NOW = NOW + 3
+A.ObserveNemesis(r, { hp = 100 }, "playing")
+local deathsBeforeExplicit = A.db.totals.deathEvidence.deaths
+A.DeathEvidence("UI_ERROR_MESSAGE", "Dread Creeper has slain you.")
+NOW = NOW + 0.1
+A.ObserveNemesis(r, { hp = 0 }, "dead")
+check(
+    r.deaths[table.getn(r.deaths)].source == "Dread Creeper"
+        and r.deaths[table.getn(r.deaths)].confidence == "confirmed",
+    "explicit slain-by evidence before death transition is confirmed"
+)
+check(
+    A.db.totals.deathEvidence.deaths == deathsBeforeExplicit + 1
+        and A.db.totals.deathEvidence.sources["Dread Creeper"].confirmed == 1,
+    "pre-death explicit evidence counts exactly one confirmed death"
+)
 local n = table.getn(r.deaths)
 A.BeginDeathWatch(r)
 A.ObserveNemesis(r, {}, "dead")
