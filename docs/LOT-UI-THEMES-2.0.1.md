@@ -1,6 +1,6 @@
 # AzerothStats 2.0.1 — Lot UI / themes / navigation
 
-Status: PLANNED. Begins after HUD native 9/9 PASS on 2026-11-05. Work on PR #31 branch `feat/v2.0.1-aviiva-feedback`. Do not modify accepted HUD layout unless a reproducible regression is discovered.
+Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #31 branch `feat/v2.0.1-aviiva-feedback`. Do not modify accepted HUD layout unless a reproducible regression is discovered.
 
 ## Scope and order
 
@@ -11,13 +11,13 @@ Status: PLANNED. Begins after HUD native 9/9 PASS on 2026-11-05. Work on PR #31 
 - Keep existing saved window positions and theme preferences compatible.
 
 ### UI-2 — Navigation and history
-- Center Search runs and Overview > History actions.
+- [Implemented; native pending] Center Search runs and Overview > History actions; also align Overview/All statistics and Records.
 - Normalize horizontal menu spacing and Warcraft category hover outlines.
-- Order map filters by campaign progression, with deterministic fallback for unknown/new maps.
+- [Implemented; native pending] Order recognized Blackrock Mountain, Scholomance, Ahn\'Qiraj and Naxxramas maps by campaign progression in both selectors; other maps use deterministic alphabetical fallback.
 
 ### UI-3 — Language and explanatory labels
 - Correct Optional analyses terminology in EN/FR.
-- Add short, localized explanations for optional analyses; mark Combat Intelligence as experimental where appropriate.
+- [Implemented; native pending] Add short explanations for optional analyses; mark Combat Intelligence as experimental. EN/FR are translated; other locales currently use explicit English fallback pending translation review.
 - Clarify Partial and Sync without claiming data collection or synchronization guarantees not supported by implementation.
 
 ### UI-4 — Visual resources (separate verification gate)
