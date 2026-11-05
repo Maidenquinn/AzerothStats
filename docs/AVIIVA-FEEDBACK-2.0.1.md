@@ -3,14 +3,14 @@
 This work continues after PR #30, which was merged as a *regression hotfix*. No public 2.0.1 GitHub Release should be announced until this feedback is resolved or explicitly deferred. Do not silently treat a green CI as native acceptance.
 
 ## Priority 0 — Data safety and backups
-- [ ] Reproduce manual + automatic backups created by deletion; distinguish expected pre-delete safety snapshot from unintended duplicates.
-- [ ] Configurable auto-backup cadence (e.g. every N completed runs), retention and manual-vs-auto policy, with safe defaults and upgrade behavior.
-- [ ] Profile size of 78/250/1000 runs, count bytes and save latency; reduce duplicated full snapshots without compromising recovery.
+- [x] Confirm pre-delete automatic safety snapshot is intentional (`DataManagement.lua`, `ConfirmDataAction`); audit duplicate snapshots across manual/auto stores remains open.
+- [x] Existing: opt-in auto-backup every 0–20 completed runs, retention 1–15, manual backup cleanup with confirmation; re-test UI and edge cases rather than rebuild.
+- [ ] Existing synthetic 100/500/1000-run benchmark; validate against real large save, byte growth and latency before redesign.
 - [ ] Confirm the client SavedVariables file model; do not promise independent files or arbitrary compression unless client APIs support them.
 - [ ] Test restore, deletion, retention, and corrupted/legacy records without data loss.
 
 ## Priority 1 — History and data correctness
-- [ ] Add Solo/Co-op/Unknown filter to All runs; show run-mode labels wherever evidence supports them.
+- [x] Existing Solo/Co-op/Unknown filters; new branch removes legacy absence-as-Solo inference. **CI currently fails because `tests/reports.lua:257` still expects Solo; update assertion to Unknown.**
 - [ ] Reconcile legacy Solo inference with owner's stated rule: absent co-op evidence alone must NOT prove Solo; use Unknown where unsupported.
 - [ ] Order map options by campaign progression, not alphabetically.
 - [ ] Center Search runs and Overview > History.
@@ -21,7 +21,7 @@ This work continues after PR #30, which was merged as a *regression hotfix*. No 
 ## Priority 2 — HUD
 - [ ] Fix left icon overflow at minimum height.
 - [ ] Improve right-section width allocation per section and reduce premature collapse.
-- [ ] Allow background opacity 0%, review default height and persist settings.
+- [x] Background opacity 0–100% already implemented; default height and persistence review remain open.
 - [ ] Test min/max scale and narrow/wide screens.
 
 ## Priority 3 — UI, themes, assets
