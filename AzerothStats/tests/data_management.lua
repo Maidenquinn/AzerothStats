@@ -147,6 +147,27 @@ check(
     string.find(duplicateMessage or "", "already up to date", 1, true) ~= nil,
     "identical automatic backup explicitly reports deduplication"
 )
+-- A changed database must create a fresh automatic snapshot, and retention
+-- of one must discard only the older automatic entry (never manual backups).
+local savedSequence = A.db.sequence
+local savedRetention = A.db.settings.autoBackupRetention
+local manualBeforeRetention = table.getn(A.ListDataBackups(false))
+A.db.settings.autoBackupRetention = 1
+A.db.sequence = (A.Number(A.db.sequence) or 0) + 1
+local changedOK = A.CreateDataBackup(true)
+check(changedOK, "changed database creates a new automatic snapshot")
+check(
+    table.getn(A.ListDataBackups(true)) == 1
+        and AzerothStatsAutoBackup.nextId == nextIdBeforeDuplicate + 1
+        and AzerothStatsAutoBackup.entries[1].data.sequence == A.db.sequence,
+    "automatic retention one keeps only the latest changed snapshot"
+)
+check(
+    table.getn(A.ListDataBackups(false)) == manualBeforeRetention,
+    "automatic retention does not prune manual backups"
+)
+A.db.sequence = savedSequence
+A.db.settings.autoBackupRetention = savedRetention
 check(
     not A.RecordCompletedRunBackup({ status = "interrupted" }),
     "interrupted runs never trigger periodic backup"
