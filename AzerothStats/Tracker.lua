@@ -36,7 +36,16 @@ local function applySummary(run, summary)
     if not run.zone and type(summary.zone) == "string" then
         run.zone = summary.zone
     end
-    run.result = summary.result
+    -- A victory already awarded before endless mode is permanent. A later
+    -- death/exit summary describes the endless continuation, not a defeat.
+    if (run.official and run.official.result == "victory") or run.result == "victory" then
+        run.result = "victory"
+        if summary.result ~= "victory" then
+            run.endlessResult = summary.result
+        end
+    else
+        run.result = summary.result
+    end
     run.status = "ended"
     run.endedAt = A.Wall()
     for k, field in pairs(summaryFields) do
