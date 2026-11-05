@@ -197,13 +197,23 @@ local function paintGlyph(texture)
             texture:SetTexCoord(0, 1, 0, 1)
         else
             texture:SetTexture("Interface\\Icons\\" .. nativeGlyphs[index])
-            texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+            -- Keep native icon artwork intact; the previous 7% crop cut off
+            -- clocks, skulls and other glyph silhouettes on small navigation buttons.
+            texture:SetTexCoord(0.015, 0.985, 0.015, 0.985)
         end
     elseif A.theme.material == "flat" or A.activeTheme == "grimoire" then
         texture:SetTexture(A.theme.icons)
         local cell = ({ 6, 3, 5, 2, 10, 2, 4, 5, 8, 9, 6, 11, 0, 8, 5, 4 })[index]
         local x, y = math.mod(cell, 4), math.floor(cell / 4)
-        texture:SetTexCoord(x / 4, (x + 1) / 4, y / 4, (y + 1) / 4)
+        -- Inset the atlas cell by half a texel to prevent neighboring glyphs
+        -- bleeding into the edges when the sidebar is scaled down.
+        local inset = 0.5 / 256
+        texture:SetTexCoord(
+            x / 4 + inset,
+            (x + 1) / 4 - inset,
+            y / 4 + inset,
+            (y + 1) / 4 - inset
+        )
         texture:SetVertexColor(unpack(A.theme.gold))
     else
         texture:SetTexture(A.theme.media .. string.format("ChronicleGlyph%02d.tga", index))
