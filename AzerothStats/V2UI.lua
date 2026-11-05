@@ -328,16 +328,16 @@ local function options(anchor)
     end
     local rows = {}
     for _, def in ipairs({
-        { "summons", "Summons" },
-        { "effects", "Effects" },
-        { "combatIntelligence", "Combat Intelligence" },
+        { "summons", "Summons", "Summons observed during a run" },
+        { "effects", "Effects", "Effects observed during a run" },
+        { "combatIntelligence", "Combat Intelligence", "Experimental combat analysis based on observed events" },
     }) do
         local key = def[1]
         table.insert(rows, {
             label = A.T(def[2]) .. " · " .. A.T(
                 store.preferences[key] and "Enabled" or "Disabled"
             ),
-            detail = A.T("Observed presence"),
+            detail = A.T(def[3]),
             action = function()
                 store.preferences[key] = not store.preferences[key]
                 if key == "combatIntelligence" and A.V2CombatReset then
