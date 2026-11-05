@@ -914,6 +914,8 @@ function A.ApplyUI()
             A.mini.roundRing:Hide()
             -- Force restoration after a round mode hid the square material slices.
             A.mini.materialTheme = nil
+            A.mini.themeBackdrop = nil
+            A.mini.nativeEdge = nil
             A.MaterialState(A.mini, false)
             A.UpdateThemeFrame(A.mini)
         end
