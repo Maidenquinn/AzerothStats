@@ -72,6 +72,12 @@ function A.InitDB()
     if s.minimap == nil then
         s.minimap = true
     end
+    -- Independent of the selected window theme; preserve existing profiles.
+    if s.miniRound == nil then
+        s.miniRound = true
+    else
+        s.miniRound = s.miniRound == true
+    end
     if s.locked == nil then
         s.locked = false
     end
