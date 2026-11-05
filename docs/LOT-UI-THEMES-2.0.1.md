@@ -79,3 +79,9 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - Deliver a ZIP only after package verification; ask the owner for native tests that cannot be reproduced remotely.
 
 **Checkpoint action:** documentation-only recovery update. No code change, no CI run and no native acceptance performed by this checkpoint.
+
+### Follow-up checkpoint — backup deduplication regression (2026-11-05)
+- Commit `c772c582b447d279a2b7e799fc1931fac0296613` adds assertions to `AzerothStats/tests/data_management.lua` that repeated identical automatic snapshots do not add an entry or advance `nextId`, and report explicit deduplication.
+- Static review of `AzerothStats/DataManagement.lua`: `CreateDataBackup(true)` snapshots and validates the DB, then compares the latest automatic snapshot recursively with `sameSnapshot`; periodic snapshots are opt-in every 0–20 officially ended runs; pre-deletion safety snapshots are intentional; automatic retention is 1–15.
+- **Tests not executed in this checkpoint.** The large-save cost of full snapshot creation and comparison remains open, as do native restore and real-file size measurements. No production backup logic changed.
+- Next: check CI for the new head, inspect backup restore paths and performance, then proceed through Nemesis/Partial/Sync and native UI acceptance.
