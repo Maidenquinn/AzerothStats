@@ -255,8 +255,6 @@ check(
         and A.db.totals.deathEvidence.sources["Another Enemy"].confirmed == 1,
     "upgrade replaces aggregate evidence rather than duplicating death"
 )
--- Explicit native slain-by evidence can arrive before the death-state
--- transition. It must confirm the attacker without counting two deaths.
 NOW = NOW + 3
 A.ObserveNemesis(r, { hp = 100 }, "playing")
 local deathsBeforeExplicit = A.db.totals.deathEvidence.deaths
@@ -309,6 +307,8 @@ check(
     r.deaths[5].confidence == "unknown" and r.deaths[5].unparsed[1] == "Unparsed localized message",
     "unknown text kept as evidence without inventing source"
 )
+-- Explicit native slain-by evidence can arrive before the death-state
+-- transition. It must confirm the attacker without counting two deaths.
 local n = table.getn(r.deaths)
 A.BeginDeathWatch(r)
 A.ObserveNemesis(r, {}, "dead")
