@@ -176,9 +176,12 @@ check(
 )
 check(string.find(evidenceModel.note, "1", 1, true) ~= nil, "Nemesis preserves unknown deaths")
 
--- Party provenance: an absent co-op sample is unknown, not proof of solo play.
-A.view = { historyKind = "unknown" }
-check(A.MatchesHistory(r), "unknown filter retains runs without positive co-op evidence")
+-- Legacy completed runs without co-op evidence are inferred solo for presentation.
+A.view = { historyKind = "solo" }
+check(A.MatchesHistory(r), "legacy completed run appears under solo")
+r.modeTrackingVersion = 2
+A.view.historyKind = "unknown"
+check(A.MatchesHistory(r), "new tracked run without evidence remains unknown")
 A.view.historyKind = "coop"
 check(not A.MatchesHistory(r), "co-op filter excludes runs without group evidence")
 A.view.historyKind = "all"
