@@ -123,6 +123,26 @@ many.width = 1600
 many.height = 96
 layout = A.BarLayout(many, 1024)
 check(layout.width <= 1008 and layout.rows == 2, "screen width limits and two-row HUD layout")
+local columnWidths = A.BarColumnWidths(many, layout)
+local allocated = 0
+for _, columnWidth in ipairs(columnWidths) do
+    check(columnWidth > 0, "HUD column has positive width")
+    allocated = allocated + columnWidth
+end
+check(
+    math.abs(allocated - (layout.width - layout.lead - (layout.overflow > 0 and 68 or 36))) < 0.01,
+    "HUD columns fill the available width"
+)
+local varied = A.BarPreset("journey")
+varied.blocks = {
+    { metric = "runs", scope = "all" },
+    { metric = "duration", scope = "all" },
+    { metric = "damage", scope = "all" },
+}
+local variedLayout = A.BarLayout(varied, 1024)
+local variedWidths = A.BarColumnWidths(varied, variedLayout)
+check(table.getn(variedWidths) == variedLayout.columns, "HUD column count matches layout")
+
 A.db.totals = {
     runs = 7,
     wins = 2,
