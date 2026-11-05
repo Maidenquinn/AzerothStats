@@ -924,13 +924,17 @@ function A.ApplyUI()
             A.mini.roundRing:Show()
         else
             A.mini.roundRing:Hide()
-            -- Force restoration after a round mode hid the square material slices.
-            A.mini.materialTheme = nil
-            A.mini.themeBackdrop = nil
-            A.mini.nativeEdge = nil
-            A.MaterialState(A.mini, false)
-            A.UpdateThemeFrame(A.mini)
+            -- Restore square materials only when leaving round mode. Theme
+            -- changes are already repainted by A.RepaintMaterials above.
+            if A.mini.roundApplied then
+                A.mini.materialTheme = nil
+                A.mini.themeBackdrop = nil
+                A.mini.nativeEdge = nil
+                A.MaterialState(A.mini, false)
+                A.UpdateThemeFrame(A.mini)
+            end
         end
+        A.mini.roundApplied = round
     end
     if settings.minimap then
         A.mini:Show()
