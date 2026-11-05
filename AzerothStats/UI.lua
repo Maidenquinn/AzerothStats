@@ -16,7 +16,9 @@ local function campaignMapRank(name)
         return 1
     elseif string.find(normalized, "scholomance", 1, true) then
         return 2
-    elseif string.find(normalized, "ahn", 1, true) and string.find(normalized, "qiraj", 1, true) then
+    elseif
+        string.find(normalized, "ahn", 1, true) and string.find(normalized, "qiraj", 1, true)
+    then
         return 3
     elseif string.find(normalized, "naxxramas", 1, true) then
         return 4
