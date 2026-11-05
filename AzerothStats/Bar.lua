@@ -245,6 +245,36 @@ function A.BarLayout(config, availableWidth)
     }
 end
 
+--- Distribute available HUD width by visible column content, not identical cell widths.
+--- Columns share their widest row; bounded weights prevent one long label dominating.
+function A.BarColumnWidths(config, layout)
+    local reserved = layout.overflow > 0 and 68 or 36
+    local available = math.max(layout.columns * 48, layout.width - layout.lead - reserved)
+    local weights, total = {}, 0
+    for column = 1, layout.columns do
+        local weight = 1
+        for row = 0, layout.rows - 1 do
+            local block = config.blocks[row * layout.columns + column]
+            if block and row * layout.columns + column <= layout.capacity then
+                local metric = A.BarMetric(block.metric)
+                local label = metric and A.T(metric[2]) or ""
+                local length = config.labels and string.len(label) or 0
+                if not layout.commonScope then
+                    length = length + 8
+                end
+                weight = math.max(weight, math.min(1.65, 0.85 + length / 38))
+            end
+        end
+        weights[column] = weight
+        total = total + weight
+    end
+    local widths = {}
+    for column = 1, layout.columns do
+        widths[column] = available * weights[column] / total
+    end
+    return widths
+end
+
 --- Open the matching local view while preserving the block's class/run scope.
 function A.OpenBarBlock(block)
     local metric = A.BarMetric(block.metric)
