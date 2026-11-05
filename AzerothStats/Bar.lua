@@ -249,7 +249,7 @@ end
 --- Columns share their widest row; bounded weights prevent one long label dominating.
 function A.BarColumnWidths(config, layout)
     local reserved = layout.overflow > 0 and 68 or 36
-    local available = math.max(layout.columns * 48, layout.width - layout.lead - reserved)
+    local available = math.max(1, layout.width - layout.lead - reserved)
     local weights, total = {}, 0
     for column = 1, layout.columns do
         local weight = 1
@@ -258,7 +258,9 @@ function A.BarColumnWidths(config, layout)
             if block and row * layout.columns + column <= layout.capacity then
                 local metric = A.BarMetric(block.metric)
                 local label = metric and A.T(metric[2]) or ""
-                local length = config.labels and string.len(label) or 0
+                -- WoW 1.12 uses byte strings; approximate visible glyphs for UTF-8 labels.
+                local _, nonAscii = string.gsub(label, "[\128-\191]", "")
+                local length = config.labels and (string.len(label) - nonAscii) or 0
                 if not layout.commonScope then
                     length = length + 8
                 end
