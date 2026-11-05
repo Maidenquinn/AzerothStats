@@ -894,6 +894,27 @@ function A.ApplyUI()
     else
         A.bar:Hide()
     end
+    -- A native round tracking ring stays independent of window materials.
+    -- Repainting the theme can show nine-slice textures again, so apply this last.
+    if A.mini and A.mini.roundRing then
+        local round = settings.miniRound ~= false
+        if A.mini.base then
+            A.mini.base:SetAlpha(round and 0 or settings.opacity)
+        end
+        for _, texture in ipairs(A.mini.materialParts or {}) do
+            if round then
+                texture:Hide()
+            end
+        end
+        if round then
+            A.mini:SetBackdrop(nil)
+            A.mini.roundRing:Show()
+        else
+            A.mini.roundRing:Hide()
+            A.MaterialState(A.mini, false)
+            A.UpdateThemeFrame(A.mini)
+        end
+    end
     if settings.minimap then
         A.mini:Show()
     else
@@ -2046,6 +2067,7 @@ local function buildSettings(frame)
     for i, def in ipairs({
         { "bar", "Top bar" },
         { "minimap", "Minimap button" },
+        { "miniRound", "Circular minimap icon" },
         { "locked", "Lock position" },
         { "recordSound", "Record sounds" },
     }) do
@@ -4289,6 +4311,12 @@ function A.BuildUI()
     mini.icon:SetWidth(21)
     mini.icon:SetHeight(21)
     A.PaintedGlyph(mini.icon, 1)
+    mini.roundRing = mini:CreateTexture(nil, "OVERLAY")
+    mini.roundRing:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    mini.roundRing:SetPoint("CENTER", mini, "CENTER", 0, 0)
+    mini.roundRing:SetWidth(48)
+    mini.roundRing:SetHeight(48)
+    mini.roundRing:Hide()
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")
     mini:SetScript("OnClick", function()
