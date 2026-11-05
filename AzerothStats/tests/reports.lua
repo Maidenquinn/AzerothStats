@@ -37,7 +37,10 @@ A.db.runs = { damaged }
 check(A.ValidateDatabase(A.db), "saved native party record without latest remains valid")
 AzerothStatsDB = A.db
 check(A.InitDB(), "saved native party record no longer disables database on reload")
-check(type(damaged.coop.latest) == "table", "missing optional party roster repaired without dropping run")
+check(
+    type(damaged.coop.latest) == "table",
+    "missing optional party roster repaired without dropping run"
+)
 A.db.runs = savedRuns
 local c, d = run("report-c", 2000, "mage", 2), run("report-d", 4000, "warrior", nil)
 A.db.runs = { a, b, c, d }
