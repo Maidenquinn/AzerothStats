@@ -1931,7 +1931,7 @@ local function buildSettings(frame)
     UI.behaviour:SetJustifyH("CENTER")
     UI.storage = font(p, 370, 244, 320, 24, 16, COLORS.gold, true)
     UI.storage:SetJustifyH("CENTER")
-    UI.saveNote = font(p, 8, 422, 326, 22, 11, COLORS.muted)
+    UI.saveNote = font(p, 374, 422, 316, 22, 11, COLORS.muted)
     UI.saveNote:SetJustifyH("CENTER")
     UI.sliders = {}
     UI.checks = {}
