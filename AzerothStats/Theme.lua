@@ -208,12 +208,7 @@ local function paintGlyph(texture)
         -- Inset the atlas cell by half a texel to prevent neighboring glyphs
         -- bleeding into the edges when the sidebar is scaled down.
         local inset = 0.5 / 256
-        texture:SetTexCoord(
-            x / 4 + inset,
-            (x + 1) / 4 - inset,
-            y / 4 + inset,
-            (y + 1) / 4 - inset
-        )
+        texture:SetTexCoord(x / 4 + inset, (x + 1) / 4 - inset, y / 4 + inset, (y + 1) / 4 - inset)
         texture:SetVertexColor(unpack(A.theme.gold))
     else
         texture:SetTexture(A.theme.media .. string.format("ChronicleGlyph%02d.tga", index))
