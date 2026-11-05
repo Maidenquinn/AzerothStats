@@ -168,7 +168,6 @@ for _, screenWidth in ipairs({ 176, 320, 640, 1024, 1920 }) do
     end
 end
 
-
 A.db.totals = {
     runs = 7,
     wins = 2,
