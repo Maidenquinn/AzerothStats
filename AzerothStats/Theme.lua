@@ -454,7 +454,8 @@ end
 local function paintPanel(panel)
     local preferredEdge = (A.theme.material == "flat" or A.theme.material == "native") and 1 or 12
     -- Bound the nine-slice corners for compact panels instead of letting them overlap.
-    local edge = math.min(preferredEdge, math.max(1, panel.width / 3), math.max(1, panel.height / 3))
+    local edge =
+        math.min(preferredEdge, math.max(1, panel.width / 3), math.max(1, panel.height / 3))
     local xs, ys = { 0, edge, panel.width - edge }, { 0, edge, panel.height - edge }
     local cuts = { 0, 0.07, 0.93, 1 }
     for i, texture in ipairs(panel.parts) do
