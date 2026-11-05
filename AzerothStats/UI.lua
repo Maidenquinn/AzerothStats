@@ -11,6 +11,18 @@ local COLORS = A.theme
 -- Preserve the campaign sequence for recognized late-game maps. Unrecognized
 -- maps remain alphabetic instead of receiving a speculative progression rank.
 local function campaignMapRank(name)
+    -- Prefer canonical localized zone labels; the English fallback below also
+    -- handles historical names recorded before the current catalog existed.
+    for _, entry in ipairs({
+        { "brm", 1 },
+        { "scholo", 2 },
+        { "aq", 3 },
+        { "naxx", 4 },
+    }) do
+        if A.G and name == A.G("zone." .. entry[1] .. ".name") then
+            return entry[2]
+        end
+    end
     local normalized = string.lower(name or "")
     if string.find(normalized, "blackrock", 1, true) then
         return 1
