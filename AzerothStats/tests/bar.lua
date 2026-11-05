@@ -142,6 +142,32 @@ varied.blocks = {
 local variedLayout = A.BarLayout(varied, 1024)
 local variedWidths = A.BarColumnWidths(varied, variedLayout)
 check(table.getn(variedWidths) == variedLayout.columns, "HUD column count matches layout")
+check(variedLayout.columns >= 2, "adaptive test has multiple visible columns")
+local differing = false
+for i = 2, table.getn(variedWidths) do
+    if math.abs(variedWidths[i] - variedWidths[1]) > 0.01 then
+        differing = true
+    end
+end
+check(differing, "HUD allocates different widths to differently sized labels")
+for _, screenWidth in ipairs({ 176, 320, 640, 1024, 1920 }) do
+    for _, barHeight in ipairs({ 28, 40, 72, 96 }) do
+        many.height = barHeight
+        local narrow = A.BarLayout(many, screenWidth)
+        local widths = A.BarColumnWidths(many, narrow)
+        local sum = 0
+        for _, itemWidth in ipairs(widths) do
+            check(itemWidth > 0, "HUD narrow column stays positive")
+            sum = sum + itemWidth
+        end
+        check(
+            math.abs(sum + narrow.lead + (narrow.overflow > 0 and 68 or 36) - narrow.width) < 0.01,
+            "HUD fits viewport at every tested height"
+        )
+        check(narrow.capacity + narrow.overflow == 8, "HUD retains hidden metrics in overflow")
+    end
+end
+
 
 A.db.totals = {
     runs = 7,
