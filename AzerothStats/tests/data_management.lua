@@ -131,6 +131,22 @@ check(
         and AzerothStatsAutoBackup.entries[1].data.settings.autoBackupRunCounter == 0,
     "successful periodic backup resets its live and persisted counters"
 )
+-- A repeated automatic request with an identical database must not multiply
+-- the saved file size. This also covers safety snapshots requested twice
+-- without an intervening data change.
+local autoBeforeDuplicate = table.getn(A.ListDataBackups(true))
+local nextIdBeforeDuplicate = AzerothStatsAutoBackup.nextId
+local duplicateOK, duplicateMessage = A.CreateDataBackup(true)
+check(duplicateOK, "identical automatic backup request succeeds")
+check(
+    table.getn(A.ListDataBackups(true)) == autoBeforeDuplicate
+        and AzerothStatsAutoBackup.nextId == nextIdBeforeDuplicate,
+    "identical automatic backup does not create a duplicate snapshot or advance its ID"
+)
+check(
+    string.find(duplicateMessage or "", "already up to date", 1, true) ~= nil,
+    "identical automatic backup explicitly reports deduplication"
+)
 check(
     not A.RecordCompletedRunBackup({ status = "interrupted" }),
     "interrupted runs never trigger periodic backup"
