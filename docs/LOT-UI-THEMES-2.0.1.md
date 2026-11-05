@@ -102,3 +102,10 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - The reported Dread Creeper 69 observed / 58 probable / 0 confirmed is consistent with missing or unrecognized explicit slain-by messages; it does not by itself prove a data-loss bug. Need real native message/event capture (without sensitive chat contents) before changing attribution semantics.
 - Commits `f1ee7db03925d23c3930a9df74ee06de041bb996` and `9abbef41a9da87ab0c834e16690ba123cf0f6869` add and reposition a regression scenario: explicit message **before** death transition should count one confirmed Dread Creeper death. Repositioning avoids disrupting existing tests that index five fixture deaths.
 - **Not yet executed or CI-verified.** No production Nemesis behavior changed. Next audit native event registration, locale-specific templates and Partial/FPS evidence; only then propose production changes.
+
+### CI unblock checkpoint — 2026-11-05
+- Inspected real PR-head workflow `42088604597` for `2e77fa8`: **FAIL**. `lot1-regression` failed `tools/checks.py` with `release byte drift: DataManagement.lua`; `offline-checks` failed `black --check` for `tools/build_run_images.py`.
+- `60f3022733f42dbe28896f00fbfa5703358528f5` updates image builder import spacing and the long assert layout to Black style.
+- `38b516ab6ff61af200e4c27113cc5fcddef15009` refreshes the `DataManagement.lua` entry in `AzerothStats/SHA256SUMS.txt` to `4e65ec43d74675981851d306e50bc0bc1af051546c9df892731e75093d2c88e1`, computed from the exact branch file UTF-8 contents.
+- **New CI is pending/unverified**, and native acceptance is still open. If CI remains red, inspect its job logs before changing anything else.
+- No ZIP can be declared recipe-ready until package integrity and offline tests PASS; do not merge/release.
