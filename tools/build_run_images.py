@@ -79,7 +79,7 @@ def build(check=False):
     else:
         theme.write_text(replacement, encoding="utf-8", newline="\n")
     print(
-        "12 supplied zone photos: source hashes, 256-pixel encoding and native framing verified"
+        f"{len(data['zones'])} supplied zone photos: source hashes, 256-pixel encoding and native framing verified"
     )
 
 
