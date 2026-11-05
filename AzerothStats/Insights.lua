@@ -419,7 +419,11 @@ function A.RunMode(run)
     end
     -- Historical migration is a presentation inference, never fabricated co-op telemetry.
     -- Runs created before native mode tracking predate this provenance contract.
-    if run and not run.modeTrackingVersion and (run.status == "ended" or run.status == "interrupted") then
+    if
+        run
+        and not run.modeTrackingVersion
+        and (run.status == "ended" or run.status == "interrupted")
+    then
         return "solo"
     end
     return "unknown"
