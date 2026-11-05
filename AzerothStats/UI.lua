@@ -2084,7 +2084,13 @@ local function buildSettings(frame)
         b.key = def[2]
         b.caption = font(p, 32, 264 + (i - 1) * 39, 310, 24, 12, COLORS.text)
         b:SetScript("OnClick", function()
-            A.db.settings[this.setting] = not A.db.settings[this.setting]
+            -- The circular icon defaults to enabled when no saved preference
+            -- exists. Toggle its effective value, not nil, on the first click.
+            if this.setting == "miniRound" then
+                A.db.settings.miniRound = A.db.settings.miniRound == false
+            else
+                A.db.settings[this.setting] = not A.db.settings[this.setting]
+            end
             A.ApplyUI()
             A.RefreshUI()
         end)
