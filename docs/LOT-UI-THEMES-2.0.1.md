@@ -17,7 +17,7 @@ Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #
 
 ### UI-3 — Language and explanatory labels
 - Correct Optional analyses terminology in EN/FR.
-- [Pending] Per-analysis explanations and experimental Combat Intelligence label require changes to canonical `data/catalogs/uiText.json` and regeneration of `Strings.lua`; temporary generated-file edits were rolled back after CI detected stale catalogs. Existing translated labels remain intact.
+- [Implemented; native pending] Optional analyses now have contextual EN/FR descriptions, and Combat Intelligence is marked experimental. All 14 locale catalogs contain the keys (English fallback where translations are not yet reviewed); `Strings.lua` is regenerated from canonical `data/catalogs/uiText.json`.
 - Clarify Partial and Sync without claiming data collection or synchronization guarantees not supported by implementation.
 
 ### UI-4 — Visual resources (separate verification gate)
