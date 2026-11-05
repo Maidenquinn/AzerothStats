@@ -330,7 +330,11 @@ local function options(anchor)
     for _, def in ipairs({
         { "summons", "Summons", "Summons observed during a run" },
         { "effects", "Effects", "Effects observed during a run" },
-        { "combatIntelligence", "Combat Intelligence", "Experimental combat analysis based on observed events" },
+        {
+            "combatIntelligence",
+            "Combat Intelligence",
+            "Experimental combat analysis based on observed events",
+        },
     }) do
         local key = def[1]
         table.insert(rows, {
