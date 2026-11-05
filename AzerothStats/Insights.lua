@@ -204,6 +204,19 @@ end
 
 --- Update death evidence, observed DPS and party snapshots for the current sampled run.
 function A.ObserveInsights(run, progress, phase)
+    -- The official meter context identifies the party even when its DPS rows are empty.
+    if type(AZS_GetMeterContext) == "function" then
+        local ok, context = pcall(AZS_GetMeterContext)
+        if ok and type(context) == "table" and type(context.partyState) == "string" then
+            run.coop = run.coop or { peers = {}, accounted = {} }
+            if context.partyState == "solo" and not run.coop.nativePartySeen then
+                run.coop.soloObserved = true
+            elseif context.partyState == "active" or context.partyState == "ended" then
+                run.coop.nativePartySeen = true
+                run.coop.nativePartyState = context.partyState
+            end
+        end
+    end
     A.ObserveNemesis(run, progress, phase)
     dps(run, progress, phase)
     if run.status == "active" or run.status == "terminal" or run.status == "ended" then
@@ -397,7 +410,7 @@ end
 
 --- Classify only observed modes; co-op evidence outranks any earlier solo snapshot.
 function A.RunMode(run)
-    if A.CoopLabel(run) then
+    if (run and run.coop and run.coop.nativePartySeen) or A.CoopLabel(run) then
         return "coop"
     end
     if run and run.coop and run.coop.soloObserved then
