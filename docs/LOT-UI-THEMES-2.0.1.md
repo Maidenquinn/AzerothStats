@@ -90,3 +90,9 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - Commit `959743c4fa2268e16ae193677feea1ad880e6a17` adds tests for changed automatic snapshots, retention set to one, and isolation of manual backups. Previous deduplication tests remain.
 - Static inspection confirms `RestoreDataBackup` validates a copied snapshot before replacing `AzerothStatsDB`; however `A.InitDB()` failure handling does not explicitly roll back the previous global database. Audit this path before declaring restore atomic.
 - **CI and native tests not run/verified for this commit.** Do not merge or release based on these assertions alone.
+
+### Restore rollback hardening checkpoint — 2026-11-05
+- `0ba1788c8043c0fa7ec7c5a6741133ef8792e613`: `RestoreDataBackup` now keeps the old `AzerothStatsDB`, `A.db` and pending removal plan until `A.InitDB` succeeds. A failed or throwing initializer restores those pointers and reports failure; the redundant second `V2Reconcile` call was removed because `InitDB` already performs it.
+- `4f94e44089bd26ccd124e9cd320728f7b5f7c37e`: regression test injects a failed initializer and asserts pointer/plan rollback and user-visible error.
+- **Important limitation:** this is pointer-level rollback; any side effects of an initializer before failure (theme state, other globals) are not fully transactionally rolled back. Native validation remains required. Tests/CI were not executed or confirmed during this checkpoint.
+- Next session: inspect the new PR head, run `tests/data_management.lua` in the repository test harness and check CI before marking PASS. Do not release without native saved-variable backup/restore verification.
