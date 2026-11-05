@@ -417,15 +417,8 @@ function A.RunMode(run)
     if run and run.coop and run.coop.soloObserved then
         return "solo"
     end
-    -- Historical migration is a presentation inference, never fabricated co-op telemetry.
-    -- Runs created before native mode tracking predate this provenance contract.
-    if
-        run
-        and not run.modeTrackingVersion
-        and (run.status == "ended" or run.status == "interrupted")
-    then
-        return "solo"
-    end
+    -- Missing co-op evidence does not prove Solo, especially for legacy runs.
+    -- Keep Unknown until a native observation establishes the mode.
     return "unknown"
 end
 
