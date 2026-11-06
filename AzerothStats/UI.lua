@@ -1376,9 +1376,8 @@ function A.RefreshUI()
             end
             UI.advancedPanel.mapChoice = active.map
             put(UI.advancedMap.label, active.map or A.T("All maps"))
-            local bounds = A.HistoryFacetBounds()
             for key, pair in pairs(UI.advancedSliders or {}) do
-                local limits = bounds[key]
+                local limits = A.HistoryFacetBounds(key)[key]
                 for _, bound in ipairs({ "Min", "Max" }) do
                     local slider = pair[bound]
                     local input = UI.advancedFields[key .. bound]
