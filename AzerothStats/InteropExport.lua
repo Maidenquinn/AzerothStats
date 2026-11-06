@@ -32,7 +32,17 @@ function A.ExportRunV1(run)
     end
     local values = run.values
     local metrics = {}
-    for _, key in ipairs({ "duration", "level", "kills", "gold", "damage", "taken", "healing", "peakDps", "bosses" }) do
+    for _, key in ipairs({
+        "duration",
+        "level",
+        "kills",
+        "gold",
+        "damage",
+        "taken",
+        "healing",
+        "peakDps",
+        "bosses",
+    }) do
         metrics[key] = metric(values, key)
     end
     local heroic = number(run.heroic)
