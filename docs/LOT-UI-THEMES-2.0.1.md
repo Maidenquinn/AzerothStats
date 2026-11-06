@@ -115,3 +115,10 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 - The passing workflow includes `tools/checks.py`, offline Lua model tests, synthetic backup scaling at 100/500/1000 runs, runtime roundtrip, release package generation and ZIP upload. These are CI-level checks, not native SavedVariables acceptance.
 - CI artifact `AzerothStats-2.0.1-pr-review`, artifact ID `13448357515`, workflow run `42100239656`, expires 2026-11-12. It is a **review package**, not a public GitHub Release.
 - **Native acceptance still pending:** install in game with an independent backup of SavedVariables, inspect Scholomance image, FR/EN UI themes and Nemesis evidence; restore an actual large history and verify counts before release. Keep PR #31 draft until owner acceptance.
+
+### History filter retention regression — 2026-11-06
+- Native owner confirmed all retained runs reappear after Reset all filters. No evidence of deleted runs from this symptom.
+- `2d0d9ed`: added `A.ReconcileHistoryMetricFilters` called before history view generation, using bounds calculated only from retained `A.db.runs`. `bfafbad` adds regression coverage.
+- `6c04c85` corrects an overly restrictive initial implementation: numeric filter bounds outside the retained range are **cleared**, not clamped to the new maximum (which could still hide valid runs). `eb22970` updates regression assertions. Date/search/class filters remain untouched.
+- CI run [#954](https://github.com/Maidenquinn/AzerothStats/actions/runs/42198937916) FAILED for `Views.lua` checksum drift and StyLua formatting. The follow-up fix is formatted to the StyLua diff; `086a745` updates `Views.lua` SHA256SUMS to `db92ef8d95ba282ddeecc50ff4e585745b23456bff88ab10a7f0994d2849d2cb`.
+- **New CI pending/unverified** as of checkpoint; do not supply a new ZIP as verified or merge PR #31 until both CI jobs PASS. Native retest: reproduce a stale min/max filter, return to My Runs, verify retained rows appear and filter fields reflect cleared bounds, then /reload.
