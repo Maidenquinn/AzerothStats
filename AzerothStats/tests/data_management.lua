@@ -266,6 +266,22 @@ do
             "duplicate " .. count .. "-run snapshot does not increase storage"
         )
     end
+    -- With a large history, retention must keep three independent recovery
+    -- points in chronological order, without mutating older snapshots.
+    A.db.settings.autoBackupRetention = 3
+    for version = 1, 3 do
+        A.db.sequence = 1000 + version
+        check(A.CreateDataBackup(true), "large history version " .. version .. " snapshots")
+    end
+    local retained = AzerothStatsAutoBackup.entries
+    check(table.getn(retained) == 3, "large-history retention keeps three versions")
+    for version = 1, 3 do
+        check(
+            retained[version].data.sequence == 1000 + version
+                and table.getn(retained[version].data.runs) == 1000,
+            "large-history recovery point " .. version .. " preserves its version and runs"
+        )
+    end
     A.db.runs, A.db.sequence = originalRuns, originalSequence
     A.db.settings.autoBackupRetention = originalRetention
     AzerothStatsAutoBackup = originalAutomatic
