@@ -1758,9 +1758,15 @@ function A.RefreshUI()
     UI.empty:ClearAllPoints()
     UI.empty:SetPoint("TOPLEFT", A.window, "TOPLEFT", 248, -math.min(540, model.rowY + 64))
     show(UI.empty, model.empty)
+    local emptyText = model.emptyText
+    if not emptyText and browsingHistory and table.getn(A.db.runs) > 0 then
+        emptyText = A.Locale() == "fr"
+                and "Aucune partie ne correspond aux filtres.\nRéinitialisez les filtres pour retrouver vos parties."
+            or "No runs match the selected filters.\nReset filters to see your runs."
+    end
     put(
         UI.empty,
-        model.emptyText
+        emptyText
             or (
                 A.T("No data yet")
                 .. (table.getn(A.db.runs) == 0 and ("\n" .. A.T("Start a run to begin")) or "")
