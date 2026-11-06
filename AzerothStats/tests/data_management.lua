@@ -100,6 +100,14 @@ check(
     "active-run guards leave backup history unchanged"
 )
 A.run = nil
+-- A malformed catalogue row must not hide or delete valid neighboring snapshots.
+local catalogue = AzerothStatsAutoBackup.entries
+table.insert(catalogue, 1, { invalid = true })
+check(table.getn(A.ListDataBackups(true)) == protectedCount, "malformed backup metadata is skipped")
+check(not A.RestoreDataBackup(-999, true), "malformed backup row cannot be restored")
+check(not A.DeleteDataBackup(-999, true), "malformed backup row cannot be deleted")
+check(table.getn(catalogue) == protectedCount + 1, "malformed row remains available for recovery")
+table.remove(catalogue, 1)
 -- Corrupt stored snapshots must be rejected without replacing the live DB.
 local latestAuto = AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)]
 local validData = latestAuto.data
