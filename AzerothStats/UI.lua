@@ -2036,7 +2036,7 @@ local function buildSettings(frame)
     UI.behaviour:SetJustifyH("CENTER")
     UI.storage = font(p, 370, 244, 320, 24, 16, COLORS.gold, true)
     UI.storage:SetJustifyH("CENTER")
-    UI.saveNote = font(p, 374, 422, 316, 22, 11, COLORS.muted)
+    UI.saveNote = font(p, 350, 422, 364, 36, 11, COLORS.muted)
     UI.saveNote:SetJustifyH("CENTER")
     UI.sliders = {}
     UI.checks = {}
@@ -3202,9 +3202,8 @@ function A.BuildUI()
                 draft[key] = nil
             end
         end
-        A.view.historyAdvanced = draft
         for key, pair in pairs(UI.advancedSliders or {}) do
-            local limits = A.HistoryFacetBounds(key)[key]
+            local limits = A.HistoryFacetBounds(key, draft)[key]
             for _, bound in ipairs({ "Min", "Max" }) do
                 local slider = pair[bound]
                 local input = UI.advancedFields[key .. bound]
@@ -3228,7 +3227,6 @@ function A.BuildUI()
                 slider.syncing = false
             end
         end
-        A.view.historyAdvanced = previous
         UI.advancedPanel.syncingDraft = false
     end
     UI.advancedSliders = {}
@@ -3312,12 +3310,10 @@ function A.BuildUI()
                 draft[key] = tonumber(value)
             end
         end
-        A.view.historyAdvanced = draft
         local bounds = {}
         for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
-            bounds[key] = A.HistoryFacetBounds(key)[key]
+            bounds[key] = A.HistoryFacetBounds(key, draft)[key]
         end
-        A.view.historyAdvanced = previous
         for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
             local limits = bounds[key]
             for _, bound in ipairs({ "Min", "Max" }) do
