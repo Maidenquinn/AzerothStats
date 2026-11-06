@@ -184,7 +184,10 @@ local function findRate(label)
     end
 end
 local damageRate = findRate(A.Metric("damage") .. " / " .. A.T("Per second"))
-check(damageRate and string.find(damageRate.value, "+50.0%", 1, true), "damage per-second delta and percentage")
+check(
+    damageRate and string.find(damageRate.value, "+50.0%", 1, true),
+    "damage per-second delta and percentage"
+)
 b.values.duration = 0
 normalized = { rows = {} }
 A.ComparisonModel(normalized)
