@@ -797,9 +797,12 @@ function A.ApplyThemeLayout()
     UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 40 or 48)))
     if UI.profileModel then
         UI.profileModel:ClearAllPoints()
-        UI.profileModel:SetPoint("TOPLEFT", A.window, "TOPLEFT", 30, -124)
-        UI.profileModel:SetWidth(48)
-        UI.profileModel:SetHeight(54)
+        UI.profileModel:SetPoint("TOPLEFT", A.window, "TOPLEFT", 18, -118)
+        UI.profileModel:SetWidth(78)
+        UI.profileModel:SetHeight(78)
+        if UI.profileModel.SetPortraitZoom then
+            UI.profileModel:SetPortraitZoom(0.8)
+        end
         if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
             UI.profileModel:SetUnit("player")
         end
@@ -838,7 +841,7 @@ function A.ApplyThemeLayout()
         "TOPLEFT",
         A.window,
         "TOPLEFT",
-        (id == "essentiel" or wow) and 32 or modern and 75 or 82,
+        id == "essentiel" and 78 or wow and 80 or modern and 75 or 82,
         -153
     )
     for _, nav in ipairs(UI.nav) do
@@ -1402,7 +1405,7 @@ function A.RefreshUI()
                         end
                         value = math.max(limits.min, math.min(limits.max, value))
                         slider:SetValue(value)
-                        input:SetText(tostring(value))
+                        input:SetText(active[key .. bound] == nil and "" or tostring(value))
                         slider:Show()
                     else
                         input:SetText("")
@@ -2658,9 +2661,9 @@ function A.BuildUI()
         local ok, model = pcall(CreateFrame, "PlayerModel", nil, frame)
         if ok and model and model.SetUnit then
             UI.profileModel = model
-            model:SetPoint("TOPLEFT", frame, "TOPLEFT", 30, -124)
-            model:SetWidth(48)
-            model:SetHeight(54)
+            model:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -118)
+            model:SetWidth(78)
+            model:SetHeight(78)
         end
     end
     profile:SetPoint("TOPLEFT", frame, "TOPLEFT", 32, -127)
@@ -3206,26 +3209,16 @@ function A.BuildUI()
         { "gold", "Gold", 245 },
         { "duration", "Survival (seconds)", 291 },
     }
+    -- Keep ranges stable while typing. Unset bounds are not active filters.
+    -- Cross-facet recomputation from slider display defaults used to shrink
+    -- every range to one run, even before the user selected a filter.
     local function refreshAdvancedDraft()
         if not UI.advancedPanel or UI.advancedPanel.syncingDraft then
             return
         end
         UI.advancedPanel.syncingDraft = true
-        local previous = A.view.historyAdvanced
-        local draft = {}
-        for key, value in pairs(previous or {}) do
-            draft[key] = value
-        end
-        for key, input in pairs(UI.advancedFields) do
-            local value = tonumber(input:GetText())
-            if value then
-                draft[key] = value
-            else
-                draft[key] = nil
-            end
-        end
         for key, pair in pairs(UI.advancedSliders or {}) do
-            local limits = A.HistoryFacetBounds(key, draft)[key]
+            local limits = A.HistoryFacetBounds(key)[key]
             for _, bound in ipairs({ "Min", "Max" }) do
                 local slider = pair[bound]
                 local input = UI.advancedFields[key .. bound]
@@ -3233,17 +3226,13 @@ function A.BuildUI()
                 if limits then
                     slider:SetMinMaxValues(limits.min, limits.max)
                     local value = tonumber(input:GetText())
-                    if value == nil then
-                        value = bound == "Min" and limits.min or limits.max
+                    if value then
+                        slider:SetValue(math.max(limits.min, math.min(limits.max, value)))
+                    else
+                        slider:SetValue(bound == "Min" and limits.min or limits.max)
                     end
-                    if value < limits.min or value > limits.max then
-                        value = bound == "Min" and limits.min or limits.max
-                        input:SetText(tostring(value))
-                    end
-                    slider:SetValue(value)
                     slider:Show()
                 else
-                    input:SetText("")
                     slider:Hide()
                 end
                 slider.syncing = false
@@ -3334,7 +3323,7 @@ function A.BuildUI()
         end
         local bounds = {}
         for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
-            bounds[key] = A.HistoryFacetBounds(key, draft)[key]
+            bounds[key] = A.HistoryFacetBounds(key)[key]
         end
         for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
             local limits = bounds[key]
