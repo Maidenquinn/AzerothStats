@@ -771,8 +771,7 @@ function A.ApplyThemeLayout()
     UI.nativeHeader:Hide()
     show(UI.brandDragon, wow)
     show(UI.brandGlyph, id ~= "essentiel")
-    -- Warcraft already uses the player class icon in the header; avoid duplicating it.
-    show(UI.profileGlyph, id ~= "essentiel" and not wow)
+    -- The sidebar identifies the currently logged-in character, not its class.\n    show(UI.profileGlyph, true)
     UI.brandGlyph:ClearAllPoints()
     UI.brandGlyph:SetPoint(
         "TOPLEFT",
@@ -790,14 +789,9 @@ function A.ApplyThemeLayout()
     end
     UI.profileGlyph:ClearAllPoints()
     UI.profileGlyph:SetPoint("TOPLEFT", A.window, "TOPLEFT", 34, -135)
-    UI.profileGlyph:SetWidth(modern and 28 or (paper and 26 or (wow and 32 or 48)))
-    UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 32 or 48)))
-    if wow then
-        icon(UI.profileGlyph, nil, class)
-    else
-        A.PaintedGlyph(UI.profileGlyph, 7)
-    end
-    UI.title:ClearAllPoints()
+    UI.profileGlyph:SetWidth(modern and 28 or (paper and 26 or (wow and 40 or 48)))
+    UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 40 or 48)))
+    -- Legacy clients expose the live unit portrait through SetPortraitTexture.\n    -- Fall back to the class glyph only when no live player portrait is available.\n    if SetPortraitTexture and UnitExists and UnitExists("player") then\n        SetPortraitTexture(UI.profileGlyph, "player")\n    else\n        icon(UI.profileGlyph, nil, class)\n    end\n    UI.title:ClearAllPoints()
     UI.title:SetPoint(
         "TOPLEFT",
         A.window,
@@ -819,7 +813,7 @@ function A.ApplyThemeLayout()
         "TOPLEFT",
         A.window,
         "TOPLEFT",
-        (id == "essentiel" or wow) and 32 or modern and 75 or 82,
+        id == "essentiel" and 78 or wow and 80 or modern and 75 or 82,
         -129
     )
     UI.profileClass:ClearAllPoints()
