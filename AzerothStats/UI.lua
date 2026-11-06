@@ -800,24 +800,19 @@ function A.ApplyThemeLayout()
         UI.profileModel:SetPoint("TOPLEFT", A.window, "TOPLEFT", 18, -118)
         UI.profileModel:SetWidth(78)
         UI.profileModel:SetHeight(78)
-        if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
+        -- SetUnit is intentionally not called on every theme/layout refresh.
+        -- On this client it resets the camera asynchronously and alternates
+        -- between full body and a badly clipped face after /reload.
+        -- The model is initialized once; subsequent layouts only move its frame.
+        if not UI.profileModelUnitInitialized and UnitExists and UnitExists("player") then
             UI.profileModel:SetUnit("player")
+            UI.profileModelUnitInitialized = true
         end
-        -- WoW camera 0 is the built-in FACE camera. Camera 1 is the
-        -- full-body dressing-room camera (the cause of the previous bug).
-        -- Never apply body model scaling or positional offsets afterwards:
-        -- those overrides defeat the portrait framing on older clients.
         if UI.profileModel.SetCamera then
             UI.profileModel:SetCamera(0)
         end
-        -- Camera 0 already supplies a face close-up. Additional portrait
-        -- zoom pushes the face outside the tiny sidebar viewport on this
-        -- client (the grey shoulder seen in the native screenshot).
         if UI.profileModel.SetPortraitZoom then
-            UI.profileModel:SetPortraitZoom(0.5)
-        end
-        if UI.profileModel.SetFacing then
-            UI.profileModel:SetFacing(0)
+            UI.profileModel:SetPortraitZoom(0)
         end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
@@ -846,7 +841,7 @@ function A.ApplyThemeLayout()
         "TOPLEFT",
         A.window,
         "TOPLEFT",
-        id == "essentiel" and 78 or wow and 80 or modern and 75 or 82,
+        112,
         -129
     )
     UI.profileClass:ClearAllPoints()
@@ -854,7 +849,7 @@ function A.ApplyThemeLayout()
         "TOPLEFT",
         A.window,
         "TOPLEFT",
-        id == "essentiel" and 78 or wow and 80 or modern and 75 or 82,
+        112,
         -153
     )
     for _, nav in ipairs(UI.nav) do
