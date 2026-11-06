@@ -3318,7 +3318,10 @@ function A.BuildUI()
                 local fieldKey = key .. bound
                 local raw = values[fieldKey]
                 local value = tonumber(raw)
-                if raw ~= "" and (not value or not limits or value < limits.min or value > limits.max) then
+                if
+                    raw ~= ""
+                    and (not value or not limits or value < limits.min or value > limits.max)
+                then
                     put(UI.advancedError, A.T("Out of observed range") .. ": " .. key)
                     return
                 end
