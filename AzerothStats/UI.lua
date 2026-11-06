@@ -3294,17 +3294,36 @@ function A.BuildUI()
         for key, input in pairs(UI.advancedFields) do
             values[key] = input:GetText() or ""
         end
-        local bounds = A.HistoryFacetBounds()
-        for key, limits in pairs(bounds) do
+        -- Each numeric facet is constrained by the other selected metrics.
+        -- Evaluate the draft rather than the previously applied filter state.
+        local previous = A.view.historyAdvanced
+        local draft = {}
+        for key, value in pairs(previous or {}) do
+            draft[key] = value
+        end
+        for key, value in pairs(values) do
+            if key ~= "map" then
+                draft[key] = tonumber(value)
+            end
+        end
+        A.view.historyAdvanced = draft
+        local bounds = {}
+        for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+            bounds[key] = A.HistoryFacetBounds(key)[key]
+        end
+        A.view.historyAdvanced = previous
+        for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+            local limits = bounds[key]
             for _, bound in ipairs({ "Min", "Max" }) do
                 local fieldKey = key .. bound
-                local value = tonumber(values[fieldKey])
-                if not value or value < limits.min or value > limits.max then
+                local raw = values[fieldKey]
+                local value = tonumber(raw)
+                if raw ~= "" and (not value or not limits or value < limits.min or value > limits.max) then
                     put(UI.advancedError, A.T("Out of observed range") .. ": " .. key)
                     return
                 end
-                -- An untouched full-range slider does not filter out legacy runs.
-                if value == (bound == "Min" and limits.min or limits.max) then
+                -- Full-range defaults must not exclude legacy runs with missing metrics.
+                if limits and value == (bound == "Min" and limits.min or limits.max) then
                     values[fieldKey] = ""
                 end
             end
