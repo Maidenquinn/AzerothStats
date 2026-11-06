@@ -43,4 +43,5 @@ V2Chart.lua
 V2UI.lua
 V2SummaryUI.lua
 V2RunPicker.lua
+InteropExport.lua
 Core.lua
