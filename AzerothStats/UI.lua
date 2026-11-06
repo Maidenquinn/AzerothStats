@@ -1376,6 +1376,7 @@ function A.RefreshUI()
             end
             UI.advancedPanel.mapChoice = active.map
             put(UI.advancedMap.label, active.map or A.T("All maps"))
+            UI.advancedPanel.syncingDraft = true
             for key, pair in pairs(UI.advancedSliders or {}) do
                 local limits = A.HistoryFacetBounds(key)[key]
                 for _, bound in ipairs({ "Min", "Max" }) do
@@ -1403,6 +1404,7 @@ function A.RefreshUI()
                 local value = UI.advancedFields[picker.dateKey]:GetText()
                 put(picker.label, value ~= "" and value or A.T("Select date"))
             end
+            UI.advancedPanel.syncingDraft = false
             UI.advancedPanel.initialized = true
         end
     end
@@ -3176,6 +3178,53 @@ function A.BuildUI()
         { "gold", "Gold", 245 },
         { "duration", "Survival (seconds)", 291 },
     }
+    local function refreshAdvancedDraft()
+        if not UI.advancedPanel or UI.advancedPanel.syncingDraft then
+            return
+        end
+        UI.advancedPanel.syncingDraft = true
+        local previous = A.view.historyAdvanced
+        local draft = {}
+        for key, value in pairs(previous or {}) do
+            draft[key] = value
+        end
+        for key, input in pairs(UI.advancedFields) do
+            local value = tonumber(input:GetText())
+            if value then
+                draft[key] = value
+            else
+                draft[key] = nil
+            end
+        end
+        A.view.historyAdvanced = draft
+        for key, pair in pairs(UI.advancedSliders or {}) do
+            local limits = A.HistoryFacetBounds(key)[key]
+            for _, bound in ipairs({ "Min", "Max" }) do
+                local slider = pair[bound]
+                local input = UI.advancedFields[key .. bound]
+                slider.syncing = true
+                if limits then
+                    slider:SetMinMaxValues(limits.min, limits.max)
+                    local value = tonumber(input:GetText())
+                    if value == nil then
+                        value = bound == "Min" and limits.min or limits.max
+                    end
+                    if value < limits.min or value > limits.max then
+                        value = bound == "Min" and limits.min or limits.max
+                        input:SetText(tostring(value))
+                    end
+                    slider:SetValue(value)
+                    slider:Show()
+                else
+                    input:SetText("")
+                    slider:Hide()
+                end
+                slider.syncing = false
+            end
+        end
+        A.view.historyAdvanced = previous
+        UI.advancedPanel.syncingDraft = false
+    end
     UI.advancedSliders = {}
     for _, def in ipairs(groups) do
         local key, y = def[1], def[3]
@@ -3220,6 +3269,7 @@ function A.BuildUI()
             slider:SetScript("OnValueChanged", function()
                 if not this.syncing then
                     input:SetText(tostring(math.floor(this:GetValue() + 0.5)))
+                    refreshAdvancedDraft()
                 end
             end)
             input:SetScript("OnTextChanged", function()
@@ -3230,6 +3280,7 @@ function A.BuildUI()
                         slider:SetValue(value)
                         slider.syncing = false
                     end
+                    refreshAdvancedDraft()
                 end
             end)
             pair[bound] = slider
