@@ -172,6 +172,33 @@ check(
     A.RunDifference("damage", nil, 100) == A.T("Unavailable"),
     "missing sample never becomes zero"
 )
+-- 2.0.2: per-second comparison uses observed positive durations only.
+A.view.compareA, A.view.compareB, A.view.compareSection = a.id, b.id, "Overview"
+local normalized = { rows = {} }
+A.ComparisonModel(normalized)
+local function findRate(label)
+    for _, item in ipairs(normalized.rows) do
+        if item.label == label then
+            return item
+        end
+    end
+end
+local damageRate = findRate(A.Metric("damage") .. " / " .. A.T("Per second"))
+check(damageRate and damageRate.value == "+5 (+50.0%)", "damage per-second delta and percentage")
+b.values.duration = 0
+normalized = { rows = {} }
+A.ComparisonModel(normalized)
+damageRate = nil
+for _, item in ipairs(normalized.rows) do
+    if item.label == A.Metric("damage") .. " / " .. A.T("Per second") then
+        damageRate = item
+    end
+end
+check(
+    damageRate and damageRate.right == A.T("Unavailable") and damageRate.value == A.T("Unavailable"),
+    "zero duration does not create a comparison rate"
+)
+b.values.duration = 100
 local totals = A.Sign(A.db.classes)
 A.ToggleUI(true)
 A.RefreshUI()
