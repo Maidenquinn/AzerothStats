@@ -549,7 +549,12 @@ function A.ReconcileHistoryMetricFilters()
                 local old = filters[field]
                 if old ~= nil then
                     local number = tonumber(old)
-                    local value = number and math.max(limits.min, math.min(limits.max, number)) or nil
+                    -- A stale bound should stop filtering, not silently
+                    -- become the new extreme and hide otherwise valid runs.
+                    local value = number
+                    if not number or number < limits.min or number > limits.max then
+                        value = nil
+                    end
                     if value ~= old then
                         filters[field] = value
                         changed = true
