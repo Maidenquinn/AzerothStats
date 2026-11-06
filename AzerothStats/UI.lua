@@ -771,7 +771,9 @@ function A.ApplyThemeLayout()
     UI.nativeHeader:Hide()
     show(UI.brandDragon, wow)
     show(UI.brandGlyph, id ~= "essentiel")
-    -- The sidebar identifies the currently logged-in character, not its class.\n    show(UI.profileGlyph, true)
+    -- Sidebar model always represents the logged-in character.
+    show(UI.profileGlyph, not UI.profileModel)
+    show(UI.profileModel, UI.profileModel ~= nil)
     UI.brandGlyph:ClearAllPoints()
     UI.brandGlyph:SetPoint(
         "TOPLEFT",
@@ -791,7 +793,20 @@ function A.ApplyThemeLayout()
     UI.profileGlyph:SetPoint("TOPLEFT", A.window, "TOPLEFT", 34, -135)
     UI.profileGlyph:SetWidth(modern and 28 or (paper and 26 or (wow and 32 or 48)))
     UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 40 or 48)))
-    -- Legacy clients expose the live unit portrait through SetPortraitTexture.\n    -- Fall back to the class glyph only when no live player portrait is available.\n    if SetPortraitTexture and UnitExists and UnitExists("player") then\n        SetPortraitTexture(UI.profileGlyph, "player")\n    else\n        icon(UI.profileGlyph, nil, class)\n    end\n    UI.title:ClearAllPoints()
+    if UI.profileModel then
+        UI.profileModel:ClearAllPoints()
+        UI.profileModel:SetPoint("TOPLEFT", A.window, "TOPLEFT", 30, -124)
+        UI.profileModel:SetWidth(48)
+        UI.profileModel:SetHeight(54)
+        if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
+            UI.profileModel:SetUnit("player")
+        end
+    elseif SetPortraitTexture and UnitExists and UnitExists("player") then
+        SetPortraitTexture(UI.profileGlyph, "player")
+    else
+        icon(UI.profileGlyph, nil, class)
+    end
+    UI.title:ClearAllPoints()
     UI.title:SetPoint(
         "TOPLEFT",
         A.window,
@@ -2635,6 +2650,17 @@ function A.BuildUI()
     A.ThemeTexture(divider, "bronze")
     local profile = frame:CreateTexture(nil, "ARTWORK")
     UI.profileGlyph = profile
+    -- PlayerModel renders the actual animated character rather than a static class emblem.
+    -- Older clients without PlayerModel retain the 2D portrait fallback.
+    if CreateFrame then
+        local ok, model = pcall(CreateFrame, "PlayerModel", nil, frame)
+        if ok and model and model.SetUnit then
+            UI.profileModel = model
+            model:SetPoint("TOPLEFT", frame, "TOPLEFT", 30, -124)
+            model:SetWidth(48)
+            model:SetHeight(54)
+        end
+    end
     profile:SetPoint("TOPLEFT", frame, "TOPLEFT", 32, -127)
     profile:SetWidth(48)
     profile:SetHeight(48)
