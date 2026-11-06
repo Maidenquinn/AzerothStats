@@ -378,6 +378,44 @@ function A.HistoryMetricBounds()
     return result
 end
 
+--- Faceted slider bounds: honor all non-numeric history criteria.
+--- Numeric fields are intentionally excluded to avoid self-locking sliders.
+function A.HistoryFacetBounds()
+    local result = {}
+    local view = A.view
+    local previous = view.historyAdvanced
+    local scope = {}
+    for key, value in pairs(previous or {}) do
+        if key ~= "levelMin" and key ~= "levelMax"
+            and key ~= "killsMin" and key ~= "killsMax"
+            and key ~= "goldMin" and key ~= "goldMax"
+            and key ~= "durationMin" and key ~= "durationMax" then
+            scope[key] = value
+        end
+    end
+    view.historyAdvanced = scope
+    for _, run in ipairs(A.db.runs or {}) do
+        if A.MatchesHistory(run) then
+            for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+                local value = tonumber((run.values and run.values[key]) or run[key])
+                if value and value >= 0 then
+                    value = math.floor(value)
+                    local item = result[key]
+                    if not item then
+                        item = { min = value, max = value, count = 0 }
+                        result[key] = item
+                    end
+                    item.min = math.min(item.min, value)
+                    item.max = math.max(item.max, value)
+                    item.count = item.count + 1
+                end
+            end
+        end
+    end
+    view.historyAdvanced = previous
+    return result
+end
+
 --- Parse an entire panel as one transaction, rejecting reversed or invalid ranges.
 function A.ParseHistoryFilters(fields)
     fields = fields or {}
