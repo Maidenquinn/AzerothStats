@@ -212,8 +212,20 @@ function A.MarkDeath()
         evidence.confidence = "confirmed"
         evidence.explicit = watch.explicit.raw
     elseif hit and now - hit.at <= 2 then
-        evidence.source = hit.source
-        evidence.confidence = "probable"
+        -- A recent observed hit is not necessarily the fatal hit. When
+        -- multiple sources land within the same short combat-log window,
+        -- avoid arbitrarily blaming the last message received.
+        local ambiguous = false
+        for _, candidate in ipairs(watch.hits) do
+            if candidate.source ~= hit.source and now - candidate.at <= 0.25 then
+                ambiguous = true
+                break
+            end
+        end
+        if not ambiguous then
+            evidence.source = hit.source
+            evidence.confidence = "probable"
+        end
     end
     if evidence.source and run.nemesisResets and run.nemesisResets[evidence.source] then
         return
