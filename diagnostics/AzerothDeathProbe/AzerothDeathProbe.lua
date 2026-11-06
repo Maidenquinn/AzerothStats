@@ -89,6 +89,65 @@ local function scanFrames()
     log("UI_SCAN", "frames=" .. visited .. " texts=" .. recorded)
     DEFAULT_CHAT_FRAME:AddMessage("Death Probe: UI frames=" .. visited .. ", texts=" .. recorded)
 end
+-- Second-pass probe: inspect frames outside UIParent and run-end Lua surfaces.
+-- Only read public Lua objects; never hook, click or modify native UI.
+local function scanExtra()
+    if not armed then return end
+    local globals = (type(_G) == "table" and _G) or (type(getfenv) == "function" and getfenv(0))
+    local found, checked = 0, 0
+    if type(globals) == "table" then
+        for name, value in pairs(globals) do
+            if type(name) == "string" and (string.sub(name, 1, 4) == "AZS_" or
+                string.find(string.lower(name), "death") or string.find(string.lower(name), "recap")) then
+                if type(value) == "table" and checked < 100 then
+                    checked = checked + 1
+                    for key, item in pairs(value) do
+                        if found >= 45 then break end
+                        if (type(key) == "string" or type(key) == "number") and
+                            (type(item) == "string" or type(item) == "number" or type(item) == "boolean") then
+                            log("SURFACE", name .. "." .. tostring(key) .. "=" .. tostring(item))
+                            found = found + 1
+                        end
+                    end
+                end
+            end
+        end
+    end
+    local frames, texts = 0, 0
+    if type(EnumerateFrames) == "function" then
+        local current = nil
+        while frames < 2500 and texts < 60 do
+            current = EnumerateFrames(current)
+            if not current then break end
+            frames = frames + 1
+            if current.IsVisible and current:IsVisible() and current.GetRegions then
+                local regions = { current:GetRegions() }
+                for _, region in ipairs(regions) do
+                    if texts >= 60 then break end
+                    if region and region.GetObjectType and region:GetObjectType() == "FontString"
+                        and region.GetText and (not region.IsVisible or region:IsVisible()) then
+                        local value = region:GetText()
+                        if type(value) == "string" and value ~= "" then
+                            local lower = string.lower(value)
+                            if string.find(lower, "tué par") or string.find(lower, "mort")
+                                or string.find(lower, "fatal") or string.find(lower, "killed by")
+                                or string.find(lower, "mécanique de boss")
+                                or string.find(lower, "mograine") or string.find(lower, "blaumeux") then
+                                local name = current.GetName and current:GetName() or "<unnamed>"
+                                log("EXTRA_UI", tostring(name or "<unnamed>") .. ": " .. value)
+                                texts = texts + 1
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    else
+        log("EXTRA_UI", "EnumerateFrames unavailable")
+    end
+    log("EXTRA_SCAN", "frames=" .. frames .. " texts=" .. texts .. " surfaceFields=" .. found)
+    DEFAULT_CHAT_FRAME:AddMessage("Death Probe: extra frames=" .. frames .. ", texts=" .. texts .. ", fields=" .. found)
+end
 probe:SetScript("OnUpdate", function()
     if not scanPending then return end
     scanDelay = scanDelay + (arg1 or 0)
@@ -96,6 +155,7 @@ probe:SetScript("OnUpdate", function()
     scanPending = false
     scanDelay = 0
     scanFrames()
+    scanExtra()
 end)
 for _, ev in ipairs({"VARIABLES_LOADED", "CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS", "CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "CHAT_MSG_COMBAT_FRIENDLY_DEATH", "UI_ERROR_MESSAGE", "PLAYER_DEAD"}) do probe:RegisterEvent(ev) end
 probe:SetScript("OnEvent", function()
@@ -129,6 +189,7 @@ SlashCmdList["AZEROTHDEATHPROBE"] = function(cmd)
     elseif cmd == "scan" then
         inspect()
         scanFrames()
+        scanExtra()
         DEFAULT_CHAT_FRAME:AddMessage("Death Probe: Lua globals and visible UI scanned.")
     elseif cmd == "status" then
         DEFAULT_CHAT_FRAME:AddMessage("Death Probe: " .. (armed and "active" or "inactive") .. ", records " .. table.getn(AzerothDeathProbeLog or {}))
