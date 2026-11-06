@@ -804,14 +804,12 @@ function A.ApplyThemeLayout()
             UI.profileModel:SetUnit("player")
         end
         if UI.profileModel.SetCamera then
-            UI.profileModel:SetCamera(0)
+            UI.profileModel:SetCamera(1)
         end
         if UI.profileModel.SetPortraitZoom then
-            UI.profileModel:SetPortraitZoom(1)
+            UI.profileModel:SetPortraitZoom(1.4)
         end
-        if UI.profileModel.SetPosition then
-            UI.profileModel:SetPosition(0, 0, 0)
-        end
+        -- Portrait camera is preferred to a full-body world camera.
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
     else
@@ -1426,17 +1424,6 @@ function A.RefreshUI()
             end
             UI.advancedPanel.syncingDraft = false
             UI.advancedPanel.initialized = true
-        end
-        -- The visible date picker is a button; its hidden EditBox is not a label.
-        -- Refresh from applied state whenever the panel is opened or repainted.
-        if UI.advancedPanel.initialized then
-            local selectedDates = A.view.historyAdvanced or {}
-            for _, picker in ipairs({ UI.historyDateFromPicker, UI.historyDateToPicker }) do
-                local value = selectedDates[picker.dateKey]
-                if value and value ~= "" then
-                    put(picker.label, value)
-                end
-            end
         end
     end
     local journal = model.report and A.view.reportSection == "Build journal"
@@ -3301,7 +3288,7 @@ function A.BuildUI()
             slider:SetScript("OnValueChanged", function()
                 if not this.syncing then
                     input:SetText(tostring(math.floor(this:GetValue() + 0.5)))
-                    refreshAdvancedDraft()
+                    -- Draft bounds stay stable until the user applies the filters.
                 end
             end)
             input:SetScript("OnTextChanged", function()
@@ -3312,7 +3299,7 @@ function A.BuildUI()
                         slider:SetValue(value)
                         slider.syncing = false
                     end
-                    refreshAdvancedDraft()
+                    -- Do not rebuild the panel while a value is being edited.
                 end
             end)
             pair[bound] = slider
