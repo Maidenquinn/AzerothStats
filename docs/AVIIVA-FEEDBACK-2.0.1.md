@@ -46,3 +46,10 @@ This work continues after PR #30, which was merged as a *regression hotfix*. No 
 2. Native visual screenshots for each theme, HUD minimum size, history and settings.
 3. Native data recipe on existing large history with backup/restore; compare SavedVariables bytes and latency.
 4. Owner accepts outstanding limitations explicitly before release.
+
+## Owner checkpoint — 6 November 2026: combined A–D review
+- Owner explicitly **accepted native recipe #970** (class/difficulty-aware history facets, reset, reload); this does not certify fully interdependent numeric sliders or authorize release.
+- Owner provided **39 in-game PNG screenshots** in `AzerothSurvivors_7JAcj8PeOJ.zip` for UI audit. The image set covers Diagnostics, Settings, backups, My Progress, Analyze Run, My Runs, and overview/records. Screenshots are review references, not source files or proof of every interaction.
+- Visually inspect all 39 originals at native resolution for text clipping, overlapping labels, spacing, category navigation, translations, modal bounds and the five themes. The giant center-screen `BOUGEZ POUR COMMENCER` text appears to originate from the underlying game; do not attribute it to addon without isolated reproduction.
+- **Combined release gates A–D:** (A) numeric cross-facets and zero-result UX; (B) real SavedVariables backup/restore/retention and corrupted-record safety; (C) Nemesis evidence, Partial/Sync semantics; (D) screenshot-driven UI fixes and native FR/EN/theme regression.
+- Automated green CI alone is insufficient. Do not merge draft PR #31, publish 2.0.1, or label the combined recipe ready before passing all gates. Maintain a safe copy of SavedVariables.
