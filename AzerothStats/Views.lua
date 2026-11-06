@@ -386,10 +386,16 @@ function A.HistoryFacetBounds()
     local previous = view.historyAdvanced
     local scope = {}
     for key, value in pairs(previous or {}) do
-        if key ~= "levelMin" and key ~= "levelMax"
-            and key ~= "killsMin" and key ~= "killsMax"
-            and key ~= "goldMin" and key ~= "goldMax"
-            and key ~= "durationMin" and key ~= "durationMax" then
+        if
+            key ~= "levelMin"
+            and key ~= "levelMax"
+            and key ~= "killsMin"
+            and key ~= "killsMax"
+            and key ~= "goldMin"
+            and key ~= "goldMax"
+            and key ~= "durationMin"
+            and key ~= "durationMax"
+        then
             scope[key] = value
         end
     end
