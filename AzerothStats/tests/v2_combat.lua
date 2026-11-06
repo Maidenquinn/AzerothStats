@@ -110,7 +110,10 @@ end
 A.V2CombatTick({ id = "oversized", status = "active" })
 local malformed = A.V2CombatSnapshot()
 check(malformed.hits == 256, "oversized page capped to 256 events")
-check(malformed.truncated == true and malformed.invalid >= 2, "malformed page and drop count flagged")
+check(
+    malformed.truncated == true and malformed.invalid >= 2,
+    "malformed page and drop count flagged"
+)
 check(malformed.dropped == 0, "negative drop counter cannot reduce losses")
 A.V2CombatTick(nil)
 _G.AZS_GetCombatTextEvents = original
