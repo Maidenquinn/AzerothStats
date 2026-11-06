@@ -71,6 +71,25 @@ check(legacyBounds.level.max == 64, "legacy level included in observed slider ra
 check(legacyBounds.gold.max == 1200, "legacy gold included in observed slider range")
 table.remove(A.db.runs)
 
+-- A purge can invalidate the slider's old maximum without deleting any run.
+A.view.historyAdvanced = { levelMin = 50, levelMax = 90, killsMax = 99999, dateFrom = "2026-01-01" }
+check(A.ReconcileHistoryMetricFilters(), "stale bounds reconciled after retention change")
+check(
+    A.view.historyAdvanced.levelMin == 35
+        and A.view.historyAdvanced.levelMax == 35
+        and A.view.historyAdvanced.killsMax == bounds.kills.max,
+    "numeric filters clamp to retained observed maxima"
+)
+check(A.view.historyAdvanced.dateFrom == "2026-01-01", "date filters preserved on reconciliation")
+check(not A.ReconcileHistoryMetricFilters(), "reconciliation is idempotent")
+A.view.historyAdvanced = { levelMin = 30, levelMax = 10 }
+check(A.ReconcileHistoryMetricFilters(), "reversed retained interval cleared")
+check(
+    A.view.historyAdvanced.levelMin == nil and A.view.historyAdvanced.levelMax == nil,
+    "invalid interval does not hide all retained runs"
+)
+A.view.historyAdvanced = nil
+
 local parsed, errorText = A.ParseHistoryFilters({
     map = "Feralas",
     levelMin = "15",
