@@ -28,6 +28,9 @@ check(result.metrics.kills.value == 0, "observed zero is retained")
 check(result.metrics.healing.value == 0, "healing zero is retained")
 check(result.metrics.gold.availability == "unavailable", "missing not zero")
 check(result.metrics.damage.value == 1234, "retained metric")
+for _, key in ipairs({ "elites", "guardians", "chests", "magnets" }) do
+    check(result.metrics[key].availability == "unavailable", "missing aggregate " .. key)
+end
 check(result.run.hero == nil and result.coop == nil, "private roster omitted")
 check(result.events == nil and result.equipmentTooltips == nil, "private detail omitted")
 check(result.metrics ~= original.values, "isolated metric table")
