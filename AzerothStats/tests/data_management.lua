@@ -282,6 +282,20 @@ do
             "large-history recovery point " .. version .. " preserves its version and runs"
         )
     end
+    -- A malformed live tree must fail closed and preserve the last valid
+    -- recovery catalogue, rather than replace it with a partial snapshot.
+    local lastBackupId = retained[3].id
+    local lastBackupSequence = retained[3].data.sequence
+    A.db.runs[1].cycle = A.db.runs[1]
+    local cyclicOK = A.CreateDataBackup(true)
+    A.db.runs[1].cycle = nil
+    check(not cyclicOK, "cyclic large-history data cannot be backed up")
+    check(
+        table.getn(retained) == 3
+            and retained[3].id == lastBackupId
+            and retained[3].data.sequence == lastBackupSequence,
+        "failed large-history snapshot preserves all existing recovery points"
+    )
     A.db.runs, A.db.sequence = originalRuns, originalSequence
     A.db.settings.autoBackupRetention = originalRetention
     AzerothStatsAutoBackup = originalAutomatic
