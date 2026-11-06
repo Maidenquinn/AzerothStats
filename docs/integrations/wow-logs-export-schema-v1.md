@@ -13,7 +13,7 @@ Status: experimental 2.0.3 development contract; subject to review with Rakesh. 
 - `run.zone`, `run.class`, `run.heroic`: retained run metadata, nullable
 - `run.status`, `run.outcome`, `run.partial`: retained run status, result, and partial observation flag
 - `run.startedAt`, `run.endedAt`: existing numeric wall timestamps when present; units and client clock provenance need native verification
-- `metrics`: allowlisted keys duration, level, kills, gold, damage, taken, healing, peakDps, bosses. Each value is either `{availability="unavailable"}` or `{availability="available", value=<finite number>, provenance="retained-run"}`.
+- `metrics`: allowlisted keys duration, level, kills, gold, damage, taken, healing, peakDps, bosses, elites, guardians, chests, magnets. Each value is either `{availability="unavailable"}` or `{availability="available", value=<finite number>, provenance="retained-run"}`.
 
 ## Privacy and limitations
 This projection never traverses `AzerothStatsBackup`, `AzerothStatsAutoBackup`, co-op roster, character names, raw events, equipment tooltips, or arbitrary internal fields. It is deliberately a minimal allowlist, not a full build or combat export. It does not claim that all values are native-observed: the provenance label indicates only that they come from the retained run, which may contain derived values. Do not use this preliminary field as an observation-quality guarantee.
