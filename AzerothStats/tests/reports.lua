@@ -98,6 +98,15 @@ check(warriorBounds.level.max == 35, "class facet excludes unrelated mage levels
 A.view.class = "mage"
 local mageBounds = A.HistoryFacetBounds()
 check(mageBounds.level == nil and mageBounds.kills.max == 10, "mage facet only uses mage history")
+-- Cross-facets exclude only their own numeric field, retaining the others.
+A.view.class = nil
+A.view.historyAdvanced = { killsMin = 15 }
+local crossLevel = A.HistoryFacetBounds("level")
+check(crossLevel.level.max == 35, "level facet respects active kills minimum")
+local crossKills = A.HistoryFacetBounds("kills")
+check(crossKills.kills.max == 20, "kills facet excludes its own minimum")
+A.view.historyAdvanced = nil
+
 A.view.class = "mage"
 A.view.historyAdvanced = { levelMin = 59, killsMin = 15 }
 check(A.ReconcileHistoryMetricFilters(), "class change invalidates incompatible numeric filters")
