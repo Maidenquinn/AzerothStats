@@ -810,8 +810,11 @@ function A.ApplyThemeLayout()
         if UI.profileModel.SetCamera then
             UI.profileModel:SetCamera(0)
         end
+        -- Camera 0 already supplies a face close-up. Additional portrait
+        -- zoom pushes the face outside the tiny sidebar viewport on this
+        -- client (the grey shoulder seen in the native screenshot).
         if UI.profileModel.SetPortraitZoom then
-            UI.profileModel:SetPortraitZoom(1)
+            UI.profileModel:SetPortraitZoom(0)
         end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
