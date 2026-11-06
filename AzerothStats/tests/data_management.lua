@@ -247,8 +247,7 @@ do
         check(ok, "snapshot accepts " .. count .. " synthetic retained runs: " .. tostring(reason))
         local store = AzerothStatsAutoBackup
         check(
-            table.getn(store.entries) == 1
-                and table.getn(store.entries[1].data.runs) == count,
+            table.getn(store.entries) == 1 and table.getn(store.entries[1].data.runs) == count,
             "retention one preserves a complete " .. count .. "-run snapshot"
         )
         local beforeId = store.nextId
