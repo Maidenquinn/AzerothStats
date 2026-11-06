@@ -144,11 +144,21 @@ function A.V2CombatTick(run)
     while batch and pages < 8 do
         pages = pages + 1
         summary.batches = summary.batches + 1
-        summary.dropped = summary.dropped + (number(batch.droppedCount) or 0)
+        local dropped = number(batch.droppedCount)
+        if batch.droppedCount ~= nil and not dropped then
+            summary.invalid = summary.invalid + 1
+        end
+        summary.dropped = summary.dropped + (dropped or 0)
         local events = batch.events
         if type(events) ~= "table" then
             summary.invalid = summary.invalid + 1
             break
+        end
+        -- A malformed oversized page must never be silently interpreted as
+        -- complete coverage: we only inspect the documented 256-event bound.
+        if table.getn(events) > 256 then
+            summary.truncated = true
+            summary.invalid = summary.invalid + 1
         end
         for i = 1, math.min(table.getn(events), 256) do
             local e = events[i]
