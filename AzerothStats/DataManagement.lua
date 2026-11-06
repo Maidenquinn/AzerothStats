@@ -244,13 +244,16 @@ function A.ListDataBackups(automatic)
     local result = {}
     for index = table.getn(store.entries), 1, -1 do
         local entry = store.entries[index]
-        table.insert(result, {
-            id = entry.id,
-            at = entry.at,
-            runs = entry.runs or (entry.data and table.getn(entry.data.runs or {})) or 0,
-            automatic = automatic and true or false,
-            legacy = entry.legacy,
-        })
+        if type(entry) == "table" and type(entry.id) == "number" then
+            local runs = type(entry.data) == "table" and entry.data.runs or nil
+            table.insert(result, {
+                id = entry.id,
+                at = entry.at,
+                runs = entry.runs or (type(runs) == "table" and table.getn(runs)) or 0,
+                automatic = automatic and true or false,
+                legacy = entry.legacy,
+            })
+        end
     end
     return result
 end
@@ -364,7 +367,7 @@ function A.RestoreDataBackup(id, automatic)
     local store = backupStore(automatic)
     local entry
     for _, candidate in ipairs(store.entries) do
-        if candidate.id == id then
+        if type(candidate) == "table" and candidate.id == id then
             entry = candidate
             break
         end
@@ -402,7 +405,7 @@ function A.DeleteDataBackup(id, automatic)
     end
     local store = backupStore(automatic)
     for index, entry in ipairs(store.entries) do
-        if entry.id == id then
+        if type(entry) == "table" and entry.id == id then
             table.remove(store.entries, index)
             return true, "Backup deleted"
         end
