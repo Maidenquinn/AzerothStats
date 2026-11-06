@@ -84,3 +84,22 @@ This is a **single A–D test session**, not four interim deliveries. Keep a cop
 4. Confirm HUD recipe 9/9 remains unchanged, and Scholomance images display.
 
 **Exit criteria:** report the four section results together. Automated checks are not native proof of screenshots, client SavedVariables persistence or frame-time performance. No merge or public release before owner acceptance.
+
+## Stabilization freeze — owner approval, 6 November 2026
+
+Owner has explicitly accepted the current portrait and history filters and requested that previously accepted work be frozen against regressions. The HUD native 9/9 recipe, portrait, date/filter persistence, Scholomance image, and already accepted visual work must not be redesigned without a reproducible regression. Keep PR #31 draft; no public release.
+
+### Verified branch inventory at this checkpoint
+- Branch head before this documentation change: `dfea25dd0829d318d49abd8f7aab99b202f905cb`; PR #31 open/draft, 205 commits ahead of `main`, 28 changed files.
+- Backup code uses full independent database snapshots, exact structural deduplication for automatic backups, 1–15 automatic retention and opt-in 0–20 completed-run cadence. Manual backups remain separate. The existing regression suite covers duplicate snapshots, retention, invalid IDs, malformed metadata, corrupted snapshots, failed-initializer rollback, deletion safety and restore. These are **offline assertions**, not a substitute for native large-save validation.
+- Nemesis explicitly confirms only native slain-by evidence; last-hit attribution within two seconds remains probable. A zero-confirmed count does not establish a bug without native event evidence.
+- Co-op Sync exposes synchronized group snapshots versus independent partial samples; it is **not** evidence of a general-purpose lost-run recovery feature. Legacy runs without reliable mode evidence remain Unknown, not Solo.
+- Existing UI changes include map-order logic, localized explanatory labels, circular minimap option, alignment work and Chronicle atlas adjustments. Five-theme FR/EN visual acceptance is still outstanding. Earlier unchecked boxes in this document may refer to already implemented work; do not treat them as proof that code is absent.
+
+### Remaining gates in priority order
+1. Preserve an independent copy of a real SavedVariables file. Benchmark actual file size and backup/restore latency with large histories; compare with synthetic 100/500/1000-run tests. Avoid introducing new backup formats until compatibility and rollback are proven.
+2. Investigate Nemesis native message capture and Partial under FPS pressure without relabeling probable evidence as confirmed or incomplete samples as zeros. Clarify Sync capabilities in UI and documentation.
+3. Visually validate all five themes in FR/EN against the 39 owner screenshots; fix only reproducible clipping/spacing defects and preserve accepted portrait/HUD/filter geometry.
+4. Re-run package checks, full CI and a single combined native recipe, then request explicit owner acceptance before merging or publishing 2.0.1.
+
+**Status:** stabilization plan recorded, not a claim that all gates have passed.
