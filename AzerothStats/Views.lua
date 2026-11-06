@@ -526,6 +526,45 @@ function A.ClearHistoryFilters()
     A.view.class, A.view.difficulty, A.view.page = nil, nil, 1
 end
 
+--- Reconcile stale numeric filters after history retention/purge changes.
+--- Never mutate the retained runs or silently reset unrelated search/date filters.
+--- Return true when a numeric bound was adjusted so the UI can surface it.
+function A.ReconcileHistoryMetricFilters()
+    local filters = A.view and A.view.historyAdvanced
+    if not filters then
+        return false
+    end
+    local bounds = A.HistoryMetricBounds()
+    local changed = false
+    for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+        local limits = bounds[key]
+        local lowKey, highKey = key .. "Min", key .. "Max"
+        if not limits then
+            if filters[lowKey] ~= nil or filters[highKey] ~= nil then
+                filters[lowKey], filters[highKey] = nil, nil
+                changed = true
+            end
+        else
+            for _, field in ipairs({ lowKey, highKey }) do
+                local old = filters[field]
+                if old ~= nil then
+                    local number = tonumber(old)
+                    local value = number and math.max(limits.min, math.min(limits.max, number)) or nil
+                    if value ~= old then
+                        filters[field] = value
+                        changed = true
+                    end
+                end
+            end
+            if filters[lowKey] and filters[highKey] and filters[lowKey] > filters[highKey] then
+                filters[lowKey], filters[highKey] = nil, nil
+                changed = true
+            end
+        end
+    end
+    return changed
+end
+
 --- A visible scope independent of whichever run happened to be selected previously.
 function A.ViewScope(model, run)
     local tab = A.view.tab
@@ -545,6 +584,7 @@ end
 
 --- List retained observed runs under the class filter with stable-ID navigation and favorites.
 local function history(model)
+    A.ReconcileHistoryMetricFilters()
     model.rowHeight = 43
     model.rowY = 164
     model.capacity = 9
