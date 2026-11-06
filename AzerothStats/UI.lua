@@ -837,21 +837,9 @@ function A.ApplyThemeLayout()
         wow and -74 or -65
     )
     UI.profileName:ClearAllPoints()
-    UI.profileName:SetPoint(
-        "TOPLEFT",
-        A.window,
-        "TOPLEFT",
-        112,
-        -129
-    )
+    UI.profileName:SetPoint("TOPLEFT", A.window, "TOPLEFT", 112, -129)
     UI.profileClass:ClearAllPoints()
-    UI.profileClass:SetPoint(
-        "TOPLEFT",
-        A.window,
-        "TOPLEFT",
-        112,
-        -153
-    )
+    UI.profileClass:SetPoint("TOPLEFT", A.window, "TOPLEFT", 112, -153)
     for _, nav in ipairs(UI.nav) do
         nav.icon:SetWidth(modern and 20 or paper and 20 or 25)
         nav.icon:SetHeight(modern and 20 or paper and 20 or 25)
