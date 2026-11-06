@@ -11,7 +11,12 @@ local function log(kind, value)
 end
 local function inspect()
     local count = 0
-    for k, v in pairs(_G) do
+    local globals = (type(_G) == "table" and _G) or (type(getfenv) == "function" and getfenv(0))
+    if type(globals) ~= "table" then
+        log("SCAN", "Global environment unavailable")
+        return
+    end
+    for k, v in pairs(globals) do
         if type(k) == "string" and (string.find(string.lower(k), "death") or string.find(string.lower(k), "recap") or string.find(string.lower(k), "kill")) then
             if type(v) == "string" or type(v) == "number" or type(v) == "boolean" then
                 log("GLOBAL", k .. "=" .. tostring(v))
@@ -104,6 +109,8 @@ end)
 SLASH_AZEROTHDEATHPROBE1 = "/asdiag"
 SlashCmdList["AZEROTHDEATHPROBE"] = function(cmd)
     cmd = string.lower(cmd or "")
+    cmd = string.gsub(cmd, "^%s+", "")
+    cmd = string.gsub(cmd, "%s+$", "")
     if cmd == "start" then
         AzerothDeathProbeLog = {}
         armed = true
