@@ -814,6 +814,29 @@ function A.ApplyThemeLayout()
         if UI.profileModel.SetPortraitZoom then
             UI.profileModel:SetPortraitZoom(0)
         end
+        -- SetUnit may finish asynchronously on the initial login. Reapply
+        -- camera settings briefly without resetting the model or its unit.
+        if UI.profileModelUnitInitialized and not UI.profileModelCameraSettled then
+            UI.profileModelCameraSettled = true
+            local elapsed, attempts = 0, 0
+            UI.profileModel:SetScript("OnUpdate", function()
+                elapsed = elapsed + (arg1 or 0)
+                if elapsed < 0.2 then
+                    return
+                end
+                elapsed = 0
+                attempts = attempts + 1
+                if this.SetCamera then
+                    this:SetCamera(0)
+                end
+                if this.SetPortraitZoom then
+                    this:SetPortraitZoom(0)
+                end
+                if attempts >= 10 then
+                    this:SetScript("OnUpdate", nil)
+                end
+            end)
+        end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
     else
