@@ -93,6 +93,26 @@ check(page == 8, "hard limit of eight native reads per tick")
 check(A.V2CombatSnapshot().hits == 2048, "all 2048 bounded events aggregated")
 check(A.V2CombatSnapshot().truncated == true, "remaining backlog explicitly flagged")
 A.V2CombatTick(nil)
+-- Malformed server pages must be bounded and flagged, never treated as complete.
+local oversized = {}
+for i = 1, 300 do
+    oversized[i] = { kind = "damage", amount = 1, meterSourceKey = "overflow" }
+end
+_G.AZS_GetCombatTextEvents = function()
+    return {
+        apiVersion = 1,
+        cursor = "oversized",
+        streamId = "oversized",
+        droppedCount = -5,
+        events = oversized,
+    }
+end
+A.V2CombatTick({ id = "oversized", status = "active" })
+local malformed = A.V2CombatSnapshot()
+check(malformed.hits == 256, "oversized page capped to 256 events")
+check(malformed.truncated == true and malformed.invalid >= 2, "malformed page and drop count flagged")
+check(malformed.dropped == 0, "negative drop counter cannot reduce losses")
+A.V2CombatTick(nil)
 _G.AZS_GetCombatTextEvents = original
 A.db, A.run, AzerothStatsDB = db, run, saved
 A.V2Invalidate()
