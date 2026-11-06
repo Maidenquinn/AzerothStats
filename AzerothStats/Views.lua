@@ -1372,13 +1372,15 @@ function A.PageModel()
                 end
                 model.note = model.note
                     .. " · "
-                    .. (A.Locale() == "fr"
-                            and (comparison.synchronized
-                                    and "Instantané de groupe reçu, pas un journal de combat complet"
-                                or "Échantillons individuels non synchronisés, comparaison indicative")
-                        or (comparison.synchronized
+                    .. (
+                        A.Locale() == "fr"
+                            and (comparison.synchronized and "Instantané de groupe reçu, pas un journal de combat complet" or "Échantillons individuels non synchronisés, comparaison indicative")
+                        or (
+                            comparison.synchronized
                                 and "Received group snapshot, not a complete combat log"
-                            or "Independent unsynchronized samples; comparison is indicative"))
+                            or "Independent unsynchronized samples; comparison is indicative"
+                        )
+                    )
                 if table.getn(comparison.rows) == 0 then
                     model.cards = {}
                     model.emptyText = A.T("No group snapshot recorded")
