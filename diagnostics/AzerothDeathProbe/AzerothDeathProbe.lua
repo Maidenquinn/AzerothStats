@@ -14,6 +14,7 @@ local function inspect()
     local globals = (type(_G) == "table" and _G) or (type(getfenv) == "function" and getfenv(0))
     if type(globals) ~= "table" then
         log("SCAN", "Global environment unavailable")
+        DEFAULT_CHAT_FRAME:AddMessage("Death Probe: global environment unavailable.")
         return
     end
     for k, v in pairs(globals) do
@@ -42,7 +43,12 @@ end
 -- Keep work bounded: the client may expose a large UI hierarchy.
 local scanPending, scanDelay = false, 0
 local function scanFrames()
-    if not armed or not UIParent then return end
+    if not armed then return end
+    if not UIParent then
+        log("UI_SCAN", "UIParent unavailable")
+        DEFAULT_CHAT_FRAME:AddMessage("Death Probe: UIParent unavailable.")
+        return
+    end
     local visited, recorded = 0, 0
     local function visit(frame, depth, context)
         if not frame or depth > 12 or visited >= 2500 or recorded >= 70 then return end
@@ -81,6 +87,7 @@ local function scanFrames()
     end
     visit(UIParent, 0, false)
     log("UI_SCAN", "frames=" .. visited .. " texts=" .. recorded)
+    DEFAULT_CHAT_FRAME:AddMessage("Death Probe: UI frames=" .. visited .. ", texts=" .. recorded)
 end
 probe:SetScript("OnUpdate", function()
     if not scanPending then return end
