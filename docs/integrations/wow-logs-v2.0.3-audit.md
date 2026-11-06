@@ -38,3 +38,30 @@ Status: AUDIT IN PROGRESS. No runtime integration is implemented by this checkpo
 3. Prove v2.0.2 data preservation, backup isolation and export size/performance.
 4. Validate FR/EN and existing views; retain the accepted HUD and portrait behavior.
 5. Deliver a CI-green installable ZIP for owner native recipe, **not** a public release.
+
+## Source-level lifecycle follow-up (2026-11-06)
+
+The following statements were checked against the official v2.0.2 `AzerothStats/Tracker.lua` on the feature branch. They describe code behavior, not in-game validation.
+
+- `start(phase, serverTime)` resumes only the **last retained** run when `A.newBoundary` is false, identity or compatible class/hero/zone matches, Heroic does not conflict, native time is monotonic, the old run has no `closeReason`, and the new phase is not `ready`. Otherwise it increments `database.sequence` and appends a new `azstats-<sequence>` record. The resume path marks `resumeHeuristic=true`.
+- `A.Sample()` recognizes explicit ready notifications, time regression greater than two seconds, identity/Heroic changes, and simultaneous time/kills regression as boundaries. A ready phase can mark a detached active run interrupted; it does not silently delete that record.
+- `applySummary()` rejects mismatching summaries, deduplicates by signature, preserves a prior official victory through endless continuation, and marks `status=ended`. `close()` accounts the run and requests completed-run backup recording only for ended runs.
+- `snapshot()` caps timeline samples at 240, keeps the first entry on overflow, and refreshes spells/stats/equipment opportunistically. Export should reuse retained data rather than duplicate snapshots.
+- `A.Packet()` treats native packet text as bounded freshness notifications, not an executable or authoritative parsed payload. It currently handles `AZSZONE` but does not explicitly read `AZS_ZONE.run` in Tracker.lua.
+
+### Explicit regression cases to implement before changing continuity
+
+1. Reload once and repeatedly during an active run, with native time monotonic and no ready packet: preserve one local run and its counters.
+2. Reload with a transient ready packet: verify whether a legitimate boundary is observed before considering any correction.
+3. New run with the same class/zone/Heroic and reused numeric native run ID: never merge solely on that ID.
+4. Terminal summary followed by endless continuation, then another terminal summary: preserve the first official victory and avoid duplicate accounting.
+5. Crash/restart with missing or regressed native time: preserve historical data and mark uncertainty rather than force a merge.
+6. Old v2.0.2 SavedVariables lacking new metadata, plus corrupt or partial records: no destructive migration and no backup-root inclusion in export.
+
+### Open questions for native evidence / Rakesh
+
+- Capture safe, non-personal observations of `type(AZS_ZONE.run)` and value changes across ready, playing, reload, death, victory, restart, and desktop/browser. Do not persist raw diagnostics by default.
+- Confirm which correlation fields WoW Logs AS needs and whether the uploader reads SavedVariables only after a normal client flush.
+- Confirm that opt-in export excludes names and both backup roots by construction; document exact field provenance before finalizing schema v1.
+
+**Gate:** do not alter the run identity/resume algorithm based on `AZS_ZONE.run` until these questions are answered. The present code has collision and fragmentation risks, but no reproduced root cause yet.
