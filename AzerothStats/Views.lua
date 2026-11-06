@@ -382,10 +382,8 @@ end
 --- Numeric fields are intentionally excluded to avoid self-locking sliders.
 function A.HistoryFacetBounds(excludedMetric)
     local result = {}
-    local view = A.view
-    local previous = view.historyAdvanced
     local scope = {}
-    for key, value in pairs(previous or {}) do
+    for key, value in pairs(A.view.historyAdvanced or {}) do
         local metric = string.match(key, "^(%a+)Min$") or string.match(key, "^(%a+)Max$")
         if not metric or (excludedMetric and metric ~= excludedMetric) then
             scope[key] = value
@@ -397,9 +395,8 @@ function A.HistoryFacetBounds(excludedMetric)
             scope[key .. "Min"], scope[key .. "Max"] = nil, nil
         end
     end
-    view.historyAdvanced = scope
     for _, run in ipairs(A.db.runs or {}) do
-        if A.MatchesHistory(run) then
+        if A.MatchesHistory(run, scope) then
             for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
                 if not excludedMetric or key == excludedMetric then
                     local value = tonumber((run.values and run.values[key]) or run[key])
@@ -418,7 +415,6 @@ function A.HistoryFacetBounds(excludedMetric)
             end
         end
     end
-    view.historyAdvanced = previous
     return result
 end
 
@@ -472,7 +468,7 @@ function A.ParseHistoryFilters(fields)
 end
 
 --- Search is bounded plain text, never a Lua pattern. No group evidence means unknown, not solo.
-function A.MatchesHistory(run)
+function A.MatchesHistory(run, filterOverride)
     if A.view.class and A.view.class ~= run.class then
         return false
     end
@@ -495,7 +491,7 @@ function A.MatchesHistory(run)
     if A.view.historyKind == "favorite" and not A.IsFavorite("run", run.id) then
         return false
     end
-    local filters = A.view.historyAdvanced or {}
+    local filters = filterOverride or A.view.historyAdvanced or {}
     local function between(value, low, high)
         if low == nil and high == nil then
             return true
