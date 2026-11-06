@@ -814,7 +814,10 @@ function A.ApplyThemeLayout()
         -- zoom pushes the face outside the tiny sidebar viewport on this
         -- client (the grey shoulder seen in the native screenshot).
         if UI.profileModel.SetPortraitZoom then
-            UI.profileModel:SetPortraitZoom(0)
+            UI.profileModel:SetPortraitZoom(0.5)
+        end
+        if UI.profileModel.SetFacing then
+            UI.profileModel:SetFacing(0)
         end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
@@ -2689,8 +2692,8 @@ function A.BuildUI()
     profile:SetWidth(48)
     profile:SetHeight(48)
     A.PaintedGlyph(profile, 7)
-    UI.profileName = font(frame, 90, 129, 112, 23, 16, COLORS.text)
-    UI.profileClass = font(frame, 90, 153, 112, 20, 11, COLORS.muted)
+    UI.profileName = font(frame, 112, 129, 92, 23, 16, COLORS.text)
+    UI.profileClass = font(frame, 112, 153, 92, 20, 11, COLORS.muted)
     UI.sidebarNote = font(frame, 29, 738, 160, 17, 10, COLORS.muted)
     UI.sidebarNote:Hide()
     UI.explore = font(frame, 29, 198, 160, 18, 10, COLORS.muted)
