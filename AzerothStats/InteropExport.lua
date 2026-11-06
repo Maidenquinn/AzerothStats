@@ -42,6 +42,10 @@ function A.ExportRunV1(run)
         "healing",
         "peakDps",
         "bosses",
+        "elites",
+        "guardians",
+        "chests",
+        "magnets",
     }) do
         metrics[key] = metric(values, key)
     end
