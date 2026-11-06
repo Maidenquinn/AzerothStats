@@ -1,0 +1,6 @@
+## Interface: 11200
+## Title: Azeroth Death Probe
+## Notes: Read-only death recap and combat-event diagnostics
+## Version: 0.1.0
+## SavedVariables: AzerothDeathProbeLog
+AzerothDeathProbe.lua

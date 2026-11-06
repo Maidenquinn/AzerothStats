@@ -378,6 +378,49 @@ function A.HistoryMetricBounds()
     return result
 end
 
+--- Faceted slider bounds: honor all non-numeric history criteria.
+--- Numeric fields are intentionally excluded to avoid self-locking sliders.
+function A.HistoryFacetBounds(excludedMetric, filterOverride)
+    local result = {}
+    local scope = {}
+    for key, value in pairs(filterOverride or A.view.historyAdvanced or {}) do
+        local _, _, metric = string.find(key, "^(%a+)Min$")
+        if not metric then
+            _, _, metric = string.find(key, "^(%a+)Max$")
+        end
+        if not metric or (excludedMetric and metric ~= excludedMetric) then
+            scope[key] = value
+        end
+    end
+    -- Keep the existing whole-panel behavior for initial slider ranges.
+    if not excludedMetric then
+        for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+            scope[key .. "Min"], scope[key .. "Max"] = nil, nil
+        end
+    end
+    for _, run in ipairs(A.db.runs or {}) do
+        if A.MatchesHistory(run, scope) then
+            for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+                if not excludedMetric or key == excludedMetric then
+                    local value = tonumber((run.values and run.values[key]) or run[key])
+                    if value and value >= 0 then
+                        value = math.floor(value)
+                        local item = result[key]
+                        if not item then
+                            item = { min = value, max = value, count = 0 }
+                            result[key] = item
+                        end
+                        item.min = math.min(item.min, value)
+                        item.max = math.max(item.max, value)
+                        item.count = item.count + 1
+                    end
+                end
+            end
+        end
+    end
+    return result
+end
+
 --- Parse an entire panel as one transaction, rejecting reversed or invalid ranges.
 function A.ParseHistoryFilters(fields)
     fields = fields or {}
@@ -428,7 +471,7 @@ function A.ParseHistoryFilters(fields)
 end
 
 --- Search is bounded plain text, never a Lua pattern. No group evidence means unknown, not solo.
-function A.MatchesHistory(run)
+function A.MatchesHistory(run, filterOverride)
     if A.view.class and A.view.class ~= run.class then
         return false
     end
@@ -451,7 +494,7 @@ function A.MatchesHistory(run)
     if A.view.historyKind == "favorite" and not A.IsFavorite("run", run.id) then
         return false
     end
-    local filters = A.view.historyAdvanced or {}
+    local filters = filterOverride or A.view.historyAdvanced or {}
     local function between(value, low, high)
         if low == nil and high == nil then
             return true
@@ -526,6 +569,50 @@ function A.ClearHistoryFilters()
     A.view.class, A.view.difficulty, A.view.page = nil, nil, 1
 end
 
+--- Reconcile stale numeric filters after history retention/purge changes.
+--- Never mutate the retained runs or silently reset unrelated search/date filters.
+--- Return true when a numeric bound was adjusted so the UI can surface it.
+function A.ReconcileHistoryMetricFilters()
+    local filters = A.view and A.view.historyAdvanced
+    if not filters then
+        return false
+    end
+    local bounds = A.HistoryFacetBounds()
+    local changed = false
+    for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+        local limits = bounds[key]
+        local lowKey, highKey = key .. "Min", key .. "Max"
+        if not limits then
+            if filters[lowKey] ~= nil or filters[highKey] ~= nil then
+                filters[lowKey], filters[highKey] = nil, nil
+                changed = true
+            end
+        else
+            for _, field in ipairs({ lowKey, highKey }) do
+                local old = filters[field]
+                if old ~= nil then
+                    local number = tonumber(old)
+                    -- A stale bound should stop filtering, not silently
+                    -- become the new extreme and hide otherwise valid runs.
+                    local value = number
+                    if not number or number < limits.min or number > limits.max then
+                        value = nil
+                    end
+                    if value ~= old then
+                        filters[field] = value
+                        changed = true
+                    end
+                end
+            end
+            if filters[lowKey] and filters[highKey] and filters[lowKey] > filters[highKey] then
+                filters[lowKey], filters[highKey] = nil, nil
+                changed = true
+            end
+        end
+    end
+    return changed
+end
+
 --- A visible scope independent of whichever run happened to be selected previously.
 function A.ViewScope(model, run)
     local tab = A.view.tab
@@ -545,6 +632,7 @@ end
 
 --- List retained observed runs under the class filter with stable-ID navigation and favorites.
 local function history(model)
+    A.ReconcileHistoryMetricFilters()
     model.rowHeight = 43
     model.rowY = 164
     model.capacity = 9
@@ -552,19 +640,20 @@ local function history(model)
     for i = table.getn(A.db.runs), 1, -1 do
         local run = A.db.runs[i]
         local id = run.id
+        local values = run.values or {}
         if A.MatchesHistory(run) then
             retained = retained + 1
             if run.result == "victory" then
                 wins = wins + 1
             end
-            if A.Number(run.values.duration) then
-                duration = duration + run.values.duration
+            if A.Number(values.duration) then
+                duration = duration + values.duration
                 coverage = coverage + 1
             end
             local item = row(
                 model.rows,
                 A.ZoneName(run),
-                A.Duration(run.values.duration),
+                A.Duration(values.duration),
                 A.Date(run.startedAt)
                     .. " · "
                     .. A.ClassName(run.class)
@@ -580,15 +669,15 @@ local function history(model)
             item.zone, item.result = run.zone, run.result or run.status
             item.extra = A.Metric("level")
                 .. " "
-                .. A.Format(run.values.level)
+                .. A.Format(values.level)
                 .. " · "
                 .. A.Metric("kills")
                 .. " "
-                .. A.Short(run.values.kills)
+                .. A.Short(values.kills)
                 .. " · "
                 .. A.Metric("gold")
                 .. " "
-                .. A.Short(run.values.gold)
+                .. A.Short(values.gold)
             item.extra = item.extra .. " · " .. A.HeroicLabel(run)
             local coop = A.CoopLabel(run)
             if coop then
@@ -599,11 +688,11 @@ local function history(model)
                 .. " · "
                 .. A.Metric("kills")
                 .. " "
-                .. A.Format(run.values.kills)
+                .. A.Format(values.kills)
                 .. " · "
                 .. A.Metric("level")
                 .. " "
-                .. A.Format(run.values.level)
+                .. A.Format(values.level)
         end
     end
     model.subtitle = A.T("Retained history only") .. " · " .. A.Format(retained)
@@ -1284,6 +1373,17 @@ function A.PageModel()
                 if comparison.partial and comparison.synchronized then
                     model.note = A.T("Partial") .. " · " .. model.note
                 end
+                model.note = model.note
+                    .. " · "
+                    .. (
+                        A.Locale() == "fr"
+                            and (comparison.synchronized and "Instantané de groupe reçu, pas un journal de combat complet" or "Échantillons individuels non synchronisés, comparaison indicative")
+                        or (
+                            comparison.synchronized
+                                and "Received group snapshot, not a complete combat log"
+                            or "Independent unsynchronized samples; comparison is indicative"
+                        )
+                    )
                 if table.getn(comparison.rows) == 0 then
                     model.cards = {}
                     model.emptyText = A.T("No group snapshot recorded")

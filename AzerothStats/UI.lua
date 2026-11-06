@@ -8,6 +8,52 @@ local UI = { fonts = {}, solids = {}, cards = {}, rows = {}, nav = {}, controls 
 A.ui = UI
 local COLORS = A.theme
 
+-- Preserve the campaign sequence for recognized late-game maps. Unrecognized
+-- maps remain alphabetic instead of receiving a speculative progression rank.
+local function campaignMapRank(name)
+    -- Prefer canonical localized zone labels; the English fallback below also
+    -- handles historical names recorded before the current catalog existed.
+    for _, entry in ipairs({
+        { "brm", 1 },
+        { "scholo", 2 },
+        { "aq", 3 },
+        { "naxx", 4 },
+    }) do
+        if A.G and name == A.G("zone." .. entry[1] .. ".name") then
+            return entry[2]
+        end
+    end
+    local normalized = string.lower(name or "")
+    if string.find(normalized, "blackrock", 1, true) then
+        return 1
+    elseif string.find(normalized, "scholomance", 1, true) then
+        return 2
+    elseif
+        string.find(normalized, "ahn", 1, true) and string.find(normalized, "qiraj", 1, true)
+    then
+        return 3
+    elseif string.find(normalized, "naxxramas", 1, true) then
+        return 4
+    end
+    return nil
+end
+
+local function sortHistoryMaps(maps)
+    table.sort(maps, function(left, right)
+        local leftRank, rightRank = campaignMapRank(left), campaignMapRank(right)
+        if leftRank and rightRank and leftRank ~= rightRank then
+            return leftRank < rightRank
+        end
+        if leftRank and not rightRank then
+            return true
+        end
+        if rightRank and not leftRank then
+            return false
+        end
+        return string.lower(left) < string.lower(right)
+    end)
+end
+
 local coords = {
     warrior = { 0, 0.25, 0, 0.25 },
     mage = { 0.25, 0.496, 0, 0.25 },
@@ -564,6 +610,8 @@ function A.ShowMenu(anchor, options, offset)
         b:SetFrameLevel(menu:GetFrameLevel() + 1)
         b.item = { label = entry.label, detail = entry.detail or "", value = entry.value }
         b:SetScript("OnEnter", function()
+            -- Hover must repaint both the border and material, especially on Warcraft.
+            A.MaterialState(this, true)
             A.PaintBorder(this, 0.95, 0.8, 0.5, 1)
             tooltip(this)
         end)
@@ -723,7 +771,11 @@ function A.ApplyThemeLayout()
     UI.nativeHeader:Hide()
     show(UI.brandDragon, wow)
     show(UI.brandGlyph, id ~= "essentiel")
-    show(UI.profileGlyph, id ~= "essentiel")
+    -- Sidebar model always represents the logged-in character.
+    show(UI.profileGlyph, not UI.profileModel)
+    if UI.profileModel then
+        show(UI.profileModel, true)
+    end
     UI.brandGlyph:ClearAllPoints()
     UI.brandGlyph:SetPoint(
         "TOPLEFT",
@@ -742,11 +794,53 @@ function A.ApplyThemeLayout()
     UI.profileGlyph:ClearAllPoints()
     UI.profileGlyph:SetPoint("TOPLEFT", A.window, "TOPLEFT", 34, -135)
     UI.profileGlyph:SetWidth(modern and 28 or (paper and 26 or (wow and 32 or 48)))
-    UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 32 or 48)))
-    if wow then
-        icon(UI.profileGlyph, nil, class)
+    UI.profileGlyph:SetHeight(modern and 28 or (paper and 26 or (wow and 40 or 48)))
+    if UI.profileModel then
+        UI.profileModel:ClearAllPoints()
+        UI.profileModel:SetPoint("TOPLEFT", A.window, "TOPLEFT", 18, -118)
+        UI.profileModel:SetWidth(78)
+        UI.profileModel:SetHeight(78)
+        -- SetUnit is intentionally not called on every theme/layout refresh.
+        -- On this client it resets the camera asynchronously and alternates
+        -- between full body and a badly clipped face after /reload.
+        -- The model is initialized once; subsequent layouts only move its frame.
+        if not UI.profileModelUnitInitialized and UnitExists and UnitExists("player") then
+            UI.profileModel:SetUnit("player")
+            UI.profileModelUnitInitialized = true
+        end
+        if UI.profileModel.SetCamera then
+            UI.profileModel:SetCamera(0)
+        end
+        if UI.profileModel.SetPortraitZoom then
+            UI.profileModel:SetPortraitZoom(0)
+        end
+        -- SetUnit may finish asynchronously on the initial login. Reapply
+        -- camera settings briefly without resetting the model or its unit.
+        if UI.profileModelUnitInitialized and not UI.profileModelCameraSettled then
+            UI.profileModelCameraSettled = true
+            local elapsed, attempts = 0, 0
+            UI.profileModel:SetScript("OnUpdate", function()
+                elapsed = elapsed + (arg1 or 0)
+                if elapsed < 0.2 then
+                    return
+                end
+                elapsed = 0
+                attempts = attempts + 1
+                if this.SetCamera then
+                    this:SetCamera(0)
+                end
+                if this.SetPortraitZoom then
+                    this:SetPortraitZoom(0)
+                end
+                if attempts >= 10 then
+                    this:SetScript("OnUpdate", nil)
+                end
+            end)
+        end
+    elseif SetPortraitTexture and UnitExists and UnitExists("player") then
+        SetPortraitTexture(UI.profileGlyph, "player")
     else
-        A.PaintedGlyph(UI.profileGlyph, 7)
+        icon(UI.profileGlyph, nil, class)
     end
     UI.title:ClearAllPoints()
     UI.title:SetPoint(
@@ -766,21 +860,9 @@ function A.ApplyThemeLayout()
         wow and -74 or -65
     )
     UI.profileName:ClearAllPoints()
-    UI.profileName:SetPoint(
-        "TOPLEFT",
-        A.window,
-        "TOPLEFT",
-        id == "essentiel" and 32 or modern and 75 or 82,
-        -129
-    )
+    UI.profileName:SetPoint("TOPLEFT", A.window, "TOPLEFT", 112, -129)
     UI.profileClass:ClearAllPoints()
-    UI.profileClass:SetPoint(
-        "TOPLEFT",
-        A.window,
-        "TOPLEFT",
-        id == "essentiel" and 32 or modern and 75 or 82,
-        -153
-    )
+    UI.profileClass:SetPoint("TOPLEFT", A.window, "TOPLEFT", 112, -153)
     for _, nav in ipairs(UI.nav) do
         nav.icon:SetWidth(modern and 20 or paper and 20 or 25)
         nav.icon:SetHeight(modern and 20 or paper and 20 or 25)
@@ -858,6 +940,35 @@ function A.ApplyUI()
     else
         A.bar:Hide()
     end
+    -- A native round tracking ring stays independent of window materials.
+    -- Repainting the theme can show nine-slice textures again, so apply this last.
+    if A.mini and A.mini.roundRing then
+        local round = settings.miniRound ~= false
+        if A.mini.base then
+            A.mini.base:SetAlpha(round and 0 or settings.opacity)
+        end
+        for _, texture in ipairs(A.mini.materialParts or {}) do
+            if round then
+                texture:Hide()
+            end
+        end
+        if round then
+            A.mini:SetBackdrop(nil)
+            A.mini.roundRing:Show()
+        else
+            A.mini.roundRing:Hide()
+            -- Restore square materials only when leaving round mode. Theme
+            -- changes are already repainted by A.RepaintMaterials above.
+            if A.mini.roundApplied then
+                A.mini.materialTheme = nil
+                A.mini.themeBackdrop = nil
+                A.mini.nativeEdge = nil
+                A.MaterialState(A.mini, false)
+                A.UpdateThemeFrame(A.mini)
+            end
+        end
+        A.mini.roundApplied = round
+    end
     if settings.minimap then
         A.mini:Show()
     else
@@ -893,7 +1004,10 @@ end
 local function settingsRefresh()
     local settings = A.db.settings
     for _, b in ipairs(UI.checks) do
-        b:SetChecked(settings[b.setting])
+        b:SetChecked(
+            b.setting == "miniRound" and settings.miniRound ~= false
+                or (b.setting ~= "miniRound" and settings[b.setting])
+        )
         put(b.caption, A.T(b.key))
     end
     for _, sl in ipairs(UI.sliders) do
@@ -1270,6 +1384,23 @@ function A.RefreshUI()
     selected(UI.historyReset, browsingHistory and A.view.historyAdvancedOpen)
     if UI.advancedPanel then
         show(UI.advancedPanel, browsingHistory and A.view.historyAdvancedOpen == true)
+        if browsingHistory and A.view.historyAdvancedOpen then
+            local scope = table.concat({
+                tostring(A.view.class or ""),
+                tostring(A.view.difficulty or ""),
+                tostring(A.view.historyResult or ""),
+                tostring(A.view.historyKind or ""),
+                tostring(A.view.historySearch or ""),
+                tostring((A.view.historyAdvanced or {}).map or ""),
+                tostring((A.view.historyAdvanced or {}).dateFrom or ""),
+                tostring((A.view.historyAdvanced or {}).dateTo or ""),
+                tostring(table.getn(A.db.runs or {})),
+            }, "|")
+            if UI.advancedPanel.scope ~= scope then
+                UI.advancedPanel.scope = scope
+                UI.advancedPanel.initialized = false
+            end
+        end
         if browsingHistory and A.view.historyAdvancedOpen and not UI.advancedPanel.initialized then
             local active = A.view.historyAdvanced or {}
             for key, field in pairs(UI.advancedFields) do
@@ -1278,9 +1409,9 @@ function A.RefreshUI()
             end
             UI.advancedPanel.mapChoice = active.map
             put(UI.advancedMap.label, active.map or A.T("All maps"))
-            local bounds = A.HistoryMetricBounds()
+            UI.advancedPanel.syncingDraft = true
             for key, pair in pairs(UI.advancedSliders or {}) do
-                local limits = bounds[key]
+                local limits = A.HistoryFacetBounds(key)[key]
                 for _, bound in ipairs({ "Min", "Max" }) do
                     local slider = pair[bound]
                     local input = UI.advancedFields[key .. bound]
@@ -1306,6 +1437,7 @@ function A.RefreshUI()
                 local value = UI.advancedFields[picker.dateKey]:GetText()
                 put(picker.label, value ~= "" and value or A.T("Select date"))
             end
+            UI.advancedPanel.syncingDraft = false
             UI.advancedPanel.initialized = true
         end
     end
@@ -1659,9 +1791,15 @@ function A.RefreshUI()
     UI.empty:ClearAllPoints()
     UI.empty:SetPoint("TOPLEFT", A.window, "TOPLEFT", 248, -math.min(540, model.rowY + 64))
     show(UI.empty, model.empty)
+    local emptyText = model.emptyText
+    if not emptyText and browsingHistory and table.getn(A.db.runs) > 0 then
+        emptyText = A.Locale() == "fr"
+                and "Aucune partie ne correspond aux filtres.\nRéinitialisez les filtres pour retrouver vos parties."
+            or "No runs match the selected filters.\nReset filters to see your runs."
+    end
     put(
         UI.empty,
-        model.emptyText
+        emptyText
             or (
                 A.T("No data yet")
                 .. (table.getn(A.db.runs) == 0 and ("\n" .. A.T("Start a run to begin")) or "")
@@ -1675,6 +1813,15 @@ function A.RefreshUI()
     for _, b in ipairs(UI.controls) do
         if b.key and b.key ~= "" then
             put(b.label, A.T(b.key))
+        end
+    end
+    -- Calendar selection is draft state until Apply; never read from the
+    -- previously committed filters while the panel is open.
+    if UI.historyDateFromPicker and UI.historyDateToPicker then
+        for _, picker in ipairs({ UI.historyDateFromPicker, UI.historyDateToPicker }) do
+            local input = UI.advancedFields and UI.advancedFields[picker.dateKey]
+            local value = input and input:GetText() or ""
+            put(picker.label, value ~= "" and value or "YYYY-MM-DD")
         end
     end
 end
@@ -1925,10 +2072,14 @@ local function buildSettings(frame)
             table.insert(UI.solids, { texture = texture, multiplier = 0.65 })
         end
     end
-    UI.appearance = font(p, 0, 0, 690, 24, 16, COLORS.gold, true)
-    UI.behaviour = font(p, 0, 232, 320, 24, 16, COLORS.gold, true)
-    UI.storage = font(p, 370, 232, 320, 24, 16, COLORS.gold, true)
-    UI.saveNote = font(p, 0, 438, 345, 24, 11, COLORS.muted)
+    UI.appearance = font(p, 0, 4, 690, 24, 16, COLORS.gold, true)
+    UI.appearance:SetJustifyH("CENTER")
+    UI.behaviour = font(p, 0, 244, 320, 24, 16, COLORS.gold, true)
+    UI.behaviour:SetJustifyH("CENTER")
+    UI.storage = font(p, 370, 244, 320, 24, 16, COLORS.gold, true)
+    UI.storage:SetJustifyH("CENTER")
+    UI.saveNote = font(p, 350, 422, 364, 36, 11, COLORS.muted)
+    UI.saveNote:SetJustifyH("CENTER")
     UI.sliders = {}
     UI.checks = {}
     local definitions = {
@@ -2006,6 +2157,7 @@ local function buildSettings(frame)
     for i, def in ipairs({
         { "bar", "Top bar" },
         { "minimap", "Minimap button" },
+        { "miniRound", "Circular minimap icon" },
         { "locked", "Lock position" },
         { "recordSound", "Record sounds" },
     }) do
@@ -2017,7 +2169,13 @@ local function buildSettings(frame)
         b.key = def[2]
         b.caption = font(p, 32, 264 + (i - 1) * 39, 310, 24, 12, COLORS.text)
         b:SetScript("OnClick", function()
-            A.db.settings[this.setting] = not A.db.settings[this.setting]
+            -- The circular icon defaults to enabled when no saved preference
+            -- exists. Toggle its effective value, not nil, on the first click.
+            if this.setting == "miniRound" then
+                A.db.settings.miniRound = A.db.settings.miniRound == false
+            else
+                A.db.settings[this.setting] = not A.db.settings[this.setting]
+            end
             A.ApplyUI()
             A.RefreshUI()
         end)
@@ -2043,7 +2201,8 @@ local function buildSettings(frame)
         A.OpenThemePicker()
     end)
     UI.hudSettingsTitle = font(p, 0, 485, 690, 26, 18, COLORS.gold, true)
-    UI.hudSettingsHint = font(p, 0, 523, 340, 36, 12, COLORS.muted)
+    UI.hudSettingsTitle:SetJustifyH("CENTER")
+    UI.hudSettingsHint = font(p, 8, 523, 324, 36, 12, COLORS.muted)
     button(p, 370, 522, 330, 32, "Customize bar", function()
         A.OpenBarEditor()
     end)
@@ -2524,12 +2683,23 @@ function A.BuildUI()
     A.ThemeTexture(divider, "bronze")
     local profile = frame:CreateTexture(nil, "ARTWORK")
     UI.profileGlyph = profile
+    -- PlayerModel renders the actual animated character rather than a static class emblem.
+    -- Older clients without PlayerModel retain the 2D portrait fallback.
+    if CreateFrame then
+        local ok, model = pcall(CreateFrame, "PlayerModel", nil, frame)
+        if ok and model and model.SetUnit then
+            UI.profileModel = model
+            model:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -118)
+            model:SetWidth(78)
+            model:SetHeight(78)
+        end
+    end
     profile:SetPoint("TOPLEFT", frame, "TOPLEFT", 32, -127)
     profile:SetWidth(48)
     profile:SetHeight(48)
     A.PaintedGlyph(profile, 7)
-    UI.profileName = font(frame, 90, 129, 112, 23, 16, COLORS.text)
-    UI.profileClass = font(frame, 90, 153, 112, 20, 11, COLORS.muted)
+    UI.profileName = font(frame, 112, 129, 92, 23, 16, COLORS.text)
+    UI.profileClass = font(frame, 112, 153, 92, 20, 11, COLORS.muted)
     UI.sidebarNote = font(frame, 29, 738, 160, 17, 10, COLORS.muted)
     UI.sidebarNote:Hide()
     UI.explore = font(frame, 29, 198, 160, 18, 10, COLORS.muted)
@@ -2687,7 +2857,7 @@ function A.BuildUI()
                 table.insert(maps, name)
             end
         end
-        table.sort(maps)
+        sortHistoryMaps(maps)
         for _, name in ipairs(maps) do
             local selectedName = name
             table.insert(options, {
@@ -2710,7 +2880,8 @@ function A.BuildUI()
     searchPanel:SetWidth(228)
     searchPanel:SetHeight(32)
     surface(searchPanel, "card")
-    UI.historySearchCaption = font(searchPanel, 6, 0, 215, 12, 11, COLORS.muted)
+    UI.historySearchCaption = font(searchPanel, 6, 0, 216, 12, 11, COLORS.muted)
+    UI.historySearchCaption:SetJustifyH("CENTER")
     UI.historySearchCaption.fixedSize = true
     UI.historySearch = CreateFrame("EditBox", nil, searchPanel)
     UI.historySearch:SetPoint("TOPLEFT", searchPanel, "TOPLEFT", 6, -13)
@@ -2858,7 +3029,7 @@ function A.BuildUI()
                 table.insert(maps, name)
             end
         end
-        table.sort(maps)
+        sortHistoryMaps(maps)
         for _, name in ipairs(maps) do
             local selectedName = name
             table.insert(options, {
@@ -3053,6 +3224,9 @@ function A.BuildUI()
         end)
         iconButton:SetFrameLevel(advanced:GetFrameLevel() + 13)
         picker.dateKey = target
+        -- Dynamic button text must never be overwritten by the global
+        -- translation refresh (UI.controls), which runs every few seconds.
+        picker.key = nil
         return picker
     end
     UI.historyDateFromPicker = addDatePicker("dateFrom", 260, 158)
@@ -3066,6 +3240,37 @@ function A.BuildUI()
         { "gold", "Gold", 245 },
         { "duration", "Survival (seconds)", 291 },
     }
+    -- Keep ranges stable while typing. Unset bounds are not active filters.
+    -- Cross-facet recomputation from slider display defaults used to shrink
+    -- every range to one run, even before the user selected a filter.
+    local function refreshAdvancedDraft()
+        if not UI.advancedPanel or UI.advancedPanel.syncingDraft then
+            return
+        end
+        UI.advancedPanel.syncingDraft = true
+        for key, pair in pairs(UI.advancedSliders or {}) do
+            local limits = A.HistoryFacetBounds(key)[key]
+            for _, bound in ipairs({ "Min", "Max" }) do
+                local slider = pair[bound]
+                local input = UI.advancedFields[key .. bound]
+                slider.syncing = true
+                if limits then
+                    slider:SetMinMaxValues(limits.min, limits.max)
+                    local value = tonumber(input:GetText())
+                    if value then
+                        slider:SetValue(math.max(limits.min, math.min(limits.max, value)))
+                    else
+                        slider:SetValue(bound == "Min" and limits.min or limits.max)
+                    end
+                    slider:Show()
+                else
+                    slider:Hide()
+                end
+                slider.syncing = false
+            end
+        end
+        UI.advancedPanel.syncingDraft = false
+    end
     UI.advancedSliders = {}
     for _, def in ipairs(groups) do
         local key, y = def[1], def[3]
@@ -3110,6 +3315,7 @@ function A.BuildUI()
             slider:SetScript("OnValueChanged", function()
                 if not this.syncing then
                     input:SetText(tostring(math.floor(this:GetValue() + 0.5)))
+                    -- Draft bounds stay stable until the user applies the filters.
                 end
             end)
             input:SetScript("OnTextChanged", function()
@@ -3120,6 +3326,7 @@ function A.BuildUI()
                         slider:SetValue(value)
                         slider.syncing = false
                     end
+                    -- Do not rebuild the panel while a value is being edited.
                 end
             end)
             pair[bound] = slider
@@ -3133,17 +3340,37 @@ function A.BuildUI()
         for key, input in pairs(UI.advancedFields) do
             values[key] = input:GetText() or ""
         end
-        local bounds = A.HistoryMetricBounds()
-        for key, limits in pairs(bounds) do
+        -- Each numeric facet is constrained by the other selected metrics.
+        -- Evaluate the draft rather than the previously applied filter state.
+        local previous = A.view.historyAdvanced
+        local draft = {}
+        for key, value in pairs(previous or {}) do
+            draft[key] = value
+        end
+        for key, value in pairs(values) do
+            if key ~= "map" then
+                draft[key] = tonumber(value)
+            end
+        end
+        local bounds = {}
+        for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+            bounds[key] = A.HistoryFacetBounds(key)[key]
+        end
+        for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
+            local limits = bounds[key]
             for _, bound in ipairs({ "Min", "Max" }) do
                 local fieldKey = key .. bound
-                local value = tonumber(values[fieldKey])
-                if not value or value < limits.min or value > limits.max then
+                local raw = values[fieldKey]
+                local value = tonumber(raw)
+                if
+                    raw ~= ""
+                    and (not value or not limits or value < limits.min or value > limits.max)
+                then
                     put(UI.advancedError, A.T("Out of observed range") .. ": " .. key)
                     return
                 end
-                -- An untouched full-range slider does not filter out legacy runs.
-                if value == (bound == "Min" and limits.min or limits.max) then
+                -- Full-range defaults must not exclude legacy runs with missing metrics.
+                if limits and value == (bound == "Min" and limits.min or limits.max) then
                     values[fieldKey] = ""
                 end
             end
@@ -3451,6 +3678,7 @@ function A.BuildUI()
             A.RefreshUI()
         end)
         control.key = nil
+        control.label:SetJustifyH("CENTER")
         UI.overviewTabs[index] = control
     end
     UI.recentTitle = font(frame, 218, 322, 430, 30, 22, COLORS.gold, true)
@@ -3458,10 +3686,12 @@ function A.BuildUI()
     UI.historyLink = button(frame, 772, 322, 160, 30, "History", function()
         selectTab(3)
     end)
+    UI.historyLink.label:SetJustifyH("CENTER")
     UI.recordsTitle = font(frame, 218, 612, 430, 30, 22, COLORS.gold, true)
     UI.recordsLink = button(frame, 772, 612, 160, 30, "Records", function()
         selectTab(6)
     end)
+    UI.recordsLink.label:SetJustifyH("CENTER")
     UI.recordPanel = CreateFrame("Frame", nil, frame)
     UI.recordPanel:SetPoint("TOPLEFT", frame, "TOPLEFT", 218, -649)
     UI.recordPanel:SetWidth(714)
@@ -4244,6 +4474,12 @@ function A.BuildUI()
     mini.icon:SetWidth(21)
     mini.icon:SetHeight(21)
     A.PaintedGlyph(mini.icon, 1)
+    mini.roundRing = mini:CreateTexture(nil, "OVERLAY")
+    mini.roundRing:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    mini.roundRing:SetPoint("CENTER", mini, "CENTER", 0, 0)
+    mini.roundRing:SetWidth(48)
+    mini.roundRing:SetHeight(48)
+    mini.roundRing:Hide()
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")
     mini:SetScript("OnClick", function()

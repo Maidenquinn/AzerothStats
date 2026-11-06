@@ -197,13 +197,18 @@ local function paintGlyph(texture)
             texture:SetTexCoord(0, 1, 0, 1)
         else
             texture:SetTexture("Interface\\Icons\\" .. nativeGlyphs[index])
-            texture:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+            -- Keep native icon artwork intact; the previous 7% crop cut off
+            -- clocks, skulls and other glyph silhouettes on small navigation buttons.
+            texture:SetTexCoord(0.015, 0.985, 0.015, 0.985)
         end
     elseif A.theme.material == "flat" or A.activeTheme == "grimoire" then
         texture:SetTexture(A.theme.icons)
         local cell = ({ 6, 3, 5, 2, 10, 2, 4, 5, 8, 9, 6, 11, 0, 8, 5, 4 })[index]
         local x, y = math.mod(cell, 4), math.floor(cell / 4)
-        texture:SetTexCoord(x / 4, (x + 1) / 4, y / 4, (y + 1) / 4)
+        -- Inset the atlas cell by half a texel to prevent neighboring glyphs
+        -- bleeding into the edges when the sidebar is scaled down.
+        local inset = 0.5 / 256
+        texture:SetTexCoord(x / 4 + inset, (x + 1) / 4 - inset, y / 4 + inset, (y + 1) / 4 - inset)
         texture:SetVertexColor(unpack(A.theme.gold))
     else
         texture:SetTexture(A.theme.media .. string.format("ChronicleGlyph%02d.tga", index))
@@ -238,6 +243,7 @@ local runImages = {
     elwynn = { "RunZone-elwynn.tga", 0, 1, 0.230412, 0.889588 },
     feralas = { "RunZone-feralas.tga", 0, 1, 0.170778, 0.829222 },
     naxx = { "RunZone-naxx.tga", 0, 1, 0.171298, 0.868702 },
+    scholo = { "RunZone-scholo.tga", 0, 1, 0.203371, 0.796629 },
     sm = { "RunZone-sm.tga", 0, 1, 0.249224, 0.910776 },
     ungoro = { "RunZone-ungoro.tga", 0, 1, 0.240251, 0.899749 },
     wsg = { "RunZone-wsg.tga", 0, 1, 0.229678, 0.890322 },
@@ -253,6 +259,8 @@ function A.ZoneIllustration(texture, zone)
     texture:SetVertexColor(1, 1, 1)
     if zone == "naxxramas" then
         zone = "naxx"
+    elseif zone == "scholomance" then
+        zone = "scholo"
     end
     local entry = runImages[zone]
     texture:SetTexture(A.theme.media .. (entry and entry[1] or "ChroniclePlate4.tga"))
@@ -452,7 +460,10 @@ end
 --- Settings sections are textures on their existing parent, never extra frames
 --- above its labels. Store geometry so flat themes can reduce borders to 1px.
 local function paintPanel(panel)
-    local edge = (A.theme.material == "flat" or A.theme.material == "native") and 1 or 12
+    local preferredEdge = (A.theme.material == "flat" or A.theme.material == "native") and 1 or 12
+    -- Bound the nine-slice corners for compact panels instead of letting them overlap.
+    local edge =
+        math.min(preferredEdge, math.max(1, panel.width / 3), math.max(1, panel.height / 3))
     local xs, ys = { 0, edge, panel.width - edge }, { 0, edge, panel.height - edge }
     local cuts = { 0, 0.07, 0.93, 1 }
     for i, texture in ipairs(panel.parts) do

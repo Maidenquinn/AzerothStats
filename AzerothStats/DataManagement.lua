@@ -244,13 +244,16 @@ function A.ListDataBackups(automatic)
     local result = {}
     for index = table.getn(store.entries), 1, -1 do
         local entry = store.entries[index]
-        table.insert(result, {
-            id = entry.id,
-            at = entry.at,
-            runs = entry.runs or (entry.data and table.getn(entry.data.runs or {})) or 0,
-            automatic = automatic and true or false,
-            legacy = entry.legacy,
-        })
+        if type(entry) == "table" and type(entry.id) == "number" then
+            local runs = type(entry.data) == "table" and entry.data.runs or nil
+            table.insert(result, {
+                id = entry.id,
+                at = entry.at,
+                runs = entry.runs or (type(runs) == "table" and table.getn(runs)) or 0,
+                automatic = automatic and true or false,
+                legacy = entry.legacy,
+            })
+        end
     end
     return result
 end
@@ -364,7 +367,7 @@ function A.RestoreDataBackup(id, automatic)
     local store = backupStore(automatic)
     local entry
     for _, candidate in ipairs(store.entries) do
-        if candidate.id == id then
+        if type(candidate) == "table" and candidate.id == id then
             entry = candidate
             break
         end
@@ -379,12 +382,20 @@ function A.RestoreDataBackup(id, automatic)
     if err or not A.ValidateDatabase(data) then
         return false, err or "Backup validation failed"
     end
+    -- Keep the previous live database recoverable if initialization fails.
+    -- Validation above is necessary but does not guarantee that migrations or
+    -- native initialization will succeed. Do not clear pending actions until
+    -- the replacement has been accepted.
+    local previousSaved, previousDB = AzerothStatsDB, A.db
+    local previousPlan = A.pendingDataPlan
     AzerothStatsDB = data
-    A.pendingDataPlan = nil
-    if not A.InitDB() then
-        return false, "Backup could not be loaded"
+    local initialized, result = pcall(A.InitDB)
+    if not initialized or not result then
+        AzerothStatsDB, A.db = previousSaved, previousDB
+        A.pendingDataPlan = previousPlan
+        return false, "Backup could not be loaded; previous database preserved"
     end
-    A.V2Reconcile()
+    A.pendingDataPlan = nil
     return true, "Backup No." .. entry.id .. " restored; reload recommended"
 end
 
@@ -394,7 +405,7 @@ function A.DeleteDataBackup(id, automatic)
     end
     local store = backupStore(automatic)
     for index, entry in ipairs(store.entries) do
-        if entry.id == id then
+        if type(entry) == "table" and entry.id == id then
             table.remove(store.entries, index)
             return true, "Backup deleted"
         end

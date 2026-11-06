@@ -8,6 +8,16 @@ local database, live, view, pending, clock = AzerothStatsDB, A.run, A.view, A.pe
 AzerothStatsDB, A.db, A.run = nil, nil, nil
 A.view = { tab = 3, page = 1, mode = "damage", characterTab = "Spells" }
 check(A.InitDB(), "report fixture initializes")
+-- UI theme preferences must not rewrite run history or existing opt-out settings.
+check(A.db.settings.miniRound == true, "new database defaults to round minimap icon")
+A.db.settings.miniRound = false
+local savedRunCount = table.getn(A.db.runs)
+check(A.InitDB(), "reinitializing existing database succeeds")
+check(A.db.settings.miniRound == false, "square minimap preference survives initialization")
+check(table.getn(A.db.runs) == savedRunCount, "theme initialization preserves run count")
+A.db.settings.miniRound = true
+check(A.InitDB() and A.db.settings.miniRound == true, "round preference persists")
+
 local function run(id, damage, class, heroic)
     return {
         id = id,
@@ -60,6 +70,56 @@ local legacyBounds = A.HistoryMetricBounds()
 check(legacyBounds.level.max == 64, "legacy level included in observed slider range")
 check(legacyBounds.gold.max == 1200, "legacy gold included in observed slider range")
 table.remove(A.db.runs)
+
+-- A purge can invalidate the slider's old maximum without deleting any run.
+A.view.historyAdvanced = { levelMin = 50, levelMax = 90, killsMax = 99999, dateFrom = "2026-01-01" }
+check(A.ReconcileHistoryMetricFilters(), "stale bounds reconciled after retention change")
+check(
+    A.view.historyAdvanced.levelMin == nil
+        and A.view.historyAdvanced.levelMax == nil
+        and A.view.historyAdvanced.killsMax == nil,
+    "stale numeric limits are removed instead of hiding retained runs"
+)
+check(A.view.historyAdvanced.dateFrom == "2026-01-01", "date filters preserved on reconciliation")
+check(not A.ReconcileHistoryMetricFilters(), "reconciliation is idempotent")
+A.view.historyAdvanced = { levelMin = 30, levelMax = 10 }
+check(A.ReconcileHistoryMetricFilters(), "reversed retained interval cleared")
+check(
+    A.view.historyAdvanced.levelMin == 30 and A.view.historyAdvanced.levelMax == nil,
+    "out-of-range upper bound clears while valid lower bound remains"
+)
+A.view.historyAdvanced = nil
+
+-- Facets must exclude other classes rather than advertise global maxima.
+A.view.class = "warrior"
+A.view.historyAdvanced = nil
+local warriorBounds = A.HistoryFacetBounds()
+check(warriorBounds.level.max == 35, "class facet excludes unrelated mage levels")
+A.view.class = "mage"
+local mageBounds = A.HistoryFacetBounds()
+check(mageBounds.level == nil and mageBounds.kills.max == 10, "mage facet only uses mage history")
+-- Cross-facets exclude only their own numeric field, retaining the others.
+A.view.class = nil
+A.view.historyAdvanced = { killsMin = 15 }
+local beforeDraft = A.view.historyAdvanced
+local crossLevel = A.HistoryFacetBounds("level")
+check(A.view.historyAdvanced == beforeDraft, "facet calculation preserves shared filter state")
+check(crossLevel.level.max == 35, "level facet respects active kills minimum")
+local override = A.HistoryFacetBounds("level", { killsMin = 15 })
+check(override.level.max == 35, "explicit draft facets match active-filter bounds")
+local crossKills = A.HistoryFacetBounds("kills")
+check(crossKills.kills.max == 20, "kills facet excludes its own minimum")
+A.view.historyAdvanced = nil
+
+A.view.class = "mage"
+A.view.historyAdvanced = { levelMin = 59, killsMin = 15 }
+check(A.ReconcileHistoryMetricFilters(), "class change invalidates incompatible numeric filters")
+check(
+    A.view.historyAdvanced.levelMin == nil and A.view.historyAdvanced.killsMin == nil,
+    "mage scope clears warrior-only level and kill ranges"
+)
+A.view.class = nil
+A.view.historyAdvanced = nil
 
 local parsed, errorText = A.ParseHistoryFilters({
     map = "Feralas",
@@ -254,7 +314,7 @@ for _, lang in ipairs(A.languages) do
 end
 -- Multiplayer context comes only from saved observations, never absence-as-solo.
 check(A.CoopLabel(a) == nil, "legacy run without group evidence has unknown mode")
-check(A.RunMode(a) == "solo", "unflagged historical run is inferred solo")
+check(A.RunMode(a) == "unknown", "unflagged historical run remains unknown")
 a.modeTrackingVersion = 2
 check(A.RunMode(a) == "unknown", "tracked run without evidence remains unknown")
 a.coop = { peers = {}, latest = {}, accounted = {}, soloObserved = true }

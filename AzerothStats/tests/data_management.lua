@@ -100,6 +100,14 @@ check(
     "active-run guards leave backup history unchanged"
 )
 A.run = nil
+-- A malformed catalogue row must not hide or delete valid neighboring snapshots.
+local catalogue = AzerothStatsAutoBackup.entries
+table.insert(catalogue, 1, { invalid = true })
+check(table.getn(A.ListDataBackups(true)) == protectedCount, "malformed backup metadata is skipped")
+check(not A.RestoreDataBackup(-999, true), "malformed backup row cannot be restored")
+check(not A.DeleteDataBackup(-999, true), "malformed backup row cannot be deleted")
+check(table.getn(catalogue) == protectedCount + 1, "malformed row remains available for recovery")
+table.remove(catalogue, 1)
 -- Corrupt stored snapshots must be rejected without replacing the live DB.
 local latestAuto = AzerothStatsAutoBackup.entries[table.getn(AzerothStatsAutoBackup.entries)]
 local validData = latestAuto.data
@@ -109,6 +117,31 @@ check(not A.RestoreDataBackup(latestAuto.id, true), "invalid snapshot cannot be 
 check(A.db == beforeCorruptRestore, "invalid restore preserves the live database")
 latestAuto.data = validData
 check(not A.RestoreDataBackup(999999, true), "unknown backup ID cannot replace the live database")
+
+-- A validated snapshot can still fail during initialization (migration,
+-- theme initialization, or a future runtime change). Restore must be atomic
+-- with respect to the active SavedVariables pointer and pending delete plan.
+local rollbackSaved, rollbackDB = AzerothStatsDB, A.db
+local rollbackPlan = { signature = "restore-rollback-test" }
+local oldInitDB = A.InitDB
+A.pendingDataPlan = rollbackPlan
+A.InitDB = function()
+    A.db = nil
+    return false
+end
+local restoreFailed, restoreMessage = A.RestoreDataBackup(latestAuto.id, true)
+A.InitDB = oldInitDB
+check(not restoreFailed, "failed initialization rejects backup restore")
+check(
+    AzerothStatsDB == rollbackSaved and A.db == rollbackDB and A.pendingDataPlan == rollbackPlan,
+    "failed restore preserves previous database pointers and pending plan"
+)
+check(
+    string.find(restoreMessage or "", "previous database preserved", 1, true) ~= nil,
+    "failed restore reports rollback to the user"
+)
+A.pendingDataPlan = nil
+
 A.db.settings.autoBackupRetention = 15
 A.db.settings.autoBackupEveryRuns = 2
 A.db.settings.autoBackupRunCounter = 0
@@ -131,6 +164,43 @@ check(
         and AzerothStatsAutoBackup.entries[1].data.settings.autoBackupRunCounter == 0,
     "successful periodic backup resets its live and persisted counters"
 )
+-- A repeated automatic request with an identical database must not multiply
+-- the saved file size. This also covers safety snapshots requested twice
+-- without an intervening data change.
+local autoBeforeDuplicate = table.getn(A.ListDataBackups(true))
+local nextIdBeforeDuplicate = AzerothStatsAutoBackup.nextId
+local duplicateOK, duplicateMessage = A.CreateDataBackup(true)
+check(duplicateOK, "identical automatic backup request succeeds")
+check(
+    table.getn(A.ListDataBackups(true)) == autoBeforeDuplicate
+        and AzerothStatsAutoBackup.nextId == nextIdBeforeDuplicate,
+    "identical automatic backup does not create a duplicate snapshot or advance its ID"
+)
+check(
+    string.find(duplicateMessage or "", "already up to date", 1, true) ~= nil,
+    "identical automatic backup explicitly reports deduplication"
+)
+-- A changed database must create a fresh automatic snapshot, and retention
+-- of one must discard only the older automatic entry (never manual backups).
+local savedSequence = A.db.sequence
+local savedRetention = A.db.settings.autoBackupRetention
+local manualBeforeRetention = table.getn(A.ListDataBackups(false))
+A.db.settings.autoBackupRetention = 1
+A.db.sequence = (A.Number(A.db.sequence) or 0) + 1
+local changedOK = A.CreateDataBackup(true)
+check(changedOK, "changed database creates a new automatic snapshot")
+check(
+    table.getn(A.ListDataBackups(true)) == 1
+        and AzerothStatsAutoBackup.nextId == nextIdBeforeDuplicate + 1
+        and AzerothStatsAutoBackup.entries[1].data.sequence == A.db.sequence,
+    "automatic retention one keeps only the latest changed snapshot"
+)
+check(
+    table.getn(A.ListDataBackups(false)) == manualBeforeRetention,
+    "automatic retention does not prune manual backups"
+)
+A.db.sequence = savedSequence
+A.db.settings.autoBackupRetention = savedRetention
 check(
     not A.RecordCompletedRunBackup({ status = "interrupted" }),
     "interrupted runs never trigger periodic backup"
@@ -156,6 +226,79 @@ local function fixture(id, class)
         counted = true,
         winCounted = true,
     }
+end
+-- Stress the real snapshot path with increasing retained histories. These are
+-- synthetic records: no player's SavedVariables are read or modified.
+-- Timing and disk-size measurements must still be performed in the native client.
+do
+    local originalRuns, originalSequence = A.db.runs, A.db.sequence
+    local originalAutomatic = AzerothStatsAutoBackup
+    local originalRetention = A.db.settings.autoBackupRetention
+    AzerothStatsAutoBackup = { schema = 2, nextId = 1, entries = {} }
+    A.db.settings.autoBackupRetention = 1
+    for _, count in ipairs({ 100, 500, 1000 }) do
+        local runs = {}
+        for index = 1, count do
+            runs[index] = fixture("stress-" .. index)
+        end
+        A.db.runs = runs
+        A.db.sequence = count
+        local ok, reason = A.CreateDataBackup(true)
+        check(ok, "snapshot accepts " .. count .. " synthetic retained runs: " .. tostring(reason))
+        local store = AzerothStatsAutoBackup
+        check(
+            table.getn(store.entries) == 1 and table.getn(store.entries[1].data.runs) == count,
+            "retention one preserves a complete " .. count .. "-run snapshot"
+        )
+        -- Stored snapshots must be independent: later mutations to the live
+        -- database cannot silently rewrite an existing recovery point.
+        local savedDamage = runs[1].values.damage
+        runs[1].values.damage = savedDamage + 1
+        check(
+            store.entries[1].data.runs[1].values.damage == savedDamage,
+            "stored " .. count .. "-run snapshot is independent from live mutations"
+        )
+        runs[1].values.damage = savedDamage
+        local beforeId = store.nextId
+        check(A.CreateDataBackup(true), "duplicate stress snapshot is accepted")
+        check(
+            store.nextId == beforeId and table.getn(store.entries) == 1,
+            "duplicate " .. count .. "-run snapshot does not increase storage"
+        )
+    end
+    -- With a large history, retention must keep three independent recovery
+    -- points in chronological order, without mutating older snapshots.
+    A.db.settings.autoBackupRetention = 3
+    for version = 1, 3 do
+        A.db.sequence = 1000 + version
+        check(A.CreateDataBackup(true), "large history version " .. version .. " snapshots")
+    end
+    local retained = AzerothStatsAutoBackup.entries
+    check(table.getn(retained) == 3, "large-history retention keeps three versions")
+    for version = 1, 3 do
+        check(
+            retained[version].data.sequence == 1000 + version
+                and table.getn(retained[version].data.runs) == 1000,
+            "large-history recovery point " .. version .. " preserves its version and runs"
+        )
+    end
+    -- A malformed live tree must fail closed and preserve the last valid
+    -- recovery catalogue, rather than replace it with a partial snapshot.
+    local lastBackupId = retained[3].id
+    local lastBackupSequence = retained[3].data.sequence
+    A.db.runs[1].cycle = A.db.runs[1]
+    local cyclicOK = A.CreateDataBackup(true)
+    A.db.runs[1].cycle = nil
+    check(not cyclicOK, "cyclic large-history data cannot be backed up")
+    check(
+        table.getn(retained) == 3
+            and retained[3].id == lastBackupId
+            and retained[3].data.sequence == lastBackupSequence,
+        "failed large-history snapshot preserves all existing recovery points"
+    )
+    A.db.runs, A.db.sequence = originalRuns, originalSequence
+    A.db.settings.autoBackupRetention = originalRetention
+    AzerothStatsAutoBackup = originalAutomatic
 end
 local a, b, c = fixture("delete-a"), fixture("keep-fav"), fixture("keep-mage", "mage")
 A.db.runs = { a, b, c }

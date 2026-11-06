@@ -176,9 +176,9 @@ check(
 )
 check(string.find(evidenceModel.note, "1", 1, true) ~= nil, "Nemesis preserves unknown deaths")
 
--- Legacy completed runs without co-op evidence are inferred solo for presentation.
+-- Historical runs without native mode evidence remain Unknown.
 A.view = { historyKind = "solo" }
-check(A.MatchesHistory(r), "legacy completed run appears under solo")
+check(not A.MatchesHistory(r), "solo filter excludes legacy run without evidence")
 r.modeTrackingVersion = 2
 A.view.historyKind = "unknown"
 check(A.MatchesHistory(r), "new tracked run without evidence remains unknown")
