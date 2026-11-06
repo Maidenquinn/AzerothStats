@@ -90,6 +90,17 @@ check(
 )
 A.view.historyAdvanced = nil
 
+-- Facets must exclude other classes rather than advertise global maxima.
+A.view.class = "warrior"
+A.view.historyAdvanced = nil
+local warriorBounds = A.HistoryFacetBounds()
+check(warriorBounds.level.max == 35, "class facet excludes unrelated mage levels")
+A.view.class = "mage"
+local mageBounds = A.HistoryFacetBounds()
+check(mageBounds.level.max == 2, "mage facet only uses mage history")
+A.view.class = nil
+A.view.historyAdvanced = nil
+
 local parsed, errorText = A.ParseHistoryFilters({
     map = "Feralas",
     levelMin = "15",
