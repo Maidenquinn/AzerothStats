@@ -800,11 +800,17 @@ function A.ApplyThemeLayout()
         UI.profileModel:SetPoint("TOPLEFT", A.window, "TOPLEFT", 18, -118)
         UI.profileModel:SetWidth(78)
         UI.profileModel:SetHeight(78)
-        if UI.profileModel.SetPortraitZoom then
-            UI.profileModel:SetPortraitZoom(0.8)
-        end
         if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
             UI.profileModel:SetUnit("player")
+        end
+        if UI.profileModel.SetCamera then
+            UI.profileModel:SetCamera(0)
+        end
+        if UI.profileModel.SetPortraitZoom then
+            UI.profileModel:SetPortraitZoom(1)
+        end
+        if UI.profileModel.SetPosition then
+            UI.profileModel:SetPosition(0, 0, 0)
         end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
@@ -1405,7 +1411,7 @@ function A.RefreshUI()
                         end
                         value = math.max(limits.min, math.min(limits.max, value))
                         slider:SetValue(value)
-                        input:SetText(active[key .. bound] == nil and "" or tostring(value))
+                        input:SetText(tostring(value))
                         slider:Show()
                     else
                         input:SetText("")
@@ -1420,6 +1426,17 @@ function A.RefreshUI()
             end
             UI.advancedPanel.syncingDraft = false
             UI.advancedPanel.initialized = true
+        end
+        -- The visible date picker is a button; its hidden EditBox is not a label.
+        -- Refresh from applied state whenever the panel is opened or repainted.
+        if UI.advancedPanel.initialized then
+            local selectedDates = A.view.historyAdvanced or {}
+            for _, picker in ipairs({ UI.historyDateFromPicker, UI.historyDateToPicker }) do
+                local value = selectedDates[picker.dateKey]
+                if value and value ~= "" then
+                    put(picker.label, value)
+                end
+            end
         end
     end
     local journal = model.report and A.view.reportSection == "Build journal"
