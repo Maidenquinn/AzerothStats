@@ -1,3 +1,12 @@
+# 2.0.2 — Combat stream safety and normalized run comparison (6 November 2026)
+
+- **Run comparison:** add per-second comparisons for recorded damage, damage taken, healing and kills, calculated only when each run has a positive recorded duration and the corresponding metric.
+- **Missing/partial data:** leave absent values unavailable instead of silently treating them as zero; retain partial-run context.
+- **Combat Intelligence:** cap malformed oversized native event pages to 256 events and flag truncated data; reject negative or invalid dropped-event counts.
+- **Regression tests:** cover oversized combat batches, invalid drop counters, normalized comparison deltas and zero-duration runs.
+- **Validation:** offline checks and Lot 1 regression passed on commit `af2506c` (Actions run 42279116019); owner confirmed seven native acceptance checks PASS.
+- **Limits:** combat event collection is opt-in, partial, and not a replacement for the game's official damage meter; no new game API for confirmed killing blows, healing events or damage direction is assumed.
+
 # 2.0.1 — Community feedback and saved-data recovery (5 November 2026)
 
 - **Run history:** show legacy completed solo runs as Solo when there is no cooperative evidence; preserve saved data without rewriting old runs.
