@@ -7,7 +7,7 @@ local function log(kind, value)
     if string.len(value) > 220 then value = string.sub(value, 1, 220) end
     if type(AzerothDeathProbeLog) ~= "table" then AzerothDeathProbeLog = {} end
     table.insert(AzerothDeathProbeLog, string.format("%.2f [%s] %s", GetTime(), kind, value))
-    while table.getn(AzerothDeathProbeLog) > 100 do table.remove(AzerothDeathProbeLog, 1) end
+    while table.getn(AzerothDeathProbeLog) > 500 do table.remove(AzerothDeathProbeLog, 1) end
 end
 local function inspect()
     local count = 0
@@ -40,7 +40,11 @@ probe:SetScript("OnEvent", function()
         return
     end
     if not armed then return end
-    if event == "PLAYER_DEAD" then log("EVENT", event); inspect(); return end
+    if event == "PLAYER_DEAD" then
+        log("EVENT", event)
+        inspect()
+        return
+    end
     if type(arg1) == "string" then log(event, arg1) end
 end)
 SLASH_AZEROTHDEATHPROBE1 = "/asdiag"
