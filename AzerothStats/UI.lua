@@ -1351,6 +1351,23 @@ function A.RefreshUI()
     selected(UI.historyReset, browsingHistory and A.view.historyAdvancedOpen)
     if UI.advancedPanel then
         show(UI.advancedPanel, browsingHistory and A.view.historyAdvancedOpen == true)
+        if browsingHistory and A.view.historyAdvancedOpen then
+            local scope = table.concat({
+                tostring(A.view.class or ""),
+                tostring(A.view.difficulty or ""),
+                tostring(A.view.historyResult or ""),
+                tostring(A.view.historyKind or ""),
+                tostring(A.view.historySearch or ""),
+                tostring((A.view.historyAdvanced or {}).map or ""),
+                tostring((A.view.historyAdvanced or {}).dateFrom or ""),
+                tostring((A.view.historyAdvanced or {}).dateTo or ""),
+                tostring(table.getn(A.db.runs or {})),
+            }, "|")
+            if UI.advancedPanel.scope ~= scope then
+                UI.advancedPanel.scope = scope
+                UI.advancedPanel.initialized = false
+            end
+        end
         if browsingHistory and A.view.historyAdvancedOpen and not UI.advancedPanel.initialized then
             local active = A.view.historyAdvanced or {}
             for key, field in pairs(UI.advancedFields) do
