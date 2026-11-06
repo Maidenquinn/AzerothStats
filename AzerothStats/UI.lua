@@ -803,19 +803,23 @@ function A.ApplyThemeLayout()
         if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
             UI.profileModel:SetUnit("player")
         end
-        -- The native model defaults to a full-body view. Use portrait
-        -- zoom if implemented, and magnify the model itself as a fallback.
+        -- SetUnit is required for live armor/appearance. On this client,
+        -- SetModelScale/SetPortraitZoom alone leave the full-body camera
+        -- unchanged. Set the portrait camera and its distance explicitly.
         if UI.profileModel.SetCamera then
-            UI.profileModel:SetCamera(0)
+            UI.profileModel:SetCamera(1)
         end
         if UI.profileModel.SetPortraitZoom then
             UI.profileModel:SetPortraitZoom(1)
         end
+        if UI.profileModel.SetCamDistanceScale then
+            UI.profileModel:SetCamDistanceScale(0.28)
+        end
         if UI.profileModel.SetModelScale then
-            UI.profileModel:SetModelScale(2.6)
+            UI.profileModel:SetModelScale(4)
         end
         if UI.profileModel.SetPosition then
-            UI.profileModel:SetPosition(0, 0, -0.65)
+            UI.profileModel:SetPosition(0, 0, -0.25)
         end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
