@@ -803,23 +803,15 @@ function A.ApplyThemeLayout()
         if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
             UI.profileModel:SetUnit("player")
         end
-        -- SetUnit is required for live armor/appearance. On this client,
-        -- SetModelScale/SetPortraitZoom alone leave the full-body camera
-        -- unchanged. Set the portrait camera and its distance explicitly.
+        -- WoW camera 0 is the built-in FACE camera. Camera 1 is the
+        -- full-body dressing-room camera (the cause of the previous bug).
+        -- Never apply body model scaling or positional offsets afterwards:
+        -- those overrides defeat the portrait framing on older clients.
         if UI.profileModel.SetCamera then
-            UI.profileModel:SetCamera(1)
+            UI.profileModel:SetCamera(0)
         end
         if UI.profileModel.SetPortraitZoom then
             UI.profileModel:SetPortraitZoom(1)
-        end
-        if UI.profileModel.SetCamDistanceScale then
-            UI.profileModel:SetCamDistanceScale(0.28)
-        end
-        if UI.profileModel.SetModelScale then
-            UI.profileModel:SetModelScale(4)
-        end
-        if UI.profileModel.SetPosition then
-            UI.profileModel:SetPosition(0, 0, -0.25)
         end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
