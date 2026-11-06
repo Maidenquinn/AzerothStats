@@ -125,3 +125,12 @@ Owner has explicitly accepted the current portrait and history filters and reque
 8. **Visuals:** review all five themes in FR/EN at normal and narrow widths; verify Scholomance, the accepted 3D portrait, HUD and filters without changing their geometry.
 
 **Pass criteria:** report observations for all steps, including any skipped destructive test. Owner approval is required before changing the draft PR into a release.
+
+
+## Owner acceptance — 6 November 2026
+
+- Owner explicitly approved the delivered 2.0.1 native review build (`AzerothStats-2.0.1-pr-review`, GitHub Actions run `42246208232`) and authorized moving on to the next workstream.
+- The run completed with `offline-checks` and `lot1-regression` both successful. This approval closes the requested stabilization review; it does not establish that every optional destructive backup scenario was exercised.
+- Known limitation accepted for now: without reliable native final-blow evidence, Nemesis must continue distinguishing confirmed, probable and unknown. Do not infer confirmed attribution from the game's death-screen pixels or a recent combat hit.
+- Freeze previously accepted portrait, HUD, filters, history persistence and data-integrity behavior. Any new changes must have targeted regression coverage.
+- Keep the pull request unmerged and do not publish a public release automatically; separate the next feature lot from this stabilization review.
