@@ -236,11 +236,7 @@ do
     local originalRetention = A.db.settings.autoBackupRetention
     AzerothStatsAutoBackup = { schema = 2, nextId = 1, entries = {} }
     A.db.settings.autoBackupRetention = 1
-    local previousCount = 0
     for _, count in ipairs({ 100, 500, 1000 }) do
-        for index = previousCount + 1, count do
-            A.db.runs[index] = nil
-        end
         local runs = {}
         for index = 1, count do
             runs[index] = fixture("stress-" .. index)
@@ -261,7 +257,6 @@ do
             store.nextId == beforeId and table.getn(store.entries) == 1,
             "duplicate " .. count .. "-run snapshot does not increase storage"
         )
-        previousCount = count
     end
     A.db.runs, A.db.sequence = originalRuns, originalSequence
     A.db.settings.autoBackupRetention = originalRetention
