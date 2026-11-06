@@ -227,6 +227,46 @@ local function fixture(id, class)
         winCounted = true,
     }
 end
+-- Stress the real snapshot path with increasing retained histories. These are
+-- synthetic records: no player's SavedVariables are read or modified.
+-- Timing and disk-size measurements must still be performed in the native client.
+do
+    local originalRuns, originalSequence = A.db.runs, A.db.sequence
+    local originalAutomatic = AzerothStatsAutoBackup
+    local originalRetention = A.db.settings.autoBackupRetention
+    AzerothStatsAutoBackup = { schema = 2, nextId = 1, entries = {} }
+    A.db.settings.autoBackupRetention = 1
+    local previousCount = 0
+    for _, count in ipairs({ 100, 500, 1000 }) do
+        for index = previousCount + 1, count do
+            A.db.runs[index] = nil
+        end
+        local runs = {}
+        for index = 1, count do
+            runs[index] = fixture("stress-" .. index)
+        end
+        A.db.runs = runs
+        A.db.sequence = count
+        local ok, reason = A.CreateDataBackup(true)
+        check(ok, "snapshot accepts " .. count .. " synthetic retained runs: " .. tostring(reason))
+        local store = AzerothStatsAutoBackup
+        check(
+            table.getn(store.entries) == 1
+                and table.getn(store.entries[1].data.runs) == count,
+            "retention one preserves a complete " .. count .. "-run snapshot"
+        )
+        local beforeId = store.nextId
+        check(A.CreateDataBackup(true), "duplicate stress snapshot is accepted")
+        check(
+            store.nextId == beforeId and table.getn(store.entries) == 1,
+            "duplicate " .. count .. "-run snapshot does not increase storage"
+        )
+        previousCount = count
+    end
+    A.db.runs, A.db.sequence = originalRuns, originalSequence
+    A.db.settings.autoBackupRetention = originalRetention
+    AzerothStatsAutoBackup = originalAutomatic
+end
 local a, b, c = fixture("delete-a"), fixture("keep-fav"), fixture("keep-mage", "mage")
 A.db.runs = { a, b, c }
 A.db.sequence = 42
