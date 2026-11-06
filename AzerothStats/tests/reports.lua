@@ -97,7 +97,7 @@ local warriorBounds = A.HistoryFacetBounds()
 check(warriorBounds.level.max == 35, "class facet excludes unrelated mage levels")
 A.view.class = "mage"
 local mageBounds = A.HistoryFacetBounds()
-check(mageBounds.level.max == 2, "mage facet only uses mage history")
+check(mageBounds.level == nil and mageBounds.kills.max == 10, "mage facet only uses mage history")
 A.view.class = nil
 A.view.historyAdvanced = nil
 
