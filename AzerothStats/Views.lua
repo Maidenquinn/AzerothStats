@@ -572,7 +572,7 @@ function A.ReconcileHistoryMetricFilters()
     if not filters then
         return false
     end
-    local bounds = A.HistoryMetricBounds()
+    local bounds = A.HistoryFacetBounds()
     local changed = false
     for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
         local limits = bounds[key]
