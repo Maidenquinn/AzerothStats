@@ -380,10 +380,10 @@ end
 
 --- Faceted slider bounds: honor all non-numeric history criteria.
 --- Numeric fields are intentionally excluded to avoid self-locking sliders.
-function A.HistoryFacetBounds(excludedMetric)
+function A.HistoryFacetBounds(excludedMetric, filterOverride)
     local result = {}
     local scope = {}
-    for key, value in pairs(A.view.historyAdvanced or {}) do
+    for key, value in pairs(filterOverride or A.view.historyAdvanced or {}) do
         local metric = string.match(key, "^(%a+)Min$") or string.match(key, "^(%a+)Max$")
         if not metric or (excludedMetric and metric ~= excludedMetric) then
             scope[key] = value
