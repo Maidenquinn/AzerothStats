@@ -207,6 +207,34 @@ function A.ComparisonModel(model)
                 A.metricIcons[key]
             )
         end
+        -- Comparable per-second rates are derived only from finite recorded
+        -- totals and positive recorded durations; no missing total becomes zero.
+        local leftDuration = A.Number(left.values and left.values.duration)
+        local rightDuration = A.Number(right.values and right.values.duration)
+        for _, metric in ipairs({ "damage", "taken", "healing", "kills" }) do
+            local leftTotal = A.Number(left.values and left.values[metric])
+            local rightTotal = A.Number(right.values and right.values[metric])
+            local leftRate = leftDuration and leftDuration > 0 and leftTotal
+                and leftTotal / leftDuration
+                or nil
+            local rightRate = rightDuration and rightDuration > 0 and rightTotal
+                and rightTotal / rightDuration
+                or nil
+            if leftRate or rightRate then
+                local item = add(
+                    model,
+                    A.Metric(metric) .. " / " .. A.T("Per second"),
+                    "number",
+                    leftRate,
+                    rightRate,
+                    A.metricIcons[metric]
+                )
+                item.detail = A.T("Values from available samples")
+                if not leftRate or not rightRate or left.partial or right.partial then
+                    item.detail = item.detail .. " · " .. A.T("Partial")
+                end
+            end
+        end
     elseif section == "Equipment" then
         for slot = 1, 19 do
             local a, b = equipment(left, slot), equipment(right, slot)
