@@ -75,10 +75,10 @@ table.remove(A.db.runs)
 A.view.historyAdvanced = { levelMin = 50, levelMax = 90, killsMax = 99999, dateFrom = "2026-01-01" }
 check(A.ReconcileHistoryMetricFilters(), "stale bounds reconciled after retention change")
 check(
-    A.view.historyAdvanced.levelMin == 35
-        and A.view.historyAdvanced.levelMax == 35
-        and A.view.historyAdvanced.killsMax == bounds.kills.max,
-    "numeric filters clamp to retained observed maxima"
+    A.view.historyAdvanced.levelMin == nil
+        and A.view.historyAdvanced.levelMax == nil
+        and A.view.historyAdvanced.killsMax == nil,
+    "stale numeric limits are removed instead of hiding retained runs"
 )
 check(A.view.historyAdvanced.dateFrom == "2026-01-01", "date filters preserved on reconciliation")
 check(not A.ReconcileHistoryMetricFilters(), "reconciliation is idempotent")
