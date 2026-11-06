@@ -101,8 +101,12 @@ check(mageBounds.level == nil and mageBounds.kills.max == 10, "mage facet only u
 -- Cross-facets exclude only their own numeric field, retaining the others.
 A.view.class = nil
 A.view.historyAdvanced = { killsMin = 15 }
+local beforeDraft = A.view.historyAdvanced
 local crossLevel = A.HistoryFacetBounds("level")
+check(A.view.historyAdvanced == beforeDraft, "facet calculation preserves shared filter state")
 check(crossLevel.level.max == 35, "level facet respects active kills minimum")
+local override = A.HistoryFacetBounds("level", { killsMin = 15 })
+check(override.level.max == 35, "explicit draft facets match active-filter bounds")
 local crossKills = A.HistoryFacetBounds("kills")
 check(crossKills.kills.max == 20, "kills facet excludes its own minimum")
 A.view.historyAdvanced = nil
