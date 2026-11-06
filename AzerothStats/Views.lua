@@ -641,19 +641,20 @@ local function history(model)
     for i = table.getn(A.db.runs), 1, -1 do
         local run = A.db.runs[i]
         local id = run.id
+        local values = run.values or {}
         if A.MatchesHistory(run) then
             retained = retained + 1
             if run.result == "victory" then
                 wins = wins + 1
             end
-            if A.Number(run.values.duration) then
-                duration = duration + run.values.duration
+            if A.Number(values.duration) then
+                duration = duration + values.duration
                 coverage = coverage + 1
             end
             local item = row(
                 model.rows,
                 A.ZoneName(run),
-                A.Duration(run.values.duration),
+                A.Duration(values.duration),
                 A.Date(run.startedAt)
                     .. " · "
                     .. A.ClassName(run.class)
@@ -669,15 +670,15 @@ local function history(model)
             item.zone, item.result = run.zone, run.result or run.status
             item.extra = A.Metric("level")
                 .. " "
-                .. A.Format(run.values.level)
+                .. A.Format(values.level)
                 .. " · "
                 .. A.Metric("kills")
                 .. " "
-                .. A.Short(run.values.kills)
+                .. A.Short(values.kills)
                 .. " · "
                 .. A.Metric("gold")
                 .. " "
-                .. A.Short(run.values.gold)
+                .. A.Short(values.gold)
             item.extra = item.extra .. " · " .. A.HeroicLabel(run)
             local coop = A.CoopLabel(run)
             if coop then
@@ -688,11 +689,11 @@ local function history(model)
                 .. " · "
                 .. A.Metric("kills")
                 .. " "
-                .. A.Format(run.values.kills)
+                .. A.Format(values.kills)
                 .. " · "
                 .. A.Metric("level")
                 .. " "
-                .. A.Format(run.values.level)
+                .. A.Format(values.level)
         end
     end
     model.subtitle = A.T("Retained history only") .. " · " .. A.Format(retained)
