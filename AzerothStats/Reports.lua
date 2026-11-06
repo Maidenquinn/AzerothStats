@@ -214,11 +214,15 @@ function A.ComparisonModel(model)
         for _, metric in ipairs({ "damage", "taken", "healing", "kills" }) do
             local leftTotal = A.Number(left.values and left.values[metric])
             local rightTotal = A.Number(right.values and right.values[metric])
-            local leftRate = leftDuration and leftDuration > 0 and leftTotal
-                and leftTotal / leftDuration
+            local leftRate = leftDuration
+                    and leftDuration > 0
+                    and leftTotal
+                    and leftTotal / leftDuration
                 or nil
-            local rightRate = rightDuration and rightDuration > 0 and rightTotal
-                and rightTotal / rightDuration
+            local rightRate = rightDuration
+                    and rightDuration > 0
+                    and rightTotal
+                    and rightTotal / rightDuration
                 or nil
             if leftRate or rightRate then
                 local item = add(
