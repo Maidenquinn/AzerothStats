@@ -250,6 +250,15 @@ do
             table.getn(store.entries) == 1 and table.getn(store.entries[1].data.runs) == count,
             "retention one preserves a complete " .. count .. "-run snapshot"
         )
+        -- Stored snapshots must be independent: later mutations to the live
+        -- database cannot silently rewrite an existing recovery point.
+        local savedDamage = runs[1].values.damage
+        runs[1].values.damage = savedDamage + 1
+        check(
+            store.entries[1].data.runs[1].values.damage == savedDamage,
+            "stored " .. count .. "-run snapshot is independent from live mutations"
+        )
+        runs[1].values.damage = savedDamage
         local beforeId = store.nextId
         check(A.CreateDataBackup(true), "duplicate stress snapshot is accepted")
         check(
