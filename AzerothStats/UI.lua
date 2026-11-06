@@ -773,7 +773,9 @@ function A.ApplyThemeLayout()
     show(UI.brandGlyph, id ~= "essentiel")
     -- Sidebar model always represents the logged-in character.
     show(UI.profileGlyph, not UI.profileModel)
-    show(UI.profileModel, UI.profileModel ~= nil)
+    if UI.profileModel then
+        show(UI.profileModel, true)
+    end
     UI.brandGlyph:ClearAllPoints()
     UI.brandGlyph:SetPoint(
         "TOPLEFT",
