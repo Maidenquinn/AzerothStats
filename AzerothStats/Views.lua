@@ -384,7 +384,10 @@ function A.HistoryFacetBounds(excludedMetric, filterOverride)
     local result = {}
     local scope = {}
     for key, value in pairs(filterOverride or A.view.historyAdvanced or {}) do
-        local metric = string.match(key, "^(%a+)Min$") or string.match(key, "^(%a+)Max$")
+        local _, _, metric = string.find(key, "^(%a+)Min$")
+        if not metric then
+            _, _, metric = string.find(key, "^(%a+)Max$")
+        end
         if not metric or (excludedMetric and metric ~= excludedMetric) then
             scope[key] = value
         end
