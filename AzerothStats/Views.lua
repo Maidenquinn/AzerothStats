@@ -386,7 +386,7 @@ function A.HistoryFacetBounds(excludedMetric)
     local previous = view.historyAdvanced
     local scope = {}
     for key, value in pairs(previous or {}) do
-        local metric = string.match(key, "^(%a+)[Mm][ia][nx]$")
+        local metric = string.match(key, "^(%a+)Min$") or string.match(key, "^(%a+)Max$")
         if not metric or (excludedMetric and metric ~= excludedMetric) then
             scope[key] = value
         end
