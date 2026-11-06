@@ -803,13 +803,20 @@ function A.ApplyThemeLayout()
         if UI.profileModel.SetUnit and UnitExists and UnitExists("player") then
             UI.profileModel:SetUnit("player")
         end
+        -- The native model defaults to a full-body view. Use portrait
+        -- zoom if implemented, and magnify the model itself as a fallback.
         if UI.profileModel.SetCamera then
-            UI.profileModel:SetCamera(1)
+            UI.profileModel:SetCamera(0)
         end
         if UI.profileModel.SetPortraitZoom then
-            UI.profileModel:SetPortraitZoom(1.4)
+            UI.profileModel:SetPortraitZoom(1)
         end
-        -- Portrait camera is preferred to a full-body world camera.
+        if UI.profileModel.SetModelScale then
+            UI.profileModel:SetModelScale(2.6)
+        end
+        if UI.profileModel.SetPosition then
+            UI.profileModel:SetPosition(0, 0, -0.65)
+        end
     elseif SetPortraitTexture and UnitExists and UnitExists("player") then
         SetPortraitTexture(UI.profileGlyph, "player")
     else
@@ -1798,6 +1805,15 @@ function A.RefreshUI()
     for _, b in ipairs(UI.controls) do
         if b.key and b.key ~= "" then
             put(b.label, A.T(b.key))
+        end
+    end
+    -- Calendar selection is draft state until Apply; never read from the
+    -- previously committed filters while the panel is open.
+    if UI.historyDateFromPicker and UI.historyDateToPicker then
+        for _, picker in ipairs({ UI.historyDateFromPicker, UI.historyDateToPicker }) do
+            local input = UI.advancedFields and UI.advancedFields[picker.dateKey]
+            local value = input and input:GetText() or ""
+            put(picker.label, value ~= "" and value or "YYYY-MM-DD")
         end
     end
 end
@@ -3200,6 +3216,9 @@ function A.BuildUI()
         end)
         iconButton:SetFrameLevel(advanced:GetFrameLevel() + 13)
         picker.dateKey = target
+        -- Dynamic button text must never be overwritten by the global
+        -- translation refresh (UI.controls), which runs every few seconds.
+        picker.key = nil
         return picker
     end
     UI.historyDateFromPicker = addDatePicker("dateFrom", 260, 158)
