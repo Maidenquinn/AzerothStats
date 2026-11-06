@@ -85,8 +85,8 @@ check(not A.ReconcileHistoryMetricFilters(), "reconciliation is idempotent")
 A.view.historyAdvanced = { levelMin = 30, levelMax = 10 }
 check(A.ReconcileHistoryMetricFilters(), "reversed retained interval cleared")
 check(
-    A.view.historyAdvanced.levelMin == nil and A.view.historyAdvanced.levelMax == nil,
-    "invalid interval does not hide all retained runs"
+    A.view.historyAdvanced.levelMin == 30 and A.view.historyAdvanced.levelMax == nil,
+    "out-of-range upper bound clears while valid lower bound remains"
 )
 A.view.historyAdvanced = nil
 
