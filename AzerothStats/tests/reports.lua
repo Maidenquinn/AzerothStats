@@ -98,6 +98,13 @@ check(warriorBounds.level.max == 35, "class facet excludes unrelated mage levels
 A.view.class = "mage"
 local mageBounds = A.HistoryFacetBounds()
 check(mageBounds.level == nil and mageBounds.kills.max == 10, "mage facet only uses mage history")
+A.view.class = "mage"
+A.view.historyAdvanced = { levelMin = 59, killsMin = 15 }
+check(A.ReconcileHistoryMetricFilters(), "class change invalidates incompatible numeric filters")
+check(
+    A.view.historyAdvanced.levelMin == nil and A.view.historyAdvanced.killsMin == nil,
+    "mage scope clears warrior-only level and kill ranges"
+)
 A.view.class = nil
 A.view.historyAdvanced = nil
 
