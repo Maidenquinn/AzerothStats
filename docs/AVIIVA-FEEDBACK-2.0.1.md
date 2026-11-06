@@ -103,3 +103,25 @@ Owner has explicitly accepted the current portrait and history filters and reque
 4. Re-run package checks, full CI and a single combined native recipe, then request explicit owner acceptance before merging or publishing 2.0.1.
 
 **Status:** stabilization plan recorded, not a claim that all gates have passed.
+
+
+## Native checkpoint and backup stress regression — 6 November 2026
+
+- Owner launched the 2.0.1 stabilization ZIP using the **usual SavedVariables with all existing runs**, reporting normal startup and no obvious problems. This validates a startup smoke test only; it does not prove every aggregate or restore path.
+- The CI for `9c88d0f` and `d3fbf4c` passed both `offline-checks` and `lot1-regression`.
+- The synthetic backup regression now covers 100, 500 and 1000 retained runs, independent deep snapshots after live mutation, exact automatic deduplication, retention of one, and three separate 1000-run recovery points with distinct sequence values.
+- No shipped addon behavior was changed by these test commits. The previously delivered stabilization ZIP remains a valid native test build for the same addon code.
+- **Not yet demonstrated:** real SavedVariables file-size reduction, frame-time measurements, a destructive restore on a disposable real save, or native Nemesis/Partial/Sync behavior. These remain release gates, not claims of success.
+
+### Next owner-facing native recipe (non-destructive first)
+
+1. **Before testing:** fully exit the game, copy the actual `AzerothStats.lua` SavedVariables file to a safe location, and record its byte size. Never delete or restore on the only copy.
+2. **Baseline:** open My Runs, note retained-run count, totals, favorites and current backup IDs. Verify normal navigation and existing history filters.
+3. **Backups:** between runs, create one manual backup; record the delay and resulting backup ID. Trigger a second automatic snapshot without changes and verify the duplicate is not retained. After a normal exit, compare the new SavedVariables byte size.
+4. **Reload:** restart the game and check that runs, totals, favorites and backup IDs persist; verify no freezes or Lua errors. Record approximate backup/restore responsiveness rather than inventing timings.
+5. **Disposable-save-only restore:** on a separate copied test save, delete one known run and restore the prior backup. Verify its return and check totals/favorites. Never run this step on the only real save.
+6. **Nemesis:** compare observed/probable/confirmed counts against the available native combat evidence. A probable attribution is not an explicit confirmed kill.
+7. **Partial/Sync:** inspect an incomplete run and one co-op run. Partial means insufficient observed evidence; Sync refers to synchronized party snapshots, not automatic recovery of missed runs.
+8. **Visuals:** review all five themes in FR/EN at normal and narrow widths; verify Scholomance, the accepted 3D portrait, HUD and filters without changing their geometry.
+
+**Pass criteria:** report observations for all steps, including any skipped destructive test. Owner approval is required before changing the draft PR into a release.
