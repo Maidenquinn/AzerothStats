@@ -47,3 +47,17 @@ check(
     A.ExportRunV1({ id = "x", values = { damage = -10 } }).metrics.damage.value == -10,
     "negative retained values are not silently rewritten"
 )
+
+-- Public lookup is explicitly invoked, bounded to retained history, and
+-- never creates another SavedVariables root or leaks a database reference.
+local previousDb = A.db
+A.db = { runs = { original } }
+local found = A.ExportRetainedRunV1("azstats-17")
+check(found and found.run.localId == "azstats-17", "retained run lookup")
+check(found ~= original and found.metrics ~= original.values, "lookup isolated")
+check(A.ExportRetainedRunV1("missing") == nil, "missing retained run")
+check(A.ExportRetainedRunV1("") == nil, "empty lookup rejected")
+check(A.ExportRetainedRunV1(string.rep("x", 81)) == nil, "oversized lookup rejected")
+A.db = nil
+check(A.ExportRetainedRunV1("azstats-17") == nil, "disabled DB yields no export")
+A.db = previousDb
