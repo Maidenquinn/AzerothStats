@@ -53,6 +53,10 @@ function A.ExportRunV1(run)
     if heroic == nil or heroic < 0 or heroic > 5 or heroic ~= math.floor(heroic) then
         heroic = nil
     end
+    local partial = nil
+    if type(run.partial) == "boolean" then
+        partial = run.partial
+    end
     return {
         schemaVersion = "1.0.0",
         source = { addon = "AzerothStats", version = A.version },
@@ -64,7 +68,7 @@ function A.ExportRunV1(run)
             heroic = heroic,
             status = scalar(run.status, 32),
             outcome = scalar(run.result, 32),
-            partial = type(run.partial) == "boolean" and run.partial or nil,
+            partial = partial,
             startedAt = number(run.startedAt),
             endedAt = number(run.endedAt),
         },
