@@ -71,3 +71,21 @@ function A.ExportRunV1(run)
         metrics = metrics,
     }
 end
+
+-- Resolve an owned retained run by local ID, without exposing the database or
+-- accepting caller-owned tables. Explicit invocation only; no automatic export.
+function A.ExportRetainedRunV1(localId)
+    if type(localId) ~= "string" or string.len(localId) == 0 or string.len(localId) > 80 then
+        return nil
+    end
+    local database = A.db
+    if type(database) ~= "table" or type(database.runs) ~= "table" then
+        return nil
+    end
+    for _, run in ipairs(database.runs) do
+        if type(run) == "table" and run.id == localId then
+            return A.ExportRunV1(run)
+        end
+    end
+    return nil
+end
