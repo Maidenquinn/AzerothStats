@@ -3,7 +3,7 @@
 Status: experimental 2.0.3 development contract; subject to review with Rakesh. Not an uploader format or an on-disk export.
 
 ## Entry point
-`AzerothStats.ExportRunV1(run)` returns a new Lua table or nil for an invalid input. The module is loaded from `InteropExport.lua`. It does not write to SavedVariables or disk, transmit data, or depend on WoW Logs AS. Consumers must not assume the projection is automatically serialized.
+`AzerothStats.ExportRunV1(run)` returns a new Lua table or nil for an invalid input. The module is loaded from `InteropExport.lua`. For an explicitly requested retained local run ID, `AzerothStats.ExportRetainedRunV1(localId)` resolves the run in the current validated in-memory database and returns the same isolated projection; missing/pruned IDs return nil. This lookup does not expose the database table. It does not write to SavedVariables or disk, transmit data, or depend on WoW Logs AS. Consumers must not assume the projection is automatically serialized.
 
 ## Shape
 - `schemaVersion`: string `1.0.0`
