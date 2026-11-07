@@ -8,7 +8,7 @@ local function number(value)
     return value
 end
 local function scalar(value, limit)
-    if type(value) == "string" and string.len(value) <= limit then
+    if type(value) == "string" and string.len(value) > 0 and string.len(value) <= limit then
         return value
     end
     return nil
@@ -64,7 +64,7 @@ function A.ExportRunV1(run)
             heroic = heroic,
             status = scalar(run.status, 32),
             outcome = scalar(run.result, 32),
-            partial = run.partial == true,
+            partial = type(run.partial) == "boolean" and run.partial or nil,
             startedAt = number(run.startedAt),
             endedAt = number(run.endedAt),
         },
