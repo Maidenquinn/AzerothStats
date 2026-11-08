@@ -75,6 +75,9 @@ check(A.ExportRetainedRunV1("azstats-17").run.hero == nil, "lookup omits charact
 A.db.runs[2] = { id = "azstats-17", values = { damage = 999 } }
 check(A.ExportRetainedRunV1("azstats-17") == nil, "duplicate local IDs are ambiguous")
 A.db.runs[2] = nil
+A.db.runs[3] = { id = "azstats-17" }
+check(A.ExportRetainedRunV1("azstats-17") == nil, "sparse duplicate local IDs rejected")
+A.db.runs[3] = nil
 check(A.ExportRetainedRunV1("") == nil, "empty lookup rejected")
 check(A.ExportRetainedRunV1(string.rep("x", 81)) == nil, "oversized lookup rejected")
 A.db = { runs = setmetatable({ original }, {}) }
