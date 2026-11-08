@@ -148,12 +148,12 @@ end
 local function jsonString(value)
     local replacements = {
         [34] = '\\"',
-        [92] = '\\\\',
-        [8] = '\\b',
-        [9] = '\\t',
-        [10] = '\\n',
-        [12] = '\\f',
-        [13] = '\\r',
+        [92] = "\\\\",
+        [8] = "\\b",
+        [9] = "\\t",
+        [10] = "\\n",
+        [12] = "\\f",
+        [13] = "\\r",
     }
     local output = { '"' }
     for i = 1, string.len(value) do
