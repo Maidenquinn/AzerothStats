@@ -108,7 +108,10 @@ check(A.ExportRunV1(original).run.nativeRunId == nil, "no retroactive native att
 local code = A.ExportCodeV1(original)
 check(type(code) == "string" and string.sub(code, 1, 6) == "AZST1:", "AZST1 prefix")
 check(string.find(code, '"v":1', 1, true) ~= nil, "versioned envelope")
-check(string.find(code, '"kills":{"availability":"available","value":0', 1, true) ~= nil, "zero encoded")
+check(
+    string.find(code, '"kills":{"availability":"available","value":0', 1, true) ~= nil,
+    "zero encoded"
+)
 check(string.find(code, '"gold":{"availability":"unavailable"}', 1, true) ~= nil, "missing encoded")
 check(string.find(code, '"nativeRunId":null', 1, true) ~= nil, "unverified native ID null")
 check(string.find(code, "PrivateHero", 1, true) == nil, "hero excluded")
@@ -118,7 +121,7 @@ check(string.find(code, "Private event", 1, true) == nil, "events excluded")
 check(A.ExportCodeV1(original) == code, "deterministic code")
 local escaped = A.ExportCodeV1({ id = 'quoted"\\id' })
 check(escaped and string.find(escaped, '\\"', 1, true), "quote escaped")
-check(escaped and string.find(escaped, '\\\\', 1, true), "backslash escaped")
+check(escaped and string.find(escaped, "\\\\", 1, true), "backslash escaped")
 check(A.ExportCodeV1({ id = string.rep("x", 81) }) == nil, "oversized ID rejected")
 check(A.ExportCodeV1({}) == nil, "missing ID rejected for code")
 A.db = { runs = { original } }
