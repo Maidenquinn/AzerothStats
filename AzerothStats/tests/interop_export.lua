@@ -26,8 +26,12 @@ check(result.run.localId == "azstats-17", "local identity")
 check(result.run.nativeRunId == nil, "native identity unverified")
 check(result.run.partial == false, "explicit complete coverage preserved")
 check(result.run.status == "ended" and result.run.outcome == "victory", "known lifecycle retained")
-local unknownLifecycle = A.ExportRunV1({ id = "opaque", status = "PrivateStatus", result = "PrivateResult" })
-check(unknownLifecycle.run.status == nil and unknownLifecycle.run.outcome == nil, "unknown lifecycle omitted")
+local unknownLifecycle =
+    A.ExportRunV1({ id = "opaque", status = "PrivateStatus", result = "PrivateResult" })
+check(
+    unknownLifecycle.run.status == nil and unknownLifecycle.run.outcome == nil,
+    "unknown lifecycle omitted"
+)
 check(A.ExportRunV1({ id = "unknown" }).run.partial == nil, "missing coverage remains unknown")
 check(
     A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
