@@ -13,6 +13,14 @@ local function scalar(value, limit)
     end
     return nil
 end
+local function enum(value, allowed)
+    if type(value) == "string" and allowed[value] then
+        return value
+    end
+    return nil
+end
+local statuses = { active = true, ended = true, interrupted = true, terminal = true }
+local outcomes = { victory = true, defeat = true, left = true }
 local function metric(values, key)
     local value = type(values) == "table" and number(values[key]) or nil
     if value == nil then
@@ -66,8 +74,8 @@ function A.ExportRunV1(run)
             zone = scalar(run.zone, 80),
             class = scalar(run.class, 40),
             heroic = heroic,
-            status = scalar(run.status, 32),
-            outcome = scalar(run.result, 32),
+            status = enum(run.status, statuses),
+            outcome = enum(run.result, outcomes),
             partial = partial,
             startedAt = number(run.startedAt),
             endedAt = number(run.endedAt),
@@ -83,7 +91,12 @@ function A.ExportRetainedRunV1(localId)
         return nil
     end
     local database = A.db
-    if type(database) ~= "table" or type(database.runs) ~= "table" then
+    if
+        type(database) ~= "table"
+        or getmetatable(database)
+        or type(database.runs) ~= "table"
+        or getmetatable(database.runs)
+    then
         return nil
     end
     local matched = nil
