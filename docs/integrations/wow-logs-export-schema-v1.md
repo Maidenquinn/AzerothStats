@@ -11,7 +11,7 @@ Status: experimental 2.0.3 development contract; subject to review with Rakesh. 
 - `run.localId`: existing local ID; not globally unique
 - `run.nativeRunId`: nil until native semantics are verified
 - `run.zone`, `run.class`, `run.heroic`: retained run metadata, nullable
-- `run.status`, `run.outcome`, `run.partial`: retained run status, result, and tri-state partial observation flag (`true` = partial, `false` = explicitly not partial, absent = unknown)
+- `run.status`, `run.outcome`, `run.partial`: allowlisted lifecycle values (status: `active`, `ended`, `interrupted`, `terminal`; outcome: `victory`, `defeat`, `left`; unrecognized values omitted), and tri-state partial observation flag (`true` = partial, `false` = explicitly not partial, absent = unknown)
 - `run.startedAt`, `run.endedAt`: existing numeric wall timestamps when present; units and client clock provenance need native verification
 - `metrics`: allowlisted keys duration, level, kills, gold, damage, taken, healing, peakDps, bosses, elites, guardians, chests, magnets. Each value is either `{availability="unavailable"}` or `{availability="available", value=<finite number>, provenance="retained-run"}`.
 
