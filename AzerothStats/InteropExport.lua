@@ -114,3 +114,25 @@ function A.ExportRetainedRunV1(localId)
     end
     return nil
 end
+
+-- Observe the same native field read by WoW Logs AS v0.2.2. This is a
+-- diagnostic candidate only: never attach it retroactively to a retained run.
+-- Native run ID uniqueness, reuse and reload semantics remain unverified.
+function A.InteropNativeRunCandidate()
+    local zone = AZS_ZONE
+    if type(zone) ~= "table" or getmetatable(zone) then
+        return nil
+    end
+    local id = zone.run
+    if type(id) == "string" then
+        if string.len(id) > 0 and string.len(id) <= 80 then
+            return id
+        end
+    elseif type(id) == "number" and number(id) and id >= 0 and id == math.floor(id) then
+        local value = tostring(id)
+        if string.len(value) <= 80 then
+            return value
+        end
+    end
+    return nil
+end
