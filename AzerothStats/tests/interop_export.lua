@@ -82,3 +82,21 @@ check(A.ExportRetainedRunV1("azstats-17") == nil, "metatable run list rejected")
 A.db = nil
 check(A.ExportRetainedRunV1("azstats-17") == nil, "disabled DB yields no export")
 A.db = previousDb
+
+-- Native candidate observation is intentionally separate from historical
+-- exports and never creates an identity claim or modifies the input packet.
+local previousZone = AZS_ZONE
+AZS_ZONE = { run = 42 }
+check(A.InteropNativeRunCandidate() == "42", "numeric native run candidate")
+AZS_ZONE.run = "session-abc"
+check(A.InteropNativeRunCandidate() == "session-abc", "string native run candidate")
+AZS_ZONE.run = ""
+check(A.InteropNativeRunCandidate() == nil, "empty native run candidate")
+AZS_ZONE.run = 0 / 0
+check(A.InteropNativeRunCandidate() == nil, "invalid numeric candidate")
+AZS_ZONE = setmetatable({ run = "hidden" }, {})
+check(A.InteropNativeRunCandidate() == nil, "metatable native packet rejected")
+AZS_ZONE = nil
+check(A.InteropNativeRunCandidate() == nil, "missing native packet")
+AZS_ZONE = previousZone
+check(A.ExportRunV1(original).run.nativeRunId == nil, "no retroactive native attribution")
