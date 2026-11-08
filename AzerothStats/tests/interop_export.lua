@@ -25,6 +25,9 @@ check(result and result.schemaVersion == "1.0.0", "schema version")
 check(result.run.localId == "azstats-17", "local identity")
 check(result.run.nativeRunId == nil, "native identity unverified")
 check(result.run.partial == false, "explicit complete coverage preserved")
+check(result.run.status == "ended" and result.run.outcome == "victory", "known lifecycle retained")
+local unknownLifecycle = A.ExportRunV1({ id = "opaque", status = "PrivateStatus", result = "PrivateResult" })
+check(unknownLifecycle.run.status == nil and unknownLifecycle.run.outcome == nil, "unknown lifecycle omitted")
 check(A.ExportRunV1({ id = "unknown" }).run.partial == nil, "missing coverage remains unknown")
 check(
     A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
@@ -70,6 +73,8 @@ check(A.ExportRetainedRunV1("azstats-17") == nil, "duplicate local IDs are ambig
 A.db.runs[2] = nil
 check(A.ExportRetainedRunV1("") == nil, "empty lookup rejected")
 check(A.ExportRetainedRunV1(string.rep("x", 81)) == nil, "oversized lookup rejected")
+A.db = { runs = setmetatable({ original }, {}) }
+check(A.ExportRetainedRunV1("azstats-17") == nil, "metatable run list rejected")
 A.db = nil
 check(A.ExportRetainedRunV1("azstats-17") == nil, "disabled DB yields no export")
 A.db = previousDb
