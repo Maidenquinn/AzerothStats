@@ -65,6 +65,9 @@ check(found ~= original and found.metrics ~= original.values, "lookup isolated")
 check(A.ExportRetainedRunV1("missing") == nil, "missing retained run")
 check(A.ExportRetainedRunV1(17) == nil, "non-string lookup rejected")
 check(A.ExportRetainedRunV1("azstats-17").run.hero == nil, "lookup omits character name")
+A.db.runs[2] = { id = "azstats-17", values = { damage = 999 } }
+check(A.ExportRetainedRunV1("azstats-17") == nil, "duplicate local IDs are ambiguous")
+A.db.runs[2] = nil
 check(A.ExportRetainedRunV1("") == nil, "empty lookup rejected")
 check(A.ExportRetainedRunV1(string.rep("x", 81)) == nil, "oversized lookup rejected")
 A.db = nil
