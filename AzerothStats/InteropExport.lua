@@ -86,10 +86,18 @@ function A.ExportRetainedRunV1(localId)
     if type(database) ~= "table" or type(database.runs) ~= "table" then
         return nil
     end
+    local matched = nil
     for _, run in ipairs(database.runs) do
         if type(run) == "table" and run.id == localId then
-            return A.ExportRunV1(run)
+            -- Historical imports may collide. Never silently choose one run.
+            if matched then
+                return nil
+            end
+            matched = run
         end
+    end
+    if matched then
+        return A.ExportRunV1(matched)
     end
     return nil
 end
