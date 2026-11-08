@@ -28,3 +28,7 @@ Observe `AZS_ZONE.run` on new runs in the same zone/class, repeated `/reload`, r
 ## Scope
 
 No modification of WoW Logs AS, `WowLogsASDB`, or existing Azeroth Stats SavedVariables is authorized by this audit. The source ZIP contains no tests folder or uploader/server source, so uploader ingestion behavior and website merge rules remain unknown.
+
+## Read-only correlation probe (development branch)
+
+`AzerothStats.InteropNativeRunCandidate()` now reads the current `AZS_ZONE.run` scalar without persisting it, changing the tracker, or attaching it to any historical export. It accepts bounded nonempty strings and finite nonnegative integral numbers, returns a string or nil, and rejects metatable-backed packets. Its value is an observation candidate, not a verified unique identifier. `ExportRunV1(run).run.nativeRunId` deliberately remains nil until native acceptance demonstrates attribution to a specific retained run.
