@@ -100,8 +100,8 @@ function A.ExportRetainedRunV1(localId)
         return nil
     end
     local matched = nil
-    for _, run in ipairs(database.runs) do
-        if type(run) == "table" and run.id == localId then
+    for key, run in pairs(database.runs) do
+        if type(key) == "number" and key >= 1 and key == math.floor(key) and type(run) == "table" and run.id == localId then
             -- Historical imports may collide. Never silently choose one run.
             if matched then
                 return nil
