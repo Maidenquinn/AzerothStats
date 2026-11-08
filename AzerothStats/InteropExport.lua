@@ -142,3 +142,128 @@ function A.InteropNativeRunCandidate()
     end
     return nil
 end
+
+-- AZST1 is a separate, explicit paste contract. It must never be passed off as
+-- a WLAS2 payload. The encoder accepts only our own scalar projection.
+local function jsonString(value)
+    local replacements = {
+        [34] = '\\"',
+        [92] = '\\\\',
+        [8] = '\\b',
+        [9] = '\\t',
+        [10] = '\\n',
+        [12] = '\\f',
+        [13] = '\\r',
+    }
+    local output = { '"' }
+    for i = 1, string.len(value) do
+        local byte = string.byte(value, i)
+        if replacements[byte] then
+            table.insert(output, replacements[byte])
+        elseif byte < 32 then
+            table.insert(output, string.format("\\u%04x", byte))
+        else
+            table.insert(output, string.char(byte))
+        end
+    end
+    table.insert(output, '"')
+    return table.concat(output)
+end
+
+local function jsonScalar(value)
+    if type(value) == "string" then
+        return jsonString(value)
+    elseif type(value) == "number" and number(value) then
+        return tostring(value)
+    elseif type(value) == "boolean" then
+        return value and "true" or "false"
+    end
+    return "null"
+end
+
+-- Bounded, deterministic output; all keys originate from a fixed allowlist.
+-- This deliberately avoids a general-purpose recursive table serializer.
+function A.ExportCodeV1(run)
+    local projected = A.ExportRunV1(run)
+    if not projected then
+        return nil
+    end
+    local r = projected.run
+    local fields = {
+        '"v":1',
+        '"addon":"AzerothStats"',
+        '"schema":"1.0.0"',
+    }
+    local runFields = {}
+    for _, key in ipairs({
+        "localId",
+        "nativeRunId",
+        "zone",
+        "class",
+        "heroic",
+        "status",
+        "outcome",
+        "partial",
+        "startedAt",
+        "endedAt",
+    }) do
+        table.insert(runFields, jsonString(key) .. ":" .. jsonScalar(r[key]))
+    end
+    table.insert(fields, '"run":{' .. table.concat(runFields, ",") .. "}")
+    local metricFields = {}
+    for _, key in ipairs({
+        "duration",
+        "level",
+        "kills",
+        "gold",
+        "damage",
+        "taken",
+        "healing",
+        "peakDps",
+        "bosses",
+        "elites",
+        "guardians",
+        "chests",
+        "magnets",
+    }) do
+        local m = projected.metrics[key]
+        local item = '{"availability":' .. jsonString(m.availability)
+        if m.availability == "available" then
+            item = item .. ',"value":' .. jsonScalar(m.value) .. ',"provenance":"retained-run"'
+        end
+        table.insert(metricFields, jsonString(key) .. ":" .. item .. "}")
+    end
+    table.insert(fields, '"metrics":{' .. table.concat(metricFields, ",") .. "}")
+    local code = "AZST1:{" .. table.concat(fields, ",") .. "}"
+    if string.len(code) > 8192 then
+        return nil
+    end
+    return code
+end
+
+function A.ExportRetainedCodeV1(localId)
+    local projected = A.ExportRetainedRunV1(localId)
+    if not projected then
+        return nil
+    end
+    -- This path is safe because ExportRunV1 only reads its fixed allowlist.
+    local r = projected.run
+    local values = {}
+    for key, metricValue in pairs(projected.metrics) do
+        if metricValue.availability == "available" then
+            values[key] = metricValue.value
+        end
+    end
+    return A.ExportCodeV1({
+        id = r.localId,
+        zone = r.zone,
+        class = r.class,
+        heroic = r.heroic,
+        status = r.status,
+        result = r.outcome,
+        partial = r.partial,
+        startedAt = r.startedAt,
+        endedAt = r.endedAt,
+        values = values,
+    })
+end
