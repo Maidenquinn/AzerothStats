@@ -129,3 +129,22 @@ check(A.ExportRetainedCodeV1("azstats-17") == code, "retained code equivalent")
 A.db.runs[3] = { id = "azstats-17" }
 check(A.ExportRetainedCodeV1("azstats-17") == nil, "ambiguous code rejected")
 A.db = previousDb
+
+-- JSON controls must remain escaped and no retained root may be mutated.
+local controls = A.ExportCodeV1({ id = "line\nnext\t" .. string.char(1) })
+check(controls and string.find(controls, "\\n", 1, true) ~= nil, "newline JSON escaped")
+check(controls and string.find(controls, "\\t", 1, true) ~= nil, "tab JSON escaped")
+check(controls and string.find(controls, "\\u0001", 1, true) ~= nil, "control JSON escaped")
+check(controls and string.find(controls, string.char(1), 1, true) == nil, "no raw control")
+local oversized = A.ExportCodeV1({
+    id = "azstats-big",
+    zone = string.rep("z", 80),
+    class = string.rep("c", 40),
+    values = { damage = 1e300, healing = 1e300 },
+})
+check(oversized ~= nil and string.len(oversized) <= 8192, "bounded scalar export")
+check(A.ExportCodeV1({ id = "nan", values = { damage = 0 / 0 } }) ~= nil, "invalid metric safe")
+local beforeZone = original.zone
+local beforeDamage = original.values.damage
+A.ExportCodeV1(original)
+check(original.zone == beforeZone and original.values.damage == beforeDamage, "export read only")
