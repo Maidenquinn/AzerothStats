@@ -1,0 +1,56 @@
+# Azeroth Stats v2.0.3 — Rakesh-confirmed integration requirements
+
+Status: implementation roadmap and acceptance gates. Source: Rakesh's technical replies relayed by the project owner on 2026-11-09. These are partner statements, not independently verified runtime behavior.
+
+## Revised architecture
+
+**Priority 1 — direct desktop import compatibility.** WoW Logs currently reads Azeroth Stats SavedVariables directly, including `runs[].summary`, `stats`, `equipment`, `timeline`, and `deaths`. Kills and duration are matching signals for combat logs. Preserve field names, types and history across v2.0.2 saves, v2.0.3 writes, restore and malformed/missing records. An optional `nativeRunId` field must be additive and must never replace the existing local `id` or alter the reader's existing structures.
+
+**Priority 2 — native identity observation.** WoW Logs AS reads `AZS_ZONE.run`; its own reload resume requires an unchanged native run ID. Uniqueness across separate runs is unknown. The partner uses Lua `time()` (seconds, client-local PC clock); runs are scoped to the user's WoW Logs account and matched only within the same upload, never by character name. Continue diagnostic-only `/azstats interop probe` until native evidence supports non-destructive, per-run persistence. Do not backfill historical IDs or infer global uniqueness.
+
+**Priority 3 — browser/manual export.** Retain `AZST1:` + versioned JSON as a separate proposed importer format, distinct from `WLAS2:`. Rakesh accepts the independent-importer approach but has **not implemented an AZST1 importer**. No claim of live website compatibility. Manual selection, preview, generate, copy, actionable errors; no automatic chat paste or network sender. Current serializer limit: 8192 bytes; no silent truncation. Measure actual output before revisiting cap.
+
+## Non-destructive compatibility contract
+
+- Existing SavedVariables roots remain `AzerothStatsDB`, `AzerothStatsBackup`, `AzerothStatsAutoBackup`; do not introduce another root for interoperability.
+- Never rename, delete, flatten or re-type `runs[].summary`, `stats`, `equipment`, `timeline`, `deaths`; do not drop unknown historical fields.
+- `nativeRunId` (if approved after native acceptance) is optional, scalar, bounded and associated only with the observed run; missing means unknown, not zero. Preserve local ID and timestamp fields.
+- Do not rewrite a run's identity based solely on a matching native candidate. In particular, repeated numeric IDs may collide between games.
+- Desktop uploader handles the account/upload scope; Azeroth Stats does not embed player identity or account details into AZST1.
+- AZST1 allowlist excludes backups, coop partner names, equipment tooltips and raw event streams; no full-history export by default.
+- Treat local run ID, native candidate, timestamps, class and zone as potentially identifying/correlating metadata even without names.
+
+## Native recipe (record observed values, not player identity)
+
+Record phase, `type(AZS_ZONE.run)`, a redacted stable token per value, `/azstats interop probe`, local Azeroth Stats run ID, WoW Logs AS gameRunId, run count and status, and whether a new saved record appeared. Do not publish raw player identifiers. Perform:
+
+1. Normal run from ready to terminal summary.
+2. `/reload` during active run.
+3. Multiple successive `/reload` during the same run.
+4. New run after completed run (same map/difficulty if possible).
+5. Endless continuation and final termination.
+6. Escape → Quit game during a run, restart, inspect retained history.
+7. Full client shutdown/restart and new run.
+8. Repeat on desktop and browser where feasible.
+
+Acceptance: one retained local run per real continuous run; no accidental merge of separate runs; no duplicate accounting; existing backups unchanged; partner identifier observed consistently where available. A changed/missing native candidate must never silently overwrite historical identity. **No native persistence before this recipe is accepted.**
+
+## Offline test and delivery matrix
+
+| Gate | Required proof |
+|---|---|
+| Contract | synthetic v2.0.2, v2.0.3, partial, missing, restored, malformed fixtures; assert direct-import field preservation |
+| Export | valid deterministic AZST1 JSON, Unicode, controls, NaN/Infinity, absent vs zero, max bytes, privacy, no mutation |
+| UI | explicit retained-run selection, preview, copy window, understandable errors, FR/EN |
+| Performance | compare v2.0.2 vs v2.0.3 with 1/100/1000 runs; lookup, encode, allocation estimate, byte size, malformed input |
+| Integration fixtures | synthetic normal, absent, zero, reload, interrupted, with/without native ID and AZST1 sample; no false claim of native origin |
+| CI | formatter, offline checks, prior regressions, package SHA-256, ZIP artifact green |
+| Native | owner acceptance of seven scenarios above, including desktop/browser where available |
+
+## Scope exclusions
+
+No WoW Logs uploader/backend/website/leaderboard/anticheat development; no mandatory WoW Logs AS dependency; no duplicate combat collector.
+
+## Release rule
+
+Do not merge PR #35 or publish v2.0.3 without explicit owner approval. Supply a CI-green installable test ZIP, changelog, native recipe and measured report first.
