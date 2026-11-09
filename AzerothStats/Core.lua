@@ -230,7 +230,9 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
             end
         end
     elseif command == "interop" then
-        if value == "probe" then
+        if value == "export" then
+            A.OpenInteropExport()
+        elseif value == "probe" then
             local candidate = A.InteropNativeRunCandidate and A.InteropNativeRunCandidate()
             if candidate then
                 A.Say("WoW Logs correlation candidate (unverified): " .. candidate)
@@ -239,7 +241,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
             end
             A.Say("Diagnostic only; no run linked, saved or transmitted.")
         else
-            A.Say("Usage: /azstats interop probe")
+            A.Say("Usage: /azstats interop probe | export")
         end
     elseif command == "resync" then
         A.V2Reconcile()
