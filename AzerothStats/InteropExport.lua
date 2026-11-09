@@ -315,6 +315,37 @@ function A.OpenInteropExport()
         selector:SetScript("OnEscapePressed", function()
             this:ClearFocus()
         end)
+        -- Explicit convenience selection: find the latest retained run without
+        -- changing SavedVariables or assuming numeric indices are contiguous.
+        local latest = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+        latest:SetWidth(130)
+        latest:SetHeight(24)
+        latest:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -22, -72)
+        latest:SetText("Select latest")
+        latest:SetScript("OnClick", function()
+            local selected, bestTime, bestIndex = nil, nil, nil
+            for index, run in pairs(A.db.runs) do
+                if
+                    type(index) == "number"
+                    and index >= 1
+                    and index == math.floor(index)
+                    and type(run) == "table"
+                    and type(run.id) == "string"
+                    and string.len(run.id) > 0
+                    and string.len(run.id) <= 80
+                then
+                    local stamp = number(run.startedAt) or number(run.endedAt) or 0
+                    if not bestTime or stamp > bestTime or (stamp == bestTime and index > bestIndex) then
+                        selected, bestTime, bestIndex = run.id, stamp, index
+                    end
+                end
+            end
+            if selected then
+                selector:SetText(selected)
+            else
+                selector:SetText("")
+            end
+        end)
         local info = caption(-114, "No run selected. No data is transmitted.")
         info:SetWidth(620)
         local copyHint =
