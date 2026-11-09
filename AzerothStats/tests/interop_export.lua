@@ -148,3 +148,45 @@ local beforeZone = original.zone
 local beforeDamage = original.values.damage
 A.ExportCodeV1(original)
 check(original.zone == beforeZone and original.values.damage == beforeDamage, "export read only")
+
+-- Desktop importer compatibility: exporting must never rewrite existing
+-- SavedVariables structures consumed by WoW Logs (Rakesh, 2026-11-09).
+local legacyRun = {
+    id = "azstats-legacy-1",
+    status = "ended",
+    result = "victory",
+    values = { kills = 12, duration = 180 },
+    summary = { result = "victory", t = 180 },
+    stats = { crit = 42 },
+    equipment = { [1] = "synthetic-item" },
+    timeline = { { t = 10, kills = 1 } },
+    deaths = { { t = 20, cause = "synthetic" } },
+}
+local legacyDb = {
+    runs = { legacyRun },
+    stats = { total = 42 },
+    equipment = { slot = "synthetic" },
+    timeline = { { t = 1 } },
+    deaths = { { t = 2 } },
+}
+local savedDb, savedManual, savedAuto = A.db, AzerothStatsBackup, AzerothStatsAutoBackup
+A.db = legacyDb
+local manualMarker, autoMarker = {}, {}
+AzerothStatsBackup, AzerothStatsAutoBackup = manualMarker, autoMarker
+local legacyCode = A.ExportRetainedCodeV1("azstats-legacy-1")
+check(legacyCode ~= nil, "legacy retained run exports")
+check(legacyDb.runs[1] == legacyRun, "run identity preserved")
+check(legacyRun.summary.result == "victory", "summary preserved")
+check(legacyRun.stats.crit == 42, "stats preserved")
+check(legacyRun.equipment[1] == "synthetic-item", "equipment preserved")
+check(legacyRun.timeline[1].kills == 1, "timeline preserved")
+check(legacyRun.deaths[1].cause == "synthetic", "deaths preserved")
+check(legacyDb.stats.total == 42, "top-level stats preserved")
+check(legacyDb.equipment.slot == "synthetic", "top-level equipment preserved")
+check(legacyDb.timeline[1].t == 1, "top-level timeline preserved")
+check(legacyDb.deaths[1].t == 2, "top-level deaths preserved")
+check(AzerothStatsBackup == manualMarker, "manual backup root untouched")
+check(AzerothStatsAutoBackup == autoMarker, "automatic backup root untouched")
+check(string.find(legacyCode, "synthetic-item", 1, true) == nil, "equipment not exported")
+check(string.find(legacyCode, "synthetic", 1, true) == nil, "private details not exported")
+A.db, AzerothStatsBackup, AzerothStatsAutoBackup = savedDb, savedManual, savedAuto
