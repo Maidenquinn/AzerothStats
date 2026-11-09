@@ -190,3 +190,28 @@ check(AzerothStatsAutoBackup == autoMarker, "automatic backup root untouched")
 check(string.find(legacyCode, "synthetic-item", 1, true) == nil, "equipment not exported")
 check(string.find(legacyCode, "synthetic", 1, true) == nil, "private details not exported")
 A.db, AzerothStatsBackup, AzerothStatsAutoBackup = savedDb, savedManual, savedAuto
+
+-- Contract matrix for direct SavedVariables readers: synthetic v2.0.2,
+-- interrupted, missing, restored and malformed runs. No migration is invoked.
+local contractDb = A.db
+local cases = {
+    { id = "old", summary = { t = 15 }, stats = {}, equipment = {}, timeline = {}, deaths = {} },
+    { id = "new", summary = { t = 20 }, stats = {}, equipment = {}, timeline = {}, deaths = {} },
+    { id = "partial", partial = true, summary = nil, stats = {}, equipment = {}, timeline = {}, deaths = {} },
+    { id = "missing", values = nil },
+    { id = "restored", summary = { t = 35 }, stats = {}, equipment = {}, timeline = {}, deaths = {} },
+    { id = "malformed", summary = "bad", stats = false, equipment = 123, timeline = {}, deaths = {} },
+}
+A.db = { runs = cases }
+for _, retained in ipairs(cases) do
+    local oldSummary, oldStats, oldEquipment = retained.summary, retained.stats, retained.equipment
+    local oldTimeline, oldDeaths = retained.timeline, retained.deaths
+    local output = A.ExportRetainedCodeV1(retained.id)
+    check(type(output) == "string" and string.sub(output, 1, 6) == "AZST1:", "contract export")
+    check(retained.summary == oldSummary and retained.stats == oldStats, "summary and stats unchanged")
+    check(retained.equipment == oldEquipment, "equipment unchanged")
+    check(retained.timeline == oldTimeline and retained.deaths == oldDeaths, "timeline and deaths unchanged")
+end
+check(string.find(A.ExportRetainedCodeV1("partial"), '"partial":true', 1, true) ~= nil, "partial status")
+check(string.find(A.ExportRetainedCodeV1("missing"), '"kills":{"availability":"unavailable"}', 1, true) ~= nil, "missing metrics")
+A.db = contractDb
