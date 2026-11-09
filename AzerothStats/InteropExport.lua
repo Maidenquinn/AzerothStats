@@ -317,7 +317,8 @@ function A.OpenInteropExport()
         end)
         local info = caption(-114, "No run selected. No data is transmitted.")
         info:SetWidth(620)
-        local copyHint = caption(-144, "Generate, then Ctrl+A / Ctrl+C to copy. No WoW Logs importer yet.")
+        local copyHint =
+            caption(-144, "Generate, then Ctrl+A / Ctrl+C to copy. No WoW Logs importer yet.")
         copyHint:SetWidth(620)
         local code = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
         code:SetWidth(610)
@@ -348,9 +349,15 @@ function A.OpenInteropExport()
             end
             local r = result.run
             info:SetText(
-                "Run: " .. r.localId .. " | Zone: " .. (r.zone or "unknown")
-                    .. " | Status: " .. (r.status or "unknown")
-                    .. " | " .. string.len(encoded) .. " bytes"
+                "Run: "
+                    .. r.localId
+                    .. " | Zone: "
+                    .. (r.zone or "unknown")
+                    .. " | Status: "
+                    .. (r.status or "unknown")
+                    .. " | "
+                    .. string.len(encoded)
+                    .. " bytes"
             )
             code:SetText(encoded)
             code:SetFocus()
