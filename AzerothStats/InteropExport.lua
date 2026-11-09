@@ -267,3 +267,107 @@ function A.ExportRetainedCodeV1(localId)
         values = values,
     })
 end
+
+-- Manual-only paste window. Never prints the payload in chat or persists it.
+-- Created lazily so normal startup and combat sampling pay no UI cost.
+function A.OpenInteropExport()
+    if not A.db or type(A.db.runs) ~= "table" then
+        A.Say("AZST1: run history unavailable.")
+        return
+    end
+    if not A.interopWindow then
+        local frame = CreateFrame("Frame", "AzerothStatsInteropExport", UIParent)
+        frame:SetWidth(660)
+        frame:SetHeight(350)
+        frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+        frame:SetFrameStrata("DIALOG")
+        frame:EnableMouse(true)
+        frame:SetMovable(true)
+        frame:RegisterForDrag("LeftButton")
+        frame:SetScript("OnDragStart", function()
+            this:StartMoving()
+        end)
+        frame:SetScript("OnDragStop", function()
+            this:StopMovingOrSizing()
+        end)
+        frame:SetBackdrop({
+            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+            tile = true,
+            tileSize = 32,
+            edgeSize = 32,
+            insets = { left = 11, right = 12, top = 12, bottom = 11 },
+        })
+        local function caption(y, label)
+            local text = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            text:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, y)
+            text:SetText(label)
+            return text
+        end
+        caption(-22, "AZST1 - Manual run export (browser users)")
+        caption(-55, "Select a retained run ID (local only):")
+        local selector = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
+        selector:SetWidth(390)
+        selector:SetHeight(24)
+        selector:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -72)
+        selector:SetAutoFocus(false)
+        selector:SetMaxLetters(80)
+        selector:SetScript("OnEscapePressed", function()
+            this:ClearFocus()
+        end)
+        local info = caption(-114, "No run selected. No data is transmitted.")
+        info:SetWidth(620)
+        local copyHint = caption(-144, "Generate, then Ctrl+A / Ctrl+C to copy. No WoW Logs importer yet.")
+        copyHint:SetWidth(620)
+        local code = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
+        code:SetWidth(610)
+        code:SetHeight(24)
+        code:SetPoint("TOPLEFT", frame, "TOPLEFT", 22, -184)
+        code:SetAutoFocus(false)
+        code:SetMaxLetters(8192)
+        code:SetScript("OnEscapePressed", function()
+            this:ClearFocus()
+        end)
+        local generate = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+        generate:SetWidth(140)
+        generate:SetHeight(26)
+        generate:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 22, 24)
+        generate:SetText("Generate AZST1")
+        generate:SetScript("OnClick", function()
+            local id = selector:GetText() or ""
+            local result = A.ExportRetainedRunV1(id)
+            code:SetText("")
+            if not result then
+                info:SetText("Run not found, invalid or ambiguous. Check its local ID.")
+                return
+            end
+            local encoded = A.ExportRetainedCodeV1(id)
+            if not encoded then
+                info:SetText("Export unavailable: invalid data or payload exceeds 8192 bytes.")
+                return
+            end
+            local r = result.run
+            info:SetText(
+                "Run: " .. r.localId .. " | Zone: " .. (r.zone or "unknown")
+                    .. " | Status: " .. (r.status or "unknown")
+                    .. " | " .. string.len(encoded) .. " bytes"
+            )
+            code:SetText(encoded)
+            code:SetFocus()
+            code:HighlightText()
+        end)
+        local close = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+        close:SetWidth(90)
+        close:SetHeight(26)
+        close:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -22, 24)
+        close:SetText("Close")
+        close:SetScript("OnClick", function()
+            frame:Hide()
+        end)
+        frame.selector = selector
+        frame.code = code
+        A.interopWindow = frame
+    end
+    A.interopWindow.code:SetText("")
+    A.interopWindow:Show()
+end
