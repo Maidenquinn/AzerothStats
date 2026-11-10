@@ -219,3 +219,16 @@ The uploaded post-test SavedVariables confirms two distinct lifecycle outcomes.
 4. Preserve distinct duration sources; never replace one with the other.
 5. Event journal truncation is an internal collection limitation, not grounds to discard the run or fabricate missing event detail.
 6. No native ID is present in SavedVariables; native persistence remains disabled.
+
+## Owner in-game AZST1 acceptance — 2026-11-10 22:13
+
+The owner completed the targeted UI/copy checks on the 2.0.3 build:
+- Opened the manual AZST1 export window.
+- Selected multiple retained runs (azstats-331, azstats-330, azstats-325).
+- Confirmed changing the selected run clears the previous JSON preview.
+- Generated and pasted the complete AZST1 output.
+- Confirmed the output is valid JSON after the AZST1: prefix and includes the expected retained metrics.
+- The azstats-325 export contains guardians with availability=available and value=0, proving a legitimate zero remains distinct from unavailable data.
+- Earlier real exports (e.g. azstats-322) represent unobserved metrics with availability=unavailable and no fabricated numeric zero.
+
+This closes the owner-facing functional acceptance for manual AZST1 selection, preview invalidation, generation, copy/paste, and zero-vs-unavailable semantics. The read-only native probe has separately been exercised in-game. This acceptance does not mean WoW Logs has implemented or validated an AZST1 importer.
