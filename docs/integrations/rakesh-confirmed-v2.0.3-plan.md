@@ -161,3 +161,32 @@ Interpretation: within the observed client session, the candidate was stable acr
 ### Outcome versus coverage semantics
 
 The owner sample also confirms that `outcome=left` and `partial=false` can legitimately coexist: the player left voluntarily, but the game supplied an official terminal summary and the retained metrics were finalized. `outcome` describes how the run ended; `partial` describes whether the exported observation is known to be incomplete. Never force `partial=true` merely because the outcome is `left`. If the game does not provide a final summary or the tracker marks the observation interrupted, retain the incomplete/unknown coverage state instead.
+
+## Owner native recipe — Quit Game restart and Endless — 2026-11-10 18:49
+
+### Escape → Quit game → relaunch
+The owner captured:
+- Before quitting: local run `azstats-329`, Elwynn, native candidate from the old client namespace ending `-1`.
+- After relaunch, before starting a new run: a different native candidate namespace ending `-1`; local run reported `none`.
+- Immediately after starting a new Elwynn run: the new candidate remained unchanged; local run became `azstats-330`, status `active`, zone `elwynn`.
+
+This supports that a new process exposes a fresh native candidate namespace and that probing in the lobby does not yet have an Azeroth Stats local run. It does **not** establish how the previous active run was persisted/finalized at quit; the updated SavedVariables file must be inspected to verify that `azstats-329` was retained as interrupted/left without duplication or fabricated completion.
+
+### Endless
+During the subsequent Endless continuation, the owner probed again:
+- local run remained `azstats-330`;
+- status remained `active`;
+- zone remained `elwynn`;
+- native candidate remained in the new process namespace with counter `-1`.
+
+This is evidence that entering/playing the observed Endless continuation did not create a new Azeroth Stats local run or change the native candidate at the time of probe. It does not yet establish the final terminal-summary semantics; inspect the final SavedVariables record after the Endless session ends before changing tracker behavior.
+
+### Current evidence summary
+- Repeated `/reload` within a run: same candidate and same local run.
+- New run within the same process: candidate counter advanced.
+- Full process restart: candidate namespace changed/reset; lobby probe has no local run.
+- New run after restart: candidate stable at first active probe.
+- Endless continuation: same local run and candidate in the observed sequence.
+- Earlier cross-zone pair `azstats-320`/`azstats-321` showed the same candidate; retain this contradictory observation as a reason not to assume global uniqueness or correlate on the raw candidate alone.
+
+**No nativeRunId persistence is enabled.** The next evidence needed is the updated SavedVariables after the quit/restart and after the Endless run reaches its final result, plus Rakesh's confirmation of same-upload/session scope.
