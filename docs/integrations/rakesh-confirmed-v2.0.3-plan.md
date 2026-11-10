@@ -62,3 +62,15 @@ The owner supplied screenshots/log excerpts showing two distinct local run IDs (
 The same export showed an `interrupted` run with `partial:false`. The projection now forces `partial:true` for `active` and `interrupted` records without mutating historical SavedVariables; explicit coverage flags are retained for other statuses. Native export and CI still need validation after this correction.
 
 The diagnostic command now retains only the last probe observation in session memory and warns when the same native candidate is observed against a different local run ID. This is not SavedVariables persistence and is not an automatic correlation rule. A missing candidate does not erase the last valid observation.
+
+## Owner native recipe update — 2026-11-10 13:46
+
+The owner performed a sequential same-zone test on Arathi Basin, without returning to the menu between runs:
+- First retained run `azstats-322`: active, zone `ab`, native candidate token ending `-2`.
+- Next retained run `azstats-323`: active, same zone `ab`, native candidate token ending `-3`.
+- The candidate remained unchanged across repeated probes within the first run; the candidate changed for the next local run.
+- Exported records correctly showed `partial:true` while active.
+
+This is encouraging evidence that the candidate changes between these two sequential runs and remains stable during the first observed run. It does **not** prove behavior after full client restart, across endless/quit transitions, or global uniqueness. Do not enable persistent native ID yet.
+
+The screenshots also show the selector input changed to `azstats-323` while the summary still displayed the previously generated `azstats-322` export. The dialog now clears the old generated code and invalidates the preview whenever the selected ID changes, so a stale export cannot be mistaken for the current selection.
