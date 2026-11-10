@@ -54,3 +54,9 @@ No WoW Logs uploader/backend/website/leaderboard/anticheat development; no manda
 ## Release rule
 
 Do not merge PR #35 or publish v2.0.3 without explicit owner approval. Supply a CI-green installable test ZIP, changelog, native recipe and measured report first.
+
+## Owner native observation — 2026-11-10 (not a controlled acceptance run)
+
+The owner supplied screenshots/log excerpts showing two distinct local run IDs (`azstats-320` and `azstats-321`), in different zones (`naxx` and `ab`), both displaying the same redacted native candidate token. This is direct evidence that the currently observed candidate is **not sufficient by itself** to identify a unique retained run in this session. Do not persist or auto-match it. Repeat controlled scenarios N1–N7 to determine whether the field is session-scoped, stale, reused or sampled at an unexpected lifecycle point.
+
+The same export showed an `interrupted` run with `partial:false`. The projection now forces `partial:true` for `active` and `interrupted` records without mutating historical SavedVariables; explicit coverage flags are retained for other statuses. Native export and CI still need validation after this correction.
