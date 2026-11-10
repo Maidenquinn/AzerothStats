@@ -88,3 +88,11 @@ This is strong evidence that the addon resumed one retained local run across two
 Both records have `partial=false` after receiving an official `left` summary. This is not automatically a defect: the export's `partial` flag describes data coverage/completeness, while `outcome=left` describes the official run result. Keep those concepts separate; do not force all voluntarily-left runs to `partial=true` without a contract-level definition.
 
 The fixture source contains character names, equipment links, item details, and long combat telemetry. Do not commit the raw SavedVariables file. Any future regression fixture must be minimized and anonymized, retaining only the fields needed to test the two checkpoints and the run identity.
+
+## Direct-reader compatibility and backup-size audit — owner file
+
+The inspected retained-run records contain the exact top-level structures Rakesh described: `summary`, `stats`, `equipment`, `timeline`, and `deaths`. The run also retains `values`, `official`, `events`, `status`, and `result`. The two tested runs therefore provide real evidence that these direct-reader fields are present in the 2.0.3 SavedVariables sample; no rename or compatibility alias is indicated by this sample.
+
+The file has one primary `AzerothStatsDB` root (schema 2, addon version 2.0.3) and a separate `AzerothStatsBackup.entries` root. Three backup entries are present. The primary database section occupies about 21.4 MB; the backup section occupies about 70.1 MB, with individual snapshots approximately 22.8–23.9 MB. Total file size is 91,574,179 bytes. The saved settings show `autoBackupRetention=3`, `autoBackupEveryRuns=3`, and `autoBackupRunCounter=2`.
+
+These backups are embedded as a separate SavedVariables root in the same physical Lua file, not as three independently written files. The raw file must never be committed as a fixture because it contains character identity, equipment item links/tooltips, and extensive telemetry. AZST1 continues to project only one explicitly selected retained run; it must not serialize `AzerothStatsBackup`. A regression test now inserts a private sentinel in that root and asserts it is absent from generated AZST1.
