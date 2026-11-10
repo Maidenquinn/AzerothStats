@@ -84,6 +84,7 @@ local observedLeftRun = {
     result = "left",
     partial = false,
     startedAt = 1794318254,
+    endedAt = 1794318897,
     values = {
         duration = 41.5,
         level = 5,
@@ -135,6 +136,40 @@ end
 check(
     observedLeftRun.values.damage == 24888 and observedLeftRun.summary.result == "left",
     "AZST1 projection does not mutate retained SavedVariables"
+)
+
+-- The owner's second retained run is ended with an official left summary but
+-- has no endedAt field. Missing wall-clock metadata must remain unknown.
+local observedLeftWithoutEndTime = A.ExportRunV1({
+    id = "azstats-323",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedLeftWithoutEndTime.run.endedAt == nil,
+    "missing endedAt stays unavailable for retained left run"
+)
+local observedLeftWithoutEndTimeCode = A.ExportCodeV1({
+    id = "azstats-323",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedLeftWithoutEndTimeCode
+        and string.find(observedLeftWithoutEndTimeCode, '"endedAt":null', 1, true) ~= nil,
+    "AZST1 encodes absent endedAt as null, not a fabricated timestamp"
 )
 check(
     A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
