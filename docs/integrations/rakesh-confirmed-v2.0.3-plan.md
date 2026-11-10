@@ -145,3 +145,15 @@ The owner supplied five consecutive probe outputs during one active Elwynn run:
 This is positive evidence that, in this tested sequence, the candidate remained stable across the repeated observations/reloads and changed for the next run on the same zone. It does not yet prove the candidate's behavior after a full process restart, an Endless transition, or Escape → Quit game. It also does not prove global uniqueness across sessions/accounts. Continue treating the field as a candidate only; no native ID persistence or automatic matching is enabled.
 
 For a definitive reload-continuity result, pair each probe with the actual action immediately before it (initial observation, reload 1, reload 2, reload 3). The supplied sequence is consistent with that procedure, but the pasted output does not label the exact boundary between each pair.
+
+## Owner native probe — full client restart — 2026-11-10 18:37
+
+The owner confirmed the five preceding observations were separated by five successive `/reload` operations during local run `azstats-327`. The native candidate remained the same (token ending `-11`) across all five probes. A new same-zone run `azstats-328` then showed a different candidate (token ending `-12`).
+
+The owner then fully restarted the game client and began/probed a new Elwynn run:
+- local run: `azstats-329`
+- status: `active`
+- zone: `elwynn`
+- native candidate: a newly observed token ending `-1`, with a different opaque prefix from the pre-restart session.
+
+Interpretation: within the observed client session, the candidate was stable across repeated reloads and changed between sequential runs. After a full client restart, a new run exposed a fresh candidate namespace/value. This is consistent with a session-scoped run counter/identifier, not a globally unique ID. Do not use `AZS_ZONE.run` alone as a global key across client restarts. WoW Logs' same-upload matching scope may make it a useful correlation component, but this must be confirmed with Rakesh. No persistent native ID or automatic linking is enabled by this observation.
