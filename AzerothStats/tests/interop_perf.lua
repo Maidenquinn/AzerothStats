@@ -38,7 +38,7 @@ local function benchmark(count)
     for index = 1, count do
         local code = A.ExportCodeV1(makeRun(index))
         assert(type(code) == "string", "AZST1 export failed at " .. index)
-        assert(string.sub(code, 1, 6) == "AZST1:{", "invalid AZST1 prefix")
+        assert(string.sub(code, 1, 7) == "AZST1:{", "invalid AZST1 prefix")
         assert(string.sub(code, -1) == "}", "truncated AZST1 JSON")
         assert(string.len(code) <= 8192, "AZST1 byte limit exceeded")
         bytes = bytes + string.len(code)
