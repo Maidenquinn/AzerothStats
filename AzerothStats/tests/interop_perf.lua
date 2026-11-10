@@ -50,12 +50,14 @@ local oneTime, oneBytes = benchmark(1)
 local hundredTime, hundredBytes = benchmark(100)
 local thousandTime, thousandBytes = benchmark(1000)
 assert(oneBytes > 0 and hundredBytes > oneBytes and thousandBytes > hundredBytes)
-print(string.format(
-    "AZST1 serializer benchmark (synthetic): 1=%0.6fs/%dB; 100=%0.6fs/%dB; 1000=%0.6fs/%dB",
-    oneTime,
-    oneBytes,
-    hundredTime,
-    hundredBytes,
-    thousandTime,
-    thousandBytes
-))
+print(
+    string.format(
+        "AZST1 serializer benchmark (synthetic): 1=%0.6fs/%dB; 100=%0.6fs/%dB; 1000=%0.6fs/%dB",
+        oneTime,
+        oneBytes,
+        hundredTime,
+        hundredBytes,
+        thousandTime,
+        thousandBytes
+    )
+)
