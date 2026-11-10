@@ -30,7 +30,7 @@ local function highlights(run)
                     .. " · "
                     .. A.Text(A.JournalChange(entry.kind, entry.changes[1]), 95)
             )
-            if table.getn(out) == 2 then
+            if table.getn(out) == 4 then
                 break
             end
         end
