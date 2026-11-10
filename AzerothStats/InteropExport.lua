@@ -268,6 +268,41 @@ function A.ExportRetainedCodeV1(localId)
     })
 end
 
+-- Resolve the newest usable retained local ID without assuming dense run arrays.
+function A.LatestRetainedRunId()
+    local database = A.db
+    if
+        type(database) ~= "table"
+        or getmetatable(database)
+        or type(database.runs) ~= "table"
+        or getmetatable(database.runs)
+    then
+        return nil
+    end
+    local selected, bestTime, bestIndex = nil, nil, nil
+    for index, run in pairs(database.runs) do
+        if
+            type(index) == "number"
+            and index >= 1
+            and index == math.floor(index)
+            and type(run) == "table"
+            and type(run.id) == "string"
+            and string.len(run.id) > 0
+            and string.len(run.id) <= 80
+        then
+            local stamp = number(run.startedAt) or number(run.endedAt) or 0
+            if
+                not bestTime
+                or stamp > bestTime
+                or (stamp == bestTime and index > bestIndex)
+            then
+                selected, bestTime, bestIndex = run.id, stamp, index
+            end
+        end
+    end
+    return selected
+end
+
 -- Manual-only paste window. Never prints the payload in chat or persists it.
 -- Created lazily so normal startup and combat sampling pay no UI cost.
 function A.OpenInteropExport()
@@ -323,27 +358,7 @@ function A.OpenInteropExport()
         latest:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -22, -72)
         latest:SetText("Select latest")
         latest:SetScript("OnClick", function()
-            local selected, bestTime, bestIndex = nil, nil, nil
-            for index, run in pairs(A.db.runs) do
-                if
-                    type(index) == "number"
-                    and index >= 1
-                    and index == math.floor(index)
-                    and type(run) == "table"
-                    and type(run.id) == "string"
-                    and string.len(run.id) > 0
-                    and string.len(run.id) <= 80
-                then
-                    local stamp = number(run.startedAt) or number(run.endedAt) or 0
-                    if
-                        not bestTime
-                        or stamp > bestTime
-                        or (stamp == bestTime and index > bestIndex)
-                    then
-                        selected, bestTime, bestIndex = run.id, stamp, index
-                    end
-                end
-            end
+            local selected = A.LatestRetainedRunId()
             if selected then
                 selector:SetText(selected)
             else
