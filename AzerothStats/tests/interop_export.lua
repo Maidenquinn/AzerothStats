@@ -624,7 +624,6 @@ check(
     "Endless export projection does not mutate source run"
 )
 
-
 -- The actual reload-continuity sample had a wall-clock end timestamp. Preserve
 -- it independently from in-run duration, which excludes time outside gameplay.
 local observedReloadedLeftRun = A.ExportRunV1({
