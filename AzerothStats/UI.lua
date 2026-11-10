@@ -2173,9 +2173,7 @@ local function buildSettings(frame)
                     GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
                     GameTooltip:SetText(A.T("Record sounds"))
                     GameTooltip:AddLine(
-                        A.T("New class DPS record")
-                            .. " - "
-                            .. "plays a notification sound; does not record game audio.",
+                        A.T("Record sound explanation"),
                         1,
                         1,
                         1,
