@@ -2168,6 +2168,21 @@ local function buildSettings(frame)
         b.setting = def[1]
         b.key = def[2]
         b.caption = font(p, 32, 264 + (i - 1) * 39, 310, 24, 12, COLORS.text)
+        if b.setting == "recordSound" then
+            b:SetScript("OnEnter", function()
+                if GameTooltip then
+                    GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
+                    GameTooltip:SetText(A.T("Record sounds"))
+                    GameTooltip:AddLine(A.T("New class DPS record") .. " - " .. "plays a notification sound; does not record game audio.", 1, 1, 1, true)
+                    GameTooltip:Show()
+                end
+            end)
+            b:SetScript("OnLeave", function()
+                if GameTooltip then
+                    GameTooltip:Hide()
+                end
+            end)
+        end
         b:SetScript("OnClick", function()
             -- The circular icon defaults to enabled when no saved preference
             -- exists. Toggle its effective value, not nil, on the first click.
