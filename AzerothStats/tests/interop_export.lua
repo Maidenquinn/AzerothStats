@@ -61,6 +61,16 @@ check(
     A.ExportRunV1({ id = "complete", status = "ended", partial = false }).run.partial == false,
     "completed run retains explicit complete coverage"
 )
+local leftOutcome = A.ExportRunV1({
+    id = "left-outcome",
+    status = "ended",
+    result = "left",
+    partial = false,
+})
+check(
+    leftOutcome.run.outcome == "left" and leftOutcome.run.partial == false,
+    "official left outcome remains distinct from partial data coverage"
+)
 check(
     A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
     "partial coverage preserved"
