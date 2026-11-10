@@ -239,6 +239,19 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
             else
                 A.Say("WoW Logs correlation candidate: unavailable")
             end
+            local tracked = A.run
+            if type(tracked) == "table" then
+                A.Say(
+                    "Current local run: "
+                        .. tostring(tracked.id or "unknown")
+                        .. " | status: "
+                        .. tostring(tracked.status or "unknown")
+                        .. " | zone: "
+                        .. tostring(tracked.zone or "unknown")
+                )
+            else
+                A.Say("Current local run: none")
+            end
             A.Say("Diagnostic only; no run linked, saved or transmitted.")
         else
             A.Say("Usage: /azstats interop probe | export")
