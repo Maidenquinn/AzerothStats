@@ -274,3 +274,24 @@ check(A.LatestRetainedRunId() == nil, "no valid retained run")
 A.db = nil
 check(A.LatestRetainedRunId() == nil, "selector handles unavailable database")
 A.db = previousSelectionDb
+
+-- Bounded 1,000-run synthetic workload. This is a regression smoke test,
+-- not a substitute for measured native-client performance.
+local perfDb = { runs = {} }
+for index = 1, 1000 do
+    perfDb.runs[index] = {
+        id = "azstats-perf-" .. index,
+        status = "ended",
+        startedAt = index,
+        values = { kills = index, duration = 120, damage = index * 100 },
+    }
+end
+A.db = perfDb
+check(A.LatestRetainedRunId() == "azstats-perf-1000", "latest selector handles 1000 runs")
+check(A.ExportRetainedRunV1("azstats-perf-1") ~= nil, "first run lookup in 1000")
+check(A.ExportRetainedRunV1("azstats-perf-500") ~= nil, "middle run lookup in 1000")
+check(A.ExportRetainedRunV1("azstats-perf-1000") ~= nil, "last run lookup in 1000")
+local largeCode = A.ExportRetainedCodeV1("azstats-perf-500")
+check(largeCode and string.len(largeCode) <= 8192, "1000-run export remains bounded")
+check(A.ExportRetainedRunV1("not-present") == nil, "missing run lookup in 1000")
+A.db = previousSelectionDb
