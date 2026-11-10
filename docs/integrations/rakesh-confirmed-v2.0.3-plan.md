@@ -111,13 +111,15 @@ The uploaded SavedVariables file does not persist the read-only `AZS_ZONE.run` c
 
 The same sample also contains an ended retained run (`azstats-323`) with an official `left` result and `partial=false`, but no `endedAt` field. The export must preserve this as unavailable (`null` in AZST1), never synthesize a wall-clock timestamp from duration or neighboring runs. Regression coverage now includes both a left run with an observed `endedAt` and one without it.
 
-### Timestamp anomaly retained for investigation
+### Wall-clock timestamps versus in-run duration — corrected from full record boundaries
 
-The two real records expose a metadata inconsistency that must not be silently repaired:
-- `azstats-322`: `startedAt=1794318254`, `endedAt=1794318897`, but the retained in-run duration is only 41.5 seconds. The wall-clock interval is 643 seconds.
-- `azstats-323`: `startedAt=1794318315`, status `ended`, official result `left`, duration 81.2 seconds, but no `endedAt` field is present.
+A full read of retained run entries 240 and 241 corrects an earlier interpretation of nested snippets:
+- `azstats-322`: `startedAt=1794318254`, `endedAt=1794318313`, `lastObservedAt=1794318313`; in-run duration is 41.5 seconds.
+- `azstats-323`: `startedAt=1794318315`, `endedAt=1794318897`, `lastObservedAt=1794318898`; in-run duration is 81.2 seconds and its event journal contains two checkpoint/resume pairs.
 
-The sample alone cannot establish whether this is delayed official-summary delivery, save/finalization timing, or a tracker lifecycle defect. Do not derive `endedAt` from duration or copy it from another run. AZST1 must faithfully preserve the observed timestamp or emit `null`; add a dedicated native reproduction before changing Tracker semantics.
+Both runs have observed wall-clock end timestamps. The longer wall-clock interval for `azstats-323` is consistent with time spent outside active gameplay during the two recorded exit/resume transitions; it is not evidence that the run duration should be rewritten. Preserve `startedAt`, `endedAt`, and in-run `duration` as separate measurements. Never derive one from another.
+
+The independent synthetic missing-`endedAt` test remains useful for older or incomplete records, but it is **not** a description of the owner's `azstats-323` record. A new regression now checks preservation of the observed reload-run `endedAt=1794318897` separately.
 
 ## Full owner SavedVariables review — 2026-11-10
 
@@ -128,10 +130,10 @@ Observed in the main database:
 - The two relevant same-zone records are distinct retained entries: `azstats-322` and `azstats-323`, both zone `ab`, class `warrior`, Heroic 3.
 - `azstats-323` contains two `checkpoint` / `resume` event pairs, with the event text reporting normal client exit and probable resume. It remains one retained local run ID through those observed transitions; no additional fragmented local run appears between those checkpoints in this record.
 - This supports continuity across two recorded exit/resume transitions for this one run. The event text alone cannot distinguish a full process restart from another normal client reload path, and it does not prove the native candidate's identity behavior across either transition.
-- Both records have an official `left` summary. The first has a wall-clock `endedAt`; the second has no `endedAt`, which must remain null in AZST1. Their observed durations are separate in-run measurements and must not be used to synthesize wall-clock end timestamps.
+- Both records have an official `left` summary and an observed wall-clock `endedAt`. The first ended at `1794318313` with an in-run duration of 41.5 seconds; the second ended at `1794318897` with an in-run duration of 81.2 seconds. The second run's two checkpoint/resume pairs explain why its wall-clock interval is much longer than active gameplay duration.
 - No `nativeRunId` or raw `AZS_ZONE.run` candidate is persisted anywhere in the supplied SavedVariables file. The file therefore cannot prove the candidate's lifecycle; only the paired in-game probe output can do that.
 
-A minimized synthetic regression now covers the two checkpoint/resume pairs, the official `left` outcome, absent `endedAt`, exclusion of the event journal, and forced `nativeRunId:null`. Do not add the raw SavedVariables file to the repository or CI artifacts.
+A minimized synthetic regression now covers the two checkpoint/resume pairs, the official `left` outcome, preservation of the observed wall-clock `endedAt`, a separate synthetic missing-`endedAt` edge case, exclusion of the event journal, and forced `nativeRunId:null`. Do not add the raw SavedVariables file to the repository or CI artifacts.
 
 ## Owner native probe observations — 2026-11-10 18:35 (Elwynn)
 
