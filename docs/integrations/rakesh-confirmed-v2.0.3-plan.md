@@ -118,3 +118,17 @@ The two real records expose a metadata inconsistency that must not be silently r
 - `azstats-323`: `startedAt=1794318315`, status `ended`, official result `left`, duration 81.2 seconds, but no `endedAt` field is present.
 
 The sample alone cannot establish whether this is delayed official-summary delivery, save/finalization timing, or a tracker lifecycle defect. Do not derive `endedAt` from duration or copy it from another run. AZST1 must faithfully preserve the observed timestamp or emit `null`; add a dedicated native reproduction before changing Tracker semantics.
+
+## Full owner SavedVariables review — 2026-11-10
+
+The owner supplied a complete Azeroth Stats SavedVariables file after the native continuity scenarios. The raw file is approximately 88 MiB in the working copy and contains the main `AzerothStatsDB` plus a separate `AzerothStatsBackup` root. It is **not** committed or redistributed; only minimized, anonymized test inputs are used.
+
+Observed in the main database:
+- 241 retained run records are present (numeric retained-run indices through 241); the database reports 82 pruned records. The local sequence has reached at least `azstats-323`.
+- The two relevant same-zone records are distinct retained entries: `azstats-322` and `azstats-323`, both zone `ab`, class `warrior`, Heroic 3.
+- `azstats-323` contains two `checkpoint` / `resume` event pairs, with the event text reporting normal client exit and probable resume. It remains one retained local run ID through those observed transitions; no additional fragmented local run appears between those checkpoints in this record.
+- This supports continuity across two recorded exit/resume transitions for this one run. The event text alone cannot distinguish a full process restart from another normal client reload path, and it does not prove the native candidate's identity behavior across either transition.
+- Both records have an official `left` summary. The first has a wall-clock `endedAt`; the second has no `endedAt`, which must remain null in AZST1. Their observed durations are separate in-run measurements and must not be used to synthesize wall-clock end timestamps.
+- No `nativeRunId` or raw `AZS_ZONE.run` candidate is persisted anywhere in the supplied SavedVariables file. The file therefore cannot prove the candidate's lifecycle; only the paired in-game probe output can do that.
+
+A minimized synthetic regression now covers the two checkpoint/resume pairs, the official `left` outcome, absent `endedAt`, exclusion of the event journal, and forced `nativeRunId:null`. Do not add the raw SavedVariables file to the repository or CI artifacts.
