@@ -74,3 +74,17 @@ The owner performed a sequential same-zone test on Arathi Basin, without returni
 This is encouraging evidence that the candidate changes between these two sequential runs and remains stable during the first observed run. It does **not** prove behavior after full client restart, across endless/quit transitions, or global uniqueness. Do not enable persistent native ID yet.
 
 The screenshots also show the selector input changed to `azstats-323` while the summary still displayed the previously generated `azstats-322` export. The dialog now clears the old generated code and invalidates the preview whenever the selected ID changes, so a stale export cannot be mistaken for the current selection.
+
+## Owner SavedVariables inspection — 2026-11-10 13:58
+
+The owner supplied a real `AzerothStats.lua` SavedVariables file after the same-zone sequential test. The file is 91,574,179 bytes and reports addon version `2.0.3`, schema `2`, and 239 retained runs in the root run history. The file contains no `nativeRunId` or literal `AZS_ZONE.run` field; native candidates remain diagnostic-only and are not persisted.
+
+Two retained run records were inspected (character identity removed from this note):
+- `azstats-322`, zone `ab`, class `warrior`, heroic `3`: official result `left`, duration 41.5 s, terminal timeline at 41.47 s, official summary at 41.5 s.
+- `azstats-323`, same zone/class/difficulty: official result `left`, duration 81.2 s. Its event history contains two separate `checkpoint` events labelled `Sortie normale du client`, each immediately followed by `resume` labelled `Reprise probable apres rechargement ; pas d'identifiant serveur`. The run keeps the same local ID across both checkpoints and continues through level 8 before the terminal/summary boundary.
+
+This is strong evidence that the addon resumed one retained local run across two normal client-exit/re-entry checkpoints in this test. It is **not** proof of native-ID persistence (none is present), nor does the event text alone prove whether each exit was a full client restart or another clean reload path. Record this as observed local continuity, not as proof of the server identifier's lifecycle.
+
+Both records have `partial=false` after receiving an official `left` summary. This is not automatically a defect: the export's `partial` flag describes data coverage/completeness, while `outcome=left` describes the official run result. Keep those concepts separate; do not force all voluntarily-left runs to `partial=true` without a contract-level definition.
+
+The fixture source contains character names, equipment links, item details, and long combat telemetry. Do not commit the raw SavedVariables file. Any future regression fixture must be minimized and anonymized, retaining only the fields needed to test the two checkpoints and the run identity.
