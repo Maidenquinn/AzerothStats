@@ -21,6 +21,19 @@ tracker = (addon / "Tracker.lua").read_text(encoding="utf-8")
 reports = (addon / "Reports.lua").read_text(encoding="utf-8")
 v2ui = (addon / "V2UI.lua").read_text(encoding="utf-8")
 assert "A.V2CombatTick(run)" in tracker
+# v2.0.4 storage inventory is diagnostic-only: it reports counts and must not
+# invoke backup creation, restoration, deletion, migration, or snapshot copying.
+core = (addon / "Core.lua").read_text(encoding="utf-8")
+storage_command = core.split('elseif command == "storage" then', 1)[1].split(
+    'elseif command == "interop" then', 1
+)[0]
+assert 'A.Say("Read-only inventory; no backup or run was modified.")' in storage_command
+assert "A.CreateDataBackup" not in storage_command
+assert "A.RestoreDataBackup" not in storage_command
+assert "A.Delete" not in storage_command
+assert "snapshot(" not in storage_command
+assert 'elseif command == "storage" then' in core
+
 assert 'section == "Combat Intelligence"' in reports
 assert 'section ~= "Combat Intelligence"' in reports
 assert '{ "Combat Intelligence", "Combat Intelligence" }' in v2ui
