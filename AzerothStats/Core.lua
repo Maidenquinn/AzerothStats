@@ -240,6 +240,16 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                 A.Say("WoW Logs correlation candidate: unavailable")
             end
             local tracked = A.run
+            if
+                candidate
+                and type(tracked) == "table"
+                and A.InteropCandidateReused
+                and A.InteropCandidateReused(candidate, tracked.id)
+            then
+                A.Say(
+                    "Warning: same native candidate observed for different local runs; do not correlate automatically."
+                )
+            end
             if type(tracked) == "table" then
                 A.Say(
                     "Current local run: "
