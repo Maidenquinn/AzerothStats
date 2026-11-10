@@ -345,5 +345,8 @@ check(not A.InteropCandidateReused("native-A", "azstats-1"), "same local run can
 check(A.InteropCandidateReused("native-A", "azstats-2"), "candidate reused across local runs")
 check(not A.InteropCandidateReused("native-B", "azstats-3"), "new candidate is not reuse")
 check(not A.InteropCandidateReused(nil, "azstats-4"), "missing candidate ignored")
-check(A.interopProbeLast.localId == "azstats-3", "missing candidate does not overwrite probe history")
+check(
+    A.interopProbeLast.localId == "azstats-3",
+    "missing candidate does not overwrite probe history"
+)
 A.interopProbeLast = nil
