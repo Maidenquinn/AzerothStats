@@ -150,6 +150,24 @@ function A.InteropNativeRunCandidate()
     return nil
 end
 
+-- Session-memory diagnostic only: flag a native candidate observed against
+-- different local run IDs. This state is never stored in SavedVariables.
+function A.InteropCandidateReused(candidate, localId)
+    if
+        type(candidate) ~= "string"
+        or candidate == ""
+        or type(localId) ~= "string"
+        or localId == ""
+    then
+        return false
+    end
+    local previous = A.interopProbeLast
+    A.interopProbeLast = { candidate = candidate, localId = localId }
+    return previous ~= nil
+        and previous.candidate == candidate
+        and previous.localId ~= localId
+end
+
 -- AZST1 is a separate, explicit paste contract. It must never be passed off as
 -- a WLAS2 payload. The encoder accepts only our own scalar projection.
 local function jsonString(value)
