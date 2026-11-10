@@ -163,9 +163,7 @@ function A.InteropCandidateReused(candidate, localId)
     end
     local previous = A.interopProbeLast
     A.interopProbeLast = { candidate = candidate, localId = localId }
-    return previous ~= nil
-        and previous.candidate == candidate
-        and previous.localId ~= localId
+    return previous ~= nil and previous.candidate == candidate and previous.localId ~= localId
 end
 
 -- AZST1 is a separate, explicit paste contract. It must never be passed off as
