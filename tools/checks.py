@@ -21,6 +21,15 @@ tracker = (addon / "Tracker.lua").read_text(encoding="utf-8")
 reports = (addon / "Reports.lua").read_text(encoding="utf-8")
 v2ui = (addon / "V2UI.lua").read_text(encoding="utf-8")
 assert "A.V2CombatTick(run)" in tracker
+# Aviiva v2.0.4: Run Overview highlights show four recent build-journal entries.
+summary = (addon / "V2Summary.lua").read_text(encoding="utf-8")
+highlight_model = summary.split("local function highlights(run)", 1)[1].split(
+    "local function nextGoal()", 1
+)[0]
+assert "if table.getn(out) == 4 then" in highlight_model
+assert "A.Duration(entry.t)" in highlight_model
+assert "A.JournalChange(entry.kind, entry.changes[1])" in highlight_model
+
 # v2.0.4 storage inventory is diagnostic-only: it reports counts and must not
 # invoke backup creation, restoration, deletion, migration, or snapshot copying.
 core = (addon / "Core.lua").read_text(encoding="utf-8")
