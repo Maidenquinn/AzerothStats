@@ -240,15 +240,14 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                     if type(entry) == "table" then
                         local data = type(entry.data) == "table" and entry.data or nil
                         local saved = data and data.runs
-                        runs = runs
-                            + (type(saved) == "table" and table.getn(saved) or 0)
+                        runs = runs + (type(saved) == "table" and table.getn(saved) or 0)
                     end
                 end
             elseif type(store) == "table" and store.schema == 1 then
                 count = type(store.data) == "table" and 1 or 0
                 runs = type(store.data) == "table"
-                    and type(store.data.runs) == "table"
-                    and table.getn(store.data.runs)
+                        and type(store.data.runs) == "table"
+                        and table.getn(store.data.runs)
                     or 0
             end
             A.Say(name .. ": " .. count .. " snapshots; " .. runs .. " stored run copies")
