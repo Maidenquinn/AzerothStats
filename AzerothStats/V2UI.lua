@@ -329,7 +329,7 @@ local function options(anchor)
     local rows = {}
     for _, def in ipairs({
         { "summons", "Summons", "Summons observed during a run" },
-                {
+        {
             "effects",
             "Effects",
             "Observed buffs and debuffs from fresh native party packets; unavailable packets are not treated as no effects.",
