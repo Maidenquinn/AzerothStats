@@ -184,8 +184,11 @@ for _, key in ipairs({ "elites", "guardians", "chests", "magnets" }) do
 end
 check(result.run.hero == nil and result.coop == nil, "private roster omitted")
 check(
-    result.summary == nil and result.stats == nil and result.equipment == nil
-        and result.timeline == nil and result.deaths == nil,
+    result.summary == nil
+        and result.stats == nil
+        and result.equipment == nil
+        and result.timeline == nil
+        and result.deaths == nil,
     "direct SavedVariables payload is not duplicated into AZST1"
 )
 check(result.events == nil and result.equipmentTooltips == nil, "private detail omitted")
