@@ -110,3 +110,11 @@ The regression asserts that an official `left` outcome is not automatically syno
 The uploaded SavedVariables file does not persist the read-only `AZS_ZONE.run` candidate or the chat output from `/azstats interop probe`. Therefore it can validate retained-run continuity and export projection, but it cannot independently prove the native candidate's behavior across reloads or process restarts. Those observations must remain separately captured from the in-game probe output.
 
 The same sample also contains an ended retained run (`azstats-323`) with an official `left` result and `partial=false`, but no `endedAt` field. The export must preserve this as unavailable (`null` in AZST1), never synthesize a wall-clock timestamp from duration or neighboring runs. Regression coverage now includes both a left run with an observed `endedAt` and one without it.
+
+### Timestamp anomaly retained for investigation
+
+The two real records expose a metadata inconsistency that must not be silently repaired:
+- `azstats-322`: `startedAt=1794318254`, `endedAt=1794318897`, but the retained in-run duration is only 41.5 seconds. The wall-clock interval is 643 seconds.
+- `azstats-323`: `startedAt=1794318315`, status `ended`, official result `left`, duration 81.2 seconds, but no `endedAt` field is present.
+
+The sample alone cannot establish whether this is delayed official-summary delivery, save/finalization timing, or a tracker lifecycle defect. Do not derive `endedAt` from duration or copy it from another run. AZST1 must faithfully preserve the observed timestamp or emit `null`; add a dedicated native reproduction before changing Tracker semantics.
