@@ -190,3 +190,32 @@ This is evidence that entering/playing the observed Endless continuation did not
 - Earlier cross-zone pair `azstats-320`/`azstats-321` showed the same candidate; retain this contradictory observation as a reason not to assume global uniqueness or correlate on the raw candidate alone.
 
 **No nativeRunId persistence is enabled.** The next evidence needed is the updated SavedVariables after the quit/restart and after the Endless run reaches its final result, plus Rakesh's confirmation of same-upload/session scope.
+
+## Owner SavedVariables audit — Quit Game + Endless — 2026-11-10 21:31
+
+The uploaded post-test SavedVariables confirms two distinct lifecycle outcomes.
+
+### `azstats-329`: Escape → Quit Game
+- Persisted run status: `interrupted`.
+- Last phase: `paused`.
+- Last raw run time: 38.94 seconds.
+- Event journal ends with a checkpoint: `Sortie normale du client`.
+- No official terminal summary/result is present in the retained run.
+- Stored `partial=false` is the legacy/source flag; the AZST1 projection must force `partial=true` for status `interrupted`.
+- The run is retained; do not reinterpret a normal client exit checkpoint as a victory or defeat.
+
+### `azstats-330`: Endless
+- Exactly one local run record is present for the observed base run + Endless continuation.
+- Persisted status: `ended`; phase: `dead`; result: `victory`.
+- `nativeVictoryObserved=true`; official summary also says `victory`.
+- In-run duration: 1109.73 seconds; official summary duration: 970.3 seconds. These are separate source values and must not be silently reconciled.
+- Final level: 60; local progress kills: 13,311; official summary kills: 9,881; damage meter total: 58,238,282.
+- Event journal is marked `eventsTruncated=true`; AZST1 does not export the raw event journal, and the run's metrics/summary remain independently exportable.
+
+### Resulting contract rules
+1. A Quit Game checkpoint without an official summary remains `status=interrupted`, `outcome=null`, `partial=true` in AZST1.
+2. Endless continuation remains the same local run when the retained tracker has one run ID; do not split it based only on Endless phase/progression.
+3. Preserve the official terminal result separately from local progress metrics.
+4. Preserve distinct duration sources; never replace one with the other.
+5. Event journal truncation is an internal collection limitation, not grounds to discard the run or fabricate missing event detail.
+6. No native ID is present in SavedVariables; native persistence remains disabled.
