@@ -337,3 +337,13 @@ check(
     "extreme numeric rejected without math.huge"
 )
 math.huge = oldHuge
+
+-- Reused native candidates are flagged only in session memory, never persisted.
+A.interopProbeLast = nil
+check(not A.InteropCandidateReused("native-A", "azstats-1"), "first native candidate observation")
+check(not A.InteropCandidateReused("native-A", "azstats-1"), "same local run candidate is stable")
+check(A.InteropCandidateReused("native-A", "azstats-2"), "candidate reused across local runs")
+check(not A.InteropCandidateReused("native-B", "azstats-3"), "new candidate is not reuse")
+check(not A.InteropCandidateReused(nil, "azstats-4"), "missing candidate ignored")
+check(A.interopProbeLast.localId == "azstats-3", "missing candidate does not overwrite probe history")
+A.interopProbeLast = nil
