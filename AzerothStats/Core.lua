@@ -229,6 +229,38 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                 A.ApplyUI()
             end
         end
+    elseif command == "storage" then
+        -- Read-only inventory: never initialize, copy, migrate or prune backups.
+        local function inventory(name, store)
+            local entries = type(store) == "table" and store.entries or nil
+            local count = type(entries) == "table" and table.getn(entries) or 0
+            local runs = 0
+            if type(entries) == "table" then
+                for _, entry in ipairs(entries) do
+                    if type(entry) == "table" then
+                        local data = type(entry.data) == "table" and entry.data or nil
+                        local saved = data and data.runs
+                        runs = runs
+                            + (type(saved) == "table" and table.getn(saved) or 0)
+                    end
+                end
+            elseif type(store) == "table" and store.schema == 1 then
+                count = type(store.data) == "table" and 1 or 0
+                runs = type(store.data) == "table"
+                    and type(store.data.runs) == "table"
+                    and table.getn(store.data.runs)
+                    or 0
+            end
+            A.Say(name .. ": " .. count .. " snapshots; " .. runs .. " stored run copies")
+        end
+        A.Say(
+            "Active database: "
+                .. table.getn(A.db.runs or {})
+                .. " retained runs (file bytes unavailable in game)"
+        )
+        inventory("Manual backups", AzerothStatsBackup)
+        inventory("Automatic backups", AzerothStatsAutoBackup)
+        A.Say("Read-only inventory; no backup or run was modified.")
     elseif command == "interop" then
         if value == "export" then
             A.OpenInteropExport()
@@ -370,7 +402,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, report, compare, journal, data, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000, interop probe"
+            "/azstats show, hide, history, report, compare, journal, data, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], storage, retention 10..1000, interop probe"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")
