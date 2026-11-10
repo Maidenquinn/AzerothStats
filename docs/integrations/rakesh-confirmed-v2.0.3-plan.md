@@ -157,3 +157,7 @@ The owner then fully restarted the game client and began/probed a new Elwynn run
 - native candidate: a newly observed token ending `-1`, with a different opaque prefix from the pre-restart session.
 
 Interpretation: within the observed client session, the candidate was stable across repeated reloads and changed between sequential runs. After a full client restart, a new run exposed a fresh candidate namespace/value. This is consistent with a session-scoped run counter/identifier, not a globally unique ID. Do not use `AZS_ZONE.run` alone as a global key across client restarts. WoW Logs' same-upload matching scope may make it a useful correlation component, but this must be confirmed with Rakesh. No persistent native ID or automatic linking is enabled by this observation.
+
+### Outcome versus coverage semantics
+
+The owner sample also confirms that `outcome=left` and `partial=false` can legitimately coexist: the player left voluntarily, but the game supplied an official terminal summary and the retained metrics were finalized. `outcome` describes how the run ended; `partial` describes whether the exported observation is known to be incomplete. Never force `partial=true` merely because the outcome is `left`. If the game does not provide a final summary or the tracker marks the observation interrupted, retain the incomplete/unknown coverage state instead.
