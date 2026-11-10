@@ -309,5 +309,8 @@ local oldHuge = math.huge
 math.huge = nil
 local withoutHuge = A.ExportRunV1({ id = "finite", startedAt = 10, values = { damage = 1e200 } })
 check(withoutHuge and withoutHuge.run.startedAt == 10, "finite values work without math.huge")
-check(withoutHuge.metrics.damage.availability == "unavailable", "extreme numeric rejected without math.huge")
+check(
+    withoutHuge.metrics.damage.availability == "unavailable",
+    "extreme numeric rejected without math.huge"
+)
 math.huge = oldHuge
