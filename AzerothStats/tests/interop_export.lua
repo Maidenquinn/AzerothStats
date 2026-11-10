@@ -1,0 +1,661 @@
+-- Synthetic privacy, absence and non-mutation regression tests.
+local A = AzerothStats
+local function check(ok, label)
+    assert(ok, "InteropExport: " .. label)
+end
+local original = {
+    id = "azstats-17",
+    class = "hunter",
+    hero = "PrivateHero",
+    zone = "naxx",
+    heroic = 3,
+    status = "ended",
+    result = "victory",
+    startedAt = 123456,
+    endedAt = 123500,
+    partial = false,
+    values = { duration = 44, kills = 0, damage = 1234, healing = 0 },
+    summary = { kills = 0, result = "victory" },
+    stats = { damage = 1234 },
+    equipment = { "Private equipment link" },
+    timeline = { { text = "Private timeline" } },
+    deaths = { { source = "Private death source" } },
+    coop = { latest = { { name = "PrivatePartner" } } },
+    equipmentTooltips = { "Private item" },
+    events = { { name = "Private event" } },
+}
+local before = original.values.damage
+local result = A.ExportRunV1(original)
+check(result and result.schemaVersion == "1.0.0", "schema version")
+check(result.run.localId == "azstats-17", "local identity")
+check(result.run.nativeRunId == nil, "native identity unverified")
+check(result.run.partial == false, "explicit complete coverage preserved")
+check(result.run.status == "ended" and result.run.outcome == "victory", "known lifecycle retained")
+local unknownLifecycle =
+    A.ExportRunV1({ id = "opaque", status = "PrivateStatus", result = "PrivateResult" })
+check(
+    unknownLifecycle.run.status == nil and unknownLifecycle.run.outcome == nil,
+    "unknown lifecycle omitted"
+)
+check(A.ExportRunV1({ id = "unknown" }).run.partial == nil, "missing coverage remains unknown")
+check(
+    A.ExportRunV1({ id = "interrupted", status = "interrupted", partial = false }).run.partial
+        == true,
+    "interrupted runs are always partial"
+)
+local interruptedCode = A.ExportCodeV1({
+    id = "interrupted-json",
+    status = "interrupted",
+    partial = false,
+    values = { kills = 4 },
+})
+check(
+    interruptedCode and string.find(interruptedCode, '"partial":true', 1, true) ~= nil,
+    "interrupted JSON cannot claim complete coverage"
+)
+check(
+    A.ExportRunV1({ id = "active", status = "active", partial = false }).run.partial == true,
+    "active runs are always partial"
+)
+check(
+    A.ExportRunV1({ id = "complete", status = "ended", partial = false }).run.partial == false,
+    "completed run retains explicit complete coverage"
+)
+local leftOutcome = A.ExportRunV1({
+    id = "left-outcome",
+    status = "ended",
+    result = "left",
+    partial = false,
+})
+check(
+    leftOutcome.run.outcome == "left" and leftOutcome.run.partial == false,
+    "official left outcome remains distinct from partial data coverage"
+)
+
+-- Anonymized regression sample derived from the owner's real 2.0.3
+-- SavedVariables runs azstats-322 and azstats-323. The retained run has an
+-- official "left" outcome, complete metric coverage, and rich private fields.
+local observedLeftRun = {
+    id = "azstats-322",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318254,
+    endedAt = 1794318897,
+    values = {
+        duration = 41.5,
+        level = 5,
+        kills = 45,
+        gold = 16,
+        damage = 24888,
+        taken = 104,
+        healing = 104,
+        peakDps = 610.6801275239108,
+        bosses = 0,
+        elites = 0,
+        guardians = 0,
+        chests = 0,
+        magnets = 0,
+    },
+    summary = { result = "left", zone = "ab" },
+    stats = { privateStats = "MUST_NOT_EXPORT" },
+    equipment = { privateEquipment = "MUST_NOT_EXPORT" },
+    timeline = { privateTimeline = "MUST_NOT_EXPORT" },
+    deaths = { privateDeaths = "MUST_NOT_EXPORT" },
+}
+local observedLeftCode = A.ExportCodeV1(observedLeftRun)
+check(observedLeftCode ~= nil, "real SavedVariables-shaped left run exports")
+check(
+    string.find(observedLeftCode, '"outcome":"left"', 1, true) ~= nil,
+    "real left outcome preserved in AZST1"
+)
+check(
+    string.find(observedLeftCode, '"partial":false', 1, true) ~= nil,
+    "officially summarized left run retains complete coverage"
+)
+check(
+    string.find(observedLeftCode, '"damage":{"availability":"available","value":24888', 1, true)
+        ~= nil,
+    "real retained damage metric exported"
+)
+for _, privateField in ipairs({
+    "MUST_NOT_EXPORT",
+    "privateStats",
+    "privateEquipment",
+    "privateTimeline",
+    "privateDeaths",
+}) do
+    check(
+        string.find(observedLeftCode, privateField, 1, true) == nil,
+        "private SavedVariables field excluded: " .. privateField
+    )
+end
+check(
+    observedLeftRun.values.damage == 24888 and observedLeftRun.summary.result == "left",
+    "AZST1 projection does not mutate retained SavedVariables"
+)
+
+-- Synthetic edge case: an official left summary can exist without an endedAt
+-- field in older or partial records. Missing wall-clock metadata stays unknown.
+local observedLeftWithoutEndTime = A.ExportRunV1({
+    id = "azstats-323",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedLeftWithoutEndTime.run.endedAt == nil,
+    "missing endedAt stays unavailable for retained left run"
+)
+local observedLeftWithoutEndTimeCode = A.ExportCodeV1({
+    id = "azstats-323",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedLeftWithoutEndTimeCode
+        and string.find(observedLeftWithoutEndTimeCode, '"endedAt":null', 1, true) ~= nil,
+    "AZST1 encodes absent endedAt as null, not a fabricated timestamp"
+)
+check(
+    A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
+    "partial coverage preserved"
+)
+check(result.metrics.kills.value == 0, "observed zero is retained")
+check(result.metrics.healing.value == 0, "healing zero is retained")
+check(result.metrics.gold.availability == "unavailable", "missing not zero")
+check(result.metrics.damage.value == 1234, "retained metric")
+for _, key in ipairs({ "elites", "guardians", "chests", "magnets" }) do
+    check(result.metrics[key].availability == "unavailable", "missing aggregate " .. key)
+end
+check(result.run.hero == nil and result.coop == nil, "private roster omitted")
+check(
+    result.summary == nil
+        and result.stats == nil
+        and result.equipment == nil
+        and result.timeline == nil
+        and result.deaths == nil,
+    "direct SavedVariables payload is not duplicated into AZST1"
+)
+check(result.events == nil and result.equipmentTooltips == nil, "private detail omitted")
+check(result.metrics ~= original.values, "isolated metric table")
+result.metrics.damage.value = 9
+result.run.zone = "other"
+check(original.values.damage == before and original.zone == "naxx", "no internal mutation")
+check(A.ExportRunV1({}) == nil, "missing local ID rejected")
+check(A.ExportRunV1({ id = "" }) == nil, "empty local ID rejected")
+check(A.ExportRunV1(setmetatable({ id = "bad" }, {})) == nil, "metatable rejected")
+local bad = A.ExportRunV1({ id = "x", values = { kills = 0 / 0, gold = 1e200 }, heroic = 999 })
+check(bad.metrics.kills.availability == "unavailable", "NaN rejected")
+check(bad.metrics.gold.availability == "unavailable", "infinity rejected")
+check(bad.run.heroic == nil, "invalid heroic rejected")
+check(
+    A.ExportRunV1({ id = "x", values = { damage = -10 } }).metrics.damage.availability
+        == "unavailable",
+    "negative aggregate rejected"
+)
+
+-- Public lookup is explicitly invoked, bounded to retained history, and
+-- never creates another SavedVariables root or leaks a database reference.
+local previousDb = A.db
+A.db = { runs = { original } }
+local found = A.ExportRetainedRunV1("azstats-17")
+check(found and found.run.localId == "azstats-17", "retained run lookup")
+check(found ~= original and found.metrics ~= original.values, "lookup isolated")
+check(A.ExportRetainedRunV1("missing") == nil, "missing retained run")
+check(A.ExportRetainedRunV1(17) == nil, "non-string lookup rejected")
+check(A.ExportRetainedRunV1("azstats-17").run.hero == nil, "lookup omits character name")
+A.db.runs[2] = { id = "azstats-17", values = { damage = 999 } }
+check(A.ExportRetainedRunV1("azstats-17") == nil, "duplicate local IDs are ambiguous")
+A.db.runs[2] = nil
+A.db.runs[3] = { id = "azstats-17" }
+check(A.ExportRetainedRunV1("azstats-17") == nil, "sparse duplicate local IDs rejected")
+A.db.runs[3] = nil
+check(A.ExportRetainedRunV1("") == nil, "empty lookup rejected")
+check(A.ExportRetainedRunV1(string.rep("x", 81)) == nil, "oversized lookup rejected")
+A.db = { runs = setmetatable({ original }, {}) }
+check(A.ExportRetainedRunV1("azstats-17") == nil, "metatable run list rejected")
+A.db = nil
+check(A.ExportRetainedRunV1("azstats-17") == nil, "disabled DB yields no export")
+A.db = previousDb
+
+-- Native candidate observation is intentionally separate from historical
+-- exports and never creates an identity claim or modifies the input packet.
+local previousZone = AZS_ZONE
+AZS_ZONE = { run = 42 }
+check(A.InteropNativeRunCandidate() == "42", "numeric native run candidate")
+AZS_ZONE.run = "session-abc"
+check(A.InteropNativeRunCandidate() == "session-abc", "string native run candidate")
+AZS_ZONE.run = ""
+check(A.InteropNativeRunCandidate() == nil, "empty native run candidate")
+AZS_ZONE.run = 0 / 0
+check(A.InteropNativeRunCandidate() == nil, "invalid numeric candidate")
+AZS_ZONE = setmetatable({ run = "hidden" }, {})
+check(A.InteropNativeRunCandidate() == nil, "metatable native packet rejected")
+AZS_ZONE = nil
+check(A.InteropNativeRunCandidate() == nil, "missing native packet")
+AZS_ZONE = previousZone
+check(A.ExportRunV1(original).run.nativeRunId == nil, "no retroactive native attribution")
+
+-- AZST1 paste contract: deterministic, bounded, explicit and private.
+local code = A.ExportCodeV1(original)
+check(type(code) == "string" and string.sub(code, 1, 6) == "AZST1:", "AZST1 prefix")
+check(string.find(code, '"v":1', 1, true) ~= nil, "versioned envelope")
+check(
+    string.find(code, '"kills":{"availability":"available","value":0', 1, true) ~= nil,
+    "zero encoded"
+)
+check(string.find(code, '"gold":{"availability":"unavailable"}', 1, true) ~= nil, "missing encoded")
+check(string.find(code, '"nativeRunId":null', 1, true) ~= nil, "unverified native ID null")
+check(string.find(code, "PrivateHero", 1, true) == nil, "hero excluded")
+check(string.find(code, "PrivatePartner", 1, true) == nil, "roster excluded")
+check(string.find(code, "Private item", 1, true) == nil, "equipment excluded")
+check(string.find(code, "Private equipment link", 1, true) == nil, "equipment link excluded")
+check(string.find(code, "Private timeline", 1, true) == nil, "timeline excluded")
+check(string.find(code, "Private death source", 1, true) == nil, "death details excluded")
+check(string.find(code, "Private event", 1, true) == nil, "events excluded")
+check(A.ExportCodeV1(original) == code, "deterministic code")
+local escaped = A.ExportCodeV1({ id = 'quoted"\\id' })
+check(escaped and string.find(escaped, '\\"', 1, true), "quote escaped")
+check(escaped and string.find(escaped, "\\\\", 1, true), "backslash escaped")
+check(A.ExportCodeV1({ id = string.rep("x", 81) }) == nil, "oversized ID rejected")
+check(A.ExportCodeV1({}) == nil, "missing ID rejected for code")
+A.db = { runs = { original } }
+check(A.ExportRetainedCodeV1("azstats-17") == code, "retained code equivalent")
+A.db.runs[3] = { id = "azstats-17" }
+check(A.ExportRetainedCodeV1("azstats-17") == nil, "ambiguous code rejected")
+A.db = previousDb
+
+-- JSON controls must remain escaped and no retained root may be mutated.
+local controls = A.ExportCodeV1({ id = "line\nnext\t" .. string.char(1) })
+check(controls and string.find(controls, "\\n", 1, true) ~= nil, "newline JSON escaped")
+check(controls and string.find(controls, "\\t", 1, true) ~= nil, "tab JSON escaped")
+check(controls and string.find(controls, "\\u0001", 1, true) ~= nil, "control JSON escaped")
+check(controls and string.find(controls, string.char(1), 1, true) == nil, "no raw control")
+local oversized = A.ExportCodeV1({
+    id = "azstats-big",
+    zone = string.rep("z", 80),
+    class = string.rep("c", 40),
+    values = { damage = 1e300, healing = 1e300 },
+})
+check(oversized ~= nil and string.len(oversized) <= 8192, "bounded scalar export")
+check(A.ExportCodeV1({ id = "nan", values = { damage = 0 / 0 } }) ~= nil, "invalid metric safe")
+local beforeZone = original.zone
+local beforeDamage = original.values.damage
+A.ExportCodeV1(original)
+check(original.zone == beforeZone and original.values.damage == beforeDamage, "export read only")
+
+-- Desktop importer compatibility: exporting must never rewrite existing
+-- SavedVariables structures consumed by WoW Logs (Rakesh, 2026-11-09).
+local legacyRun = {
+    id = "azstats-legacy-1",
+    status = "ended",
+    result = "victory",
+    values = { kills = 12, duration = 180 },
+    summary = { result = "victory", t = 180 },
+    stats = { crit = 42 },
+    equipment = { [1] = "synthetic-item" },
+    timeline = { { t = 10, kills = 1 } },
+    deaths = { { t = 20, cause = "synthetic" } },
+}
+local legacyDb = {
+    runs = { legacyRun },
+    stats = { total = 42 },
+    equipment = { slot = "synthetic" },
+    timeline = { { t = 1 } },
+    deaths = { { t = 2 } },
+}
+local savedDb, savedManual, savedAuto = A.db, AzerothStatsBackup, AzerothStatsAutoBackup
+A.db = legacyDb
+local manualMarker, autoMarker = {}, {}
+AzerothStatsBackup, AzerothStatsAutoBackup = manualMarker, autoMarker
+local legacyCode = A.ExportRetainedCodeV1("azstats-legacy-1")
+check(legacyCode ~= nil, "legacy retained run exports")
+check(legacyDb.runs[1] == legacyRun, "run identity preserved")
+check(legacyRun.summary.result == "victory", "summary preserved")
+check(legacyRun.stats.crit == 42, "stats preserved")
+check(legacyRun.equipment[1] == "synthetic-item", "equipment preserved")
+check(legacyRun.timeline[1].kills == 1, "timeline preserved")
+check(legacyRun.deaths[1].cause == "synthetic", "deaths preserved")
+check(legacyDb.stats.total == 42, "top-level stats preserved")
+check(legacyDb.equipment.slot == "synthetic", "top-level equipment preserved")
+check(legacyDb.timeline[1].t == 1, "top-level timeline preserved")
+check(legacyDb.deaths[1].t == 2, "top-level deaths preserved")
+check(AzerothStatsBackup == manualMarker, "manual backup root untouched")
+check(AzerothStatsAutoBackup == autoMarker, "automatic backup root untouched")
+check(string.find(legacyCode, "synthetic-item", 1, true) == nil, "equipment not exported")
+check(string.find(legacyCode, "synthetic", 1, true) == nil, "private details not exported")
+A.db, AzerothStatsBackup, AzerothStatsAutoBackup = savedDb, savedManual, savedAuto
+
+-- Contract matrix for direct SavedVariables readers: synthetic v2.0.2,
+-- interrupted, missing, restored and malformed runs. No migration is invoked.
+local contractDb = A.db
+local cases = {
+    { id = "old", summary = { t = 15 }, stats = {}, equipment = {}, timeline = {}, deaths = {} },
+    { id = "new", summary = { t = 20 }, stats = {}, equipment = {}, timeline = {}, deaths = {} },
+    {
+        id = "partial",
+        partial = true,
+        summary = nil,
+        stats = {},
+        equipment = {},
+        timeline = {},
+        deaths = {},
+    },
+    { id = "missing", values = nil },
+    {
+        id = "restored",
+        summary = { t = 35 },
+        stats = {},
+        equipment = {},
+        timeline = {},
+        deaths = {},
+    },
+    {
+        id = "malformed",
+        summary = "bad",
+        stats = false,
+        equipment = 123,
+        timeline = {},
+        deaths = {},
+    },
+}
+A.db = { runs = cases }
+for _, retained in ipairs(cases) do
+    local oldSummary, oldStats, oldEquipment = retained.summary, retained.stats, retained.equipment
+    local oldTimeline, oldDeaths = retained.timeline, retained.deaths
+    local output = A.ExportRetainedCodeV1(retained.id)
+    check(type(output) == "string" and string.sub(output, 1, 6) == "AZST1:", "contract export")
+    check(
+        retained.summary == oldSummary and retained.stats == oldStats,
+        "summary and stats unchanged"
+    )
+    check(retained.equipment == oldEquipment, "equipment unchanged")
+    check(
+        retained.timeline == oldTimeline and retained.deaths == oldDeaths,
+        "timeline and deaths unchanged"
+    )
+end
+check(
+    string.find(A.ExportRetainedCodeV1("partial"), '"partial":true', 1, true) ~= nil,
+    "partial status"
+)
+check(
+    string.find(
+        A.ExportRetainedCodeV1("missing"),
+        '"kills":{"availability":"unavailable"}',
+        1,
+        true
+    ) ~= nil,
+    "missing metrics"
+)
+A.db = contractDb
+
+-- Latest-run selector must tolerate sparse arrays and invalid history rows.
+local previousSelectionDb = A.db
+A.db = {
+    runs = {
+        [1] = { id = "oldest", startedAt = 100 },
+        [4] = { id = "newest", startedAt = 300 },
+        [7] = { id = "", startedAt = 999 },
+        [9] = false,
+        [12] = { id = "middle", startedAt = 200 },
+    },
+}
+check(A.LatestRetainedRunId() == "newest", "latest retained run selection")
+A.db.runs[15] = { id = "tie", startedAt = 300 }
+check(A.LatestRetainedRunId() == "tie", "latest selection deterministic on timestamp tie")
+A.db = { runs = { false, { startedAt = 1 } } }
+check(A.LatestRetainedRunId() == nil, "no valid retained run")
+A.db = nil
+check(A.LatestRetainedRunId() == nil, "selector handles unavailable database")
+A.db = previousSelectionDb
+
+-- Bounded 1,000-run synthetic workload. This is a regression smoke test,
+-- not a substitute for measured native-client performance.
+local perfDb = { runs = {} }
+for index = 1, 1000 do
+    perfDb.runs[index] = {
+        id = "azstats-perf-" .. index,
+        status = "ended",
+        startedAt = index,
+        values = { kills = index, duration = 120, damage = index * 100 },
+    }
+end
+A.db = perfDb
+check(A.LatestRetainedRunId() == "azstats-perf-1000", "latest selector handles 1000 runs")
+check(A.ExportRetainedRunV1("azstats-perf-1") ~= nil, "first run lookup in 1000")
+check(A.ExportRetainedRunV1("azstats-perf-500") ~= nil, "middle run lookup in 1000")
+check(A.ExportRetainedRunV1("azstats-perf-1000") ~= nil, "last run lookup in 1000")
+local largeCode = A.ExportRetainedCodeV1("azstats-perf-500")
+check(largeCode and string.len(largeCode) <= 8192, "1000-run export remains bounded")
+check(A.ExportRetainedRunV1("not-present") == nil, "missing run lookup in 1000")
+A.db = previousSelectionDb
+
+-- UTF-8 bytes are preserved in JSON strings; byte size is measured on output.
+local unicodeCode = A.ExportCodeV1({ id = "azstats-é-雪", zone = "Scholomance-é" })
+check(unicodeCode ~= nil, "unicode metadata exports")
+check(string.find(unicodeCode, "Scholomance-é", 1, true) ~= nil, "UTF-8 zone preserved")
+check(string.len(unicodeCode) <= 8192, "UTF-8 output byte limit")
+
+-- The game client may not expose math.huge. Numeric validation must not depend
+-- on that optional Lua constant.
+local oldHuge = math.huge
+math.huge = nil
+local withoutHuge = A.ExportRunV1({ id = "finite", startedAt = 10, values = { damage = 1e200 } })
+check(withoutHuge and withoutHuge.run.startedAt == 10, "finite values work without math.huge")
+check(
+    withoutHuge.metrics.damage.availability == "unavailable",
+    "extreme numeric rejected without math.huge"
+)
+math.huge = oldHuge
+
+-- Reused native candidates are flagged only in session memory, never persisted.
+A.interopProbeLast = nil
+check(not A.InteropCandidateReused("native-A", "azstats-1"), "first native candidate observation")
+check(not A.InteropCandidateReused("native-A", "azstats-1"), "same local run candidate is stable")
+check(A.InteropCandidateReused("native-A", "azstats-2"), "candidate reused across local runs")
+check(not A.InteropCandidateReused("native-B", "azstats-3"), "new candidate is not reuse")
+check(not A.InteropCandidateReused(nil, "azstats-4"), "missing candidate ignored")
+check(
+    A.interopProbeLast.localId == "azstats-3",
+    "missing candidate does not overwrite probe history"
+)
+A.interopProbeLast = nil
+
+-- Full SavedVariables keep rolling backups in a separate root. The manual
+-- AZST1 projection must never serialize that root or any backup payload.
+local previousBackup = AzerothStatsBackup
+AzerothStatsBackup = {
+    entries = {
+        { data = { sentinel = "PRIVATE_BACKUP_MUST_NOT_EXPORT" } },
+    },
+}
+A.db = { runs = { original } }
+local retainedCode = A.ExportRetainedCodeV1("azstats-17")
+check(type(retainedCode) == "string", "retained AZST1 export with backup root present")
+check(
+    string.find(retainedCode, "PRIVATE_BACKUP_MUST_NOT_EXPORT", 1, true) == nil,
+    "backup root excluded from AZST1"
+)
+AzerothStatsBackup = previousBackup
+A.db = previousDb
+
+-- Real owner SavedVariables showed two checkpoint/resume pairs on one retained
+-- local run. The manual export must keep this event journal and native candidate
+-- outside AZST1 while preserving the official left result and known metrics.
+local checkpointResumeRun = {
+    id = "azstats-fixture-resume",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    endedAt = nil,
+    nativeRunId = "PRIVATE_NATIVE_CANDIDATE",
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+    events = {
+        { kind = "checkpoint", text = "Sortie normale du client" },
+        { kind = "resume", text = "Reprise probable apres rechargement" },
+        { kind = "checkpoint", text = "Sortie normale du client" },
+        { kind = "resume", text = "Reprise probable apres rechargement" },
+    },
+    timeline = { { phase = "playing", t = 0.62 }, { phase = "choosing", t = 81.2 } },
+}
+local checkpointResumeCode = A.ExportCodeV1(checkpointResumeRun)
+check(checkpointResumeCode ~= nil, "checkpoint/resume retained run exports")
+check(
+    string.find(checkpointResumeCode, '"outcome":"left"', 1, true) ~= nil,
+    "checkpoint/resume run keeps official left outcome"
+)
+check(
+    string.find(checkpointResumeCode, '"endedAt":null', 1, true) ~= nil,
+    "checkpoint/resume run does not invent missing endedAt"
+)
+check(
+    string.find(checkpointResumeCode, '"nativeRunId":null', 1, true) ~= nil
+        and string.find(checkpointResumeCode, "PRIVATE_NATIVE_CANDIDATE", 1, true) == nil,
+    "unverified native candidate is never exported"
+)
+check(
+    string.find(checkpointResumeCode, "Sortie normale du client", 1, true) == nil
+        and string.find(checkpointResumeCode, "Reprise probable", 1, true) == nil,
+    "checkpoint and resume event journal excluded from AZST1"
+)
+
+-- Owner's latest real SavedVariables: Quit Game retained an interrupted
+-- run with a normal-client-exit checkpoint, but no official result.
+local observedQuitRun = {
+    id = "azstats-fixture-quit",
+    zone = "elwynn",
+    class = "warrior",
+    status = "interrupted",
+    phase = "paused",
+    partial = false,
+    startedAt = 1794335844,
+    values = { duration = 38.94, level = 6, kills = 49, gold = 30, damage = 4850 },
+    events = {
+        { kind = "checkpoint", t = 38.94, text = "Sortie normale du client" },
+    },
+}
+local observedQuitCode = A.ExportCodeV1(observedQuitRun)
+check(observedQuitCode ~= nil, "real Quit Game interrupted run exports")
+check(
+    string.find(observedQuitCode, '"status":"interrupted"', 1, true) ~= nil,
+    "Quit Game run remains interrupted, not completed"
+)
+check(
+    string.find(observedQuitCode, '"partial":true', 1, true) ~= nil,
+    "Quit Game interrupted run exports partial true"
+)
+check(
+    string.find(observedQuitCode, '"outcome":null', 1, true) ~= nil,
+    "Quit Game without official summary does not invent an outcome"
+)
+check(
+    string.find(observedQuitCode, "Sortie normale du client", 1, true) == nil,
+    "Quit Game checkpoint detail is not leaked into AZST1"
+)
+
+-- Owner's real Endless run ended with a native official victory summary.
+-- Endless continuation is part of this same local run, not a second run.
+local observedEndlessRun = {
+    id = "azstats-fixture-endless",
+    zone = "elwynn",
+    class = "warrior",
+    heroic = 0,
+    status = "ended",
+    phase = "dead",
+    result = "victory",
+    partial = false,
+    startedAt = 1794336294,
+    values = {
+        duration = 1109.73,
+        level = 60,
+        kills = 13311,
+        gold = 407,
+        damage = 58238282,
+        taken = 2858,
+        healing = 2858,
+    },
+    official = {
+        result = "victory",
+        zone = "elwynn",
+        duration = 970.3,
+        kills = 9881,
+    },
+    nativeVictoryObserved = true,
+    eventsTruncated = true,
+}
+local observedEndlessCode = A.ExportCodeV1(observedEndlessRun)
+check(observedEndlessCode ~= nil, "real Endless victory run exports")
+check(
+    string.find(observedEndlessCode, '"outcome":"victory"', 1, true) ~= nil,
+    "Endless retains official victory outcome"
+)
+check(
+    string.find(observedEndlessCode, '"partial":false', 1, true) ~= nil,
+    "Endless run keeps complete coverage flag when source says complete"
+)
+check(
+    string.find(observedEndlessCode, "nativeVictoryObserved", 1, true) == nil
+        and string.find(observedEndlessCode, "eventsTruncated", 1, true) == nil,
+    "internal Endless flags are excluded from AZST1"
+)
+check(
+    observedEndlessRun.id == "azstats-fixture-endless"
+        and observedEndlessRun.official.result == "victory",
+    "Endless export projection does not mutate source run"
+)
+
+-- The actual reload-continuity sample had a wall-clock end timestamp. Preserve
+-- it independently from in-run duration, which excludes time outside gameplay.
+local observedReloadedLeftRun = A.ExportRunV1({
+    id = "azstats-fixture-reloaded",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    endedAt = 1794318897,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedReloadedLeftRun.run.endedAt == 1794318897,
+    "reloaded left run preserves observed wall-clock endedAt"
+)
+local observedReloadedLeftCode = A.ExportCodeV1({
+    id = "azstats-fixture-reloaded",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    endedAt = 1794318897,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedReloadedLeftCode
+        and string.find(observedReloadedLeftCode, '"endedAt":1794318897', 1, true) ~= nil,
+    "AZST1 preserves actual wall-clock endedAt after reload transitions"
+)

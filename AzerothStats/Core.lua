@@ -229,6 +229,43 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                 A.ApplyUI()
             end
         end
+    elseif command == "interop" then
+        if value == "export" then
+            A.OpenInteropExport()
+        elseif value == "probe" then
+            local candidate = A.InteropNativeRunCandidate and A.InteropNativeRunCandidate()
+            if candidate then
+                A.Say("WoW Logs correlation candidate (unverified): " .. candidate)
+            else
+                A.Say("WoW Logs correlation candidate: unavailable")
+            end
+            local tracked = A.run
+            if
+                candidate
+                and type(tracked) == "table"
+                and A.InteropCandidateReused
+                and A.InteropCandidateReused(candidate, tracked.id)
+            then
+                A.Say(
+                    "Warning: same native candidate observed for different local runs; do not correlate automatically."
+                )
+            end
+            if type(tracked) == "table" then
+                A.Say(
+                    "Current local run: "
+                        .. tostring(tracked.id or "unknown")
+                        .. " | status: "
+                        .. tostring(tracked.status or "unknown")
+                        .. " | zone: "
+                        .. tostring(tracked.zone or "unknown")
+                )
+            else
+                A.Say("Current local run: none")
+            end
+            A.Say("Diagnostic only; no run linked, saved or transmitted.")
+        else
+            A.Say("Usage: /azstats interop probe | export")
+        end
     elseif command == "resync" then
         A.V2Reconcile()
         A.Say("Run links refreshed. Lifetime totals cannot be rebuilt from pruned history.")
@@ -333,7 +370,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, report, compare, journal, data, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000"
+            "/azstats show, hide, history, report, compare, journal, data, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000, interop probe"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")

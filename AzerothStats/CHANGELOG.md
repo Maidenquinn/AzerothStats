@@ -1,3 +1,11 @@
+# 2.0.3 — WoW Logs AS interoperability (test build, 10 November 2026)
+
+- **Desktop compatibility:** preserve the existing SavedVariables layout read by WoW Logs AS, including `runs[].summary`, `stats`, `equipment`, `timeline` and `deaths`; no destructive migration or new SavedVariables root.
+- **Browser handoff:** add an experimental, manual `AZST1:` JSON export with an explicit local run ID, preview and copy field. No automatic upload; WoW Logs importer support is pending Rakesh's implementation.
+- **Correlation diagnostics:** add `/azstats interop probe` for read-only `AZS_ZONE.run` observation. Native ID persistence is deliberately disabled until native acceptance.
+- **Safety:** exclude backups, co-op roster, character names, tooltips and raw event streams from AZST1; preserve missing-vs-zero semantics and reject malformed, negative or non-finite aggregate values.
+- **Testing:** add synthetic direct-import compatibility, privacy, Unicode, sparse-history, duplicate-ID and 1,000-run regression cases. Native desktop/browser scenarios remain owner validation.
+
 # 2.0.2 — Combat stream safety and normalized run comparison (6 November 2026)
 
 - **Run comparison:** add per-second comparisons for recorded damage, damage taken, healing and kills, calculated only when each run has a positive recorded duration and the corresponding metric.
