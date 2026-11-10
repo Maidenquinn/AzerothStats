@@ -2,7 +2,7 @@
 -- Schema v1 is a Lua table returned on demand; no duplicate history is stored.
 local A = AzerothStats
 local function number(value)
-    if type(value) ~= "number" or value ~= value or value == math.huge or value == -math.huge then
+    if type(value) ~= "number" or value ~= value or value >= 1e100 or value <= -1e100 then
         return nil
     end
     return value
