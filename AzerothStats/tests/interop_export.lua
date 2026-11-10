@@ -350,3 +350,21 @@ check(
     "missing candidate does not overwrite probe history"
 )
 A.interopProbeLast = nil
+
+-- Full SavedVariables keep rolling backups in a separate root. The manual
+-- AZST1 projection must never serialize that root or any backup payload.
+local previousBackup = AzerothStatsBackup
+AzerothStatsBackup = {
+    entries = {
+        { data = { sentinel = "PRIVATE_BACKUP_MUST_NOT_EXPORT" } },
+    },
+}
+A.db = { runs = { original } }
+local retainedCode = A.ExportRetainedCodeV1("azstats-17")
+check(type(retainedCode) == "string", "retained AZST1 export with backup root present")
+check(
+    string.find(retainedCode, "PRIVATE_BACKUP_MUST_NOT_EXPORT", 1, true) == nil,
+    "backup root excluded from AZST1"
+)
+AzerothStatsBackup = previousBackup
+A.db = previousDb
