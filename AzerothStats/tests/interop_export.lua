@@ -58,8 +58,9 @@ check(bad.metrics.kills.availability == "unavailable", "NaN rejected")
 check(bad.metrics.gold.availability == "unavailable", "infinity rejected")
 check(bad.run.heroic == nil, "invalid heroic rejected")
 check(
-    A.ExportRunV1({ id = "x", values = { damage = -10 } }).metrics.damage.value == -10,
-    "negative retained values are not silently rewritten"
+    A.ExportRunV1({ id = "x", values = { damage = -10 } }).metrics.damage.availability
+        == "unavailable",
+    "negative aggregate rejected"
 )
 
 -- Public lookup is explicitly invoked, bounded to retained history, and
