@@ -335,7 +335,11 @@ function A.OpenInteropExport()
                     and string.len(run.id) <= 80
                 then
                     local stamp = number(run.startedAt) or number(run.endedAt) or 0
-                    if not bestTime or stamp > bestTime or (stamp == bestTime and index > bestIndex) then
+                    if
+                        not bestTime
+                        or stamp > bestTime
+                        or (stamp == bestTime and index > bestIndex)
+                    then
                         selected, bestTime, bestIndex = run.id, stamp, index
                     end
                 end
