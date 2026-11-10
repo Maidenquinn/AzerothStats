@@ -2172,13 +2172,7 @@ local function buildSettings(frame)
                 if GameTooltip then
                     GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
                     GameTooltip:SetText(A.T("Record sounds"))
-                    GameTooltip:AddLine(
-                        A.T("Record sound explanation"),
-                        1,
-                        1,
-                        1,
-                        true
-                    )
+                    GameTooltip:AddLine(A.T("Record sound explanation"), 1, 1, 1, true)
                     GameTooltip:Show()
                 end
             end)
