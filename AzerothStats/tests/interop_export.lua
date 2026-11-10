@@ -138,8 +138,8 @@ check(
     "AZST1 projection does not mutate retained SavedVariables"
 )
 
--- The owner's second retained run is ended with an official left summary but
--- has no endedAt field. Missing wall-clock metadata must remain unknown.
+-- Synthetic edge case: an official left summary can exist without an endedAt
+-- field in older or partial records. Missing wall-clock metadata stays unknown.
 local observedLeftWithoutEndTime = A.ExportRunV1({
     id = "azstats-323",
     zone = "ab",
@@ -537,4 +537,40 @@ check(
     string.find(checkpointResumeCode, "Sortie normale du client", 1, true) == nil
         and string.find(checkpointResumeCode, "Reprise probable", 1, true) == nil,
     "checkpoint and resume event journal excluded from AZST1"
+)
+
+-- The actual reload-continuity sample had a wall-clock end timestamp. Preserve
+-- it independently from in-run duration, which excludes time outside gameplay.
+local observedReloadedLeftRun = A.ExportRunV1({
+    id = "azstats-fixture-reloaded",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    endedAt = 1794318897,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedReloadedLeftRun.run.endedAt == 1794318897,
+    "reloaded left run preserves observed wall-clock endedAt"
+)
+local observedReloadedLeftCode = A.ExportCodeV1({
+    id = "azstats-fixture-reloaded",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    endedAt = 1794318897,
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+})
+check(
+    observedReloadedLeftCode
+        and string.find(observedReloadedLeftCode, '"endedAt":1794318897', 1, true) ~= nil,
+    "AZST1 preserves actual wall-clock endedAt after reload transitions"
 )
