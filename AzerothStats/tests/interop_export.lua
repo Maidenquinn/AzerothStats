@@ -71,6 +71,71 @@ check(
     leftOutcome.run.outcome == "left" and leftOutcome.run.partial == false,
     "official left outcome remains distinct from partial data coverage"
 )
+
+-- Anonymized regression sample derived from the owner's real 2.0.3
+-- SavedVariables runs azstats-322 and azstats-323. The retained run has an
+-- official "left" outcome, complete metric coverage, and rich private fields.
+local observedLeftRun = {
+    id = "azstats-322",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318254,
+    values = {
+        duration = 41.5,
+        level = 5,
+        kills = 45,
+        gold = 16,
+        damage = 24888,
+        taken = 104,
+        healing = 104,
+        peakDps = 610.6801275239108,
+        bosses = 0,
+        elites = 0,
+        guardians = 0,
+        chests = 0,
+        magnets = 0,
+    },
+    summary = { result = "left", zone = "ab" },
+    stats = { privateStats = "MUST_NOT_EXPORT" },
+    equipment = { privateEquipment = "MUST_NOT_EXPORT" },
+    timeline = { privateTimeline = "MUST_NOT_EXPORT" },
+    deaths = { privateDeaths = "MUST_NOT_EXPORT" },
+}
+local observedLeftCode = A.ExportCodeV1(observedLeftRun)
+check(observedLeftCode ~= nil, "real SavedVariables-shaped left run exports")
+check(
+    string.find(observedLeftCode, '"outcome":"left"', 1, true) ~= nil,
+    "real left outcome preserved in AZST1"
+)
+check(
+    string.find(observedLeftCode, '"partial":false', 1, true) ~= nil,
+    "officially summarized left run retains complete coverage"
+)
+check(
+    string.find(observedLeftCode, '"damage":{"availability":"available","value":24888', 1, true)
+        ~= nil,
+    "real retained damage metric exported"
+)
+for _, privateField in ipairs({
+    "MUST_NOT_EXPORT",
+    "privateStats",
+    "privateEquipment",
+    "privateTimeline",
+    "privateDeaths",
+}) do
+    check(
+        string.find(observedLeftCode, privateField, 1, true) == nil,
+        "private SavedVariables field excluded: " .. privateField
+    )
+end
+check(
+    observedLeftRun.values.damage == 24888 and observedLeftRun.summary.result == "left",
+    "AZST1 projection does not mutate retained SavedVariables"
+)
 check(
     A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
     "partial coverage preserved"
