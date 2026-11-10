@@ -539,6 +539,92 @@ check(
     "checkpoint and resume event journal excluded from AZST1"
 )
 
+-- Owner's latest real SavedVariables: Quit Game retained an interrupted
+-- run with a normal-client-exit checkpoint, but no official result.
+local observedQuitRun = {
+    id = "azstats-fixture-quit",
+    zone = "elwynn",
+    class = "warrior",
+    status = "interrupted",
+    phase = "paused",
+    partial = false,
+    startedAt = 1794335844,
+    values = { duration = 38.94, level = 6, kills = 49, gold = 30, damage = 4850 },
+    events = {
+        { kind = "checkpoint", t = 38.94, text = "Sortie normale du client" },
+    },
+}
+local observedQuitCode = A.ExportCodeV1(observedQuitRun)
+check(observedQuitCode ~= nil, "real Quit Game interrupted run exports")
+check(
+    string.find(observedQuitCode, '"status":"interrupted"', 1, true) ~= nil,
+    "Quit Game run remains interrupted, not completed"
+)
+check(
+    string.find(observedQuitCode, '"partial":true', 1, true) ~= nil,
+    "Quit Game interrupted run exports partial true"
+)
+check(
+    string.find(observedQuitCode, '"outcome":null', 1, true) ~= nil,
+    "Quit Game without official summary does not invent an outcome"
+)
+check(
+    string.find(observedQuitCode, "Sortie normale du client", 1, true) == nil,
+    "Quit Game checkpoint detail is not leaked into AZST1"
+)
+
+-- Owner's real Endless run ended with a native official victory summary.
+-- Endless continuation is part of this same local run, not a second run.
+local observedEndlessRun = {
+    id = "azstats-fixture-endless",
+    zone = "elwynn",
+    class = "warrior",
+    heroic = 0,
+    status = "ended",
+    phase = "dead",
+    result = "victory",
+    partial = false,
+    startedAt = 1794336294,
+    values = {
+        duration = 1109.73,
+        level = 60,
+        kills = 13311,
+        gold = 407,
+        damage = 58238282,
+        taken = 2858,
+        healing = 2858,
+    },
+    official = {
+        result = "victory",
+        zone = "elwynn",
+        duration = 970.3,
+        kills = 9881,
+    },
+    nativeVictoryObserved = true,
+    eventsTruncated = true,
+}
+local observedEndlessCode = A.ExportCodeV1(observedEndlessRun)
+check(observedEndlessCode ~= nil, "real Endless victory run exports")
+check(
+    string.find(observedEndlessCode, '"outcome":"victory"', 1, true) ~= nil,
+    "Endless retains official victory outcome"
+)
+check(
+    string.find(observedEndlessCode, '"partial":false', 1, true) ~= nil,
+    "Endless run keeps complete coverage flag when source says complete"
+)
+check(
+    string.find(observedEndlessCode, "nativeVictoryObserved", 1, true) == nil
+        and string.find(observedEndlessCode, "eventsTruncated", 1, true) == nil,
+    "internal Endless flags are excluded from AZST1"
+)
+check(
+    observedEndlessRun.id == "azstats-fixture-endless"
+        and observedEndlessRun.official.result == "victory",
+    "Endless export projection does not mutate source run"
+)
+
+
 -- The actual reload-continuity sample had a wall-clock end timestamp. Preserve
 -- it independently from in-run duration, which excludes time outside gameplay.
 local observedReloadedLeftRun = A.ExportRunV1({
