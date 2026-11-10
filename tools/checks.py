@@ -174,6 +174,7 @@ lua.execute((addon / "tests/v2_views.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/v2_personal.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/v2_summary.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/interop_export.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/interop_perf.lua").read_text(encoding="utf-8"))
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",
