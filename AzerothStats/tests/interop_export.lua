@@ -34,6 +34,19 @@ check(
 )
 check(A.ExportRunV1({ id = "unknown" }).run.partial == nil, "missing coverage remains unknown")
 check(
+    A.ExportRunV1({ id = "interrupted", status = "interrupted", partial = false }).run.partial
+        == true,
+    "interrupted runs are always partial"
+)
+check(
+    A.ExportRunV1({ id = "active", status = "active", partial = false }).run.partial == true,
+    "active runs are always partial"
+)
+check(
+    A.ExportRunV1({ id = "complete", status = "ended", partial = false }).run.partial == false,
+    "completed run retains explicit complete coverage"
+)
+check(
     A.ExportRunV1({ id = "partial", partial = true }).run.partial == true,
     "partial coverage preserved"
 )
