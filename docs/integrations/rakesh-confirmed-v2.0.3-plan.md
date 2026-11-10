@@ -96,3 +96,15 @@ The inspected retained-run records contain the exact top-level structures Rakesh
 The file has one primary `AzerothStatsDB` root (schema 2, addon version 2.0.3) and a separate `AzerothStatsBackup.entries` root. Three backup entries are present. The primary database section occupies about 21.4 MB; the backup section occupies about 70.1 MB, with individual snapshots approximately 22.8–23.9 MB. Total file size is 91,574,179 bytes. The saved settings show `autoBackupRetention=3`, `autoBackupEveryRuns=3`, and `autoBackupRunCounter=2`.
 
 These backups are embedded as a separate SavedVariables root in the same physical Lua file, not as three independently written files. The raw file must never be committed as a fixture because it contains character identity, equipment item links/tooltips, and extensive telemetry. AZST1 continues to project only one explicitly selected retained run; it must not serialize `AzerothStatsBackup`. A regression test now inserts a private sentinel in that root and asserts it is absent from generated AZST1.
+
+## Anonymized regression fixture added — owner SavedVariables sample
+
+A minimized, anonymized test case now mirrors the owner's retained Arathi Basin run `azstats-322`:
+- `status=ended`, official `result=left`, `partial=false`
+- `zone=ab`, `class=warrior`, `heroic=3`
+- observed values include 41.5 seconds, 45 kills, 16 gold, 24,888 damage, 104 taken, and 104 healing
+- private `summary`, `stats`, `equipment`, `timeline`, and `deaths` fields are included as sentinels and must not enter AZST1
+
+The regression asserts that an official `left` outcome is not automatically synonymous with incomplete metric coverage, that observed metrics remain intact, that rich private fields are excluded from the allowlisted paste export, and that the source SavedVariables-shaped table is not mutated. The fixture is synthetic/minimized and contains no character name, item link, raw telemetry, or native candidate token.
+
+The uploaded SavedVariables file does not persist the read-only `AZS_ZONE.run` candidate or the chat output from `/azstats interop probe`. Therefore it can validate retained-run continuity and export projection, but it cannot independently prove the native candidate's behavior across reloads or process restarts. Those observations must remain separately captured from the in-game probe output.
