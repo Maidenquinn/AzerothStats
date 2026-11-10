@@ -15,6 +15,11 @@ local original = {
     endedAt = 123500,
     partial = false,
     values = { duration = 44, kills = 0, damage = 1234, healing = 0 },
+    summary = { kills = 0, result = "victory" },
+    stats = { damage = 1234 },
+    equipment = { "Private equipment link" },
+    timeline = { { text = "Private timeline" } },
+    deaths = { { source = "Private death source" } },
     coop = { latest = { { name = "PrivatePartner" } } },
     equipmentTooltips = { "Private item" },
     events = { { name = "Private event" } },
@@ -68,6 +73,11 @@ for _, key in ipairs({ "elites", "guardians", "chests", "magnets" }) do
     check(result.metrics[key].availability == "unavailable", "missing aggregate " .. key)
 end
 check(result.run.hero == nil and result.coop == nil, "private roster omitted")
+check(
+    result.summary == nil and result.stats == nil and result.equipment == nil
+        and result.timeline == nil and result.deaths == nil,
+    "direct SavedVariables payload is not duplicated into AZST1"
+)
 check(result.events == nil and result.equipmentTooltips == nil, "private detail omitted")
 check(result.metrics ~= original.values, "isolated metric table")
 result.metrics.damage.value = 9
@@ -141,6 +151,9 @@ check(string.find(code, '"nativeRunId":null', 1, true) ~= nil, "unverified nativ
 check(string.find(code, "PrivateHero", 1, true) == nil, "hero excluded")
 check(string.find(code, "PrivatePartner", 1, true) == nil, "roster excluded")
 check(string.find(code, "Private item", 1, true) == nil, "equipment excluded")
+check(string.find(code, "Private equipment link", 1, true) == nil, "equipment link excluded")
+check(string.find(code, "Private timeline", 1, true) == nil, "timeline excluded")
+check(string.find(code, "Private death source", 1, true) == nil, "death details excluded")
 check(string.find(code, "Private event", 1, true) == nil, "events excluded")
 check(A.ExportCodeV1(original) == code, "deterministic code")
 local escaped = A.ExportCodeV1({ id = 'quoted"\\id' })
