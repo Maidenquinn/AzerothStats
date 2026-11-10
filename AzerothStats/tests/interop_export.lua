@@ -295,3 +295,9 @@ local largeCode = A.ExportRetainedCodeV1("azstats-perf-500")
 check(largeCode and string.len(largeCode) <= 8192, "1000-run export remains bounded")
 check(A.ExportRetainedRunV1("not-present") == nil, "missing run lookup in 1000")
 A.db = previousSelectionDb
+
+-- UTF-8 bytes are preserved in JSON strings; byte size is measured on output.
+local unicodeCode = A.ExportCodeV1({ id = "azstats-é-雪", zone = "Scholomance-é" })
+check(unicodeCode ~= nil, "unicode metadata exports")
+check(string.find(unicodeCode, "Scholomance-é", 1, true) ~= nil, "UTF-8 zone preserved")
+check(string.len(unicodeCode) <= 8192, "UTF-8 output byte limit")
