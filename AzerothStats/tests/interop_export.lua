@@ -53,7 +53,7 @@ check(original.values.damage == before and original.zone == "naxx", "no internal
 check(A.ExportRunV1({}) == nil, "missing local ID rejected")
 check(A.ExportRunV1({ id = "" }) == nil, "empty local ID rejected")
 check(A.ExportRunV1(setmetatable({ id = "bad" }, {})) == nil, "metatable rejected")
-local bad = A.ExportRunV1({ id = "x", values = { kills = 0 / 0, gold = math.huge }, heroic = 999 })
+local bad = A.ExportRunV1({ id = "x", values = { kills = 0 / 0, gold = 1e200 }, heroic = 999 })
 check(bad.metrics.kills.availability == "unavailable", "NaN rejected")
 check(bad.metrics.gold.availability == "unavailable", "infinity rejected")
 check(bad.run.heroic == nil, "invalid heroic rejected")
@@ -302,3 +302,12 @@ local unicodeCode = A.ExportCodeV1({ id = "azstats-é-雪", zone = "Scholomance-
 check(unicodeCode ~= nil, "unicode metadata exports")
 check(string.find(unicodeCode, "Scholomance-é", 1, true) ~= nil, "UTF-8 zone preserved")
 check(string.len(unicodeCode) <= 8192, "UTF-8 output byte limit")
+
+-- The game client may not expose math.huge. Numeric validation must not depend
+-- on that optional Lua constant.
+local oldHuge = math.huge
+math.huge = nil
+local withoutHuge = A.ExportRunV1({ id = "finite", startedAt = 10, values = { damage = 1e200 } })
+check(withoutHuge and withoutHuge.run.startedAt == 10, "finite values work without math.huge")
+check(withoutHuge.metrics.damage.availability == "unavailable", "extreme numeric rejected without math.huge")
+math.huge = oldHuge
