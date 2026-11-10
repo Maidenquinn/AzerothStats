@@ -254,3 +254,23 @@ check(
     "missing metrics"
 )
 A.db = contractDb
+
+-- Latest-run selector must tolerate sparse arrays and invalid history rows.
+local previousSelectionDb = A.db
+A.db = {
+    runs = {
+        [1] = { id = "oldest", startedAt = 100 },
+        [4] = { id = "newest", startedAt = 300 },
+        [7] = { id = "", startedAt = 999 },
+        [9] = false,
+        [12] = { id = "middle", startedAt = 200 },
+    },
+}
+check(A.LatestRetainedRunId() == "newest", "latest retained run selection")
+A.db.runs[15] = { id = "tie", startedAt = 300 }
+check(A.LatestRetainedRunId() == "tie", "latest selection deterministic on timestamp tie")
+A.db = { runs = { false, { startedAt = 1 } } }
+check(A.LatestRetainedRunId() == nil, "no valid retained run")
+A.db = nil
+check(A.LatestRetainedRunId() == nil, "selector handles unavailable database")
+A.db = previousSelectionDb
