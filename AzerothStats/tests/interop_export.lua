@@ -494,3 +494,47 @@ check(
 )
 AzerothStatsBackup = previousBackup
 A.db = previousDb
+
+-- Real owner SavedVariables showed two checkpoint/resume pairs on one retained
+-- local run. The manual export must keep this event journal and native candidate
+-- outside AZST1 while preserving the official left result and known metrics.
+local checkpointResumeRun = {
+    id = "azstats-fixture-resume",
+    zone = "ab",
+    class = "warrior",
+    heroic = 3,
+    status = "ended",
+    result = "left",
+    partial = false,
+    startedAt = 1794318315,
+    endedAt = nil,
+    nativeRunId = "PRIVATE_NATIVE_CANDIDATE",
+    values = { duration = 81.2, kills = 121, damage = 86537, gold = 50 },
+    events = {
+        { kind = "checkpoint", text = "Sortie normale du client" },
+        { kind = "resume", text = "Reprise probable apres rechargement" },
+        { kind = "checkpoint", text = "Sortie normale du client" },
+        { kind = "resume", text = "Reprise probable apres rechargement" },
+    },
+    timeline = { { phase = "playing", t = 0.62 }, { phase = "choosing", t = 81.2 } },
+}
+local checkpointResumeCode = A.ExportCodeV1(checkpointResumeRun)
+check(checkpointResumeCode ~= nil, "checkpoint/resume retained run exports")
+check(
+    string.find(checkpointResumeCode, '"outcome":"left"', 1, true) ~= nil,
+    "checkpoint/resume run keeps official left outcome"
+)
+check(
+    string.find(checkpointResumeCode, '"endedAt":null', 1, true) ~= nil,
+    "checkpoint/resume run does not invent missing endedAt"
+)
+check(
+    string.find(checkpointResumeCode, '"nativeRunId":null', 1, true) ~= nil
+        and string.find(checkpointResumeCode, "PRIVATE_NATIVE_CANDIDATE", 1, true) == nil,
+    "unverified native candidate is never exported"
+)
+check(
+    string.find(checkpointResumeCode, "Sortie normale du client", 1, true) == nil
+        and string.find(checkpointResumeCode, "Reprise probable", 1, true) == nil,
+    "checkpoint and resume event journal excluded from AZST1"
+)
