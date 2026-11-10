@@ -38,6 +38,16 @@ check(
         == true,
     "interrupted runs are always partial"
 )
+local interruptedCode = A.ExportCodeV1({
+    id = "interrupted-json",
+    status = "interrupted",
+    partial = false,
+    values = { kills = 4 },
+})
+check(
+    interruptedCode and string.find(interruptedCode, '"partial":true', 1, true) ~= nil,
+    "interrupted JSON cannot claim complete coverage"
+)
 check(
     A.ExportRunV1({ id = "active", status = "active", partial = false }).run.partial == true,
     "active runs are always partial"
