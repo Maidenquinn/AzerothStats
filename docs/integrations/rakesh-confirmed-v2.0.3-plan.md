@@ -132,3 +132,14 @@ Observed in the main database:
 - No `nativeRunId` or raw `AZS_ZONE.run` candidate is persisted anywhere in the supplied SavedVariables file. The file therefore cannot prove the candidate's lifecycle; only the paired in-game probe output can do that.
 
 A minimized synthetic regression now covers the two checkpoint/resume pairs, the official `left` outcome, absent `endedAt`, exclusion of the event journal, and forced `nativeRunId:null`. Do not add the raw SavedVariables file to the repository or CI artifacts.
+
+## Owner native probe observations — 2026-11-10 18:35 (Elwynn)
+
+The owner supplied five consecutive probe outputs during one active Elwynn run:
+- All five showed the same redacted candidate token (suffix `-11`).
+- All five showed local run `azstats-327`, status `active`, zone `elwynn`.
+- After a new Elwynn run began, the candidate changed (suffix `-12`) and the local run changed to `azstats-328`, still active in Elwynn.
+
+This is positive evidence that, in this tested sequence, the candidate remained stable across the repeated observations/reloads and changed for the next run on the same zone. It does not yet prove the candidate's behavior after a full process restart, an Endless transition, or Escape → Quit game. It also does not prove global uniqueness across sessions/accounts. Continue treating the field as a candidate only; no native ID persistence or automatic matching is enabled.
+
+For a definitive reload-continuity result, pair each probe with the actual action immediately before it (initial observation, reload 1, reload 2, reload 3). The supplied sequence is consistent with that procedure, but the pasted output does not label the exact boundary between each pair.
