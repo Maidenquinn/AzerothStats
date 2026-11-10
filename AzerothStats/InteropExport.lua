@@ -23,6 +23,9 @@ local statuses = { active = true, ended = true, interrupted = true, terminal = t
 local outcomes = { victory = true, defeat = true, left = true }
 local function metric(values, key)
     local value = type(values) == "table" and number(values[key]) or nil
+    if value ~= nil and value < 0 then
+        value = nil
+    end
     if value == nil then
         return { availability = "unavailable" }
     end
