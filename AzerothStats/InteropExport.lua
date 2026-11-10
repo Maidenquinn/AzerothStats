@@ -65,7 +65,11 @@ function A.ExportRunV1(run)
         heroic = nil
     end
     local partial = nil
-    if type(run.partial) == "boolean" then
+    if run.status == "active" or run.status == "interrupted" then
+        -- An unfinished or interrupted observation cannot be presented as complete,
+        -- even when its initial boundary was observed correctly.
+        partial = true
+    elseif type(run.partial) == "boolean" then
         partial = run.partial
     end
     return {
