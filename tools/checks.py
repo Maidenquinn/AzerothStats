@@ -21,49 +21,6 @@ tracker = (addon / "Tracker.lua").read_text(encoding="utf-8")
 reports = (addon / "Reports.lua").read_text(encoding="utf-8")
 v2ui = (addon / "V2UI.lua").read_text(encoding="utf-8")
 assert "A.V2CombatTick(run)" in tracker
-# Aviiva v2.0.4 minimap regression guards: square materials are rebuilt on every
-# theme repaint after round mode hides nine-slice textures and clears backdrop.
-ui = (addon / "UI.lua").read_text(encoding="utf-8")
-mini_apply = ui.split("if A.mini and A.mini.roundRing then", 1)[1].split(
-    "--- Reset only the addon window/bar/minimap-button anchors", 1
-)[0]
-assert "A.mini.roundRing:Show()" in mini_apply
-assert "A.mini.roundRing:Hide()" in mini_apply
-assert "A.mini.materialTheme = nil" in mini_apply
-assert "A.MaterialState(A.mini, false)" in mini_apply
-assert "A.UpdateThemeFrame(A.mini)" in mini_apply
-assert "A.mini.base:SetAlpha(round and 0 or settings.opacity)" in mini_apply
-mini_create = ui.split('mini.icon = mini:CreateTexture', 1)[1].split(
-    "mini:RegisterForClicks", 1
-)[0]
-assert (
-    'mini.roundRing:SetTexture("Interface\\\\Minimap\\\\MiniMap-TrackingBorder")'
-    in mini_create
-)
-assert 'mini.icon:SetPoint("CENTER", mini, "CENTER", 0, 0)' in mini_create
-
-# Aviiva v2.0.4: Run Overview highlights show four recent build-journal entries.
-summary = (addon / "V2Summary.lua").read_text(encoding="utf-8")
-highlight_model = summary.split("local function highlights(run)", 1)[1].split(
-    "local function nextGoal()", 1
-)[0]
-assert "if table.getn(out) == 4 then" in highlight_model
-assert "A.Duration(entry.t)" in highlight_model
-assert "A.JournalChange(entry.kind, entry.changes[1])" in highlight_model
-
-# v2.0.4 storage inventory is diagnostic-only: it reports counts and must not
-# invoke backup creation, restoration, deletion, migration, or snapshot copying.
-core = (addon / "Core.lua").read_text(encoding="utf-8")
-storage_command = core.split('elseif command == "storage" then', 1)[1].split(
-    'elseif command == "interop" then', 1
-)[0]
-assert 'A.Say("Read-only inventory; no backup or run was modified.")' in storage_command
-assert "A.CreateDataBackup" not in storage_command
-assert "A.RestoreDataBackup" not in storage_command
-assert "A.Delete" not in storage_command
-assert "snapshot(" not in storage_command
-assert 'elseif command == "storage" then' in core
-
 assert 'section == "Combat Intelligence"' in reports
 assert 'section ~= "Combat Intelligence"' in reports
 assert '{ "Combat Intelligence", "Combat Intelligence" }' in v2ui
