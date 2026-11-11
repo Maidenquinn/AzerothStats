@@ -57,6 +57,19 @@ local function setup(ui)
     for _, key in ipairs({ "takeaways", "goal", "context", "moments", "note" }) do
         ui.v2SummaryPanels[key] = panel(A.window)
     end
+    ui.v2HighlightsPrev = W.button(A.window, 0, 0, 30, 24, "<", function()
+        A.view.v2HighlightsPage = math.max(1, (A.ui.model.highlightsPage or 1) - 1)
+        A.RefreshUI()
+    end)
+    ui.v2HighlightsNext = W.button(A.window, 0, 0, 30, 24, ">", function()
+        A.view.v2HighlightsPage = math.min(
+            A.ui.model.highlightsPages or 1,
+            (A.ui.model.highlightsPage or 1) + 1
+        )
+        A.RefreshUI()
+    end)
+    ui.v2HighlightsCounter = W.font(A.window, 0, 0, 72, 24, 11)
+    ui.v2HighlightsCounter:SetJustifyH("CENTER")
     ui.v2ChooseHint = W.font(ui.context, 500, 43, 200, 18, 11)
     ui.v2ChooseHint:SetJustifyH("RIGHT")
     ui.context:SetScript("OnClick", function()
@@ -194,6 +207,9 @@ function A.V2SummaryUI(ui, model)
         end
     end
     A.PlaceEditChrome(ui, model)
+    ui.v2HighlightsPrev:Hide()
+    ui.v2HighlightsNext:Hide()
+    ui.v2HighlightsCounter:Hide()
     if not model.v2Summary then
         return
     end
@@ -350,6 +366,16 @@ function A.V2SummaryUI(ui, model)
         ui.note:Hide()
         showPanel(ui, model, "context", 678, 410, 254, 178)
         showPanel(ui, model, "moments", 218, 570, 440, 130, openJournal, "Build journal")
+        if (model.highlightsPages or 1) > 1 and not A.editMode then
+            local current, pages = model.highlightsPage, model.highlightsPages
+            place(ui.v2HighlightsPrev, A.window, 484, 574, 30, 24)
+            place(ui.v2HighlightsCounter, A.window, 514, 574, 76, 24)
+            place(ui.v2HighlightsNext, A.window, 590, 574, 30, 24)
+            W.put(ui.v2HighlightsCounter, current .. "/" .. pages)
+            ui.v2HighlightsPrev:Show()
+            ui.v2HighlightsNext:Show()
+            ui.v2HighlightsCounter:Show()
+        end
         showPanel(ui, model, "note", 678, 600, 254, 100, A.V2OpenNote, "Edit note")
     end
 end
