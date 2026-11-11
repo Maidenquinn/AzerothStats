@@ -254,15 +254,9 @@ for _, id in ipairs(A.themeOrder) do
     A.db.settings.miniRound = false
     A.ApplyUI()
     check(not A.mini.roundRing:IsShown(), "square mode hides ring: " .. id)
-    check(
-        A.mini.materialTheme == A.activeTheme,
-        "square materials rebuilt for theme: " .. id
-    )
+    check(A.mini.materialTheme == A.activeTheme, "square materials rebuilt for theme: " .. id)
     A.ApplyUI()
-    check(
-        A.mini.materialTheme == A.activeTheme,
-        "square repeat retains theme: " .. id
-    )
+    check(A.mini.materialTheme == A.activeTheme, "square repeat retains theme: " .. id)
 end
 
 AzerothStatsDB, A.db, A.run, A.view = savedGlobal, savedDB, savedRun, savedView
