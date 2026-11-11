@@ -108,13 +108,18 @@ A.db.favorites.entries = {
         kind = "spell",
         key = "synthetic",
         runId = "preview-left",
-        category = "combat",
+        tab = 4,
     },
 }
--- Explicit protection is also safe independent of bookmark category mapping.
+printed = {}
+SlashCmdList["AZEROTHSTATS"]("abandon preview 2")
+check(
+    string.find(printed[1] or "", "0 eligible of 3 retained runs", 1, true) ~= nil,
+    "combat favorite protects its source run in the real preview"
+)
 check(
     not A.AbandonedAdmissionEligible(eligible, 2, true),
-    "protected combat-source run is ineligible"
+    "explicitly protected combat-source run is ineligible"
 )
 A.db.favorites = savedFavorites
 check(
