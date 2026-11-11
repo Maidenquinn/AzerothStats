@@ -1,4 +1,5 @@
 """Metadata-only SavedVariables measurement regression tests."""
+
 import tempfile
 import unittest
 from pathlib import Path
