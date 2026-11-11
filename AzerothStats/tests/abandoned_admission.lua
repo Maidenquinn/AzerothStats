@@ -87,10 +87,7 @@ check(
 check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "preview leaves ledgers intact")
 printed = {}
 SlashCmdList["AZEROTHSTATS"]("abandon preview 0")
-check(
-    string.find(printed[1] or "", "Usage:", 1, true) ~= nil,
-    "invalid preview duration rejected"
-)
+check(string.find(printed[1] or "", "Usage:", 1, true) ~= nil, "invalid preview duration rejected")
 check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "invalid preview is inert")
 A.Say, A.db.runs = savedSay, savedRuns
 print("ABANDONED ADMISSION ELIGIBILITY REGRESSIONS PASSED", TEST_COUNT)
