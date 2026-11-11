@@ -268,12 +268,13 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
             A.Say("Usage: /azstats abandon preview <minutes 1-1440>")
         else
             local eligible, officialLeft, inspected = 0, 0, 0
+            local protected = A.ProtectedRunIds()
             for _, candidate in ipairs(A.db.runs or {}) do
                 inspected = inspected + 1
                 if candidate.status == "ended" and candidate.result == "left" then
                     officialLeft = officialLeft + 1
                 end
-                if A.AbandonedAdmissionEligible(candidate, threshold) then
+                if A.AbandonedAdmissionEligible(candidate, threshold, protected[candidate.id]) then
                     eligible = eligible + 1
                 end
             end
