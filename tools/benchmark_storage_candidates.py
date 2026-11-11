@@ -3,6 +3,7 @@
 This does not parse real SavedVariables or imply Lua 5.0/zlib compatibility.
 JSON is a reproducible proxy, NOT Blizzard's disk serialization format.
 """
+
 from __future__ import annotations
 
 import argparse
