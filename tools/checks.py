@@ -36,7 +36,10 @@ assert "A.mini.base:SetAlpha(round and 0 or settings.opacity)" in mini_apply
 mini_create = ui.split('mini.icon = mini:CreateTexture', 1)[1].split(
     "mini:RegisterForClicks", 1
 )[0]
-assert 'mini.roundRing:SetTexture("Interface\\\\Minimap\\\\MiniMap-TrackingBorder")' in mini_create
+assert (
+    'mini.roundRing:SetTexture("Interface\\\\Minimap\\\\MiniMap-TrackingBorder")'
+    in mini_create
+)
 assert 'mini.icon:SetPoint("CENTER", mini, "CENTER", 0, 0)' in mini_create
 
 # Aviiva v2.0.4: Run Overview highlights show four recent build-journal entries.
