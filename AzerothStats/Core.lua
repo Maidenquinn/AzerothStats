@@ -302,7 +302,11 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                     .. " with death evidence."
             )
             if impact.pruned > 0 then
-                A.Say("Historical warning: " .. impact.pruned .. " runs pruned; lifetime totals may exceed retained history.")
+                A.Say(
+                    "Historical warning: "
+                        .. impact.pruned
+                        .. " runs pruned; lifetime totals may exceed retained history."
+                )
             end
             A.Say("Read-only inventory, not a subtraction forecast; no data changed.")
         end
