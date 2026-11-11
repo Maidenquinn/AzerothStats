@@ -154,6 +154,20 @@ check(
     "explicitly protected combat-source run is ineligible"
 )
 A.db.favorites = savedFavorites
+-- Empty accounting dictionaries must not be mistaken for contributions.
+local savedSpells, savedUsage, savedCoop = eligible.spellAccounted, eligible.usage, eligible.coop
+eligible.spellAccounted = { damage = {} }
+eligible.usage = { accounted = { spells = {} } }
+eligible.coop = { accounted = {} }
+local emptyImpact = A.AbandonedImpactPreview(2)
+check(
+    emptyImpact.eligible == 1
+        and emptyImpact.withSpells == 0
+        and emptyImpact.withUsage == 0
+        and emptyImpact.withCoop == 0,
+    "empty accounting containers do not inflate dependency counts"
+)
+eligible.spellAccounted, eligible.usage, eligible.coop = savedSpells, savedUsage, savedCoop
 check(
     A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot,
     "bookmark preview leaves ledgers intact"
