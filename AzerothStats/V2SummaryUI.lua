@@ -62,10 +62,8 @@ local function setup(ui)
         A.RefreshUI()
     end)
     ui.v2HighlightsNext = W.button(A.window, 0, 0, 30, 24, ">", function()
-        A.view.v2HighlightsPage = math.min(
-            A.ui.model.highlightsPages or 1,
-            (A.ui.model.highlightsPage or 1) + 1
-        )
+        A.view.v2HighlightsPage =
+            math.min(A.ui.model.highlightsPages or 1, (A.ui.model.highlightsPage or 1) + 1)
         A.RefreshUI()
     end)
     ui.v2HighlightsCounter = W.font(A.window, 0, 0, 72, 24, 11)
