@@ -86,7 +86,12 @@ check(
     "preview counts only eligible official short-left outcomes"
 )
 check(
-    string.find(printed[2] or "", "1 counted; 1 with metric entries; 1 with spell entries; 1 active record references", 1, true) ~= nil,
+    string.find(
+        printed[2] or "",
+        "1 counted; 1 with metric entries; 1 with spell entries; 1 active record references",
+        1,
+        true
+    ) ~= nil,
     "preview exposes aggregate accounting and record dependencies"
 )
 check(
