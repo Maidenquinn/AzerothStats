@@ -73,6 +73,11 @@ local interrupted = A.Copy(eligible)
 interrupted.id, interrupted.status = "preview-interrupted", "interrupted"
 local victory = A.Copy(eligible)
 victory.id, victory.result = "preview-victory", "victory"
+eligible.counted = true
+eligible.accounted = { damage = 42 }
+eligible.spellAccounted = { damage = { SyntheticSpell = 10 } }
+local savedRecords = A.db.totals.records
+A.db.totals.records = { damage = { id = "preview-left", value = 42 } }
 A.db.runs = { eligible, interrupted, victory }
 local snapshot = A.Sign({ A.db.runs, A.db.totals, A.db.classes })
 SlashCmdList["AZEROTHSTATS"]("abandon preview 2")
@@ -81,7 +86,11 @@ check(
     "preview counts only eligible official short-left outcomes"
 )
 check(
-    string.find(printed[2] or "", "no runs, totals or backups changed", 1, true) ~= nil,
+    string.find(printed[2] or "", "1 counted; 1 with metric entries; 1 with spell entries; 1 active record references", 1, true) ~= nil,
+    "preview exposes aggregate accounting and record dependencies"
+)
+check(
+    string.find(printed[3] or "", "no data changed", 1, true) ~= nil,
     "preview discloses read-only behavior"
 )
 check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "preview leaves ledgers intact")
@@ -127,4 +136,5 @@ check(
     "bookmark preview leaves ledgers intact"
 )
 A.Say, A.db.runs = savedSay, savedRuns
+A.db.totals.records = savedRecords
 print("ABANDONED ADMISSION ELIGIBILITY REGRESSIONS PASSED", TEST_COUNT)
