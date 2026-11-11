@@ -20,6 +20,46 @@ local summaryFields = {
 
 local drainEquipment, finalizeEquipment
 
+-- Eligibility only: no deletion, ledger updates or backup changes. The caller
+-- must still prove atomic accounting and preservation before enabling a policy.
+function A.AbandonedAdmissionEligible(run, minimumMinutes)
+    if type(run) ~= "table" or getmetatable(run) then
+        return false
+    end
+    local official = run.official
+    if type(official) ~= "table" or getmetatable(official) then
+        return false
+    end
+    if
+        run.status ~= "ended"
+        or run.result ~= "left"
+        or official.result ~= "left"
+        or run.continued
+        or run.favorite
+        or run.protected
+        or run.summaryRejected
+    then
+        return false
+    end
+    -- Do not accept anonymous/stale/unverifiable identities as evidence.
+    if
+        type(run.hero) ~= "string"
+        or type(run.zone) ~= "string"
+        or official.hero ~= run.hero
+        or official.zone ~= run.zone
+        or (official.class ~= nil and official.class ~= run.class)
+    then
+        return false
+    end
+    local seconds = A.Number(official.t)
+    local minutes = A.Number(minimumMinutes)
+    if not seconds or seconds < 0 or not minutes or minutes < 0 or minutes > 1440 then
+        return false
+    end
+    -- Strictly below threshold; exact boundary remains retained.
+    return seconds < minutes * 60
+end
+
 --- Accept matching supplied identity fields, retain the first official result and update final exact counters.
 local function applySummary(run, summary)
     if not A.SummaryMatches(run, summary) then
