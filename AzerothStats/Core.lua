@@ -260,6 +260,36 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         inventory("Manual backups", AzerothStatsBackup)
         inventory("Automatic backups", AzerothStatsAutoBackup)
         A.Say("Read-only inventory; no backup or run was modified.")
+    elseif command == "abandon" then
+        -- Preview only. Never change run retention, aggregate ledgers or backups.
+        local _, _, thresholdText = string.find(value, "^preview%s+(%d+)$")
+        local threshold = thresholdText and tonumber(thresholdText)
+        if not threshold or threshold < 1 or threshold > 1440 then
+            A.Say("Usage: /azstats abandon preview <minutes 1-1440>")
+        else
+            local eligible, officialLeft, inspected = 0, 0, 0
+            for _, candidate in ipairs(A.db.runs or {}) do
+                inspected = inspected + 1
+                if candidate.status == "ended" and candidate.result == "left" then
+                    officialLeft = officialLeft + 1
+                end
+                if A.AbandonedAdmissionEligible(candidate, threshold) then
+                    eligible = eligible + 1
+                end
+            end
+            A.Say(
+                "Abandoned-run preview < "
+                    .. threshold
+                    .. " min: "
+                    .. eligible
+                    .. " eligible of "
+                    .. inspected
+                    .. " retained runs ("
+                    .. officialLeft
+                    .. " ended-left results)."
+            )
+            A.Say("Preview only: no runs, totals or backups changed.")
+        end
     elseif command == "interop" then
         if value == "export" then
             A.OpenInteropExport()
