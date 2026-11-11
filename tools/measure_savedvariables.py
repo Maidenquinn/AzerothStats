@@ -3,6 +3,7 @@
 No file is opened or parsed; contents, character names and paths never appear
 in stdout. Run after a normal client exit, not while the game is writing saves.
 """
+
 from __future__ import annotations
 
 import argparse
