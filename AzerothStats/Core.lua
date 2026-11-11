@@ -290,6 +290,20 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                     .. impact.recordSources
                     .. " active record references."
             )
+            A.Say(
+                "Additional dependencies: "
+                    .. impact.classRecordSources
+                    .. " class record references; "
+                    .. impact.withUsage
+                    .. " with build usage; "
+                    .. impact.withCoop
+                    .. " with co-op accounting; "
+                    .. impact.withDeathEvidence
+                    .. " with death evidence."
+            )
+            if impact.pruned > 0 then
+                A.Say("Historical warning: " .. impact.pruned .. " runs pruned; lifetime totals may exceed retained history.")
+            end
             A.Say("Read-only inventory, not a subtraction forecast; no data changed.")
         end
     elseif command == "interop" then
