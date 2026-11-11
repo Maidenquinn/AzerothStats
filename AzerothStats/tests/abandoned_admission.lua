@@ -89,5 +89,34 @@ printed = {}
 SlashCmdList["AZEROTHSTATS"]("abandon preview 0")
 check(string.find(printed[1] or "", "Usage:", 1, true) ~= nil, "invalid preview duration rejected")
 check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "invalid preview is inert")
+-- True favorites live in the bookmark catalogue, not in run.favorite.
+local savedFavorites = A.db.favorites
+A.db.favorites = { version = 1, entries = {} }
+A.db.favorites.entries["run:preview-left"] = {
+    kind = "run",
+    key = "preview-left",
+    runId = "preview-left",
+}
+printed = {}
+SlashCmdList["AZEROTHSTATS"]("abandon preview 2")
+check(
+    string.find(printed[1] or "", "0 eligible of 3 retained runs", 1, true) ~= nil,
+    "run bookmark protects its historical source from preview"
+)
+A.db.favorites.entries = {
+    ["spell:synthetic"] = {
+        kind = "spell",
+        key = "synthetic",
+        runId = "preview-left",
+        category = "combat",
+    },
+}
+-- Explicit protection is also safe independent of bookmark category mapping.
+check(
+    not A.AbandonedAdmissionEligible(eligible, 2, true),
+    "protected combat-source run is ineligible"
+)
+A.db.favorites = savedFavorites
+check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "bookmark preview leaves ledgers intact")
 A.Say, A.db.runs = savedSay, savedRuns
 print("ABANDONED ADMISSION ELIGIBILITY REGRESSIONS PASSED", TEST_COUNT)
