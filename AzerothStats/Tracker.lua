@@ -61,6 +61,49 @@ function A.AbandonedAdmissionEligible(run, minimumMinutes, isProtected)
     return seconds < minutes * 60
 end
 
+-- Read-only aggregate impact inventory. Do not treat these counts as a
+-- subtraction plan: pruned histories and Insights have independent ledgers.
+function A.AbandonedImpactPreview(minimumMinutes)
+    local result = {
+        inspected = 0,
+        endedLeft = 0,
+        eligible = 0,
+        counted = 0,
+        withMetrics = 0,
+        withSpells = 0,
+        recordSources = 0,
+    }
+    if not A.db or not A.db.runs or not A.db.totals then
+        return result
+    end
+    local protected = A.ProtectedRunIds()
+    for _, run in ipairs(A.db.runs) do
+        result.inspected = result.inspected + 1
+        if run.status == "ended" and run.result == "left" then
+            result.endedLeft = result.endedLeft + 1
+        end
+        if A.AbandonedAdmissionEligible(run, minimumMinutes, protected[run.id]) then
+            result.eligible = result.eligible + 1
+            if run.counted then
+                result.counted = result.counted + 1
+            end
+            if type(run.accounted) == "table" and next(run.accounted) then
+                result.withMetrics = result.withMetrics + 1
+            end
+            if type(run.spellAccounted) == "table" and next(run.spellAccounted) then
+                result.withSpells = result.withSpells + 1
+            end
+            local records = A.db.totals.records or {}
+            for _, record in pairs(records) do
+                if type(record) == "table" and record.id == run.id then
+                    result.recordSources = result.recordSources + 1
+                end
+            end
+        end
+    end
+    return result
+end
+
 --- Accept matching supplied identity fields, retain the first official result and update final exact counters.
 local function applySummary(run, summary)
     if not A.SummaryMatches(run, summary) then
