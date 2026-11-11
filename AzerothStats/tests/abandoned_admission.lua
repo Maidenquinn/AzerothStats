@@ -100,7 +100,12 @@ check(
     "preview exposes aggregate accounting and record dependencies"
 )
 check(
-    string.find(printed[3] or "", "1 class record references; 1 with build usage; 1 with co-op accounting; 1 with death evidence", 1, true) ~= nil,
+    string.find(
+        printed[3] or "",
+        "1 class record references; 1 with build usage; 1 with co-op accounting; 1 with death evidence",
+        1,
+        true
+    ) ~= nil,
     "preview reports per-class record, usage, coop and death dependencies"
 )
 check(
