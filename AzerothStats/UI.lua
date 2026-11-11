@@ -957,12 +957,14 @@ function A.ApplyUI()
             A.mini.roundRing:Show()
         else
             A.mini.roundRing:Hide()
-            -- Restore square materials on every repaint, including a theme
-            -- change while square mode is already selected. The round mode
-            -- explicitly hid all slices and removed the native backdrop.
-            A.mini.materialTheme = nil
-            A.mini.themeBackdrop = nil
-            A.mini.nativeEdge = nil
+            -- Only invalidate material caches after leaving round mode.
+            -- MaterialState and UpdateThemeFrame already detect theme changes.
+            if A.mini.roundApplied ~= false then
+                A.mini.materialTheme = nil
+                A.mini.themeBackdrop = nil
+                A.mini.nativeEdge = nil
+                A.mini.themeLayout = nil
+            end
             A.MaterialState(A.mini, false)
             A.UpdateThemeFrame(A.mini)
         end
