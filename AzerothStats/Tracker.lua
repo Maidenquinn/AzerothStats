@@ -22,7 +22,7 @@ local drainEquipment, finalizeEquipment
 
 -- Eligibility only: no deletion, ledger updates or backup changes. The caller
 -- must still prove atomic accounting and preservation before enabling a policy.
-function A.AbandonedAdmissionEligible(run, minimumMinutes)
+function A.AbandonedAdmissionEligible(run, minimumMinutes, isProtected)
     if type(run) ~= "table" or getmetatable(run) then
         return false
     end
@@ -37,6 +37,7 @@ function A.AbandonedAdmissionEligible(run, minimumMinutes)
         or run.continued
         or run.favorite
         or run.protected
+        or isProtected == true
         or run.summaryRejected
     then
         return false
