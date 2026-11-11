@@ -230,6 +230,41 @@ for _, lg in ipairs(A.languages) do
     end
 end
 
+-- v2.0.4 minimap regression: a routine square repaint must preserve cached
+-- material state, while theme switches and round/square transitions restore it.
+A.UseTheme("chroniques")
+A.db.settings.miniRound = false
+A.ApplyUI()
+check(A.mini.roundApplied == false, "square minimap mode applied")
+local cachedParts = A.mini.materialParts
+local cachedLayout = A.mini.themeLayout
+local cachedTheme = A.mini.materialTheme
+A.ApplyUI()
+check(
+    A.mini.materialParts == cachedParts
+        and A.mini.themeLayout == cachedLayout
+        and A.mini.materialTheme == cachedTheme,
+    "repeated square apply keeps material caches stable"
+)
+for _, id in ipairs(A.themeOrder) do
+    A.UseTheme(id)
+    A.db.settings.miniRound = true
+    A.ApplyUI()
+    check(A.mini.roundRing:IsShown(), "round ring visible: " .. id)
+    A.db.settings.miniRound = false
+    A.ApplyUI()
+    check(not A.mini.roundRing:IsShown(), "square mode hides ring: " .. id)
+    check(
+        A.mini.materialTheme == A.activeTheme,
+        "square materials rebuilt for theme: " .. id
+    )
+    A.ApplyUI()
+    check(
+        A.mini.materialTheme == A.activeTheme,
+        "square repeat retains theme: " .. id
+    )
+end
+
 AzerothStatsDB, A.db, A.run, A.view = savedGlobal, savedDB, savedRun, savedView
 A.themePreview = savedPreview
 A.db.settings.language = savedLanguage
