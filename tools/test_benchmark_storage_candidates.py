@@ -21,12 +21,16 @@ class StorageStudyTests(unittest.TestCase):
             result["json_proxy_active_bytes"]
             + 3 * result["json_proxy_snapshot_bytes"],
         )
-        self.assertEqual(result["json_proxy_manual_bytes"], result["json_proxy_snapshot_bytes"])
+        self.assertEqual(
+            result["json_proxy_manual_bytes"], result["json_proxy_snapshot_bytes"]
+        )
         self.assertFalse(result["compression_usable_in_addon"])
 
     def test_zero_backups_and_empty_runs(self):
         result = benchmark(0, 0, 0)
-        self.assertEqual(result["json_proxy_total_bytes"], result["json_proxy_active_bytes"])
+        self.assertEqual(
+            result["json_proxy_total_bytes"], result["json_proxy_active_bytes"]
+        )
         self.assertEqual(result["manual_snapshots"], 0)
         self.assertEqual(result["automatic_snapshots"], 0)
 
