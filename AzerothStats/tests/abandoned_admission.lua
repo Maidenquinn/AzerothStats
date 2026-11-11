@@ -117,6 +117,9 @@ check(
     "protected combat-source run is ineligible"
 )
 A.db.favorites = savedFavorites
-check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "bookmark preview leaves ledgers intact")
+check(
+    A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot,
+    "bookmark preview leaves ledgers intact"
+)
 A.Say, A.db.runs = savedSay, savedRuns
 print("ABANDONED ADMISSION ELIGIBILITY REGRESSIONS PASSED", TEST_COUNT)
