@@ -76,8 +76,13 @@ victory.id, victory.result = "preview-victory", "victory"
 eligible.counted = true
 eligible.accounted = { damage = 42 }
 eligible.spellAccounted = { damage = { SyntheticSpell = 10 } }
-local savedRecords = A.db.totals.records
+eligible.usage = { accounted = { spells = { synthetic = { runs = 1 } } } }
+eligible.coop = { accounted = { teammate = { damage = 3 } } }
+eligible.deaths = { { source = "synthetic" } }
+local savedRecords, savedClasses, savedPruned = A.db.totals.records, A.db.classes, A.db.pruned
 A.db.totals.records = { damage = { id = "preview-left", value = 42 } }
+A.db.classes = { mage = { records = { damage = { id = "preview-left", value = 42 } } } }
+A.db.pruned = 7
 A.db.runs = { eligible, interrupted, victory }
 local snapshot = A.Sign({ A.db.runs, A.db.totals, A.db.classes })
 SlashCmdList["AZEROTHSTATS"]("abandon preview 2")
@@ -95,7 +100,15 @@ check(
     "preview exposes aggregate accounting and record dependencies"
 )
 check(
-    string.find(printed[3] or "", "no data changed", 1, true) ~= nil,
+    string.find(printed[3] or "", "1 class record references; 1 with build usage; 1 with co-op accounting; 1 with death evidence", 1, true) ~= nil,
+    "preview reports per-class record, usage, coop and death dependencies"
+)
+check(
+    string.find(printed[4] or "", "7 runs pruned", 1, true) ~= nil,
+    "preview warns when historical data was pruned"
+)
+check(
+    string.find(printed[5] or "", "no data changed", 1, true) ~= nil,
     "preview discloses read-only behavior"
 )
 check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot, "preview leaves ledgers intact")
@@ -141,5 +154,5 @@ check(
     "bookmark preview leaves ledgers intact"
 )
 A.Say, A.db.runs = savedSay, savedRuns
-A.db.totals.records = savedRecords
+A.db.totals.records, A.db.classes, A.db.pruned = savedRecords, savedClasses, savedPruned
 print("ABANDONED ADMISSION ELIGIBILITY REGRESSIONS PASSED", TEST_COUNT)
