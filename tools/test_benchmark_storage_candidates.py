@@ -18,8 +18,7 @@ class StorageStudyTests(unittest.TestCase):
         result = benchmark(100, 1, 2)
         self.assertEqual(
             result["json_proxy_total_bytes"],
-            result["json_proxy_active_bytes"]
-            + 3 * result["json_proxy_snapshot_bytes"],
+            result["json_proxy_active_bytes"] + 3 * result["json_proxy_snapshot_bytes"],
         )
         self.assertEqual(
             result["json_proxy_manual_bytes"], result["json_proxy_snapshot_bytes"]
