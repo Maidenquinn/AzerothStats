@@ -18,24 +18,45 @@ function A.V2LiveContext()
     }
 end
 
-local function highlights(run)
-    local out = {}
+-- Page through all recorded build changes without copying or modifying the run.
+-- The page index lives only in the current UI view, never in SavedVariables.
+function A.V2Highlights(run, page)
     local entries = run and run.buildJournal and run.buildJournal.entries or {}
+    local count = 0
+    for i = 1, table.getn(entries) do
+        local entry = entries[i]
+        if entry and not entry.initial and entry.changes and entry.changes[1] then
+            count = count + 1
+        end
+    end
+    local pages = math.max(1, math.ceil(count / 4))
+    page = math.max(1, math.min(pages, math.floor(A.Number(page) or 1)))
+    local out, seen = {}, 0
     for i = table.getn(entries), 1, -1 do
         local entry = entries[i]
-        if not entry.initial and entry.changes and entry.changes[1] then
-            table.insert(
-                out,
-                A.Duration(entry.t)
-                    .. " · "
-                    .. A.Text(A.JournalChange(entry.kind, entry.changes[1]), 95)
-            )
-            if table.getn(out) == 4 then
+        if entry and not entry.initial and entry.changes and entry.changes[1] then
+            seen = seen + 1
+            if seen > (page - 1) * 4 and seen <= page * 4 then
+                table.insert(
+                    out,
+                    A.Duration(entry.t)
+                        .. " · "
+                        .. A.Text(A.JournalChange(entry.kind, entry.changes[1]), 95)
+                )
+            end
+            if seen >= page * 4 then
                 break
             end
         end
     end
-    return table.getn(out) > 0 and table.concat(out, "\n") or A.T("No build journal recorded")
+    return table.getn(out) > 0 and table.concat(out, "\\n") or A.T("No build journal recorded"),
+        page,
+        pages,
+        count
+end
+
+local function highlights(run)
+    return A.V2Highlights(run, 1)
 end
 
 local function nextGoal()
@@ -159,7 +180,9 @@ function A.V2SummaryModel(model, run)
             .. "\n"
             .. A.T(run.partial and "Partial" or "Values from available samples")
         part(model, "context", "Run context", context)
-        part(model, "moments", "Highlights", highlights(run))
+        local text, page, pages, count = A.V2Highlights(run, A.view.v2HighlightsPage)
+        model.highlightsPage, model.highlightsPages, model.highlightsCount = page, pages, count
+        part(model, "moments", "Highlights", text)
         part(model, "note", "Your note", data and data.note or A.T("No data yet"))
         if not A.editMode then
             model.cardsTop = 292
