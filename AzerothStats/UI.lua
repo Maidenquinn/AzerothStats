@@ -2172,7 +2172,15 @@ local function buildSettings(frame)
                 if GameTooltip then
                     GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
                     GameTooltip:SetText(A.T("Record sounds"))
-                    GameTooltip:AddLine(A.T("Plays LevelUp.wav once when a new class DPS record is detected. It does not record game audio."), 1, 1, 1, true)
+                    GameTooltip:AddLine(
+                        A.T(
+                            "Plays LevelUp.wav once when a new class DPS record is detected. It does not record game audio."
+                        ),
+                        1,
+                        1,
+                        1,
+                        true
+                    )
                     GameTooltip:Show()
                 end
             end)
