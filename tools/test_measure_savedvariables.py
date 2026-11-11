@@ -42,12 +42,8 @@ class StorageMeasurementTests(unittest.TestCase):
             (root / "outside").write_bytes(b"x")
             (root / "AzerothStats.lua").symlink_to(root / "outside")
             report = measure(root)
-            self.assertEqual(
-                report["AzerothStats.lua"]["status"], "symlink-refused"
-            )
-            self.assertEqual(
-                report["AzerothStatsBackup.lua"]["status"], "not-a-file"
-            )
+            self.assertEqual(report["AzerothStats.lua"]["status"], "symlink-refused")
+            self.assertEqual(report["AzerothStatsBackup.lua"]["status"], "not-a-file")
             self.assertEqual(report["total_bytes"], 0)
 
     def test_missing_directory_rejected(self):
