@@ -50,9 +50,7 @@ def benchmark(count: int, manual: int, automatic: int) -> dict:
         raise AssertionError("Lossless synthetic round trip failed")
     # Each snapshot is a *full* JSON proxy copy plus a small metadata wrapper.
     # Real snapshot contents and native game serialization can differ.
-    snapshot = serialized_bytes(
-        {"id": 1, "at": 0, "data": data, "legacy": False}
-    )
+    snapshot = serialized_bytes({"id": 1, "at": 0, "data": data, "legacy": False})
     manual_bytes = len(snapshot) * manual
     automatic_bytes = len(snapshot) * automatic
     return {
@@ -77,8 +75,7 @@ def main() -> None:
     parser.add_argument("--automatic", type=int, default=2)
     args = parser.parse_args()
     results = [
-        benchmark(count, args.manual, args.automatic)
-        for count in (100, 500, 1000)
+        benchmark(count, args.manual, args.automatic) for count in (100, 500, 1000)
     ]
     print(json.dumps(results, indent=2, ensure_ascii=False))
 
