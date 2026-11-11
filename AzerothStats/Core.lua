@@ -267,29 +267,30 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         if not threshold or threshold < 1 or threshold > 1440 then
             A.Say("Usage: /azstats abandon preview <minutes 1-1440>")
         else
-            local eligible, officialLeft, inspected = 0, 0, 0
-            local protected = A.ProtectedRunIds()
-            for _, candidate in ipairs(A.db.runs or {}) do
-                inspected = inspected + 1
-                if candidate.status == "ended" and candidate.result == "left" then
-                    officialLeft = officialLeft + 1
-                end
-                if A.AbandonedAdmissionEligible(candidate, threshold, protected[candidate.id]) then
-                    eligible = eligible + 1
-                end
-            end
+            local impact = A.AbandonedImpactPreview(threshold)
             A.Say(
                 "Abandoned-run preview < "
                     .. threshold
                     .. " min: "
-                    .. eligible
+                    .. impact.eligible
                     .. " eligible of "
-                    .. inspected
+                    .. impact.inspected
                     .. " retained runs ("
-                    .. officialLeft
+                    .. impact.endedLeft
                     .. " ended-left results)."
             )
-            A.Say("Preview only: no runs, totals or backups changed.")
+            A.Say(
+                "Ledger inventory: "
+                    .. impact.counted
+                    .. " counted; "
+                    .. impact.withMetrics
+                    .. " with metric entries; "
+                    .. impact.withSpells
+                    .. " with spell entries; "
+                    .. impact.recordSources
+                    .. " active record references."
+            )
+            A.Say("Read-only inventory, not a subtraction forecast; no data changed.")
         end
     elseif command == "interop" then
         if value == "export" then
