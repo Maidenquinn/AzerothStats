@@ -252,6 +252,10 @@ for _, id in ipairs(A.themeOrder) do
     A.ApplyUI()
     check(A.mini.roundRing:IsShown(), "round ring visible: " .. id)
     check(
+        A.mini.grain:GetAlpha() == 0 and A.mini.base:GetAlpha() == 0,
+        "round mode removes square grain and base: " .. id
+    )
+    check(
         A.mini.roundRing:GetWidth() == 26 and A.mini.roundRing:GetHeight() == 26,
         "ring atlas stays inside the 30px minimap hit box: " .. id
     )
@@ -271,6 +275,10 @@ for _, id in ipairs(A.themeOrder) do
     A.db.settings.miniRound = false
     A.ApplyUI()
     check(not A.mini.roundRing:IsShown(), "square mode hides ring: " .. id)
+    check(
+        A.mini.grain:GetAlpha() == A.db.settings.opacity * A.theme.grainAlpha,
+        "square mode restores theme grain opacity: " .. id
+    )
     check(
         A.mini.icon:GetWidth() == 21 and A.mini.icon:GetHeight() == 21,
         "square glyph restores normal sizing: " .. id
