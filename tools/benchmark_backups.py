@@ -58,7 +58,9 @@ for count in (100, 500, 1000):
     duplicate_entries = backup()
     duplicate_ms = (perf_counter() - duplicate_start) * 1000
     assert duplicate_entries == entries, "duplicate snapshot allocated another entry"
-    assert lua.globals().AzerothStatsAutoBackup.nextId == next_id, "duplicate changed ID"
+    assert (
+        lua.globals().AzerothStatsAutoBackup.nextId == next_id
+    ), "duplicate changed ID"
     print(
         f"synthetic runs={count} backup_ms={elapsed_ms:.2f} "
         f"duplicate_ms={duplicate_ms:.2f} auto_entries={entries}"
