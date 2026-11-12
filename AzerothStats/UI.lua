@@ -958,6 +958,12 @@ function A.ApplyUI()
         if A.mini.base then
             A.mini.base:SetAlpha(round and 0 or settings.opacity)
         end
+        -- The 30px square grain overlay is owned by surface(); hiding only
+        -- the material slices left a square halo behind the circular ring.
+        -- Restore it when switching back to the regular square button.
+        if A.mini.grain then
+            A.mini.grain:SetAlpha(round and 0 or settings.opacity * A.theme.grainAlpha)
+        end
         for _, texture in ipairs(A.mini.materialParts or {}) do
             if round then
                 texture:Hide()
