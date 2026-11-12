@@ -1,3 +1,11 @@
+# 2.0.4-rc3 — Minimap and safe automatic-backup performance (12 November 2026)
+
+- **Minimap themes:** hide the square grain layer under the circular minimap button and restore it in square mode, with five-theme regression assertions. The final appearance still requires in-game acceptance.
+- **Backup performance:** unchanged automatic snapshots are compared before cloning, avoiding an unnecessary full database allocation. Comparison rejects cycles and metatables and validates the live database before declaring it identical.
+- **Backup safety:** invalid snapshots cannot migrate legacy backup roots during failure; regression tests cover this case. Existing manual backups, auto retention, run history and restore contract remain unchanged.
+- **Benchmarks:** measure both changed and identical automatic backup requests at 100, 500 and 1,000 synthetic runs. These are Lua mock timings, not client FPS or disk-byte reductions.
+- **Storage compatibility:** no compression, SavedVariables schema migration, WoW Logs direct-reader layout change or automatic upload.
+
 # 2.0.4-rc2 — Minimap icon visual fix (12 November 2026)
 
 - **Minimap icon:** crop the native tracking-border atlas to the actual circular ornament and center a smaller glyph inside the ring on all themes, preserving square-icon dimensions when toggled.
