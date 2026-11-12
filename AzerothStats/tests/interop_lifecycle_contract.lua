@@ -36,18 +36,27 @@ verify(A.InteropNativeRunCandidate() == first, "same native ID on reload")
 -- In the lobby the game may preallocate the *next* run ID.
 AZS_ZONE = { run = "c479a8db4402e523-2", phase = "ready" }
 verify(A.InteropNativeRunCandidate() ~= first, "lobby candidate differs")
-verify(run.nativeRunId == nil and another.nativeRunId == nil,
-    "read-only observer never backfills finished or interrupted runs")
-verify(A.ExportRunV1(run).run.nativeRunId == nil,
-    "export does not misattribute lobby candidate")
+verify(
+    run.nativeRunId == nil and another.nativeRunId == nil,
+    "read-only observer never backfills finished or interrupted runs"
+)
+verify(A.ExportRunV1(run).run.nativeRunId == nil, "export does not misattribute lobby candidate")
 local code = A.ExportRetainedCodeV1(run.id)
-verify(type(code) == "string" and string.sub(code, 1, 6) == "AZST1:",
-    "existing retained direct-reader run can be projected")
-verify(run.summary.kills == 61 and run.stats.synthetic == 1 and
-    run.equipment[1] == "synthetic-gear" and run.timeline[1].event == "synthetic",
-    "WoW Logs direct-reader fields survive export unchanged")
-verify(AzerothStatsBackup == manual and AzerothStatsAutoBackup == auto,
-    "both backup roots preserve identity")
+verify(
+    type(code) == "string" and string.sub(code, 1, 6) == "AZST1:",
+    "existing retained direct-reader run can be projected"
+)
+verify(
+    run.summary.kills == 61
+        and run.stats.synthetic == 1
+        and run.equipment[1] == "synthetic-gear"
+        and run.timeline[1].event == "synthetic",
+    "WoW Logs direct-reader fields survive export unchanged"
+)
+verify(
+    AzerothStatsBackup == manual and AzerothStatsAutoBackup == auto,
+    "both backup roots preserve identity"
+)
 verify(A.Sign({ db, manual, auto }) == before, "no source or snapshot mutation")
 AZS_ZONE, A.db = savedZone, savedDb
 AzerothStatsBackup, AzerothStatsAutoBackup = savedManual, savedAuto
