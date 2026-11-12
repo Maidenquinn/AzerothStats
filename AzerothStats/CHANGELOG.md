@@ -1,3 +1,14 @@
+# 2.0.4 — Aviiva feedback, safer backups and UI polish (12 November 2026)
+
+- **Analyze Run:** Highlights display up to four recent build-journal events per page with navigation.
+- **Settings:** clearer descriptions for Effects, Summons, Combat Intelligence and record sounds, with reviewed French and English text.
+- **Minimap:** refinements for circular/square icons, centered native ring and glyph, theme switching, and removal of square-grain artifacts in round mode.
+- **Abandoned runs:** conservative read-only preview (`/azstats abandon preview 2`), temporary History-only hide (`/azstats abandon hide 2`) and show (`/azstats abandon show`). Favorites and cumulative totals stay untouched; no automatic run deletion.
+- **Backups:** skip unnecessary full-database cloning for identical automatic backups with validated, bounded comparison; improve handling of invalid live data and legacy backup roots. Existing manual/automatic backups remain compatible.
+- **Diagnostics:** `/azstats storage` reports retained runs and backup snapshot counts; synthetic size/timing benchmarks and a metadata-only file size tool are provided for troubleshooting.
+- **WoW Logs AS:** retained SavedVariables structure and separate manual AZST1 export preserved; no network upload, no new remote co-op talent/equipment inference.
+- **Compatibility:** no SavedVariables schema migration, loss-inducing compaction, or compression; storage bytes may remain large with multiple snapshots.
+
 # 2.0.4-rc3 — Minimap and safe automatic-backup performance (12 November 2026)
 
 - **Minimap themes:** hide the square grain layer under the circular minimap button and restore it in square mode, with five-theme regression assertions. The final appearance still requires in-game acceptance.
