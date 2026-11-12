@@ -199,7 +199,10 @@ A.db.favorites.entries = {}
 SlashCmdList["AZEROTHSTATS"]("abandon hide 0")
 check(A.view.historyHideShortLeftMinutes == 2, "invalid hide threshold changes nothing")
 SlashCmdList["AZEROTHSTATS"]("abandon show")
-check(A.view.historyHideShortLeftMinutes == nil and A.MatchesHistory(eligible), "show resets filter")
+check(
+    A.view.historyHideShortLeftMinutes == nil and A.MatchesHistory(eligible),
+    "show resets filter"
+)
 check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == beforeToggle, "toggle preserves ledgers")
 A.RefreshUI = savedRefresh
 A.view.class, A.view.historyKind, A.view.historyResult = savedClass, savedKind, savedResult
