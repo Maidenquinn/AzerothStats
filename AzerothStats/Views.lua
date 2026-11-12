@@ -398,8 +398,9 @@ function A.HistoryFacetBounds(excludedMetric, filterOverride)
             scope[key .. "Min"], scope[key .. "Max"] = nil, nil
         end
     end
+    local protectedIds = A.view.historyHideShortLeftMinutes and A.ProtectedRunIds() or nil
     for _, run in ipairs(A.db.runs or {}) do
-        if A.MatchesHistory(run, scope) then
+        if A.MatchesHistory(run, scope, protectedIds) then
             for _, key in ipairs({ "level", "kills", "gold", "duration" }) do
                 if not excludedMetric or key == excludedMetric then
                     local value = tonumber((run.values and run.values[key]) or run[key])
@@ -471,16 +472,15 @@ function A.ParseHistoryFilters(fields)
 end
 
 --- Search is bounded plain text, never a Lua pattern. No group evidence means unknown, not solo.
-function A.MatchesHistory(run, filterOverride)
-    -- Session-only history presentation; lifetime ledgers and retained data
-    -- remain untouched. Protected bookmarks are always visible.
+function A.MatchesHistory(run, filterOverride, protectedIds)
+    -- Session-only presentation; rebuild bookmark protection once per list.
+    -- Direct calls still resolve protection safely from the live catalogue.
     local threshold = A.view.historyHideShortLeftMinutes
-    if threshold and A.AbandonedAdmissionEligible(
-        run,
-        threshold,
-        A.IsRunProtected(run.id)
-    ) then
-        return false
+    if threshold then
+        local protected = protectedIds or A.ProtectedRunIds()
+        if A.AbandonedAdmissionEligible(run, threshold, protected[run.id]) then
+            return false
+        end
     end
     if A.view.class and A.view.class ~= run.class then
         return false
@@ -647,11 +647,12 @@ local function history(model)
     model.rowY = 164
     model.capacity = 9
     local retained, wins, duration, coverage = 0, 0, 0, 0
+    local protectedIds = A.view.historyHideShortLeftMinutes and A.ProtectedRunIds() or nil
     for i = table.getn(A.db.runs), 1, -1 do
         local run = A.db.runs[i]
         local id = run.id
         local values = run.values or {}
-        if A.MatchesHistory(run) then
+        if A.MatchesHistory(run, nil, protectedIds) then
             retained = retained + 1
             if run.result == "victory" then
                 wins = wins + 1
