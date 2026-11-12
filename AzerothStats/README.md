@@ -1,4 +1,10 @@
-> **Release:** [2.0.0 download and complete changelog](https://github.com/Maidenquinn/AzerothStats/releases/tag/v2.0.0). Back up SavedVariables before upgrading. The native move-to-begin overlay may still overlap addon windows.
+# Azeroth Stats — 2.0.4 (12 November 2026)
+
+**Stable 2.0.4 release.** [Download the latest official release](https://github.com/Maidenquinn/AzerothStats/releases/tag/v2.0.4) and see [the 2.0.4 changelog](CHANGELOG.md). Replaces the prior stable addon in place; do not install two copies.
+
+Before updating, **fully exit the game and back up your SavedVariables**. On some Azeroth Survivors clients, the three Lua saved roots (`AzerothStatsDB`, `AzerothStatsBackup` and `AzerothStatsAutoBackup`) are written together into a single `benilla-config/saved/AzerothStats.lua` file. Preserve the actual file(s) that exist; never assume there must be three physical files.
+
+2.0.4 brings Highlights pagination, clearer optional-analysis descriptions, round/square minimap polishing, a temporary read-only/History-only abandoned-run view filter, storage diagnostics and safer automatic-backup duplicate detection. Existing data and WoW Logs AS direct SavedVariables reading remain compatible. **It does not compress large saves, remove stored runs, or automatically upload data.**
 
 # Azeroth Stats - 2.0.0
 

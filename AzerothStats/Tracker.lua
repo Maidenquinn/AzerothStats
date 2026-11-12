@@ -20,6 +20,125 @@ local summaryFields = {
 
 local drainEquipment, finalizeEquipment
 
+-- Eligibility only: no deletion, ledger updates or backup changes. The caller
+-- must still prove atomic accounting and preservation before enabling a policy.
+function A.AbandonedAdmissionEligible(run, minimumMinutes, isProtected)
+    if type(run) ~= "table" or getmetatable(run) then
+        return false
+    end
+    local official = run.official
+    if type(official) ~= "table" or getmetatable(official) then
+        return false
+    end
+    if
+        run.status ~= "ended"
+        or run.result ~= "left"
+        or official.result ~= "left"
+        or run.continued
+        or run.favorite
+        or run.protected
+        or isProtected == true
+        or run.summaryRejected
+    then
+        return false
+    end
+    -- Do not accept anonymous/stale/unverifiable identities as evidence.
+    if
+        type(run.hero) ~= "string"
+        or type(run.zone) ~= "string"
+        or official.hero ~= run.hero
+        or official.zone ~= run.zone
+        or (official.class ~= nil and official.class ~= run.class)
+    then
+        return false
+    end
+    local seconds = A.Number(official.t)
+    local minutes = A.Number(minimumMinutes)
+    if not seconds or seconds < 0 or not minutes or minutes < 0 or minutes > 1440 then
+        return false
+    end
+    -- Strictly below threshold; exact boundary remains retained.
+    return seconds < minutes * 60
+end
+
+-- Read-only aggregate impact inventory. Do not treat these counts as a
+-- subtraction plan: pruned histories and Insights have independent ledgers.
+-- Report only observably populated accounting dependencies. Retention actions
+-- must never infer safe subtraction from this diagnostic.
+function A.AbandonedImpactPreview(minimumMinutes)
+    local result = {
+        inspected = 0,
+        endedLeft = 0,
+        eligible = 0,
+        counted = 0,
+        withMetrics = 0,
+        withSpells = 0,
+        recordSources = 0,
+        classRecordSources = 0,
+        withUsage = 0,
+        withCoop = 0,
+        withDeathEvidence = 0,
+        pruned = 0,
+    }
+    if not A.db or not A.db.runs or not A.db.totals then
+        return result
+    end
+    result.pruned = A.Number(A.db.pruned) or 0
+    local protected = A.ProtectedRunIds()
+    local globalRecords = A.db.totals.records or {}
+    for _, run in ipairs(A.db.runs) do
+        result.inspected = result.inspected + 1
+        if run.status == "ended" and run.result == "left" then
+            result.endedLeft = result.endedLeft + 1
+        end
+        if A.AbandonedAdmissionEligible(run, minimumMinutes, protected[run.id]) then
+            result.eligible = result.eligible + 1
+            if run.counted then
+                result.counted = result.counted + 1
+            end
+            if type(run.accounted) == "table" and next(run.accounted) then
+                result.withMetrics = result.withMetrics + 1
+            end
+            if type(run.spellAccounted) == "table" then
+                for _, spells in pairs(run.spellAccounted) do
+                    if type(spells) == "table" and next(spells) then
+                        result.withSpells = result.withSpells + 1
+                        break
+                    end
+                end
+            end
+            local usage = run.usage and run.usage.accounted
+            if type(usage) == "table" then
+                for _, entries in pairs(usage) do
+                    if type(entries) == "table" and next(entries) then
+                        result.withUsage = result.withUsage + 1
+                        break
+                    end
+                end
+            end
+            local coop = run.coop and run.coop.accounted
+            if type(coop) == "table" and next(coop) then
+                result.withCoop = result.withCoop + 1
+            end
+            if type(run.deaths) == "table" and next(run.deaths) then
+                result.withDeathEvidence = result.withDeathEvidence + 1
+            end
+            for _, record in pairs(globalRecords) do
+                if type(record) == "table" and record.id == run.id then
+                    result.recordSources = result.recordSources + 1
+                end
+            end
+            local classGroup = A.db.classes and A.db.classes[run.class]
+            for _, record in pairs((classGroup and classGroup.records) or {}) do
+                if type(record) == "table" and record.id == run.id then
+                    result.classRecordSources = result.classRecordSources + 1
+                end
+            end
+        end
+    end
+    return result
+end
+
 --- Accept matching supplied identity fields, retain the first official result and update final exact counters.
 local function applySummary(run, summary)
     if not A.SummaryMatches(run, summary) then

@@ -1,3 +1,39 @@
+# 2.0.4 — Aviiva feedback, safer backups and UI polish (12 November 2026)
+
+- **Analyze Run:** Highlights display up to four recent build-journal events per page with navigation.
+- **Settings:** clearer descriptions for Effects, Summons, Combat Intelligence and record sounds, with reviewed French and English text.
+- **Minimap:** refinements for circular/square icons, centered native ring and glyph, theme switching, and removal of square-grain artifacts in round mode.
+- **Abandoned runs:** conservative read-only preview (`/azstats abandon preview 2`), temporary History-only hide (`/azstats abandon hide 2`) and show (`/azstats abandon show`). Favorites and cumulative totals stay untouched; no automatic run deletion.
+- **Backups:** skip unnecessary full-database cloning for identical automatic backups with validated, bounded comparison; improve handling of invalid live data and legacy backup roots. Existing manual/automatic backups remain compatible.
+- **Diagnostics:** `/azstats storage` reports retained runs and backup snapshot counts; synthetic size/timing benchmarks and a metadata-only file size tool are provided for troubleshooting.
+- **WoW Logs AS:** retained SavedVariables structure and separate manual AZST1 export preserved; no network upload, no new remote co-op talent/equipment inference.
+- **Compatibility:** no SavedVariables schema migration, loss-inducing compaction, or compression; storage bytes may remain large with multiple snapshots.
+
+# 2.0.4-rc3 — Minimap and safe automatic-backup performance (12 November 2026)
+
+- **Minimap themes:** hide the square grain layer under the circular minimap button and restore it in square mode, with five-theme regression assertions. The final appearance still requires in-game acceptance.
+- **Backup performance:** unchanged automatic snapshots are compared before cloning, avoiding an unnecessary full database allocation. Comparison rejects cycles and metatables and validates the live database before declaring it identical.
+- **Backup safety:** invalid snapshots cannot migrate legacy backup roots during failure; regression tests cover this case. Existing manual backups, auto retention, run history and restore contract remain unchanged.
+- **Benchmarks:** measure both changed and identical automatic backup requests at 100, 500 and 1,000 synthetic runs. These are Lua mock timings, not client FPS or disk-byte reductions.
+- **Storage compatibility:** no compression, SavedVariables schema migration, WoW Logs direct-reader layout change or automatic upload.
+
+# 2.0.4-rc2 — Minimap icon visual fix (12 November 2026)
+
+- **Minimap icon:** crop the native tracking-border atlas to the actual circular ornament and center a smaller glyph inside the ring on all themes, preserving square-icon dimensions when toggled.
+- **Testing:** add geometry and multi-theme regressions for round-to-square transitions. The actual appearance must still be confirmed in Azeroth Survivors.
+- **SavedVariables:** no schema change, history rewrite, removal, or compression; user-provided save audit found no active run/ledger changes between snapshots with two and three manual backups.
+
+# 2.0.4-rc1 — Aviiva feedback and safety review (native test candidate, 12 November 2026)
+
+- **Analyze Run:** recent Highlights show up to four journal events and include page navigation. Validate long text, colors and scrolling in the native client.
+- **Settings guidance:** expanded descriptions for Effects, Summons, Combat Intelligence and Record sounds (including the LevelUp.wav record alert); reviewed French and English strings.
+- **Minimap:** improved square-material theme repainting and round/square theme-switch logic. Native visual checks across Default, Grimoire, Warcraft and other themes remain required.
+- **Abandoned runs (experimental):** `/azstats abandon preview 2` displays a conservative read-only count with accounting-dependency diagnostics; `/azstats abandon hide 2` hides eligible short official-`left` runs from the History view for this session; `/azstats abandon show` restores visibility. Bookmarked runs remain visible. No automatic exclusion, deletion, sum subtraction or SavedVariables change.
+- **Storage diagnostics:** `/azstats storage` provides run/snapshot inventory. Offline tools measure real file byte sizes without parsing them and benchmark synthetic storage amplification. No production compaction, migration, compression or claimed 100 MB reduction.
+- **Co-op:** retains current native observed roster details, without inventing access to other players' equipment or talents.
+- **Data and interoperability:** maintain SavedVariables schema 1, existing backups, retained run IDs and AZST1/manual WoW Logs export; no network upload.
+- **Release gate:** offline CI is necessary but not sufficient. This candidate requires maintainer in-game recipe before v2.0.4 stable. Preserve a separate copy of all three SavedVariables files before installing.
+
 # 2.0.3 — WoW Logs AS interoperability (test build, 10 November 2026)
 
 - **Desktop compatibility:** preserve the existing SavedVariables layout read by WoW Logs AS, including `runs[].summary`, `stats`, `equipment`, `timeline` and `deaths`; no destructive migration or new SavedVariables root.

@@ -272,17 +272,33 @@ local function sameSnapshot(left, right, state)
     if type(left) ~= "table" then
         return left == right
     end
+    -- Before copying the live DB, never recurse into metatable-backed or cyclic
+    -- data. A failed comparison falls back to the full validated snapshot path.
+    if getmetatable(left) or getmetatable(right) then
+        return false
+    end
+    state.visiting = state.visiting or {}
+    if state.visiting[left] or state.visiting[right] then
+        return false
+    end
+    state.visiting[left], state.visiting[right] = true, true
+    local equal = true
     for key, value in pairs(left) do
         if right[key] == nil or not sameSnapshot(value, right[key], state) then
-            return false
+            equal = false
+            break
         end
     end
-    for key in pairs(right) do
-        if left[key] == nil then
-            return false
+    if equal then
+        for key in pairs(right) do
+            if left[key] == nil then
+                equal = false
+                break
+            end
         end
     end
-    return true
+    state.visiting[left], state.visiting[right] = nil, nil
+    return equal
 end
 
 function A.CreateDataBackup(automatic)
@@ -292,6 +308,28 @@ function A.CreateDataBackup(automatic)
     if A.run and A.run.status == "active" then
         return false, "Backups are available between runs"
     end
+    -- Read the existing catalogue without converting legacy roots first:
+    -- a rejected live snapshot must not mutate *any* SavedVariables root.
+    -- Identical automatic backups need no full clone or new catalogue entry.
+    -- Manual requests still create independent copies.
+    if automatic then
+        local existing = AzerothStatsAutoBackup
+        if
+            type(existing) == "table"
+            and existing.schema == 2
+            and type(existing.entries) == "table"
+        then
+            local latest = existing.entries[table.getn(existing.entries)]
+            if
+                latest
+                and type(latest.data) == "table"
+                and sameSnapshot(latest.data, A.db, { nodes = 0 })
+                and A.ValidateDatabase(A.db)
+            then
+                return true, "Automatic backup already up to date (No." .. latest.id .. ")"
+            end
+        end
+    end
     local data, err = snapshot(A.db, { count = 0, visiting = {} }, 0)
     if err then
         return false, err
@@ -300,14 +338,6 @@ function A.CreateDataBackup(automatic)
         return false, "Backup failed validation"
     end
     local store = backupStore(automatic)
-    -- Skip only truly identical automatic snapshots; preserve every manual
-    -- backup request and keep the existing recoverable automatic snapshot.
-    if automatic then
-        local latest = store.entries[table.getn(store.entries)]
-        if latest and latest.data and sameSnapshot(latest.data, data, { nodes = 0 }) then
-            return true, "Automatic backup already up to date (No." .. latest.id .. ")"
-        end
-    end
     local id = store.nextId
     store.nextId = id + 1
     table.insert(store.entries, {

@@ -944,8 +944,25 @@ function A.ApplyUI()
     -- Repainting the theme can show nine-slice textures again, so apply this last.
     if A.mini and A.mini.roundRing then
         local round = settings.miniRound ~= false
+        -- Keep glyph and visible ring in the same centered 30x30 hit box.
+        -- Never inherit off-center texture anchors from another theme.
+        A.mini.icon:ClearAllPoints()
+        A.mini.icon:SetPoint("CENTER", A.mini, "CENTER", 0, 0)
+        A.mini.icon:SetWidth(round and 20 or 21)
+        A.mini.icon:SetHeight(round and 20 or 21)
+        A.mini.roundRing:ClearAllPoints()
+        A.mini.roundRing:SetPoint("CENTER", A.mini, "CENTER", 0, 0)
+        A.mini.roundRing:SetWidth(26)
+        A.mini.roundRing:SetHeight(26)
+        A.mini.roundRing:SetTexCoord(0, 0.5, 0, 0.5)
         if A.mini.base then
             A.mini.base:SetAlpha(round and 0 or settings.opacity)
+        end
+        -- The 30px square grain overlay is owned by surface(); hiding only
+        -- the material slices left a square halo behind the circular ring.
+        -- Restore it when switching back to the regular square button.
+        if A.mini.grain then
+            A.mini.grain:SetAlpha(round and 0 or settings.opacity * A.theme.grainAlpha)
         end
         for _, texture in ipairs(A.mini.materialParts or {}) do
             if round then
@@ -957,15 +974,16 @@ function A.ApplyUI()
             A.mini.roundRing:Show()
         else
             A.mini.roundRing:Hide()
-            -- Restore square materials only when leaving round mode. Theme
-            -- changes are already repainted by A.RepaintMaterials above.
-            if A.mini.roundApplied then
+            -- Only invalidate material caches after leaving round mode.
+            -- MaterialState and UpdateThemeFrame already detect theme changes.
+            if A.mini.roundApplied ~= false then
                 A.mini.materialTheme = nil
                 A.mini.themeBackdrop = nil
                 A.mini.nativeEdge = nil
-                A.MaterialState(A.mini, false)
-                A.UpdateThemeFrame(A.mini)
+                A.mini.themeLayout = nil
             end
+            A.MaterialState(A.mini, false)
+            A.UpdateThemeFrame(A.mini)
         end
         A.mini.roundApplied = round
     end
@@ -2168,6 +2186,29 @@ local function buildSettings(frame)
         b.setting = def[1]
         b.key = def[2]
         b.caption = font(p, 32, 264 + (i - 1) * 39, 310, 24, 12, COLORS.text)
+        if b.setting == "recordSound" then
+            b:SetScript("OnEnter", function()
+                if GameTooltip then
+                    GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
+                    GameTooltip:SetText(A.T("Record sounds"))
+                    GameTooltip:AddLine(
+                        A.T(
+                            "Plays LevelUp.wav once when a new class DPS record is detected. It does not record game audio."
+                        ),
+                        1,
+                        1,
+                        1,
+                        true
+                    )
+                    GameTooltip:Show()
+                end
+            end)
+            b:SetScript("OnLeave", function()
+                if GameTooltip then
+                    GameTooltip:Hide()
+                end
+            end)
+        end
         b:SetScript("OnClick", function()
             -- The circular icon defaults to enabled when no saved preference
             -- exists. Toggle its effective value, not nil, on the first click.
@@ -4476,9 +4517,13 @@ function A.BuildUI()
     A.PaintedGlyph(mini.icon, 1)
     mini.roundRing = mini:CreateTexture(nil, "OVERLAY")
     mini.roundRing:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    -- Blizzard's tracking-border texture packs the circular ornament into
+    -- its upper-left quadrant. Showing all UVs offsets the visible ring
+    -- away from its centered addon glyph on the native client.
+    mini.roundRing:SetTexCoord(0, 0.5, 0, 0.5)
     mini.roundRing:SetPoint("CENTER", mini, "CENTER", 0, 0)
-    mini.roundRing:SetWidth(48)
-    mini.roundRing:SetHeight(48)
+    mini.roundRing:SetWidth(26)
+    mini.roundRing:SetHeight(26)
     mini.roundRing:Hide()
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")

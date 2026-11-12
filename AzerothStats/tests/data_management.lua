@@ -296,6 +296,20 @@ do
             and retained[3].data.sequence == lastBackupSequence,
         "failed large-history snapshot preserves all existing recovery points"
     )
+    -- An invalid live database must not silently convert an old schema-1
+    -- catalogue into schema-2 before snapshot validation has succeeded.
+    local validCatalogue = AzerothStatsAutoBackup
+    local legacyCatalogue = { schema = 1, data = { runs = {} } }
+    AzerothStatsAutoBackup = legacyCatalogue
+    A.db.runs[1].cycle = A.db.runs[1]
+    local legacyOK = A.CreateDataBackup(true)
+    A.db.runs[1].cycle = nil
+    check(not legacyOK, "invalid snapshot rejects legacy auto backup attempt")
+    check(
+        AzerothStatsAutoBackup == legacyCatalogue and legacyCatalogue.schema == 1,
+        "failed backup leaves legacy snapshot root unchanged"
+    )
+    AzerothStatsAutoBackup = validCatalogue
     A.db.runs, A.db.sequence = originalRuns, originalSequence
     A.db.settings.autoBackupRetention = originalRetention
     AzerothStatsAutoBackup = originalAutomatic

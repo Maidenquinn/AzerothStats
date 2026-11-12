@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r requirements-dev.txt
-      - run: python -m black --check tools AzerothStats/tests
+      - run: python -m black --diff --check tools AzerothStats/tests
       - name: Install pinned formatter
         run: |
           curl --fail --location --output /tmp/stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/download/v2.6.0/stylua-linux-x86_64.zip
@@ -39,13 +39,15 @@ jobs:
       - run: python tools/checks.py
       - name: Benchmark synthetic backup scaling (100/500/1000 runs)
         run: python tools/benchmark_backups.py
+      - name: Benchmark synthetic storage proxy and backup amplification
+        run: python tools/benchmark_storage_candidates.py --manual 1 --automatic 2
       - run: python design/v2/tests/runtime_roundtrip.py
       - run: python tools/build_release.py --output release-assets/ci
       - name: Upload installable ZIP for in-game review (no release)
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: AzerothStats-interop-pr-review
+          name: AzerothStats-2.0.4-rc3-pr-review
           path: release-assets/ci/*.zip
           retention-days: 7
           if-no-files-found: error

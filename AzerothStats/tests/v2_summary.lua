@@ -87,6 +87,29 @@ this = A.ui.context
 A.ui.context:GetScript("OnClick")()
 check(A.v2RunPicker:IsShown(), "run banner opens the illustrated run chooser")
 A.v2RunPicker:Hide()
+-- More than four journal changes remain accessible without mutating the run.
+run.buildJournal = { entries = {} }
+for i = 1, 11 do
+    run.buildJournal.entries[i] = {
+        t = i * 10,
+        kind = "spell",
+        changes = { { name = "Synthetic" .. i } },
+    }
+end
+local original = A.Sign(run)
+local _, firstPage, pages, count = A.V2Highlights(run, 1)
+check(firstPage == 1 and pages == 3 and count == 11, "highlights count every journal change")
+local _, lastPage = A.V2Highlights(run, 99)
+check(lastPage == 3, "highlights clamp out-of-range page requests")
+A.view.v2HighlightsPage = 1
+A.RefreshUI()
+check(A.ui.v2HighlightsNext:IsShown(), "multi-page highlights show navigation")
+A.ui.v2HighlightsNext.callback()
+check(A.view.v2HighlightsPage == 2, "next page advances highlights")
+A.ui.v2HighlightsPrev.callback()
+check(A.view.v2HighlightsPage == 1, "previous page returns to first highlights")
+check(A.Sign(run) == original, "highlight navigation never mutates run history")
+A.view.v2HighlightsPage = nil
 A.ui.v2SummaryPanels.note.open.callback(A.ui.v2SummaryPanels.note.open)
 check(
     A.v2NoteWindow:IsShown() and A.v2NoteWindow.input.focused,

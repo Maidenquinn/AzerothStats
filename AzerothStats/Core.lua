@@ -229,6 +229,108 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                 A.ApplyUI()
             end
         end
+    elseif command == "storage" then
+        -- Read-only inventory: never initialize, copy, migrate or prune backups.
+        local function inventory(name, store)
+            local entries = type(store) == "table" and store.entries or nil
+            local count = type(entries) == "table" and table.getn(entries) or 0
+            local runs = 0
+            if type(entries) == "table" then
+                for _, entry in ipairs(entries) do
+                    if type(entry) == "table" then
+                        local data = type(entry.data) == "table" and entry.data or nil
+                        local saved = data and data.runs
+                        runs = runs + (type(saved) == "table" and table.getn(saved) or 0)
+                    end
+                end
+            elseif type(store) == "table" and store.schema == 1 then
+                count = type(store.data) == "table" and 1 or 0
+                runs = type(store.data) == "table"
+                        and type(store.data.runs) == "table"
+                        and table.getn(store.data.runs)
+                    or 0
+            end
+            A.Say(name .. ": " .. count .. " snapshots; " .. runs .. " stored run copies")
+        end
+        A.Say(
+            "Active database: "
+                .. table.getn(A.db.runs or {})
+                .. " retained runs (file bytes unavailable in game)"
+        )
+        inventory("Manual backups", AzerothStatsBackup)
+        inventory("Automatic backups", AzerothStatsAutoBackup)
+        A.Say("Read-only inventory; no backup or run was modified.")
+    elseif command == "abandon" and value == "show" then
+        A.view.historyHideShortLeftMinutes = nil
+        A.view.page = 1
+        A.Say("All retained runs shown in history; lifetime totals unchanged.")
+        A.RefreshUI()
+    elseif command == "abandon" and string.find(value, "^hide%s+%d+$") then
+        local _, _, number = string.find(value, "^hide%s+(%d+)$")
+        local minutes = tonumber(number)
+        if not minutes or minutes < 1 or minutes > 1440 then
+            A.Say("Usage: /azstats abandon hide <minutes 1-1440>")
+        else
+            A.view.historyHideShortLeftMinutes = minutes
+            A.view.page = 1
+            A.Say(
+                "History only: short official-left runs < "
+                    .. minutes
+                    .. " minutes hidden; favorites preserved."
+            )
+            A.Say("Data, cumulative statistics, exports and backups unchanged.")
+            A.RefreshUI()
+        end
+    elseif command == "abandon" then
+        -- Preview only. Never change run retention, aggregate ledgers or backups.
+        local _, _, thresholdText = string.find(value, "^preview%s+(%d+)$")
+        local threshold = thresholdText and tonumber(thresholdText)
+        if not threshold or threshold < 1 or threshold > 1440 then
+            A.Say("Usage: /azstats abandon preview <minutes 1-1440>")
+        else
+            local impact = A.AbandonedImpactPreview(threshold)
+            A.Say(
+                "Abandoned-run preview < "
+                    .. threshold
+                    .. " min: "
+                    .. impact.eligible
+                    .. " eligible of "
+                    .. impact.inspected
+                    .. " retained runs ("
+                    .. impact.endedLeft
+                    .. " ended-left results)."
+            )
+            A.Say(
+                "Ledger inventory: "
+                    .. impact.counted
+                    .. " counted; "
+                    .. impact.withMetrics
+                    .. " with metric entries; "
+                    .. impact.withSpells
+                    .. " with spell entries; "
+                    .. impact.recordSources
+                    .. " active record references."
+            )
+            A.Say(
+                "Additional dependencies: "
+                    .. impact.classRecordSources
+                    .. " class record references; "
+                    .. impact.withUsage
+                    .. " with build usage; "
+                    .. impact.withCoop
+                    .. " with co-op accounting; "
+                    .. impact.withDeathEvidence
+                    .. " with death evidence."
+            )
+            if impact.pruned > 0 then
+                A.Say(
+                    "Historical warning: "
+                        .. impact.pruned
+                        .. " runs pruned; lifetime totals may exceed retained history."
+                )
+            end
+            A.Say("Read-only inventory, not a subtraction forecast; no data changed.")
+        end
     elseif command == "interop" then
         if value == "export" then
             A.OpenInteropExport()
@@ -370,7 +472,7 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         end
     elseif command == "help" then
         A.Say(
-            "/azstats show, hide, history, report, compare, journal, data, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], retention 10..1000, interop probe"
+            "/azstats show, hide, history, report, compare, journal, data, coop, favorites, favorite, nemesis, diagnose, bar, hud, minimap, lock, resetpos, class all|CLASS, scale 0.65..1.5, opacity 0.45..1, lang auto|CODE, sound [test], storage, retention 10..1000, interop probe"
         )
     else
         A.Say(A.T("Unknown command") .. " · /azstats help")

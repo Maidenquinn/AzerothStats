@@ -230,6 +230,85 @@ for _, lg in ipairs(A.languages) do
     end
 end
 
+-- v2.0.4 minimap regression: a routine square repaint must preserve cached
+-- material state, while theme switches and round/square transitions restore it.
+A.UseTheme("chroniques")
+A.db.settings.miniRound = false
+A.ApplyUI()
+check(A.mini.roundApplied == false, "square minimap mode applied")
+local cachedParts = A.mini.materialParts
+local cachedLayout = A.mini.themeLayout
+local cachedTheme = A.mini.materialTheme
+A.ApplyUI()
+check(
+    A.mini.materialParts == cachedParts
+        and A.mini.themeLayout == cachedLayout
+        and A.mini.materialTheme == cachedTheme,
+    "repeated square apply keeps material caches stable"
+)
+for _, id in ipairs(A.themeOrder) do
+    A.UseTheme(id)
+    A.db.settings.miniRound = true
+    A.ApplyUI()
+    check(A.mini.roundRing:IsShown(), "round ring visible: " .. id)
+    check(
+        A.mini.grain:GetAlpha() == 0 and A.mini.base:GetAlpha() == 0,
+        "round mode removes square grain and base: " .. id
+    )
+    check(
+        A.mini.roundRing:GetWidth() == 26 and A.mini.roundRing:GetHeight() == 26,
+        "ring atlas stays inside the 30px minimap hit box: " .. id
+    )
+    check(
+        A.mini.icon:GetWidth() == 20 and A.mini.icon:GetHeight() == 20,
+        "round glyph has inner padding: " .. id
+    )
+    local _, anchor = A.mini.roundRing:GetPoint()
+    check(anchor == A.mini, "round ring anchored to icon owner: " .. id)
+    local _, glyphAnchor = A.mini.icon:GetPoint()
+    check(glyphAnchor == A.mini, "round glyph shares ring parent: " .. id)
+    A.ApplyUI()
+    check(
+        A.mini.roundRing:GetWidth() == 26 and A.mini.icon:GetWidth() == 20,
+        "repeat apply preserves compact ring and readable glyph: " .. id
+    )
+    A.db.settings.miniRound = false
+    A.ApplyUI()
+    check(not A.mini.roundRing:IsShown(), "square mode hides ring: " .. id)
+    check(
+        A.mini.grain:GetAlpha() == A.db.settings.opacity * A.theme.grainAlpha,
+        "square mode restores theme grain opacity: " .. id
+    )
+    check(
+        A.mini.icon:GetWidth() == 21 and A.mini.icon:GetHeight() == 21,
+        "square glyph restores normal sizing: " .. id
+    )
+    check(A.mini.materialTheme == A.activeTheme, "square materials rebuilt for theme: " .. id)
+    A.ApplyUI()
+    check(A.mini.materialTheme == A.activeTheme, "square repeat retains theme: " .. id)
+end
+
+-- Opacity boundary regression: switching shapes at 0 and at a low alpha
+-- must not reintroduce the square grain in circular mode.
+local savedOpacity = A.db.settings.opacity
+for _, opacity in ipairs({ 0, 0.25 }) do
+    A.db.settings.opacity = opacity
+    A.db.settings.miniRound = true
+    A.ApplyUI()
+    check(
+        A.mini.grain:GetAlpha() == 0 and A.mini.base:GetAlpha() == 0,
+        "round minimap remains free of square layers at opacity " .. opacity
+    )
+    A.db.settings.miniRound = false
+    A.ApplyUI()
+    check(
+        A.mini.grain:GetAlpha() == opacity * A.theme.grainAlpha
+            and A.mini.base:GetAlpha() == opacity,
+        "square minimap restores expected grain and base at opacity " .. opacity
+    )
+end
+A.db.settings.opacity = savedOpacity
+
 AzerothStatsDB, A.db, A.run, A.view = savedGlobal, savedDB, savedRun, savedView
 A.themePreview = savedPreview
 A.db.settings.language = savedLanguage

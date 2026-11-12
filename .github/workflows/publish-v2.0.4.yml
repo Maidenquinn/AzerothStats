@@ -1,0 +1,58 @@
+name: Publish Azeroth Stats 2.0.4
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-v2.0.4.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-azerothstats-v2.0.4
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Verify stable version, security and release manifest
+        run: |
+          grep -Fx '## Version: 2.0.4' AzerothStats/AzerothStats.toc
+          grep -F 'version = "2.0.4"' AzerothStats/Util.lua
+          python -m pip install -r requirements-dev.txt
+          python tools/checks.py
+      - name: Build verified player archive
+        run: python tools/build_release.py --output release-assets/publish
+      - name: Prepare release notes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('AzerothStats/CHANGELOG.md').read_text(encoding='utf-8')
+          section = text.split('# 2.0.4 —', 1)
+          assert len(section) == 2, '2.0.4 changelog missing'
+          body = section[1].split('\n# ', 1)[0].strip()
+          Path('release-assets/publish/RELEASE_NOTES.md').write_text(
+              '# Azeroth Stats 2.0.4\n\n' + body + '\n', encoding='utf-8'
+          )
+          PY
+      - name: Publish GitHub release and installable ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v2.0.4 >/dev/null 2>&1; then
+            echo 'Release v2.0.4 already exists; refusing to overwrite it.'
+            exit 1
+          fi
+          gh release create v2.0.4 \
+            release-assets/publish/AzerothStats-2.0.4.zip \
+            release-assets/publish/AzerothStats-2.0.4.zip.sha256 \
+            --target "$GITHUB_SHA" \
+            --title 'Azeroth Stats 2.0.4' \
+            --notes-file release-assets/publish/RELEASE_NOTES.md \
+            --latest
