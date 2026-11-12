@@ -1,3 +1,9 @@
+# 2.0.4-rc2 — Minimap icon visual fix (12 November 2026)
+
+- **Minimap icon:** crop the native tracking-border atlas to the actual circular ornament and center a smaller glyph inside the ring on all themes, preserving square-icon dimensions when toggled.
+- **Testing:** add geometry and multi-theme regressions for round-to-square transitions. The actual appearance must still be confirmed in Azeroth Survivors.
+- **SavedVariables:** no schema change, history rewrite, removal, or compression; user-provided save audit found no active run/ledger changes between snapshots with two and three manual backups.
+
 # 2.0.4-rc1 — Aviiva feedback and safety review (native test candidate, 12 November 2026)
 
 - **Analyze Run:** recent Highlights show up to four journal events and include page navigation. Validate long text, colors and scrolling in the native client.
