@@ -472,6 +472,16 @@ end
 
 --- Search is bounded plain text, never a Lua pattern. No group evidence means unknown, not solo.
 function A.MatchesHistory(run, filterOverride)
+    -- Session-only history presentation; lifetime ledgers and retained data
+    -- remain untouched. Protected bookmarks are always visible.
+    local threshold = A.view.historyHideShortLeftMinutes
+    if threshold and A.AbandonedAdmissionEligible(
+        run,
+        threshold,
+        A.IsRunProtected(run.id)
+    ) then
+        return false
+    end
     if A.view.class and A.view.class ~= run.class then
         return false
     end
