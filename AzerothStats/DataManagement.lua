@@ -319,6 +319,7 @@ function A.CreateDataBackup(automatic)
             latest
             and type(latest.data) == "table"
             and sameSnapshot(latest.data, A.db, { nodes = 0 })
+            and A.ValidateDatabase(A.db)
         then
             return true, "Automatic backup already up to date (No." .. latest.id .. ")"
         end
