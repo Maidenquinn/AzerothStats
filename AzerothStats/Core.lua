@@ -261,8 +261,27 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
         inventory("Automatic backups", AzerothStatsAutoBackup)
         A.Say("Read-only inventory; no backup or run was modified.")
     elseif command == "abandon" then
-        -- Preview only. Never change run retention, aggregate ledgers or backups.
-        local _, _, thresholdText = string.find(value, "^preview%s+(%d+)$")
+        -- Session-only history display toggle; never modify run data or ledgers.
+        if value == "show" then
+            A.view.historyHideShortLeftMinutes = nil
+            A.view.page = 1
+            A.Say("All retained runs shown in history; lifetime totals unchanged.")
+            A.RefreshUI()
+        else
+            local _, _, hideText = string.find(value, "^hide%s+(%d+)$")
+            local hideMinutes = hideText and tonumber(hideText)
+            if hideMinutes and hideMinutes >= 1 and hideMinutes <= 1440 then
+                A.view.historyHideShortLeftMinutes = hideMinutes
+                A.view.page = 1
+                A.Say(
+                    "History view only: short official-left runs < "
+                        .. hideMinutes
+                        .. " minutes hidden; favorites preserved."
+                )
+                A.Say("Data, cumulative statistics, exports and backups unchanged.")
+                A.RefreshUI()
+            else
+                local _, _, thresholdText = string.find(value, "^preview%s+(%d+)$")
         local threshold = thresholdText and tonumber(thresholdText)
         if not threshold or threshold < 1 or threshold > 1440 then
             A.Say("Usage: /azstats abandon preview <minutes 1-1440>")
@@ -309,6 +328,8 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                 )
             end
             A.Say("Read-only inventory, not a subtraction forecast; no data changed.")
+                end
+            end
         end
     elseif command == "interop" then
         if value == "export" then
