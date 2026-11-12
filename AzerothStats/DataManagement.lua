@@ -308,20 +308,26 @@ function A.CreateDataBackup(automatic)
     if A.run and A.run.status == "active" then
         return false, "Backups are available between runs"
     end
-    local store
-    -- Compare before copying a large live DB. Identical automatic backups now
-    -- need only one bounded read-only traversal, not a full clone + traversal.
-    -- Manual backups are always independent snapshots as requested.
+    -- Read the existing catalogue without converting legacy roots first:
+    -- a rejected live snapshot must not mutate *any* SavedVariables root.
+    -- Identical automatic backups need no full clone or new catalogue entry.
+    -- Manual requests still create independent copies.
     if automatic then
-        store = backupStore(true)
-        local latest = store.entries[table.getn(store.entries)]
+        local existing = AzerothStatsAutoBackup
         if
-            latest
-            and type(latest.data) == "table"
-            and sameSnapshot(latest.data, A.db, { nodes = 0 })
-            and A.ValidateDatabase(A.db)
+            type(existing) == "table"
+            and existing.schema == 2
+            and type(existing.entries) == "table"
         then
-            return true, "Automatic backup already up to date (No." .. latest.id .. ")"
+            local latest = existing.entries[table.getn(existing.entries)]
+            if
+                latest
+                and type(latest.data) == "table"
+                and sameSnapshot(latest.data, A.db, { nodes = 0 })
+                and A.ValidateDatabase(A.db)
+            then
+                return true, "Automatic backup already up to date (No." .. latest.id .. ")"
+            end
         end
     end
     local data, err = snapshot(A.db, { count = 0, visiting = {} }, 0)
@@ -331,7 +337,7 @@ function A.CreateDataBackup(automatic)
     if not A.ValidateDatabase(data) then
         return false, "Backup failed validation"
     end
-    store = store or backupStore(false)
+    local store = backupStore(automatic)
     local id = store.nextId
     store.nextId = id + 1
     table.insert(store.entries, {
