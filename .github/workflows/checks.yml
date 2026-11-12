@@ -47,7 +47,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: AzerothStats-interop-pr-review
+          name: AzerothStats-2.0.4-rc2-pr-review
           path: release-assets/ci/*.zip
           retention-days: 7
           if-no-files-found: error
