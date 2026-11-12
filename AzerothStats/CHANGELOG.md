@@ -1,3 +1,14 @@
+# 2.0.4-rc1 — Aviiva feedback and safety review (native test candidate, 12 November 2026)
+
+- **Analyze Run:** recent Highlights show up to four journal events and include page navigation. Validate long text, colors and scrolling in the native client.
+- **Settings guidance:** expanded descriptions for Effects, Summons, Combat Intelligence and Record sounds (including the LevelUp.wav record alert); reviewed French and English strings.
+- **Minimap:** improved square-material theme repainting and round/square theme-switch logic. Native visual checks across Default, Grimoire, Warcraft and other themes remain required.
+- **Abandoned runs (experimental):** `/azstats abandon preview 2` displays a conservative read-only count with accounting-dependency diagnostics; `/azstats abandon hide 2` hides eligible short official-`left` runs from the History view for this session; `/azstats abandon show` restores visibility. Bookmarked runs remain visible. No automatic exclusion, deletion, sum subtraction or SavedVariables change.
+- **Storage diagnostics:** `/azstats storage` provides run/snapshot inventory. Offline tools measure real file byte sizes without parsing them and benchmark synthetic storage amplification. No production compaction, migration, compression or claimed 100 MB reduction.
+- **Co-op:** retains current native observed roster details, without inventing access to other players' equipment or talents.
+- **Data and interoperability:** maintain SavedVariables schema 1, existing backups, retained run IDs and AZST1/manual WoW Logs export; no network upload.
+- **Release gate:** offline CI is necessary but not sufficient. This candidate requires maintainer in-game recipe before v2.0.4 stable. Preserve a separate copy of all three SavedVariables files before installing.
+
 # 2.0.3 — WoW Logs AS interoperability (test build, 10 November 2026)
 
 - **Desktop compatibility:** preserve the existing SavedVariables layout read by WoW Logs AS, including `runs[].summary`, `stats`, `equipment`, `timeline` and `deaths`; no destructive migration or new SavedVariables root.
