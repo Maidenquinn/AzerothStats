@@ -251,9 +251,23 @@ for _, id in ipairs(A.themeOrder) do
     A.db.settings.miniRound = true
     A.ApplyUI()
     check(A.mini.roundRing:IsShown(), "round ring visible: " .. id)
+    check(
+        A.mini.roundRing:GetWidth() == 30 and A.mini.roundRing:GetHeight() == 30,
+        "ring atlas is cropped to the 30px minimap hit box: " .. id
+    )
+    check(
+        A.mini.icon:GetWidth() == 17 and A.mini.icon:GetHeight() == 17,
+        "round glyph has inner padding: " .. id
+    )
+    local _, anchor = A.mini.roundRing:GetPoint()
+    check(anchor == A.mini, "round ring anchored to icon owner: " .. id)
     A.db.settings.miniRound = false
     A.ApplyUI()
     check(not A.mini.roundRing:IsShown(), "square mode hides ring: " .. id)
+    check(
+        A.mini.icon:GetWidth() == 21 and A.mini.icon:GetHeight() == 21,
+        "square glyph restores normal sizing: " .. id
+    )
     check(A.mini.materialTheme == A.activeTheme, "square materials rebuilt for theme: " .. id)
     A.ApplyUI()
     check(A.mini.materialTheme == A.activeTheme, "square repeat retains theme: " .. id)
