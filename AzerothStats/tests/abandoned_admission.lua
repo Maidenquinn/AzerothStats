@@ -172,6 +172,40 @@ check(
     A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == snapshot,
     "bookmark preview leaves ledgers intact"
 )
+-- Session-only History visibility: never touch retained data, totals or backups.
+local savedRefresh, savedClass = A.RefreshUI, A.view.class
+local savedKind, savedResult = A.view.historyKind, A.view.historyResult
+local savedAdvanced, savedSearch = A.view.historyAdvanced, A.view.historySearch
+local savedDifficulty = A.view.difficulty
+local savedHide = A.view.historyHideShortLeftMinutes
+A.RefreshUI = function() end
+A.view.class, A.view.historyKind, A.view.historyResult = nil, nil, nil
+A.view.historyAdvanced, A.view.historySearch, A.view.difficulty = nil, "", nil
+A.db.favorites = { version = 1, entries = {} }
+check(A.MatchesHistory(eligible), "short left visible with session filter off")
+local beforeToggle = A.Sign({ A.db.runs, A.db.totals, A.db.classes })
+SlashCmdList["AZEROTHSTATS"]("abandon hide 2")
+check(A.view.historyHideShortLeftMinutes == 2, "session filter stores requested minutes")
+check(not A.MatchesHistory(eligible), "eligible short left hidden in history")
+check(A.MatchesHistory(victory), "victory stays visible")
+check(A.MatchesHistory(interrupted), "interrupted stays visible")
+A.db.favorites.entries["run:preview-left"] = {
+    kind = "run",
+    key = "preview-left",
+    runId = "preview-left",
+}
+check(A.MatchesHistory(eligible), "bookmarked left stays visible")
+A.db.favorites.entries = {}
+SlashCmdList["AZEROTHSTATS"]("abandon hide 0")
+check(A.view.historyHideShortLeftMinutes == 2, "invalid hide threshold changes nothing")
+SlashCmdList["AZEROTHSTATS"]("abandon show")
+check(A.view.historyHideShortLeftMinutes == nil and A.MatchesHistory(eligible), "show resets filter")
+check(A.Sign({ A.db.runs, A.db.totals, A.db.classes }) == beforeToggle, "toggle preserves ledgers")
+A.RefreshUI = savedRefresh
+A.view.class, A.view.historyKind, A.view.historyResult = savedClass, savedKind, savedResult
+A.view.historyAdvanced, A.view.historySearch = savedAdvanced, savedSearch
+A.view.difficulty, A.view.historyHideShortLeftMinutes = savedDifficulty, savedHide
+A.db.favorites = savedFavorites
 A.Say, A.db.runs = savedSay, savedRuns
 A.db.totals.records, A.db.classes, A.db.pruned = savedRecords, savedClasses, savedPruned
 print("ABANDONED ADMISSION ELIGIBILITY REGRESSIONS PASSED", TEST_COUNT)
