@@ -944,6 +944,14 @@ function A.ApplyUI()
     -- Repainting the theme can show nine-slice textures again, so apply this last.
     if A.mini and A.mini.roundRing then
         local round = settings.miniRound ~= false
+        -- Keep glyph and visible ring in the same centered 30x30 hit box.
+        -- Never inherit off-center texture anchors from another theme.
+        A.mini.icon:ClearAllPoints()
+        A.mini.icon:SetPoint("CENTER", A.mini, "CENTER", 0, 0)
+        A.mini.icon:SetWidth(round and 17 or 21)
+        A.mini.icon:SetHeight(round and 17 or 21)
+        A.mini.roundRing:ClearAllPoints()
+        A.mini.roundRing:SetPoint("CENTER", A.mini, "CENTER", 0, 0)
         if A.mini.base then
             A.mini.base:SetAlpha(round and 0 or settings.opacity)
         end
@@ -4500,9 +4508,13 @@ function A.BuildUI()
     A.PaintedGlyph(mini.icon, 1)
     mini.roundRing = mini:CreateTexture(nil, "OVERLAY")
     mini.roundRing:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+    -- Blizzard's tracking-border texture packs the circular ornament into
+    -- its upper-left quadrant. Showing all UVs offsets the visible ring
+    -- away from its centered addon glyph on the native client.
+    mini.roundRing:SetTexCoord(0, 0.5, 0, 0.5)
     mini.roundRing:SetPoint("CENTER", mini, "CENTER", 0, 0)
-    mini.roundRing:SetWidth(48)
-    mini.roundRing:SetHeight(48)
+    mini.roundRing:SetWidth(30)
+    mini.roundRing:SetHeight(30)
     mini.roundRing:Hide()
     mini:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     mini:RegisterForDrag("LeftButton")
