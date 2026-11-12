@@ -1,3 +1,5 @@
+> **Test candidate 2.0.4-rc1 (12 November 2026):** this is a PR review build, **not** the stable release. Before installing, make an offline copy of `AzerothStats.lua`, `AzerothStatsBackup.lua` and `AzerothStatsAutoBackup.lua` from the game's SavedVariables directory. Keep the official 2.0.3 package available for rollback. See [the v2.0.4 native acceptance plan](../docs/v2.0.4-recette-rc1.md). No run deletion or storage compression is enabled in this build.
+
 > **Release:** [2.0.0 download and complete changelog](https://github.com/Maidenquinn/AzerothStats/releases/tag/v2.0.0). Back up SavedVariables before upgrading. The native move-to-begin overlay may still overlap addon windows.
 
 # Azeroth Stats - 2.0.0
