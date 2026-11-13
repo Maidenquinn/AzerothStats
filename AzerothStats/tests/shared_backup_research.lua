@@ -454,5 +454,62 @@ function M.findOrigin(store, kind, sourceID)
     end
 end
 
+-- Reverify a staged/reloaded shared catalogue against the still untouched
+-- original snapshot roots. A future migration MUST pass after actual disk
+-- serialization before it may even offer a destructive space-saving action.
+function M.verifyMigration(store, live, manual, automatic)
+    if type(store) ~= "table" or store.schema ~= 1
+        or type(store.entries) ~= "table" or type(store.pool) ~= "table" then
+        return false, "invalid shared catalogue"
+    end
+    if not AzerothStats.ValidateDatabase(live) then
+        return false, "invalid original live database"
+    end
+    local manualEntries, manualNext = legacyEntries(manual, "manual")
+    if not manualEntries then
+        return false, manualNext
+    end
+    local autoEntries, autoNext = legacyEntries(automatic, "auto")
+    if not autoEntries then
+        return false, autoNext
+    end
+    if type(store.sourceNextIds) ~= "table"
+        or store.sourceNextIds.manual ~= manualNext
+        or store.sourceNextIds.auto ~= autoNext then
+        return false, "legacy sequence mismatch"
+    end
+    local expectedCount, actualCount = 0, 0
+    for _ in pairs(store.entries) do
+        actualCount = actualCount + 1
+    end
+    for _, kind in ipairs({ "manual", "auto" }) do
+        local source = kind == "manual" and manualEntries or autoEntries
+        for _, old in ipairs(source) do
+            expectedCount = expectedCount + 1
+            local id = M.findOrigin(store, kind, old.id)
+            if not id then
+                return false, "missing migrated " .. kind .. " checkpoint"
+            end
+            local entry = store.entries[id]
+            local meta = entry.origin
+            if type(meta) ~= "table"
+                or meta.at ~= old.at
+                or meta.legacy ~= (old.legacy and true or false)
+                or meta.runs ~= (old.runs or table.getn(old.data.runs))
+                or entry.automatic ~= (kind == "auto") then
+                return false, "checkpoint metadata mismatch"
+            end
+            local restored, err = M.restore(store, id)
+            if not restored or not equal(restored, old.data, { nodes = 0 }, 0) then
+                return false, err or "checkpoint content mismatch"
+            end
+        end
+    end
+    if expectedCount ~= actualCount then
+        return false, "unexpected additional checkpoints"
+    end
+    return true
+end
+
 -- Research code returns reconstructed data, never installs a live DB itself.
 SharedBackupResearch = M
