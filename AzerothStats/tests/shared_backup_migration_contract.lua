@@ -156,6 +156,21 @@ local corrupt = {
     entries = { { id = 1, data = { broken = true } } },
 }
 check(M.importLegacy(db, corrupt, autoRoot) == nil, "corrupt backup refuses migration")
+local unknownRoot = {
+    schema = 2,
+    nextId = 2,
+    entries = { { id = 1, data = first } },
+    newFeature = "unknown",
+}
+check(M.importLegacy(db, unknownRoot, nil) == nil, "unknown root metadata rejects lossy migration")
+local unknownEntry = {
+    schema = 2,
+    nextId = 2,
+    entries = { { id = 1, data = first, protectedFlag = true } },
+}
+check(M.importLegacy(db, unknownEntry, nil) == nil, "unknown entry metadata rejects lossy migration")
+check(M.importLegacy(db, { schema = 1, data = first, extra = true }, nil) == nil,
+    "unexpected legacy schema field rejected")
 check(M.importLegacy({ invalid = true }, manualRoot, autoRoot) == nil, "invalid live DB refused")
 check(first.runs[1].note == "old note", "failed conversions preserve old source")
 check(A.db == db, "migration never installs a database")
