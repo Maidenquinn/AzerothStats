@@ -342,6 +342,11 @@ local function legacyEntries(root, kind)
         return nil, "invalid " .. kind .. " root"
     end
     if root.schema == 1 then
+        for key in pairs(root) do
+            if key ~= "schema" and key ~= "data" then
+                return nil, "unsupported " .. kind .. " legacy field"
+            end
+        end
         if type(root.data) ~= "table" then
             return nil, "invalid " .. kind .. " legacy snapshot"
         end
@@ -349,6 +354,13 @@ local function legacyEntries(root, kind)
     end
     if root.schema ~= 2 or type(root.entries) ~= "table" then
         return nil, "unsupported " .. kind .. " backup schema"
+    end
+    -- Unknown source fields must be rejected, never silently discarded.
+    -- A future schema revision therefore requires an explicit adapter.
+    for key in pairs(root) do
+        if key ~= "schema" and key ~= "nextId" and key ~= "entries" then
+            return nil, "unsupported " .. kind .. " catalogue field"
+        end
     end
     local entries = root.entries
     local count = table.getn(entries)
@@ -369,6 +381,12 @@ local function legacyEntries(root, kind)
             or seen[entry.id]
         then
             return nil, "invalid or duplicate " .. kind .. " backup ID"
+        end
+        for key in pairs(entry) do
+            if key ~= "id" and key ~= "at" and key ~= "runs" and key ~= "data"
+                and key ~= "legacy" then
+                return nil, "unsupported " .. kind .. " backup field"
+            end
         end
         seen[entry.id] = true
         maxID = math.max(maxID, entry.id)
