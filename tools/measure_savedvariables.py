@@ -38,11 +38,47 @@ def measure(directory: Path) -> dict:
     return result
 
 
+def compare(before: Path, after: Path) -> dict:
+    """Compare two closed-client save directories using file metadata only.
+
+    No data is opened. The comparison is an observation, not an explanation
+    of *which* database table caused a change in the container file.
+    """
+    old = measure(before)
+    new = measure(after)
+    delta = {}
+    for name in NAMES:
+        a, b = old[name], new[name]
+        if a["status"] == "ok" and b["status"] == "ok":
+            delta[name] = {
+                "status": "comparable",
+                "before_bytes": a["bytes"],
+                "after_bytes": b["bytes"],
+                "delta_bytes": b["bytes"] - a["bytes"],
+            }
+        else:
+            delta[name] = {
+                "status": "not-comparable",
+                "before_status": a["status"],
+                "after_status": b["status"],
+            }
+    return {"before": old, "after": new, "delta": delta}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("savedvariables_directory", type=Path)
+    parser.add_argument(
+        "--baseline", type=Path, default=None,
+        help="Optional directory containing a before snapshot, for metadata-only delta",
+    )
     args = parser.parse_args()
-    print(json.dumps(measure(args.savedvariables_directory), indent=2, sort_keys=True))
+    result = (
+        compare(args.baseline, args.savedvariables_directory)
+        if args.baseline is not None
+        else measure(args.savedvariables_directory)
+    )
+    print(json.dumps(result, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":
