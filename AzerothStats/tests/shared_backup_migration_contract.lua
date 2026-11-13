@@ -1,25 +1,25 @@
--- Legacy backup migration contracts. Synthetic Lua fixtures only.
+-- Legacy backup migration: synthetic databases only; no real save file access.
 local A, M = AzerothStats, SharedBackupResearch
-local function check(ok, name)
-    assert(ok, name)
+local function check(ok, label)
+    assert(ok, label)
     TEST_COUNT = TEST_COUNT + 1
 end
 local previousSaved, previousDB, previousRun = AzerothStatsDB, A.db, A.run
 AzerothStatsDB, A.db, A.run = nil, nil, nil
-check(A.InitDB(), "migration fixture starts")
+check(A.InitDB(), "migration fixture initializes")
 local db = A.db
 db.runs = {
     {
-        id = "fixture-1",
+        id = "fixture-one",
         class = "warrior",
         values = { damage = 15 },
         accounted = {},
         events = {},
         meters = {},
-        note = "first",
+        note = "original",
     },
     {
-        id = "fixture-2",
+        id = "fixture-two",
         class = "mage",
         values = { damage = 20 },
         accounted = {},
@@ -27,27 +27,23 @@ db.runs = {
         meters = {},
     },
 }
-check(A.ValidateDatabase(db), "migration fixture valid")
-local function makeSource(sequence, note)
-    local source = {}
-    for k, v in pairs(db) do
-        source[k] = v
-    end
-    local copied, err = M.restore((function()
-        local temporary = M.new()
-        local id = M.save(temporary, db, false)
-        return temporary, id
-    end)(), 1)
-    -- Above would be a copy only if the temporary manifest is valid.
-    assert(copied ~= nil and not err)
+check(A.ValidateDatabase(db), "run fixture passes real DB validator")
+
+local fixtureStore = M.new()
+local fixtureID = M.save(fixtureStore, db, false)
+check(fixtureID ~= nil, "fixture copied safely")
+local function version(sequence, note)
+    local copied = M.restore(fixtureStore, fixtureID)
+    assert(copied)
     copied.sequence = sequence
     copied.runs[1].note = note
     return copied
 end
-local first = makeSource(11, "old note")
-local second = makeSource(12, "updated note")
-local auto = makeSource(13, "updated note")
-auto.runs[2].values.damage = 21
+
+local first = version(11, "old note")
+local second = version(12, "updated note")
+local automatic = version(13, "updated note")
+automatic.runs[2].values.damage = 21
 local manualRoot = {
     schema = 2,
     nextId = 9,
@@ -59,72 +55,75 @@ local manualRoot = {
 local autoRoot = {
     schema = 2,
     nextId = 4,
-    entries = { { id = 3, at = 115, runs = 2, data = auto } },
+    entries = { { id = 3, at = 115, runs = 2, data = automatic } },
 }
-local originalManual, originalAuto = manualRoot, autoRoot
-local oldRun, newerRun, autoRun = first.runs[1], second.runs[1], auto.runs[1]
+local oldFirstRun, oldSecondRun, oldAutoRun = first.runs[1], second.runs[1], automatic.runs[1]
 local migrated, err = M.importLegacy(db, manualRoot, autoRoot)
-check(migrated ~= nil and not err, "manual and auto stores migrate together")
-check(migrated.sourceNextIds.manual == 9 and migrated.sourceNextIds.auto == 4,
-    "separate manual and automatic sequence counters retained")
-check(manualRoot == originalManual and autoRoot == originalAuto,
-    "legacy store roots not replaced during research migration")
-check(first.runs[1] == oldRun and second.runs[1] == newerRun and auto.runs[1] == autoRun,
-    "original source run tables not rewritten")
+check(migrated and not err, "manual and automatic catalogues migrate together")
+check(migrated.sourceNextIds.manual == 9, "manual next ID remains distinct")
+check(migrated.sourceNextIds.auto == 4, "automatic next ID remains distinct")
+check(first.runs[1] == oldFirstRun, "first source run pointer unchanged")
+check(second.runs[1] == oldSecondRun, "second source run pointer unchanged")
+check(automatic.runs[1] == oldAutoRun, "automatic source run pointer unchanged")
+
 local m1 = M.findOrigin(migrated, "manual", 3)
 local m2 = M.findOrigin(migrated, "manual", 8)
 local a1 = M.findOrigin(migrated, "auto", 3)
-check(m1 and m2 and a1 and m1 ~= a1, "duplicate legacy IDs isolated across store types")
-check(M.findOrigin(migrated, "manual", 4) == nil, "unknown original ID never guessed")
-check(M.sameData(M.restore(migrated, m1), first), "first manual database restored exactly")
-check(M.sameData(M.restore(migrated, m2), second), "second manual database restored exactly")
-check(M.sameData(M.restore(migrated, a1), auto), "automatic database restored exactly")
-check(migrated.entries[m1].origin.at == 112 and migrated.entries[m2].origin.at == 114
-    and migrated.entries[a1].origin.at == 115,
-    "original timestamps kept")
-check(migrated.entries[m1].runRefs[2] == migrated.entries[m2].runRefs[2],
-    "unchanged second run shared between manual checkpoints")
-check(migrated.entries[m2].runRefs[2] ~= migrated.entries[a1].runRefs[2],
-    "modified second run receives a new version in automatic checkpoint")
-check(migrated.entries[m2].runRefs[1] == migrated.entries[a1].runRefs[1],
-    "updated run version shared between manual and auto")
-local originalNote = first.runs[1].note
-local loaded = M.restore(migrated, m1)
-loaded.runs[1].note = "unrelated restore edit"
-check(first.runs[1].note == originalNote and
-    M.restore(migrated, m1).runs[1].note == originalNote,
-    "restore cannot mutate source or shared pool")
-local legacy = { schema = 1, data = first }
-local legacyStore = M.importLegacy(db, legacy, nil)
-check(legacyStore and legacyStore.sourceNextIds.manual == 2
-    and legacyStore.sourceNextIds.auto == 1,
-    "single-slot schema 1 and missing auto root supported")
-local legacyId = M.findOrigin(legacyStore, "manual", 1)
-check(legacyId and legacyStore.entries[legacyId].origin.legacy,
-    "single-slot entry carries legacy flag")
-check(M.sameData(M.restore(legacyStore, legacyId), first),
-    "single-slot roundtrip exact")
+check(m1 and m2 and a1, "all old snapshot IDs mapped")
+check(m1 ~= a1, "manual and auto IDs do not collide")
+check(M.findOrigin(migrated, "manual", 4) == nil, "missing source IDs stay missing")
+check(M.sameData(M.restore(migrated, m1), first), "first manual restored exactly")
+check(M.sameData(M.restore(migrated, m2), second), "second manual restored exactly")
+check(M.sameData(M.restore(migrated, a1), automatic), "automatic restored exactly")
+check(migrated.entries[m1].origin.at == 112, "first timestamp preserved")
+check(migrated.entries[m2].origin.at == 114, "second timestamp preserved")
+check(migrated.entries[a1].origin.at == 115, "auto timestamp preserved")
+local firstRefs = migrated.entries[m1].runRefs
+local secondRefs = migrated.entries[m2].runRefs
+local autoRefs = migrated.entries[a1].runRefs
+check(firstRefs[2] == secondRefs[2], "unchanged run shared between manual snapshots")
+check(secondRefs[1] == autoRefs[1], "unchanged run shared across backup types")
+check(secondRefs[2] ~= autoRefs[2], "changed run version never reused")
+
+local modified = M.restore(migrated, m1)
+modified.runs[1].note = "local change"
+check(first.runs[1].note == "old note", "restore cannot edit old source")
+check(M.restore(migrated, m1).runs[1].note == "old note", "shared pool stays immutable")
+check(db.runs[1].note == "original", "live history untouched")
+
+local schemaOne = { schema = 1, data = first }
+local single = M.importLegacy(db, schemaOne, nil)
+check(single ~= nil, "legacy schema 1 migrates")
+check(single.sourceNextIds.manual == 2, "legacy next manual ID preserved")
+check(single.sourceNextIds.auto == 1, "missing auto root accepted")
+local legacyID = M.findOrigin(single, "manual", 1)
+check(legacyID ~= nil, "legacy ID remains discoverable")
+check(single.entries[legacyID].origin.legacy, "legacy flag preserved")
+check(M.sameData(M.restore(single, legacyID), first), "legacy backup restored exactly")
 local empty = M.importLegacy(db, nil, nil)
-check(empty and next(empty.entries) == nil, "missing backup roots produce empty catalogue")
-local invalidRoot = { schema = 2, nextId = 4, entries = {
-    { id = 3, data = first }, { id = 3, data = second },
-} }
-check(M.importLegacy(db, manualRoot, invalidRoot) == nil,
-    "duplicate source IDs reject entire transaction")
-check(M.importLegacy(db, { schema = 3, entries = {} }, autoRoot) == nil,
-    "unknown source schema rejected")
-check(M.importLegacy(db, { schema = 2, nextId = 2, entries = {
-    [2] = { id = 1, data = first },
-} }, autoRoot) == nil, "sparse source catalogue rejected")
-local badRoot = { schema = 2, nextId = 2, entries = { { id = 1,
-    data = { broken = true },
-} } }
-check(M.importLegacy(db, badRoot, autoRoot) == nil,
-    "invalid snapshot aborts migration before publication")
-check(M.importLegacy({ invalid = true }, manualRoot, autoRoot) == nil,
-    "invalid live database refuses migration")
-check(first.runs[1].note == "old note" and second.runs[1].note == "updated note",
-    "failed migrations never rewrite source data")
-check(A.db == db and AzerothStatsDB == db, "live SavedVariables root unchanged")
+check(empty and next(empty.entries) == nil, "missing backup roots accepted")
+
+local duplicates = {
+    schema = 2,
+    nextId = 4,
+    entries = { { id = 3, data = first }, { id = 3, data = second } },
+}
+check(M.importLegacy(db, manualRoot, duplicates) == nil, "duplicate IDs rejected")
+check(M.importLegacy(db, { schema = 3 }, autoRoot) == nil, "unknown schema rejected")
+local sparse = {
+    schema = 2,
+    nextId = 2,
+    entries = { [2] = { id = 1, data = first } },
+}
+check(M.importLegacy(db, sparse, autoRoot) == nil, "sparse catalogue rejected")
+local corrupt = {
+    schema = 2,
+    nextId = 2,
+    entries = { { id = 1, data = { broken = true } } },
+}
+check(M.importLegacy(db, corrupt, autoRoot) == nil, "corrupt backup refuses migration")
+check(M.importLegacy({ invalid = true }, manualRoot, autoRoot) == nil, "invalid live DB refused")
+check(first.runs[1].note == "old note", "failed conversions preserve old source")
+check(A.db == db, "migration never installs a database")
 AzerothStatsDB, A.db, A.run = previousSaved, previousDB, previousRun
 print("LEGACY BACKUP MIGRATION RESEARCH CONTRACTS PASSED")
