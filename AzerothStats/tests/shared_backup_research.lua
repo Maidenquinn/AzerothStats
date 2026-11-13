@@ -83,8 +83,76 @@ function M.sameData(left, right)
     return equal(left, right, { nodes = 0 }, 0)
 end
 
+-- Deterministic, order-independent dual rolling checksum for accidental damage.
+-- NOT cryptographic authentication; safe enough only for research diagnostics.
+local function fingerprint(value)
+    local state = { left = 17, right = 71, nodes = 0, visiting = {} }
+    local function feed(str)
+        for i = 1, string.len(str) do
+            local byte = string.byte(str, i)
+            state.left = (state.left * 131 + byte) % 2147483647
+            state.right = (state.right * 137 + byte) % 2147483629
+        end
+    end
+    local function walk(v, depth)
+        state.nodes = state.nodes + 1
+        if state.nodes > 4000000 or depth > 32 then
+            return false
+        end
+        local kind = type(v)
+        if kind == "table" then
+            if state.visiting[v] or getmetatable(v) then
+                return false
+            end
+            local keys = {}
+            for key in pairs(v) do
+                if type(key) ~= "string" and type(key) ~= "number" then
+                    return false
+                end
+                table.insert(keys, key)
+            end
+            table.sort(keys, function(a, b)
+                if type(a) ~= type(b) then
+                    return type(a) == "number"
+                end
+                return a < b
+            end)
+            feed("T" .. tostring(table.getn(keys)) .. ":")
+            state.visiting[v] = true
+            for _, key in ipairs(keys) do
+                if not walk(key, depth + 1) or not walk(v[key], depth + 1) then
+                    state.visiting[v] = nil
+                    return false
+                end
+            end
+            state.visiting[v] = nil
+            return true
+        end
+        local payload
+        if kind == "string" then
+            payload = v
+        elseif kind == "number" and v == v and math.abs(v) < 1e100 then
+            payload = string.format("%.17g", v)
+        elseif kind == "boolean" then
+            payload = v and "1" or "0"
+        elseif kind == "nil" then
+            payload = ""
+        else
+            return false
+        end
+        feed(kind .. tostring(string.len(payload)) .. ":" .. payload)
+        return true
+    end
+    if not walk(value, 0) then
+        return nil
+    end
+    return tostring(state.left) .. ":" .. tostring(state.right)
+end
+
+M.fingerprint = fingerprint
+
 function M.new()
-    return { schema = 1, nextRun = 1, nextBackup = 1, pool = {}, entries = {} }
+    return { schema = 1, nextRun = 1, nextBackup = 1, pool = {}, digests = {}, entries = {} }
 end
 
 -- In-memory lookup by LOCAL run ID. No persisted index or additional
@@ -159,16 +227,29 @@ function M.save(store, db, automatic, sharedIndex)
         end
         table.insert(refs, found)
     end
+    local stagedDigests = {}
+    for id, value in pairs(staged) do
+        stagedDigests[id] = fingerprint(value)
+        if not stagedDigests[id] then
+            return nil, "unsafe shared run fingerprint"
+        end
+    end
+    local stateDigest = fingerprint(frozen)
+    if not stateDigest then
+        return nil, "unsafe snapshot state fingerprint"
+    end
     local backupID = store.nextBackup
     -- Commit only after a full validated copy and complete version resolution.
     for id, value in pairs(staged) do
         store.pool[id] = value
+        store.digests[id] = stagedDigests[id]
     end
     store.entries[backupID] = {
         id = backupID,
         automatic = automatic and true or false,
         runRefs = refs,
         state = frozen,
+        stateDigest = stateDigest,
     }
     store.nextRun, store.nextBackup = nextRun, backupID + 1
     for localID, pending in pairs(pendingIndex) do
@@ -192,6 +273,9 @@ function M.restore(store, backupID)
     if type(entry) ~= "table" or type(entry.state) ~= "table" or type(entry.runRefs) ~= "table" then
         return nil, "missing checkpoint"
     end
+    if not entry.stateDigest or fingerprint(entry.state) ~= entry.stateDigest then
+        return nil, "snapshot state checksum mismatch"
+    end
     local state, err = copy(entry.state, { count = 0, visiting = {} }, 0)
     if err then
         return nil, err
@@ -201,6 +285,9 @@ function M.restore(store, backupID)
         local v = store.pool[id]
         if type(v) ~= "table" then
             return nil, "missing shared run"
+        end
+        if not store.digests[id] or fingerprint(v) ~= store.digests[id] then
+            return nil, "shared run checksum mismatch"
         end
         local frozen, failure = copy(v, { count = 0, visiting = {} }, 0)
         if failure then
@@ -237,6 +324,7 @@ function M.collect(store)
     for id in pairs(store.pool) do
         if not reachable[id] then
             store.pool[id] = nil
+            store.digests[id] = nil
             removed = removed + 1
         end
     end
