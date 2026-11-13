@@ -14,7 +14,7 @@ modules = [
     for line in toc.splitlines()
     if line.strip() and not line.startswith("#")
 ]
-assert len(modules) == 40 and set(modules) == {p.name for p in addon.glob("*.lua")}
+assert len(modules) == 41 and set(modules) == {p.name for p in addon.glob("*.lua")}
 # Regression: the native combat observer must be wired to the live tracker and
 # exposed through a selectable, isolated report (not the spell meter).
 tracker = (addon / "Tracker.lua").read_text(encoding="utf-8")
@@ -164,6 +164,7 @@ lua.execute((addon / "tests/journal.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/perf_integrity.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/ux_review.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/data_management.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/shared_storage_audit.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/editing.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/themes.lua").read_text(encoding="utf-8"))
 lua.execute((addon / "tests/v2_data.lua").read_text(encoding="utf-8"))
@@ -179,6 +180,26 @@ lua.execute(
     (addon / "tests/interop_lifecycle_contract.lua").read_text(encoding="utf-8")
 )
 lua.execute((addon / "tests/interop_perf.lua").read_text(encoding="utf-8"))
+# Isolated future backup format research is NOT part of the installed addon.
+lua.execute((addon / "tests/shared_backup_research.lua").read_text(encoding="utf-8"))
+lua.execute(
+    (addon / "tests/shared_backup_research_contract.lua").read_text(encoding="utf-8")
+)
+lua.execute(
+    (addon / "tests/shared_backup_migration_contract.lua").read_text(encoding="utf-8")
+)
+lua.execute(
+    (addon / "tests/shared_backup_scale_contract.lua").read_text(encoding="utf-8")
+)
+lua.execute(
+    (addon / "tests/shared_backup_size_benchmark.lua").read_text(encoding="utf-8")
+)
+lua.execute(
+    (addon / "tests/shared_backup_journal_research.lua").read_text(encoding="utf-8")
+)
+lua.execute(
+    (addon / "tests/shared_backup_journal_contract.lua").read_text(encoding="utf-8")
+)
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",

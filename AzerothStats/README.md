@@ -1,3 +1,13 @@
+# Azeroth Stats — 2.0.5-alpha.1 (experimental, read-only)
+
+This branch is a **test build**, not a stable release. For stable v2.0.4, use [the published v2.0.4 release](https://github.com/Maidenquinn/AzerothStats/releases/tag/v2.0.4).
+
+New command: `/azstats shared audit`. It only reads the current manual and automatic backup catalogues and counts retained run IDs, duplicate-ID candidates and incomplete legacy entries; it **does not modify, migrate, compress, delete, restore, or save anything**. Two runs with the same ID may have different content; these counts do not predict actual bytes saved.
+
+The real shared-backup migration remains in research/tests and is **not included in the installed addon**. Do not attempt to optimize your real saved file by manually removing entries. Before testing any alpha, fully exit the game and make a verified copy of all real `AzerothStats*.lua` SavedVariables file(s), which may be consolidated into one physical file. Keep the copy separately.
+
+Existing live database fields, backup catalogues and WoW Logs AS direct save reading are unchanged by this diagnostic. See `docs/storage-native-migration-acceptance.md` in the GitHub repository for the complete test and rollback procedure.
+
 # Azeroth Stats — 2.0.4 (12 November 2026)
 
 **Stable 2.0.4 release.** [Download the latest official release](https://github.com/Maidenquinn/AzerothStats/releases/tag/v2.0.4) and see [the 2.0.4 changelog](CHANGELOG.md). Replaces the prior stable addon in place; do not install two copies.

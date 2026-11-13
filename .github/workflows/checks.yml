@@ -36,6 +36,7 @@ jobs:
       - run: python tools/build_insights_strings.py --check
       - run: python -m unittest discover -s tools -p 'test_*.py'
       - run: python tools/security_review.py --report release-assets/ci/runtime-policy.json
+      - run: sha256sum AzerothStats/SharedStorageAudit.lua AzerothStats/AzerothStats.toc AzerothStats/Util.lua AzerothStats/Core.lua AzerothStats/README.md
       - run: python tools/checks.py
       - name: Benchmark synthetic backup scaling (100/500/1000 runs)
         run: python tools/benchmark_backups.py
@@ -47,7 +48,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: AzerothStats-2.0.4-rc3-pr-review
+          name: AzerothStats-2.0.5-alpha1-pr-review
           path: release-assets/ci/*.zip
           retention-days: 7
           if-no-files-found: error
