@@ -357,8 +357,12 @@ function M.delete(store, backupID)
     if type(store) ~= "table" or type(store.entries) ~= "table" then
         return false, "invalid store"
     end
-    if type(store.entries[backupID]) ~= "table" then
+    local entry = store.entries[backupID]
+    if type(entry) ~= "table" then
         return false, "missing checkpoint"
+    end
+    if not validManifest(entry) then
+        return false, "corrupt checkpoint cannot be deleted"
     end
     store.entries[backupID] = nil
     return true
@@ -380,8 +384,11 @@ function M.collect(store)
             return nil, "invalid checkpoint manifest; pool unchanged"
         end
         for _, id in ipairs(entry.runRefs) do
-            if not store.pool[id] then
-                return nil, "dangling reference; pool unchanged"
+            local payload = store.pool[id]
+            if type(payload) ~= "table"
+                or type(store.digests[id]) ~= "string"
+                or fingerprint(payload) ~= store.digests[id] then
+                return nil, "invalid shared payload; pool unchanged"
             end
             reachable[id] = true
         end
