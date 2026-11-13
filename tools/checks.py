@@ -184,6 +184,9 @@ lua.execute((addon / "tests/shared_backup_research.lua").read_text(encoding="utf
 lua.execute(
     (addon / "tests/shared_backup_research_contract.lua").read_text(encoding="utf-8")
 )
+lua.execute(
+    (addon / "tests/shared_backup_migration_contract.lua").read_text(encoding="utf-8")
+)
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",
