@@ -14,7 +14,7 @@ modules = [
     for line in toc.splitlines()
     if line.strip() and not line.startswith("#")
 ]
-assert len(modules) == 40 and set(modules) == {p.name for p in addon.glob("*.lua")}
+assert len(modules) == 41 and set(modules) == {p.name for p in addon.glob("*.lua")}
 # Regression: the native combat observer must be wired to the live tracker and
 # exposed through a selectable, isolated report (not the spell meter).
 tracker = (addon / "Tracker.lua").read_text(encoding="utf-8")
