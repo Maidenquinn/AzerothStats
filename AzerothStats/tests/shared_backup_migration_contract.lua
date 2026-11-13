@@ -75,6 +75,26 @@ check(M.findOrigin(migrated, "manual", 4) == nil, "missing source IDs stay missi
 check(M.sameData(M.restore(migrated, m1), first), "first manual restored exactly")
 check(M.sameData(M.restore(migrated, m2), second), "second manual restored exactly")
 check(M.sameData(M.restore(migrated, a1), automatic), "automatic restored exactly")
+-- Simulate the client's save/reload serialization, not just in-memory pointers.
+local savedText = SNAPSHOT(migrated)
+local parse = assert(loadstring("return " .. savedText))
+local reloaded = parse()
+check(M.sameData(M.restore(reloaded, m1), first), "old manual survives serialization")
+check(M.sameData(M.restore(reloaded, m2), second), "new manual survives serialization")
+check(M.sameData(M.restore(reloaded, a1), automatic), "auto survives serialization")
+local sharedRef = reloaded.entries[a1].runRefs[2]
+local sharedRun = reloaded.pool[sharedRef]
+local originalDamage = sharedRun.values.damage
+sharedRun.values.damage = originalDamage + 1
+check(M.restore(reloaded, a1) == nil, "valid-shape run corruption detected")
+sharedRun.values.damage = originalDamage
+check(M.sameData(M.restore(reloaded, a1), automatic), "run repair restores access")
+local originalSequence = reloaded.entries[m1].state.sequence
+reloaded.entries[m1].state.sequence = originalSequence + 1
+check(M.restore(reloaded, m1) == nil, "valid-shape state corruption detected")
+reloaded.entries[m1].state.sequence = originalSequence
+check(M.sameData(M.restore(reloaded, m1), first), "state repair restores access")
+
 check(migrated.entries[m1].origin.at == 112, "first timestamp preserved")
 check(migrated.entries[m2].origin.at == 114, "second timestamp preserved")
 check(migrated.entries[a1].origin.at == 115, "auto timestamp preserved")
