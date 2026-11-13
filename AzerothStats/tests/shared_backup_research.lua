@@ -151,6 +151,38 @@ end
 
 M.fingerprint = fingerprint
 
+-- Seal checkpoint metadata and ordered run references as well as payloads.
+-- This detects accidental redirection to another individually valid pool item.
+local function manifestDigest(entry)
+    return fingerprint({
+        id = entry.id,
+        automatic = entry.automatic,
+        runRefs = entry.runRefs,
+        stateDigest = entry.stateDigest,
+        origin = entry.origin,
+    })
+end
+
+function M.sealEntry(store, id)
+    local entry = type(store) == "table" and type(store.entries) == "table"
+        and store.entries[id] or nil
+    if type(entry) ~= "table" then
+        return false, "missing checkpoint"
+    end
+    local digest = manifestDigest(entry)
+    if not digest then
+        return false, "unsafe checkpoint manifest"
+    end
+    entry.manifestDigest = digest
+    return true
+end
+
+local function validManifest(entry)
+    return type(entry) == "table"
+        and type(entry.manifestDigest) == "string"
+        and manifestDigest(entry) == entry.manifestDigest
+end
+
 function M.new()
     return { schema = 1, nextRun = 1, nextBackup = 1, pool = {}, digests = {}, entries = {} }
 end
@@ -252,6 +284,10 @@ function M.save(store, db, automatic, sharedIndex)
         stateDigest = stateDigest,
     }
     store.nextRun, store.nextBackup = nextRun, backupID + 1
+    local sealed, sealError = M.sealEntry(store, backupID)
+    if not sealed then
+        return nil, sealError
+    end
     for localID, pending in pairs(pendingIndex) do
         local group = index[localID]
         if not group then
@@ -272,6 +308,9 @@ function M.restore(store, backupID)
     local entry = store.entries[backupID]
     if type(entry) ~= "table" or type(entry.state) ~= "table" or type(entry.runRefs) ~= "table" then
         return nil, "missing checkpoint"
+    end
+    if not validManifest(entry) then
+        return nil, "checkpoint manifest checksum mismatch"
     end
     if not entry.stateDigest or fingerprint(entry.state) ~= entry.stateDigest then
         return nil, "snapshot state checksum mismatch"
@@ -313,6 +352,9 @@ function M.collect(store)
     -- Never collect a version referenced by either manual or automatic entry.
     local reachable = {}
     for _, entry in pairs(store.entries) do
+        if not validManifest(entry) or type(entry.runRefs) ~= "table" then
+            return nil, "invalid checkpoint manifest; pool unchanged"
+        end
         for _, id in ipairs(entry.runRefs) do
             if not store.pool[id] then
                 return nil, "dangling reference; pool unchanged"
@@ -453,6 +495,10 @@ function M.importLegacy(live, manual, automatic)
                 legacy = entry.legacy and true or false,
                 runs = entry.runs or table.getn(entry.data.runs),
             }
+            local sealed, sealError = M.sealEntry(staged, id)
+            if not sealed then
+                return nil, sealError
+            end
             local restored, restoreError = M.restore(staged, id)
             if not restored or not equal(restored, entry.data, { nodes = 0 }, 0) then
                 return nil, restoreError or "migration roundtrip mismatch"
