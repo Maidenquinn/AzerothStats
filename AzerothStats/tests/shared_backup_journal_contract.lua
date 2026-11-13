@@ -100,5 +100,18 @@ check(M.save({ schema = 1 }, db, false) == nil, "invalid store save fails closed
 check(M.collect({ schema = 1 }) == nil, "invalid store GC fails closed")
 check(M.findOrigin({ schema = 1 }, "manual", 2) == nil, "invalid store lookup fails closed")
 check(not M.delete({ schema = 1 }, 2), "invalid store deletion fails closed")
+local stale = M.new()
+local initial = assert(M.save(stale, db, false))
+local originalCheckpoint = stale.entries[initial]
+stale.nextBackup = initial
+check(M.save(stale, db, false) == nil, "stale checkpoint sequence refused")
+check(stale.entries[initial] == originalCheckpoint, "checkpoint collision did not overwrite")
+stale.nextBackup = initial + 1
+stale.nextRun = 1
+local poolBefore = stale.pool[1]
+check(M.save(stale, db, false) == nil, "stale pool sequence refused")
+check(stale.pool[1] == poolBefore, "run version collision did not overwrite")
+stale.nextRun = 2
+check(M.save(stale, db, false) ~= nil, "corrected checkpoint sequence can continue")
 AzerothStatsDB, A.db, A.run = oldSaved, oldDB, oldRun
 print("NON-DESTRUCTIVE MIGRATION JOURNAL CONTRACTS PASSED")
