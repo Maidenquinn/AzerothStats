@@ -385,12 +385,16 @@ function M.collect(store)
         end
         for _, id in ipairs(entry.runRefs) do
             local payload = store.pool[id]
-            if type(payload) ~= "table"
-                or type(store.digests[id]) ~= "string"
-                or fingerprint(payload) ~= store.digests[id] then
-                return nil, "invalid shared payload; pool unchanged"
+            if not reachable[id] then
+                if
+                    type(payload) ~= "table"
+                    or type(store.digests[id]) ~= "string"
+                    or fingerprint(payload) ~= store.digests[id]
+                then
+                    return nil, "invalid shared payload; pool unchanged"
+                end
+                reachable[id] = true
             end
-            reachable[id] = true
         end
     end
     local removed = 0
