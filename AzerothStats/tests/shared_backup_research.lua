@@ -129,8 +129,10 @@ function M.save(store, db, automatic)
         store.pool[id] = value
     end
     store.entries[backupID] = {
-        id = backupID, automatic = automatic and true or false,
-        runRefs = refs, state = rest,
+        id = backupID,
+        automatic = automatic and true or false,
+        runRefs = refs,
+        state = rest,
     }
     store.nextRun, store.nextBackup = nextRun, backupID + 1
     return backupID
@@ -141,8 +143,7 @@ function M.restore(store, backupID)
         return nil, "invalid store"
     end
     local entry = store.entries[backupID]
-    if type(entry) ~= "table" or type(entry.state) ~= "table"
-        or type(entry.runRefs) ~= "table" then
+    if type(entry) ~= "table" or type(entry.state) ~= "table" or type(entry.runRefs) ~= "table" then
         return nil, "missing checkpoint"
     end
     local state, err = copy(entry.state, { count = 0, visiting = {} }, 0)
