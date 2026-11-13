@@ -45,8 +45,11 @@ local function scan(root, label)
     end
     for index = 1, count do
         local entry = entries[index]
-        if type(entry) ~= "table" or type(entry.data) ~= "table"
-            or type(entry.data.runs) ~= "table" then
+        if
+            type(entry) ~= "table"
+            or type(entry.data) ~= "table"
+            or type(entry.data.runs) ~= "table"
+        then
             report.invalid = "missing backup data or run list"
             return report
         end
@@ -88,8 +91,7 @@ function A.SharedStorageReadOnlyAudit()
     return {
         manual = manual,
         automatic = automatic,
-        activeRuns = type(A.db) == "table" and type(A.db.runs) == "table"
-                and table.getn(A.db.runs)
+        activeRuns = type(A.db) == "table" and type(A.db.runs) == "table" and table.getn(A.db.runs)
             or 0,
         nonDestructive = true,
         -- Same run ID is NOT proof of identical content. A run can be edited.
