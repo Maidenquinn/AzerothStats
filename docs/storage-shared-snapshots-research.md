@@ -58,6 +58,18 @@ This does **not yet** constitute an installable replacement for the old backup s
 
 `M.verifyMigration` can validate the research model after a serialized reload, but **the real game-client durable migration and recovery state machine remains to be built**.
 
+## Initial synthetic sizing — Lua table serialization proxy
+
+GitHub Actions [run #43453563909](https://github.com/Maidenquinn/AzerothStats/actions/runs/43453563909) passed both jobs (8,301 offline Lua assertions). The benchmark creates **three complete synthetic backups** with large duplicated run notes and compares their plain Lua-table serialization proxy against the shared pool and checkpoint manifests. It does not include the active database, which is identical in both scenarios.
+
+| Runs per snapshot | Three full backups (bytes) | Shared backing store (bytes) | Proxy reduction |
+| --- | ---: | ---: | ---: |
+| 100 | 129,752 | 50,925 | 60.8% |
+| 500 | 639,752 | 244,527 | 61.8% |
+| 1,000 | 1,278,263 | 486,849 | 61.9% |
+
+**These are not real client disk savings.** The game serializer may represent numbers, table references and strings differently; backups can contain larger historical non-run aggregates and fewer repeated runs. The realistic total SavedVariables saving must include the uncompressed active database and be measured after an actual closed-client write. This synthetic result is encouraging but cannot justify automated migration.
+
 ## Required gates before any real implementation
 
 - **Baseline:** profile anonymized run metadata (not raw save files published to GitHub), and before/after byte deltas from two closed-client save copies.
