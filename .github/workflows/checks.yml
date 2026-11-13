@@ -36,7 +36,7 @@ jobs:
       - run: python tools/build_insights_strings.py --check
       - run: python -m unittest discover -s tools -p 'test_*.py'
       - run: python tools/security_review.py --report release-assets/ci/runtime-policy.json
-      - run: sha256sum AzerothStats/SharedStorageAudit.lua
+      - run: sha256sum AzerothStats/SharedStorageAudit.lua AzerothStats/AzerothStats.toc AzerothStats/Util.lua AzerothStats/Core.lua AzerothStats/README.md
       - run: python tools/checks.py
       - name: Benchmark synthetic backup scaling (100/500/1000 runs)
         run: python tools/benchmark_backups.py
