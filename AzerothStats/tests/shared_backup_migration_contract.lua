@@ -82,6 +82,16 @@ local reloaded = parse()
 check(M.sameData(M.restore(reloaded, m1), first), "old manual survives serialization")
 check(M.sameData(M.restore(reloaded, m2), second), "new manual survives serialization")
 check(M.sameData(M.restore(reloaded, a1), automatic), "auto survives serialization")
+local verified, verifyError = M.verifyMigration(reloaded, db, manualRoot, autoRoot)
+check(verified and not verifyError, "all original backups verified after save/reload")
+local oldTimestamp = reloaded.entries[a1].origin.at
+reloaded.entries[a1].origin.at = oldTimestamp + 1
+check(not M.verifyMigration(reloaded, db, manualRoot, autoRoot),
+    "metadata tampering detected after reload")
+reloaded.entries[a1].origin.at = oldTimestamp
+check(M.verifyMigration(reloaded, db, manualRoot, autoRoot),
+    "metadata repair restores complete verification")
+
 local sharedRef = reloaded.entries[a1].runRefs[2]
 local sharedRun = reloaded.pool[sharedRef]
 local originalDamage = sharedRun.values.damage
