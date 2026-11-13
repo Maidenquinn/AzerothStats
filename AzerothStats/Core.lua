@@ -229,6 +229,33 @@ SlashCmdList["AZEROTHSTATS"] = function(message)
                 A.ApplyUI()
             end
         end
+    elseif command == "shared" then
+        if value ~= "audit" then
+            A.Say("Experimental read-only diagnostic: /azstats shared audit")
+        else
+            local result = A.SharedStorageReadOnlyAudit()
+            A.Say("Shared-backup research: no migration, deletion or file changes.")
+            A.Say("Active retained runs: " .. result.activeRuns)
+            for _, source in ipairs({ result.manual, result.automatic }) do
+                if source.invalid then
+                    A.Say(source.name .. " backups: audit incomplete (" .. source.invalid .. ")")
+                else
+                    A.Say(
+                        source.name
+                            .. " backups: "
+                            .. source.snapshots
+                            .. " checkpoints, "
+                            .. source.storedRuns
+                            .. " stored run copies, "
+                            .. source.distinctRunIDs
+                            .. " distinct IDs, "
+                            .. source.repeatedRunIDs
+                            .. " repeated IDs."
+                    )
+                end
+            end
+            A.Say("Repeated run IDs are candidates only; no exact disk saving estimated.")
+        end
     elseif command == "storage" then
         -- Read-only inventory: never initialize, copy, migrate or prune backups.
         local function inventory(name, store)
