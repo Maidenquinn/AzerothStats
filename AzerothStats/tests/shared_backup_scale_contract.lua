@@ -41,15 +41,17 @@ for _, count in ipairs({ 100, 500, 1000 }) do
     check(countKeys(store.pool) == count + 1, "only changed run version added " .. count)
     check(M.sameData(M.restore(store, first), originalFirst), "old snapshot exact " .. count)
     check(M.sameData(M.restore(store, second), db), "new snapshot exact " .. count)
-    db.totals.wins = db.totals.wins + 1
+    db.sequence = db.sequence + 1
     local third = M.save(store, db, false)
     check(third ~= nil, "non-run change can be snapshotted " .. count)
     check(countKeys(store.pool) == count + 1, "non-run change shares all run versions " .. count)
     check(M.sameData(M.restore(store, third), db), "non-run totals exact " .. count)
     check(M.delete(store, first), "remove first snapshot " .. count)
     check(M.collect(store) == 1, "remove orphaned run version " .. count)
-    check(M.sameData(M.restore(store, second), originalFirst) == false,
-        "later snapshot retains changed run " .. count)
+    check(
+        M.sameData(M.restore(store, second), originalFirst) == false,
+        "later snapshot retains changed run " .. count
+    )
 end
 AzerothStatsDB, A.db, A.run = priorSaved, priorDB, priorRun
 print("SHARED BACKUP SYNTHETIC SCALE CONTRACTS PASSED")
