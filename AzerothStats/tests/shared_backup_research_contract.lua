@@ -69,8 +69,10 @@ check(M.delete(store, id1), "old manual checkpoint can be deleted")
 local removed = M.collect(store)
 check(removed == 1, "GC removes only old unreferenced edited run version")
 check(M.restore(store, id2).sequence == priorSeq + 1, "auto remains intact")
-check(M.restore(store, id2).runs[2].id == "research-run-two",
-    "shared surviving run remains accessible")
+check(
+    M.restore(store, id2).runs[2].id == "research-run-two",
+    "shared surviving run remains accessible"
+)
 check(M.restore(store, id1) == nil, "deleted checkpoint unavailable")
 local tampered = store.entries[id2]
 tampered.runRefs = { 999999 }
