@@ -82,8 +82,10 @@ check(M.sameData(M.restore(migrated, a1), auto), "automatic database restored ex
 check(migrated.entries[m1].origin.at == 112 and migrated.entries[m2].origin.at == 114
     and migrated.entries[a1].origin.at == 115,
     "original timestamps kept")
-check(migrated.entries[m1].runRefs[2] == migrated.entries[a1].runRefs[2],
-    "unchanged second run shared between manual and auto")
+check(migrated.entries[m1].runRefs[2] == migrated.entries[m2].runRefs[2],
+    "unchanged second run shared between manual checkpoints")
+check(migrated.entries[m2].runRefs[2] ~= migrated.entries[a1].runRefs[2],
+    "modified second run receives a new version in automatic checkpoint")
 check(migrated.entries[m2].runRefs[1] == migrated.entries[a1].runRefs[1],
     "updated run version shared between manual and auto")
 local originalNote = first.runs[1].note
