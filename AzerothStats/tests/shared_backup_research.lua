@@ -164,8 +164,8 @@ local function manifestDigest(entry)
 end
 
 function M.sealEntry(store, id)
-    local entry = type(store) == "table" and type(store.entries) == "table"
-        and store.entries[id] or nil
+    local entry = type(store) == "table" and type(store.entries) == "table" and store.entries[id]
+        or nil
     if type(entry) ~= "table" then
         return false, "missing checkpoint"
     end
