@@ -28,4 +28,4 @@ Provide PASS/FAIL for each item, with a screenshot for any FAIL.
 - Optional analyses copy and Partial/Sync explanatory UI.
 - Backup/Nemesis data-integrity investigations.
 
-These remain open in `docs/AVIIVA-FEEDBACK-2.0.1.md`. Do not call the full lot accepted based on this sub-lot recipe.
+These remain open in `docs/COMMUNITY-FEEDBACK-2.0.1.md`. Do not call the full lot accepted based on this sub-lot recipe.
