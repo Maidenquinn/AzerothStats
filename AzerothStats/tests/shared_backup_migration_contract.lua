@@ -168,9 +168,14 @@ local unknownEntry = {
     nextId = 2,
     entries = { { id = 1, data = first, protectedFlag = true } },
 }
-check(M.importLegacy(db, unknownEntry, nil) == nil, "unknown entry metadata rejects lossy migration")
-check(M.importLegacy(db, { schema = 1, data = first, extra = true }, nil) == nil,
-    "unexpected legacy schema field rejected")
+check(
+    M.importLegacy(db, unknownEntry, nil) == nil,
+    "unknown entry metadata rejects lossy migration"
+)
+check(
+    M.importLegacy(db, { schema = 1, data = first, extra = true }, nil) == nil,
+    "unexpected legacy schema field rejected"
+)
 check(M.importLegacy({ invalid = true }, manualRoot, autoRoot) == nil, "invalid live DB refused")
 check(first.runs[1].note == "old note", "failed conversions preserve old source")
 check(A.db == db, "migration never installs a database")
