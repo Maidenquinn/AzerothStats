@@ -231,9 +231,14 @@ local function legacyEntries(root, kind)
     end
     local maxID = 0
     for _, entry in ipairs(entries) do
-        if type(entry) ~= "table" or type(entry.data) ~= "table"
-            or type(entry.id) ~= "number" or entry.id < 1
-            or entry.id ~= math.floor(entry.id) or seen[entry.id] then
+        if
+            type(entry) ~= "table"
+            or type(entry.data) ~= "table"
+            or type(entry.id) ~= "number"
+            or entry.id < 1
+            or entry.id ~= math.floor(entry.id)
+            or seen[entry.id]
+        then
             return nil, "invalid or duplicate " .. kind .. " backup ID"
         end
         seen[entry.id] = true
@@ -241,14 +246,22 @@ local function legacyEntries(root, kind)
         if entry.at ~= nil and type(entry.at) ~= "number" then
             return nil, "invalid " .. kind .. " backup timestamp"
         end
-        if entry.runs ~= nil and
-            (type(entry.runs) ~= "number" or entry.runs < 0
-            or entry.runs ~= math.floor(entry.runs)) then
+        if
+            entry.runs ~= nil
+            and (
+                type(entry.runs) ~= "number"
+                or entry.runs < 0
+                or entry.runs ~= math.floor(entry.runs)
+            )
+        then
             return nil, "invalid " .. kind .. " run count"
         end
     end
-    if type(root.nextId) ~= "number" or root.nextId <= maxID
-        or root.nextId ~= math.floor(root.nextId) then
+    if
+        type(root.nextId) ~= "number"
+        or root.nextId <= maxID
+        or root.nextId ~= math.floor(root.nextId)
+    then
         return nil, "invalid " .. kind .. " next ID"
     end
     return entries, root.nextId
@@ -281,7 +294,9 @@ function M.importLegacy(live, manual, automatic)
             end
             local saved = staged.entries[id]
             saved.origin = {
-                kind = kind, id = entry.id, at = entry.at,
+                kind = kind,
+                id = entry.id,
+                at = entry.at,
                 legacy = entry.legacy and true or false,
                 runs = entry.runs or table.getn(entry.data.runs),
             }
@@ -299,8 +314,11 @@ function M.findOrigin(store, kind, sourceID)
         return nil
     end
     for id, entry in pairs(store.entries) do
-        if type(entry.origin) == "table" and entry.origin.kind == kind
-            and entry.origin.id == sourceID then
+        if
+            type(entry.origin) == "table"
+            and entry.origin.kind == kind
+            and entry.origin.id == sourceID
+        then
             return id
         end
     end
