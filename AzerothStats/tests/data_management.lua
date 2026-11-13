@@ -71,7 +71,18 @@ check(manualPlan and manualPlan.remove == 3, "manual cleanup previews three olde
 check(not A.CleanupManualBackups(2), "cleanup without preview token is rejected")
 check(not A.CleanupManualBackups(2, "invalid"), "stale cleanup token is rejected")
 local autoBeforeCleanup = table.getn(A.ListDataBackups(true))
+local beforeCleanupBytes = string.len(SNAPSHOT(AzerothStatsBackup))
+local liveSequenceBeforeCleanup = A.db.sequence
 check(A.CleanupManualBackups(2, manualPlan.token), "confirmed cleanup removes old manual backups")
+local afterCleanupBytes = string.len(SNAPSHOT(AzerothStatsBackup))
+check(
+    afterCleanupBytes < beforeCleanupBytes,
+    "manual backup cleanup decreases serialized backup-root bytes if live data is unchanged"
+)
+check(
+    A.db.sequence == liveSequenceBeforeCleanup,
+    "manual backup cleanup does not alter live database sequence"
+)
 local keptManual = A.ListDataBackups(false)
 check(
     table.getn(keptManual) == 2 and keptManual[1].id == 5 and keptManual[2].id == 4,
