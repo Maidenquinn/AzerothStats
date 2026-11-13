@@ -365,8 +365,12 @@ function M.delete(store, backupID)
 end
 
 function M.collect(store)
-    if type(store) ~= "table" or type(store.entries) ~= "table"
-        or type(store.pool) ~= "table" or type(store.digests) ~= "table" then
+    if
+        type(store) ~= "table"
+        or type(store.entries) ~= "table"
+        or type(store.pool) ~= "table"
+        or type(store.digests) ~= "table"
+    then
         return nil, "invalid store; pool unchanged"
     end
     -- Never collect a version referenced by either manual or automatic entry.
