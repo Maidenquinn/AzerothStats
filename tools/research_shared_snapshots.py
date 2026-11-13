@@ -66,11 +66,7 @@ class SharedSnapshotModel:
 
     def gc(self) -> int:
         """Only remove versions unreferenced by ANY remaining snapshot."""
-        live = {
-            ref
-            for m in self.manifests.values()
-            for ref in m["run_refs"]
-        }
+        live = {ref for m in self.manifests.values() for ref in m["run_refs"]}
         stale = [key for key in self.pool if key not in live]
         for key in stale:
             del self.pool[key]
