@@ -107,6 +107,8 @@ local originalRef = reloaded.entries[a1].runRefs[2]
 reloaded.entries[a1].runRefs[2] = reloaded.entries[m2].runRefs[2]
 check(M.restore(reloaded, a1) == nil, "redirect to another valid run version blocked")
 check(M.collect(reloaded) == nil, "GC blocked on tampered manifest")
+check(not M.delete(reloaded, a1), "tampered checkpoint cannot be deleted")
+check(reloaded.entries[a1] ~= nil, "failed deletion preserves tampered checkpoint")
 reloaded.entries[a1].runRefs[2] = originalRef
 check(M.sameData(M.restore(reloaded, a1), automatic), "restored reference verifies")
 
