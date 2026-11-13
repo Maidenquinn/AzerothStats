@@ -1,6 +1,6 @@
 # AzerothStats 2.0.1 — HUD lot native acceptance
 
-Branch: `feat/v2.0.1-aviiva-feedback`. Install the ZIP artifact from the latest successful GitHub Actions **Checks** workflow for this branch, not a previous run. Back up the existing SavedVariables before installing. No public release is authorized by this recipe.
+Branch: `feat/v2.0.1-community-feedback`. Install the ZIP artifact from the latest successful GitHub Actions **Checks** workflow for this branch, not a previous run. Back up the existing SavedVariables before installing. No public release is authorized by this recipe.
 
 ## HUD acceptance
 1. Load the game and open the HUD editor. Confirm the default height is **40 px** on a new HUD preset; existing customized height must remain unchanged.
@@ -19,4 +19,4 @@ Branch: `feat/v2.0.1-aviiva-feedback`. Install the ZIP artifact from the latest 
 - Confirm no Lua error or `Unavailable` state.
 
 ## Result
-Record PASS/FAIL for each numbered step, resolution, language, theme and screenshots of any visual failure. Native acceptance is required before marking the HUD lot complete or announcing a release. Remaining Aviiva UI/assets/data issues are tracked separately in `docs/AVIIVA-FEEDBACK-2.0.1.md`.
+Record PASS/FAIL for each numbered step, resolution, language, theme and screenshots of any visual failure. Native acceptance is required before marking the HUD lot complete or announcing a release. Remaining Community UI/assets/data issues are tracked separately in `docs/COMMUNITY-FEEDBACK-2.0.1.md`.
