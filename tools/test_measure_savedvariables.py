@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from measure_savedvariables import measure
+from measure_savedvariables import compare, measure
 
 
 class StorageMeasurementTests(unittest.TestCase):
@@ -45,6 +45,26 @@ class StorageMeasurementTests(unittest.TestCase):
             self.assertEqual(report["AzerothStats.lua"]["status"], "symlink-refused")
             self.assertEqual(report["AzerothStatsBackup.lua"]["status"], "not-a-file")
             self.assertEqual(report["total_bytes"], 0)
+
+    def test_before_after_combined_file_delta_is_metadata_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            before = root / "before"
+            after = root / "after"
+            before.mkdir()
+            after.mkdir()
+            (before / "AzerothStats.lua").write_bytes(b"A" * 100)
+            (after / "AzerothStats.lua").write_bytes(b"B" * 125)
+            result = compare(before, after)
+            self.assertEqual(result["delta"]["AzerothStats.lua"]["delta_bytes"], 25)
+            self.assertEqual(
+                result["delta"]["AzerothStatsAutoBackup.lua"]["status"],
+                "not-comparable",
+            )
+            self.assertEqual(result["before"]["total_bytes"], 100)
+            self.assertEqual(result["after"]["total_bytes"], 125)
+            self.assertNotIn("AAA", repr(result))
+            self.assertNotIn("BBB", repr(result))
 
     def test_missing_directory_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
