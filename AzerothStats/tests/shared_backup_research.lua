@@ -79,6 +79,10 @@ local function equal(left, right, state, depth)
     return same
 end
 
+function M.sameData(left, right)
+    return equal(left, right, { nodes = 0 }, 0)
+end
+
 function M.new()
     return { schema = 1, nextRun = 1, nextBackup = 1, pool = {}, entries = {} }
 end
