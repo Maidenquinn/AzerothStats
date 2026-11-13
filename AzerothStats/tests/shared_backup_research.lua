@@ -271,23 +271,24 @@ function M.save(store, db, automatic, sharedIndex)
         return nil, "unsafe snapshot state fingerprint"
     end
     local backupID = store.nextBackup
-    -- Commit only after a full validated copy and complete version resolution.
-    for id, value in pairs(staged) do
-        store.pool[id] = value
-        store.digests[id] = stagedDigests[id]
-    end
-    store.entries[backupID] = {
+    local checkpoint = {
         id = backupID,
         automatic = automatic and true or false,
         runRefs = refs,
         state = frozen,
         stateDigest = stateDigest,
     }
-    store.nextRun, store.nextBackup = nextRun, backupID + 1
-    local sealed, sealError = M.sealEntry(store, backupID)
-    if not sealed then
-        return nil, sealError
+    checkpoint.manifestDigest = manifestDigest(checkpoint)
+    if not checkpoint.manifestDigest then
+        return nil, "unsafe checkpoint manifest"
     end
+    -- Commit only after all payloads and the manifest can be verified.
+    for id, value in pairs(staged) do
+        store.pool[id] = value
+        store.digests[id] = stagedDigests[id]
+    end
+    store.entries[backupID] = checkpoint
+    store.nextRun, store.nextBackup = nextRun, backupID + 1
     for localID, pending in pairs(pendingIndex) do
         local group = index[localID]
         if not group then
