@@ -55,6 +55,7 @@ local function equal(left, right, state, depth)
     if getmetatable(left) or getmetatable(right) then
         return false
     end
+    state.visiting = state.visiting or {}
     if state.visiting[left] or state.visiting[right] then
         return false
     end
