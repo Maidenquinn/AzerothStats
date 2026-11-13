@@ -1,6 +1,6 @@
 # AzerothStats 2.0.1 — Lot UI / themes / navigation
 
-Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #31 branch `feat/v2.0.1-aviiva-feedback`. Do not modify accepted HUD layout unless a reproducible regression is discovered.
+Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #31 branch `feat/v2.0.1-community-feedback`. Do not modify accepted HUD layout unless a reproducible regression is discovered.
 
 ## Scope and order
 
@@ -40,7 +40,7 @@ Status: IN PROGRESS. Began after HUD native 9/9 PASS on 2026-11-05. Work on PR #
 - Report individual PASS/FAIL and screenshots of visual issues. Only then mark this lot accepted.
 
 ## Release boundary
-The remaining backup, Nemesis, Partial and Sync data-integrity investigations remain tracked in `docs/AVIIVA-FEEDBACK-2.0.1.md`; UI acceptance does not authorize the public V2.0.1 release.
+The remaining backup, Nemesis, Partial and Sync data-integrity investigations remain tracked in `docs/COMMUNITY-FEEDBACK-2.0.1.md`; UI acceptance does not authorize the public V2.0.1 release.
 
 ## Code audit follow-up — 2026-11-05
 - PR #31 diff reviewed: 17 files, 630 additions, 188 deletions at `b982767`; latest CI PASS. Changes to persistent settings are confined to the `miniRound` boolean; existing runs are not rewritten by that option.
@@ -54,13 +54,13 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 
 ## Recovery checkpoint — 2026-11-05, conversation migration
 
-**Source of truth:** repository `Maidenquinn/AzerothStats`, draft PR #31, branch `feat/v2.0.1-aviiva-feedback`, inspected head `30abc19dbdfe76563dac77f7a9a23e5a5b34faa7`. This section is a durable handoff for future assistant sessions. Always re-fetch the PR head and CI before editing; never assume this SHA remains current. PR #30 is already merged. Do not merge PR #31 or publish 2.0.1 without explicit owner acceptance.
+**Source of truth:** repository `Maidenquinn/AzerothStats`, draft PR #31, branch `feat/v2.0.1-community-feedback`, inspected head `30abc19dbdfe76563dac77f7a9a23e5a5b34faa7`. This section is a durable handoff for future assistant sessions. Always re-fetch the PR head and CI before editing; never assume this SHA remains current. PR #30 is already merged. Do not merge PR #31 or publish 2.0.1 without explicit owner acceptance.
 
 ### What is actually committed at inspected head
 - Scholomance files `AzerothStats/media/RunZone-scholo.tga` and `design/run-images/scholo.jpg` appear in PR #31, together with `Theme.lua`, `GameText.lua`, `data/run-image-sources.json` and package policy changes. Earlier "asset not committed" notes above are stale for this head. Native rendering and package integrity are **not** yet verified.
 - `UI.lua` implements Search runs caption centering, settings headings and save note repositioning, overview History/Records label centering, campaign map ordering, circular minimap option and Warcraft class-emblem deduplication.
 - `Theme.lua` adjusts glyph texture coordinates and panel edge bounds. `V2UI.lua` adds optional-analysis explanations; `Insights.lua` avoids inferring Solo for legacy runs.
-- Accepted HUD lot: native 9/9 PASS, recorded in `docs/AVIIVA-FEEDBACK-2.0.1.md`. Do not reopen without a reproducible regression.
+- Accepted HUD lot: native 9/9 PASS, recorded in `docs/COMMUNITY-FEEDBACK-2.0.1.md`. Do not reopen without a reproducible regression.
 - GitHub workflow-run and combined-status connector queries for inspected head returned empty results. **This is not a CI PASS or FAIL.** Check GitHub Actions explicitly.
 
 ### Still open: priority-ordered
@@ -71,7 +71,7 @@ The remaining backup, Nemesis, Partial and Sync data-integrity investigations re
 5. **Release gate:** full offline suite plus native acceptance on a backed-up real SavedVariables file, before any public release.
 
 ### Safe working procedure for next session
-- Fetch PR #31 info, head, changed-file patches, this document and `docs/AVIIVA-FEEDBACK-2.0.1.md`.
+- Fetch PR #31 info, head, changed-file patches, this document and `docs/COMMUNITY-FEEDBACK-2.0.1.md`.
 - Read relevant full source modules before editing; patch only the dedicated branch. Re-fetch blob SHA immediately before each file update.
 - Run tests/checks if an execution environment is available; otherwise label them NOT RUN. Never claim a test passed solely from static inspection.
 - Commit small coherent fixes, update both tracking documents after each completed sub-lot with commit SHA, CI URL/result and native PASS/FAIL.
