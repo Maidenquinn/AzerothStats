@@ -91,13 +91,14 @@ check(db == preservedDB and manual == preservedManual, "verified abort preserves
 check(J.prepare(db, manual, nil, "") == nil, "missing session token rejected")
 local damagedRoot = assert(loadstring("return " .. text))()
 damagedRoot.shadow.digests = nil
-check(not J.verifyReload(damagedRoot, db, manual, nil, "start-2"),
-    "missing digest root refuses reload verification")
+check(
+    not J.verifyReload(damagedRoot, db, manual, nil, "start-2"),
+    "missing digest root refuses reload verification"
+)
 check(M.restore({ schema = 1 }, 1) == nil, "invalid store restore fails closed")
 check(M.save({ schema = 1 }, db, false) == nil, "invalid store save fails closed")
 check(M.collect({ schema = 1 }) == nil, "invalid store GC fails closed")
-check(M.findOrigin({ schema = 1 }, "manual", 2) == nil,
-    "invalid store lookup fails closed")
+check(M.findOrigin({ schema = 1 }, "manual", 2) == nil, "invalid store lookup fails closed")
 check(not M.delete({ schema = 1 }, 2), "invalid store deletion fails closed")
 AzerothStatsDB, A.db, A.run = oldSaved, oldDB, oldRun
 print("NON-DESTRUCTIVE MIGRATION JOURNAL CONTRACTS PASSED")
