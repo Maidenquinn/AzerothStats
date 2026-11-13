@@ -215,6 +215,18 @@ function M.save(store, db, automatic, sharedIndex)
     then
         return nil, "invalid store"
     end
+    if
+        type(store.nextRun) ~= "number"
+        or type(store.nextBackup) ~= "number"
+        or store.nextRun < 1
+        or store.nextBackup < 1
+        or store.nextRun ~= math.floor(store.nextRun)
+        or store.nextBackup ~= math.floor(store.nextBackup)
+        or store.entries[store.nextBackup] ~= nil
+        or store.pool[store.nextRun] ~= nil
+    then
+        return nil, "invalid checkpoint sequence"
+    end
     if not AzerothStats.ValidateDatabase(db) then
         return nil, "invalid database"
     end
@@ -264,6 +276,13 @@ function M.save(store, db, automatic, sharedIndex)
             table.insert(group, found)
         end
         table.insert(refs, found)
+    end
+    -- Never overwrite any pre-existing run version if a corrupted sequence
+    -- points inside the occupied pool.
+    for id in pairs(staged) do
+        if store.pool[id] ~= nil or store.digests[id] ~= nil then
+            return nil, "shared version sequence collision"
+        end
     end
     local stagedDigests = {}
     for id, value in pairs(staged) do
