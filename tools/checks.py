@@ -179,6 +179,9 @@ lua.execute(
     (addon / "tests/interop_lifecycle_contract.lua").read_text(encoding="utf-8")
 )
 lua.execute((addon / "tests/interop_perf.lua").read_text(encoding="utf-8"))
+# Isolated future backup format research is NOT part of the installed addon.
+lua.execute((addon / "tests/shared_backup_research.lua").read_text(encoding="utf-8"))
+lua.execute((addon / "tests/shared_backup_research_contract.lua").read_text(encoding="utf-8"))
 lua.execute("CI_CHECKS=TEST_COUNT")
 print(
     "PASS:",
