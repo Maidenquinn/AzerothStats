@@ -198,5 +198,109 @@ function M.collect(store)
     return removed
 end
 
+-- Legacy 2.0.4 catalogue migration, completely staged and verified.
+-- Never mutate the caller's live database or original backup globals.
+-- Internal backup IDs can differ; origin.kind + origin.id retain UI identity.
+local function legacyEntries(root, kind)
+    if root == nil then
+        return {}, 1
+    end
+    if type(root) ~= "table" then
+        return nil, "invalid " .. kind .. " root"
+    end
+    if root.schema == 1 then
+        if type(root.data) ~= "table" then
+            return nil, "invalid " .. kind .. " legacy snapshot"
+        end
+        return { { id = 1, at = 0, data = root.data, legacy = true } }, 2
+    end
+    if root.schema ~= 2 or type(root.entries) ~= "table" then
+        return nil, "unsupported " .. kind .. " backup schema"
+    end
+    local entries = root.entries
+    local count = table.getn(entries)
+    local seen = {}
+    for key in pairs(entries) do
+        if type(key) ~= "number" or key < 1 or key ~= math.floor(key) or key > count then
+            return nil, "sparse or unexpected " .. kind .. " entry"
+        end
+    end
+    local maxID = 0
+    for _, entry in ipairs(entries) do
+        if type(entry) ~= "table" or type(entry.data) ~= "table"
+            or type(entry.id) ~= "number" or entry.id < 1
+            or entry.id ~= math.floor(entry.id) or seen[entry.id] then
+            return nil, "invalid or duplicate " .. kind .. " backup ID"
+        end
+        seen[entry.id] = true
+        maxID = math.max(maxID, entry.id)
+        if entry.at ~= nil and type(entry.at) ~= "number" then
+            return nil, "invalid " .. kind .. " backup timestamp"
+        end
+        if entry.runs ~= nil and
+            (type(entry.runs) ~= "number" or entry.runs < 0
+            or entry.runs ~= math.floor(entry.runs)) then
+            return nil, "invalid " .. kind .. " run count"
+        end
+    end
+    if type(root.nextId) ~= "number" or root.nextId <= maxID
+        or root.nextId ~= math.floor(root.nextId) then
+        return nil, "invalid " .. kind .. " next ID"
+    end
+    return entries, root.nextId
+end
+
+function M.importLegacy(live, manual, automatic)
+    if not AzerothStats.ValidateDatabase(live) then
+        return nil, "invalid live database"
+    end
+    local manualEntries, manualNext = legacyEntries(manual, "manual")
+    if not manualEntries then
+        return nil, manualNext
+    end
+    local autoEntries, autoNext = legacyEntries(automatic, "auto")
+    if not autoEntries then
+        return nil, autoNext
+    end
+    local staged = M.new()
+    staged.sourceNextIds = { manual = manualNext, auto = autoNext }
+    -- The active DB stays a separate root. It is verified, not rewritten.
+    for _, kind in ipairs({ "manual", "auto" }) do
+        local source = kind == "manual" and manualEntries or autoEntries
+        for _, entry in ipairs(source) do
+            if not AzerothStats.ValidateDatabase(entry.data) then
+                return nil, "invalid source " .. kind .. " backup " .. tostring(entry.id)
+            end
+            local id, err = M.save(staged, entry.data, kind == "auto")
+            if not id then
+                return nil, err
+            end
+            local saved = staged.entries[id]
+            saved.origin = {
+                kind = kind, id = entry.id, at = entry.at,
+                legacy = entry.legacy and true or false,
+                runs = entry.runs or table.getn(entry.data.runs),
+            }
+            local restored, restoreError = M.restore(staged, id)
+            if not restored or not equal(restored, entry.data, { nodes = 0 }, 0) then
+                return nil, restoreError or "migration roundtrip mismatch"
+            end
+        end
+    end
+    return staged
+end
+
+function M.findOrigin(store, kind, sourceID)
+    if kind ~= "manual" and kind ~= "auto" then
+        return nil
+    end
+    for id, entry in pairs(store.entries) do
+        if type(entry.origin) == "table" and entry.origin.kind == kind
+            and entry.origin.id == sourceID then
+            return id
+        end
+    end
+end
+
 -- Research code returns reconstructed data, never installs a live DB itself.
 SharedBackupResearch = M
