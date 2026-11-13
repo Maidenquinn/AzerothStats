@@ -11,7 +11,12 @@ def fixture():
         "schema": 1,
         "sequence": 3,
         "runs": [
-            {"id": "r1", "status": "ended", "note": "original", "values": {"damage": 4}},
+            {
+                "id": "r1",
+                "status": "ended",
+                "note": "original",
+                "values": {"damage": 4},
+            },
             {"id": "r2", "status": "ended", "values": {"damage": 9}},
         ],
         "totals": {"runs": 4, "wins": 2},
@@ -80,9 +85,7 @@ class SharedSnapshotResearchTests(unittest.TestCase):
         db["totals"]["wins"] = 3
         updated = model.save(db, "manual")
         self.assertEqual(model.restore(old)["favorites"], {"r1": True})
-        self.assertEqual(
-            model.restore(old)["settings"], {"autoBackupEveryRuns": 2}
-        )
+        self.assertEqual(model.restore(old)["settings"], {"autoBackupEveryRuns": 2})
         self.assertEqual(model.restore(old)["totals"]["wins"], 2)
         self.assertEqual(model.restore(updated), db)
 
