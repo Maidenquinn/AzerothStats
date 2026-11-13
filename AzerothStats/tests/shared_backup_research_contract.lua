@@ -11,13 +11,21 @@ check(A.InitDB(), "research fixture initialized")
 local db = A.db
 db.runs = {
     {
-        id = "research-run-one", class = "warrior",
-        values = { damage = 42 }, accounted = {}, events = {}, meters = {},
+        id = "research-run-one",
+        class = "warrior",
+        values = { damage = 42 },
+        accounted = {},
+        events = {},
+        meters = {},
         note = "original",
     },
     {
-        id = "research-run-two", class = "mage",
-        values = { damage = 19 }, accounted = {}, events = {}, meters = {},
+        id = "research-run-two",
+        class = "mage",
+        values = { damage = 19 },
+        accounted = {},
+        events = {},
+        meters = {},
     },
 }
 check(A.ValidateDatabase(db), "two real-schema synthetic runs validate")
@@ -36,8 +44,12 @@ local priorSeq = db.sequence
 db.sequence = priorSeq + 1
 db.runs[1].note = "later edit"
 db.runs[3] = {
-    id = "research-run-three", class = "warrior",
-    values = { damage = 99 }, accounted = {}, events = {}, meters = {},
+    id = "research-run-three",
+    class = "warrior",
+    values = { damage = 99 },
+    accounted = {},
+    events = {},
+    meters = {},
 }
 local id2 = M.save(store, db, true)
 check(id2 ~= nil, "auto checkpoint created")
@@ -49,8 +61,10 @@ check(old.runs[1].note == "original" and #old.runs == 2, "old run versions prese
 check(newer.runs[1].note == "later edit" and #newer.runs == 3, "new run versions included")
 check(store.pool[1] ~= nil and store.pool[2] ~= nil, "shared pool populated")
 check(store.entries[id1].state.runs == nil, "run histories never duplicated in checkpoints")
-check(store.entries[id1].runRefs[2] == store.entries[id2].runRefs[2],
-    "identical run explicitly shared across checkpoint types")
+check(
+    store.entries[id1].runRefs[2] == store.entries[id2].runRefs[2],
+    "identical run explicitly shared across checkpoint types"
+)
 check(M.delete(store, id1), "old manual checkpoint can be deleted")
 local removed = M.collect(store)
 check(removed == 1, "GC removes only old unreferenced edited run version")
