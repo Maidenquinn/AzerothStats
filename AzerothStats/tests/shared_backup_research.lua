@@ -87,35 +87,60 @@ function M.new()
     return { schema = 1, nextRun = 1, nextBackup = 1, pool = {}, entries = {} }
 end
 
-function M.save(store, db, automatic)
+-- In-memory lookup by LOCAL run ID. No persisted index or additional
+-- copy of run payloads. Always verify full equality before reusing a version.
+local function buildIndex(store)
+    local index = {}
+    for id, run in pairs(store.pool) do
+        if type(run) ~= "table" or type(run.id) ~= "string" then
+            return nil, "invalid shared run index"
+        end
+        local group = index[run.id]
+        if not group then
+            group = {}
+            index[run.id] = group
+        end
+        table.insert(group, id)
+    end
+    return index
+end
+
+function M.save(store, db, automatic, sharedIndex)
     if type(store) ~= "table" or store.schema ~= 1 then
         return nil, "invalid store"
     end
     if not AzerothStats.ValidateDatabase(db) then
         return nil, "invalid database"
     end
-    -- Clone completely before reading the catalogue; no writes until validated.
+    -- One complete frozen database before any catalogue changes.
     local frozen, err = copy(db, { count = 0, visiting = {} }, 0)
     if err then
         return nil, err
     end
+    local index, indexError = sharedIndex, nil
+    if not index then
+        index, indexError = buildIndex(store)
+    end
+    if not index then
+        return nil, indexError
+    end
     local nextRun = store.nextRun
-    local staged = {}
-    local rest = frozen
+    local staged, pendingIndex = {}, {}
     local runs = frozen.runs
-    rest.runs = nil
+    frozen.runs = nil
     local refs = {}
     for _, run in ipairs(runs) do
         local found
-        for id, candidate in pairs(store.pool) do
-            if equal(candidate, run, { nodes = 0 }, 0) then
+        for _, id in ipairs(index[run.id] or {}) do
+            local candidate = store.pool[id]
+            if candidate and equal(candidate, run, { nodes = 0 }, 0) then
                 found = id
                 break
             end
         end
         if not found then
-            for id, candidate in pairs(staged) do
-                if equal(candidate, run, { nodes = 0 }, 0) then
+            for _, id in ipairs(pendingIndex[run.id] or {}) do
+                if equal(staged[id], run, { nodes = 0 }, 0) then
                     found = id
                     break
                 end
@@ -125,11 +150,17 @@ function M.save(store, db, automatic)
             found = nextRun
             nextRun = nextRun + 1
             staged[found] = run
+            local group = pendingIndex[run.id]
+            if not group then
+                group = {}
+                pendingIndex[run.id] = group
+            end
+            table.insert(group, found)
         end
         table.insert(refs, found)
     end
     local backupID = store.nextBackup
-    -- Commit state only once all runs have been frozen and versioned.
+    -- Commit only after a full validated copy and complete version resolution.
     for id, value in pairs(staged) do
         store.pool[id] = value
     end
@@ -137,9 +168,19 @@ function M.save(store, db, automatic)
         id = backupID,
         automatic = automatic and true or false,
         runRefs = refs,
-        state = rest,
+        state = frozen,
     }
     store.nextRun, store.nextBackup = nextRun, backupID + 1
+    for localID, pending in pairs(pendingIndex) do
+        local group = index[localID]
+        if not group then
+            group = {}
+            index[localID] = group
+        end
+        for _, ref in ipairs(pending) do
+            table.insert(group, ref)
+        end
+    end
     return backupID
 end
 
@@ -281,6 +322,7 @@ function M.importLegacy(live, manual, automatic)
     end
     local staged = M.new()
     staged.sourceNextIds = { manual = manualNext, auto = autoNext }
+    local sharedIndex = {}
     -- The active DB stays a separate root. It is verified, not rewritten.
     for _, kind in ipairs({ "manual", "auto" }) do
         local source = kind == "manual" and manualEntries or autoEntries
@@ -288,7 +330,7 @@ function M.importLegacy(live, manual, automatic)
             if not AzerothStats.ValidateDatabase(entry.data) then
                 return nil, "invalid source " .. kind .. " backup " .. tostring(entry.id)
             end
-            local id, err = M.save(staged, entry.data, kind == "auto")
+            local id, err = M.save(staged, entry.data, kind == "auto", sharedIndex)
             if not id then
                 return nil, err
             end
