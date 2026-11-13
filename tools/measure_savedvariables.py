@@ -69,7 +69,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("savedvariables_directory", type=Path)
     parser.add_argument(
-        "--baseline", type=Path, default=None,
+        "--baseline",
+        type=Path,
+        default=None,
         help="Optional directory containing a before snapshot, for metadata-only delta",
     )
     args = parser.parse_args()
