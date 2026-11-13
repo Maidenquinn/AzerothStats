@@ -1,0 +1,56 @@
+name: Privacy refresh of Azeroth Stats 2.0.4 release
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/privacy-refresh-v2.0.4.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: azerothstats-v2.0.4-privacy-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Validate current stable tree and absence of attribution
+        run: |
+          grep -Fx '## Version: 2.0.4' AzerothStats/AzerothStats.toc
+          if grep -i 'aviiva' AzerothStats/CHANGELOG.md; then
+            echo 'Privacy regression: changelog still contains contributor name.'
+            exit 1
+          fi
+          python -m pip install -r requirements-dev.txt
+          python tools/checks.py
+      - name: Rebuild verified public ZIP
+        run: python tools/build_release.py --output release-assets/privacy
+      - name: Generate anonymized release notes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path("AzerothStats/CHANGELOG.md").read_text(encoding="utf-8")
+          chunk = text.split("# 2.0.4 —", 1)
+          assert len(chunk) == 2
+          notes = "# Azeroth Stats 2.0.4\n\n" + chunk[1].split("\n# ", 1)[0].strip() + "\n"
+          assert "aviiva" not in notes.lower()
+          Path("release-assets/privacy/NOTES.md").write_text(notes, encoding="utf-8")
+          PY
+      - name: Refresh existing release description and ZIP assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v2.0.4 >/dev/null
+          gh release edit v2.0.4 --notes-file release-assets/privacy/NOTES.md
+          gh release upload v2.0.4 \
+            release-assets/privacy/AzerothStats-2.0.4.zip \
+            release-assets/privacy/AzerothStats-2.0.4.zip.sha256 \
+            --clobber
+          gh release view v2.0.4
