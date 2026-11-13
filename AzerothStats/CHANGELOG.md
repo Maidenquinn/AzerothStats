@@ -1,4 +1,4 @@
-# 2.0.4 — Aviiva feedback, safer backups and UI polish (12 November 2026)
+# 2.0.4 — Community feedback, safer backups and UI polish (12 November 2026)
 
 - **Analyze Run:** Highlights display up to four recent build-journal events per page with navigation.
 - **Settings:** clearer descriptions for Effects, Summons, Combat Intelligence and record sounds, with reviewed French and English text.
@@ -23,7 +23,7 @@
 - **Testing:** add geometry and multi-theme regressions for round-to-square transitions. The actual appearance must still be confirmed in Azeroth Survivors.
 - **SavedVariables:** no schema change, history rewrite, removal, or compression; user-provided save audit found no active run/ledger changes between snapshots with two and three manual backups.
 
-# 2.0.4-rc1 — Aviiva feedback and safety review (native test candidate, 12 November 2026)
+# 2.0.4-rc1 — Community feedback and safety review (native test candidate, 12 November 2026)
 
 - **Analyze Run:** recent Highlights show up to four journal events and include page navigation. Validate long text, colors and scrolling in the native client.
 - **Settings guidance:** expanded descriptions for Effects, Summons, Combat Intelligence and Record sounds (including the LevelUp.wav record alert); reviewed French and English strings.
