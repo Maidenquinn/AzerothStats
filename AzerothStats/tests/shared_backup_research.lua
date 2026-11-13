@@ -383,8 +383,13 @@ local function legacyEntries(root, kind)
             return nil, "invalid or duplicate " .. kind .. " backup ID"
         end
         for key in pairs(entry) do
-            if key ~= "id" and key ~= "at" and key ~= "runs" and key ~= "data"
-                and key ~= "legacy" then
+            if
+                key ~= "id"
+                and key ~= "at"
+                and key ~= "runs"
+                and key ~= "data"
+                and key ~= "legacy"
+            then
                 return nil, "unsupported " .. kind .. " backup field"
             end
         end
