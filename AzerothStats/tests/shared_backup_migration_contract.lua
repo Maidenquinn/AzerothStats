@@ -103,6 +103,13 @@ sharedRun.values.damage = originalDamage + 1
 check(M.restore(reloaded, a1) == nil, "valid-shape run corruption detected")
 sharedRun.values.damage = originalDamage
 check(M.sameData(M.restore(reloaded, a1), automatic), "run repair restores access")
+local originalRef = reloaded.entries[a1].runRefs[2]
+reloaded.entries[a1].runRefs[2] = reloaded.entries[m2].runRefs[2]
+check(M.restore(reloaded, a1) == nil, "redirect to another valid run version blocked")
+check(M.collect(reloaded) == nil, "GC blocked on tampered manifest")
+reloaded.entries[a1].runRefs[2] = originalRef
+check(M.sameData(M.restore(reloaded, a1), automatic), "restored reference verifies")
+
 local originalSequence = reloaded.entries[m1].state.sequence
 reloaded.entries[m1].state.sequence = originalSequence + 1
 check(M.restore(reloaded, m1) == nil, "valid-shape state corruption detected")
