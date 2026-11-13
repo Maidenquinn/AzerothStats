@@ -458,8 +458,12 @@ end
 -- original snapshot roots. A future migration MUST pass after actual disk
 -- serialization before it may even offer a destructive space-saving action.
 function M.verifyMigration(store, live, manual, automatic)
-    if type(store) ~= "table" or store.schema ~= 1
-        or type(store.entries) ~= "table" or type(store.pool) ~= "table" then
+    if
+        type(store) ~= "table"
+        or store.schema ~= 1
+        or type(store.entries) ~= "table"
+        or type(store.pool) ~= "table"
+    then
         return false, "invalid shared catalogue"
     end
     if not AzerothStats.ValidateDatabase(live) then
@@ -473,9 +477,11 @@ function M.verifyMigration(store, live, manual, automatic)
     if not autoEntries then
         return false, autoNext
     end
-    if type(store.sourceNextIds) ~= "table"
+    if
+        type(store.sourceNextIds) ~= "table"
         or store.sourceNextIds.manual ~= manualNext
-        or store.sourceNextIds.auto ~= autoNext then
+        or store.sourceNextIds.auto ~= autoNext
+    then
         return false, "legacy sequence mismatch"
     end
     local expectedCount, actualCount = 0, 0
@@ -492,11 +498,13 @@ function M.verifyMigration(store, live, manual, automatic)
             end
             local entry = store.entries[id]
             local meta = entry.origin
-            if type(meta) ~= "table"
+            if
+                type(meta) ~= "table"
                 or meta.at ~= old.at
                 or meta.legacy ~= (old.legacy and true or false)
                 or meta.runs ~= (old.runs or table.getn(old.data.runs))
-                or entry.automatic ~= (kind == "auto") then
+                or entry.automatic ~= (kind == "auto")
+            then
                 return false, "checkpoint metadata mismatch"
             end
             local restored, err = M.restore(store, id)
