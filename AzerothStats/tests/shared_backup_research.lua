@@ -206,7 +206,13 @@ local function buildIndex(store)
 end
 
 function M.save(store, db, automatic, sharedIndex)
-    if type(store) ~= "table" or store.schema ~= 1 then
+    if
+        type(store) ~= "table"
+        or store.schema ~= 1
+        or type(store.entries) ~= "table"
+        or type(store.pool) ~= "table"
+        or type(store.digests) ~= "table"
+    then
         return nil, "invalid store"
     end
     if not AzerothStats.ValidateDatabase(db) then
@@ -303,7 +309,13 @@ function M.save(store, db, automatic, sharedIndex)
 end
 
 function M.restore(store, backupID)
-    if type(store) ~= "table" or store.schema ~= 1 then
+    if
+        type(store) ~= "table"
+        or store.schema ~= 1
+        or type(store.entries) ~= "table"
+        or type(store.pool) ~= "table"
+        or type(store.digests) ~= "table"
+    then
         return nil, "invalid store"
     end
     local entry = store.entries[backupID]
@@ -342,6 +354,9 @@ function M.restore(store, backupID)
 end
 
 function M.delete(store, backupID)
+    if type(store) ~= "table" or type(store.entries) ~= "table" then
+        return false, "invalid store"
+    end
     if type(store.entries[backupID]) ~= "table" then
         return false, "missing checkpoint"
     end
@@ -350,6 +365,10 @@ function M.delete(store, backupID)
 end
 
 function M.collect(store)
+    if type(store) ~= "table" or type(store.entries) ~= "table"
+        or type(store.pool) ~= "table" or type(store.digests) ~= "table" then
+        return nil, "invalid store; pool unchanged"
+    end
     -- Never collect a version referenced by either manual or automatic entry.
     local reachable = {}
     for _, entry in pairs(store.entries) do
@@ -513,9 +532,13 @@ function M.findOrigin(store, kind, sourceID)
     if kind ~= "manual" and kind ~= "auto" then
         return nil
     end
+    if type(store) ~= "table" or type(store.entries) ~= "table" then
+        return nil
+    end
     for id, entry in pairs(store.entries) do
         if
-            type(entry.origin) == "table"
+            type(entry) == "table"
+            and type(entry.origin) == "table"
             and entry.origin.kind == kind
             and entry.origin.id == sourceID
         then
@@ -533,6 +556,7 @@ function M.verifyMigration(store, live, manual, automatic)
         or store.schema ~= 1
         or type(store.entries) ~= "table"
         or type(store.pool) ~= "table"
+        or type(store.digests) ~= "table"
     then
         return false, "invalid shared catalogue"
     end
