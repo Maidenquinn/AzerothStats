@@ -47,12 +47,14 @@ function J.prepare(live, manual, automatic, sessionToken)
 end
 
 function J.verifyReload(journal, live, manual, automatic, sessionToken)
-    if type(journal) ~= "table" or journal.schema ~= 1
-        or journal.phase ~= "staged" then
+    if type(journal) ~= "table" or journal.schema ~= 1 or journal.phase ~= "staged" then
         return false, "not a staged journal"
     end
-    if type(sessionToken) ~= "string" or sessionToken == ""
-        or sessionToken == journal.startedSession then
+    if
+        type(sessionToken) ~= "string"
+        or sessionToken == ""
+        or sessionToken == journal.startedSession
+    then
         return false, "independent session required"
     end
     if not sourcesMatch(journal, live, manual, automatic) then
