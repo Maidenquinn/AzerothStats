@@ -32,20 +32,26 @@ check(inventory.activeRuns == 1, "reports active runs")
 check(inventory.manual.snapshots == 2 and inventory.manual.storedRuns == 4, "manual counts")
 check(inventory.manual.distinctRunIDs == 3, "manual unique IDs")
 check(inventory.manual.repeatedRunIDs == 1, "manual repeated IDs")
-check(inventory.automatic.snapshots == 1 and inventory.automatic.storedRuns == 2, "legacy auto counts")
+check(
+    inventory.automatic.snapshots == 1 and inventory.automatic.storedRuns == 2,
+    "legacy auto counts"
+)
 check(not inventory.exactDeduplicatedBytesKnown, "does not claim byte savings")
-check(AzerothStatsBackup == manualPtr and AzerothStatsAutoBackup == autoPtr,
-    "audit never replaces SavedVariables root pointers")
+check(
+    AzerothStatsBackup == manualPtr and AzerothStatsAutoBackup == autoPtr,
+    "audit never replaces SavedVariables root pointers"
+)
 check(AzerothStatsBackup.entries[1] == firstPtr, "entry pointer unchanged")
-check(SNAPSHOT(manualPtr) == beforeManual and SNAPSHOT(autoPtr) == beforeAuto,
-    "audit never changes backup bytes")
+check(
+    SNAPSHOT(manualPtr) == beforeManual and SNAPSHOT(autoPtr) == beforeAuto,
+    "audit never changes backup bytes"
+)
 
 AzerothStatsBackup = nil
 AzerothStatsAutoBackup = nil
 local missing = A.SharedStorageReadOnlyAudit()
 check(missing.manual.snapshots == 0 and missing.automatic.snapshots == 0, "missing stores safe")
-check(AzerothStatsBackup == nil and AzerothStatsAutoBackup == nil,
-    "missing stores are not created")
+check(AzerothStatsBackup == nil and AzerothStatsAutoBackup == nil, "missing stores are not created")
 AzerothStatsBackup = { schema = 999 }
 local unknown = A.SharedStorageReadOnlyAudit()
 check(unknown.manual.invalid ~= nil, "unknown source is explicitly flagged")
